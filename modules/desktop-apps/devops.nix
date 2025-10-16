@@ -71,6 +71,7 @@
       python312Packages.pip
       python312Packages.setuptools
       python312Packages.cryptography
+      #python312Packages.uv
       jetbrains.pycharm-community
       ruff
     ]

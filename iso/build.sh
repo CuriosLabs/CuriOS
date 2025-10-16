@@ -5,38 +5,34 @@
 set -eu
 script_path="$(dirname "$0")"
 
+# Temporary allowing build of a broken package once.
+#export NIXPKGS_ALLOW_BROKEN=1
 branch="$(git branch --show-current)"
+platform="amd64_intel"
 currentRelease=""
+releaseNumber=""
 if [[ "$branch" == testing ]]; then
-  currentRelease="unstable"
+  currentRelease="CuriOS"
+  releaseNumber=$(date --utc "+%Y%m%d.%H%M")
+  releaseNumber="unstable-${releaseNumber}"
 else
   if [[ "$branch" != release* ]]; then
     printf "\e[31m Wrong git branch - not a release!\e[0m\n"
-    #branch="release/25.05.0-RC1" # for debugging ONLY
     exit 1
   fi
-  currentRelease=$(sed -E "s/release\/(.+)/\1/" <<< "$branch")
+  currentRelease="CuriOS"
+  releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<< "$branch")
 fi
 
-isoFilename="curios-minimal_${currentRelease}_amd64-intel.iso"
+isoFilename="${currentRelease}_${releaseNumber}_${platform}.iso"
 isoFilePath="${script_path}/${isoFilename}"
 
 printf "\e[32m Building %s file...\e[0m\n" "$isoFilename"
 # Check if iso file already exist
-while true; do
-  if [ -f "$isoFilePath" ]; then
-    printf "\e[33m ISO file %s already exist.\e[0m\n" "$isoFilename"
-    read -r -p "Choose a variant number: " add_variant
-    if ! [[ $add_variant =~ ^[0-9]+$ ]]; then
-      printf "\e[31m Invalid variant number, it could only contain numerical characters.\e[0m \n"
-      exit 1
-    fi
-    isoFilename="curios-minimal_${currentRelease}_amd64-intel-${add_variant}.iso"
-    isoFilePath="${script_path}/${isoFilename}"
-  else
-    break;
-  fi
-done
+if [ -f "$isoFilePath" ]; then
+  printf "\e[33m ISO file %s already exist.\e[0m\n" "$isoFilename"
+  exit 1
+fi
 
 # Check lint
 printf "Lint bash script files...\n"
@@ -61,11 +57,11 @@ for file in ./../*.nix; do
   fi
 done
 
-# Change some version number in nix file to match $currentRelease
-sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${currentRelease}\";/g" -i ./../configuration.nix
-sed "s/version = \".*/version = \"${currentRelease}\";/g" -i ./../pkgs/curios-sources/default.nix
+# Change some version number in nix file to match $releaseNumber
+sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./../configuration.nix
+sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./../pkgs/curios-sources/default.nix
 if [[ "$branch" == release* ]]; then
-  git commit -a -m "Release ${currentRelease}"
+  git commit -a -m "Release ${releaseNumber}"
 fi
 
 # Build packages
@@ -92,10 +88,10 @@ read -r -p "Push ISO file to GitHub.com ? (y/n): " yn
 case $yn in
   [yY] ) echo "gh release upload..."
     git push --set-upstream origin "$branch"
-    gh release create "$currentRelease" --target "$branch" --title "$currentRelease" --prerelease --generate-notes
-    gh release upload "$currentRelease" "$isoFilePath"
-    gh release upload "$currentRelease" "$isoFilePath".sha256
-    #git tag -a "$currentRelease" -m "Release ${currentRelease}"
+    gh release create "$releaseNumber" --target "$branch" --title "$releaseNumber" --prerelease --generate-notes
+    gh release upload "$releaseNumber" "$isoFilePath"
+    gh release upload "$releaseNumber" "$isoFilePath".sha256
+    #git tag -a "$releaseNumber" -m "Release ${releaseNumber}"
     #git push --tags
     break;;
   [nN] ) echo "Proceeding without pushing...";
