@@ -23,14 +23,14 @@
   config = lib.mkIf config.curios.desktop.apps.crypto.enable {
     environment.systemPackages = with pkgs; [
       secp256k1
-      sparrow
     ]
     ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
       bisq2
       electrum
+      sparrow
     ];
     # Add sparrow udev rules for hardware wallets
-    services.udev.packages = [
+    services.udev.packages = lib.mkIf config.curios.desktop.apps.crypto.btc.enable [
       pkgs.sparrow
     ];
   };
