@@ -22,8 +22,7 @@
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.crypto.enable {
     environment.systemPackages = with pkgs; [
-      # Will use brave browser for webapps later
-      brave
+      secp256k1
       sparrow
     ]
     ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [

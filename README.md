@@ -100,14 +100,18 @@ Useful COSMIC shortcuts:
 |-----------------------------|------------------------------------|
 | Application launcher/switch | Super                              |
 | Change application focus    | Super + Up/Down/Left/Right         |
-| Switch desktop              | Ctrl + Super + Up/Down             |
-| Move application (tiles)    | Shift + Super + Up/Down/Left/Right |
+| Switch desktop              | Super + Ctrl + Up/Down             |
+| Move application (tiles)    | Super + Shift + Up/Down/Left/Right |
 | Launch web browser          | Super + B                          |
 | Launch File manager         | Super + F                          |
 | Launch a terminal           | Super + T                          |
 | Applications menu           | Super + A                          |
 | Maximize application        | Super + M                          |
+| Close application           | Super + Q                          |
 | Tile mode on/off            | Super + Y                          |
+| Workspaces overview         | Super + W                          |
+| Lock session                | Super + Esc                        |
+| Logout                      | Super + Shift + Esc                |
 
 ### Dot files
 
