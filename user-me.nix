@@ -12,6 +12,8 @@ let
   password = "changeme";
 in {
   users.mutableUsers = true;
+  # Create plugdev group to access some USB devices without root privileges
+  users.extraGroups.plugdev = { };
   # Define a user account
   # <user> name will be updated by curios-install during ISO install
   users.users.nixos = {
@@ -22,6 +24,8 @@ in {
       "audio"
       "sound"
       "video"
+      "plugdev"
+      "dialout"
     ]
     ++ lib.optionals config.curios.networking.enable [
       "networkmanager"

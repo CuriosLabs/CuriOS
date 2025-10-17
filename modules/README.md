@@ -37,6 +37,10 @@ curios = {
     desktop.apps = {
       basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects, ProtonVPN gui.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      crypto = {
+        enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.
+      };
       devops = {
         enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
         networks.enable = false; # Nmap, Zenmap, Wireshark
