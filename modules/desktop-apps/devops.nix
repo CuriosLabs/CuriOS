@@ -72,7 +72,7 @@
       python312Packages.setuptools
       python312Packages.cryptography
       python312Packages.uv
-      jetbrains.pycharm-community
+      jetbrains.pycharm-community-bin
       ruff
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
