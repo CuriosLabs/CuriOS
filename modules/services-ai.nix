@@ -45,5 +45,9 @@
         WEBUI_AUTH = "False";
       };
     };
+    # Grok desktop shortcut
+    environment.systemPackages = [
+      (import ./desktop-apps/shortcut-grok.nix)
+    ];
   };
 }
