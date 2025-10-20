@@ -18,7 +18,7 @@
   config = lib.mkIf config.curios.desktop.apps.office.enable {
     environment.systemPackages = [
       pkgs.libreoffice
-      (import ./shortcut-slack.nix)
+      (import ./webapp-slack.nix)
     ];
   };
 }

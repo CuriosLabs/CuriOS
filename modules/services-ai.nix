@@ -47,8 +47,8 @@
     };
     # Grok desktop shortcut
     environment.systemPackages = [
-      (import ./desktop-apps/shortcut-grok.nix)
-      (import ./desktop-apps/shortcut-ollama.nix)
+      (import ./desktop-apps/webapp-grok.nix)
+      (import ./desktop-apps/webapp-ollama.nix)
     ];
   };
 }

@@ -1,27 +1,27 @@
-# Create a desktop shortcut for Ollama local Open-WebUI app
+# Create a desktop shortcut for X.ai Grok app
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="desktop-app-ollama-ui";
-  version="0.4";
+  pname="webapp-grok";
+  version="0.5";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./shortcut-ollama-icon-256.png
-      ./shortcut-ollama-icon-128.png
-      ./shortcut-ollama-icon-64.png
-      ./shortcut-ollama-icon-48.png
+      ./webapp-grok-icon-256.png
+      ./webapp-grok-icon-128.png
+      ./webapp-grok-icon-64.png
+      ./webapp-grok-icon-48.png
     ];
   };
 
   dontBuild = true;
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
-    name = "com.ollama.openwebui";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=http://localhost:8080/";
-    desktopName = "Ollama Open-WebUI";
-    icon = "desktop-app-ollama-ui";
+    name = "ai.x.grok";
+    exec = "/run/current-system/sw/bin/brave --new-window --app=https://x.ai/grok";
+    desktopName = "Grok App";
+    icon = "webapp-grok";
     categories = [ "Science" "ArtificialIntelligence" ];
   };
   installPhase = ''
@@ -32,7 +32,7 @@ stdenv.mkDerivation rec {
     for icon in ''${icon_sizes[*]}
     do
       mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp shortcut-ollama-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/desktop-app-ollama-ui.png
+      cp webapp-grok-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-grok.png
     done
   '';
 }
