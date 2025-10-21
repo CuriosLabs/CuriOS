@@ -9,7 +9,7 @@
       office.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "LibreOffice suite desktop apps.";
+        description = "LibreOffice suite desktop apps - Slack webapp.";
       };
     };
   };

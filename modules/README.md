@@ -50,13 +50,13 @@ curios = {
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
-      office.enable = false; # LibreOffice suite
+      office.enable = false; # LibreOffice suite desktop apps - Slack webapp.
     };
     services = {
       enable = true; # Flatpak + flathub/cosmic repos, pipewire
       printing.enable = false; # CUPS
       sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama with mistral-nemo, open-webui
+      ai.enable = false; # Ollama and open-webui services (local AI) - ChatGPT, Grok, Mistral, Ollama(local) webapps.
     };
     virtualisation = {
       enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager
