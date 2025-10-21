@@ -116,7 +116,8 @@ in
   environment.systemPackages = [
     #protonvpn-gui-autostart # Uncomment this line to autostart protonvpn-gui on user graphical session.
     #steam-bigpicture-autostart # Uncomment this line to autostart Steam client in big picture mode.
-    # Add your packages pkgs.foobar here:
+    # Add your packages pkgs.foobar here - find package name at https://search.nixos.org/packages
+    #pkgs.firefox # Uncomment this line to install Firefox web browser.
   ];
 
   ### Change user settings here:
