@@ -62,6 +62,7 @@
       # Docker
       docker-buildx
       docker-compose
+      lazydocker
       # Store creds with pass (gnupg required)
       # echo '{ "credStore": "pass" }' >> $HOME/.docker/config.json
       # gpg --generate-key
