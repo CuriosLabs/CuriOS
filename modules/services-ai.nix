@@ -9,7 +9,7 @@
     curios.services.ai.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable Ollama and open-webui services.";
+      description = "Enable Ollama and open-webui services - ChatGPT, Grok, Mistral, Ollama(local) webapps.";
     };
   };
 
@@ -47,6 +47,7 @@
     };
     # AI webapp desktop shortcuts
     environment.systemPackages = [
+      (import ./desktop-apps/webapp-chatgpt.nix)
       (import ./desktop-apps/webapp-grok.nix)
       (import ./desktop-apps/webapp-mistral.nix)
       (import ./desktop-apps/webapp-ollama.nix)
