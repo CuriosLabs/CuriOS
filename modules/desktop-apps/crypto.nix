@@ -14,7 +14,7 @@
       btc.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.";
+        description = "Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange - Coingecko webapp.";
       };
     };
   };
