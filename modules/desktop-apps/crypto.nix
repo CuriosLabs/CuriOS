@@ -21,13 +21,14 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.crypto.enable {
-    environment.systemPackages = with pkgs; [
-      secp256k1
+    environment.systemPackages = [
+      pkgs.secp256k1
     ]
     ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
-      bisq2
-      electrum
-      sparrow
+      pkgs.bisq2
+      pkgs.electrum
+      pkgs.sparrow
+      (import ./webapp-coingecko.nix)
     ];
     # Add sparrow udev rules for hardware wallets
     services.udev.packages = lib.mkIf config.curios.desktop.apps.crypto.btc.enable [
