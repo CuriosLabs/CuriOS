@@ -21,26 +21,29 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.basics.enable {
-    environment.systemPackages = with pkgs; [
-      caligula
+    environment.systemPackages = [
+      pkgs.caligula
 
       # Alacritty terminal
-      alacritty
+      pkgs.alacritty
       # alacritty-theme
 
       # 3rd party apps
-      bitwarden-desktop
-      brave
-      easyeffects
-      ffmpeg_6-full
-      gimp3-with-plugins
-      gparted
-      libsecret
-      polkit_gnome
-      protonvpn-gui
-      signal-desktop
-      vlc
-      yubioath-flutter
+      pkgs.bitwarden-desktop
+      pkgs.brave
+      pkgs.easyeffects
+      pkgs.ffmpeg_6-full
+      pkgs.gimp3-with-plugins
+      pkgs.gparted
+      pkgs.libsecret
+      pkgs.polkit_gnome
+      pkgs.protonvpn-gui
+      pkgs.signal-desktop
+      pkgs.vlc
+      pkgs.yubioath-flutter
+
+      # webapp
+      (import ./webapp-whatsapp.nix)
     ];
 
     # Enabling PCSC-lite for Yubikey
