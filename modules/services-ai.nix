@@ -45,9 +45,10 @@
         WEBUI_AUTH = "False";
       };
     };
-    # Grok desktop shortcut
+    # AI webapp desktop shortcuts
     environment.systemPackages = [
       (import ./desktop-apps/webapp-grok.nix)
+      (import ./desktop-apps/webapp-mistral.nix)
       (import ./desktop-apps/webapp-ollama.nix)
     ];
   };
