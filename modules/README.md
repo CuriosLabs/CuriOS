@@ -47,6 +47,8 @@ curios = {
         go.enable = false; # Go, gofmt, JetBrains GoLand
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        editor.zed.enable = false; # Zed - High-performance editor written in Rust.
+        editor.vscode.enable = false; # Code editor by Microsoft
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve

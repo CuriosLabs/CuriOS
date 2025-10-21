@@ -11,6 +11,16 @@
         default = false;
         description = "Desktop apps for developers.";
       };
+      editor.zed.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Zed - High-performance editor written in Rust.";
+      };
+      editor.vscode.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Code editor by Microsoft.";
+      };
       go.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -19,7 +29,7 @@
       python312.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Python3.12, pip3 and JetBrains PyCharm Community.";
+        description = "Python3.12, pip3, UV and JetBrains PyCharm Community.";
       };
       rust.enable = lib.mkOption {
         type = lib.types.bool;
@@ -91,6 +101,12 @@
       nmap
       zenmap
       wireshark # TODO: add user to wireshark group
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [
+      zed-editor
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.editor.vscode.enable [
+      vscode-fhs
     ];
   };
 }
