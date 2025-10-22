@@ -51,6 +51,8 @@
       (import ./desktop-apps/webapp-grok.nix)
       (import ./desktop-apps/webapp-mistral.nix)
       (import ./desktop-apps/webapp-ollama.nix)
+      pkgs.gemini-cli
+      (import ./desktop-apps/desktop-gemini.nix)
     ];
   };
 }
