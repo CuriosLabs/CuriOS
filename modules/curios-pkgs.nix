@@ -8,6 +8,8 @@ in {
     curios-dotfiles
     curios-update
     pkgs.libnotify # required by curios-update
+    pkgs.terminaltexteffects
+    pkgs.gum
   ];
 
   # 'curios-update --check' as a systemd service/timer

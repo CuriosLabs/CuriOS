@@ -1015,6 +1015,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Preparing configurations files...${NC}"
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/logo.txt
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/ "$CURIOS_SRC_PATH"/modules/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.png

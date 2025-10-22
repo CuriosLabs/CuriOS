@@ -151,6 +151,7 @@ upgrade_curios() {
   if [ ! -f /etc/nixos/settings.nix ]; then
     install -D -m 644 -t /etc/nixos/ "$extracted_source_path"/settings.nix
   fi
+  install -D -m 644 -t /etc/nixos/ "$extracted_source_path"/logo.txt
   install -D -m 555 -t /etc/nixos/ "$extracted_source_path"/curios-*
   mkdir -p /etc/nixos/modules/
   cp -r -f "$extracted_source_path"/modules/ /etc/nixos/
