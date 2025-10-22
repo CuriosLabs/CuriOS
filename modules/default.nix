@@ -8,12 +8,7 @@
     ./cosmic.nix
     ./curios-options.nix
     ./curios-pkgs.nix
-    ./desktop-apps/basics.nix
-    ./desktop-apps/crypto.nix
-    ./desktop-apps/devops.nix
-    ./desktop-apps/gaming.nix
-    ./desktop-apps/office.nix
-    ./desktop-apps/studio.nix
+    ./desktop-apps/default.nix
     ./fonts.nix
     ./hardened/default.nix
     ./hardware/amd-gpu.nix
