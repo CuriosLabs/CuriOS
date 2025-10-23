@@ -3,14 +3,12 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-mistral";
-  version="0.5";
+  version="0.8";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./webapp-mistral-icon-256.png
-      ./webapp-mistral-icon-128.png
-      ./webapp-mistral-icon-64.png
+      ./webapp-mistral-icon.svg
       ./webapp-mistral-icon-48.png
     ];
   };
@@ -28,11 +26,9 @@ stdenv.mkDerivation rec {
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
     # copy icon in correct folders
-    icon_sizes=("48" "64" "128" "256")
-    for icon in ''${icon_sizes[*]}
-    do
-      mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp webapp-mistral-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-mistral.png
-    done
+    mkdir -p $out/share/icons/hicolor/48x48/apps
+    cp webapp-mistral-icon-48.png $out/share/icons/hicolor/48x48/apps/webapp-mistral.png
+    mkdir -p $out/share/icons/hicolor/scalable/apps
+    cp webapp-mistral-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-mistral.svg
   '';
 }

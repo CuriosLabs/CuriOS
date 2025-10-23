@@ -34,6 +34,7 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/modules/ modules/*.nix
     install -D -m 644 -t $out/share/curios/modules/desktop-apps/ modules/desktop-apps/*.nix
     install -D -m 644 -t $out/share/curios/modules/desktop-apps/ modules/desktop-apps/*.png
+    install -D -m 644 -t $out/share/curios/modules/desktop-apps/ modules/desktop-apps/*.svg
     install -D -m 644 -t $out/share/curios/modules/filesystems/ modules/filesystems/*.nix
     install -D -m 644 -t $out/share/curios/modules/hardened/ modules/hardened/*.nix
     install -D -m 644 -t $out/share/curios/modules/hardware/ modules/hardware/*.nix

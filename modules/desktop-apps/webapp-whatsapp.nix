@@ -3,14 +3,12 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-whatsapp";
-  version="0.5";
+  version="0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./webapp-whatsapp-icon-256.png
-      ./webapp-whatsapp-icon-128.png
-      ./webapp-whatsapp-icon-64.png
+      ./webapp-whatsapp-icon.svg
       ./webapp-whatsapp-icon-48.png
     ];
   };
@@ -28,11 +26,9 @@ stdenv.mkDerivation rec {
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
     # copy icon in correct folders
-    icon_sizes=("48" "64" "128" "256")
-    for icon in ''${icon_sizes[*]}
-    do
-      mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp webapp-whatsapp-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-whatsapp.png
-    done
+    mkdir -p $out/share/icons/hicolor/48x48/apps
+    cp webapp-whatsapp-icon-48.png $out/share/icons/hicolor/48x48/apps/webapp-whatsapp.png
+    mkdir -p $out/share/icons/hicolor/scalable/apps
+    cp webapp-whatsapp-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-whatsapp.svg
   '';
 }

@@ -3,14 +3,12 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-chatgpt";
-  version="0.5";
+  version="0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./webapp-chatgpt-icon-256.png
-      ./webapp-chatgpt-icon-128.png
-      ./webapp-chatgpt-icon-64.png
+      ./webapp-chatgpt-icon.svg
       ./webapp-chatgpt-icon-48.png
     ];
   };
@@ -28,11 +26,9 @@ stdenv.mkDerivation rec {
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
     # copy icon in correct folders
-    icon_sizes=("48" "64" "128" "256")
-    for icon in ''${icon_sizes[*]}
-    do
-      mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp webapp-chatgpt-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-chatgpt.png
-    done
+    mkdir -p $out/share/icons/hicolor/48x48/apps
+    cp webapp-chatgpt-icon-48.png $out/share/icons/hicolor/48x48/apps/webapp-chatgpt.png
+    mkdir -p $out/share/icons/hicolor/scalable/apps
+    cp webapp-chatgpt-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-chatgpt.svg
   '';
 }

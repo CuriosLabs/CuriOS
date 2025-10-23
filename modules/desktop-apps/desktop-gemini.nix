@@ -3,14 +3,12 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="desktop-gemini";
-  version="0.1";
+  version="0.2";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./desktop-gemini-icon-256.png
-      ./desktop-gemini-icon-128.png
-      ./desktop-gemini-icon-64.png
+      ./desktop-gemini-icon.svg
       ./desktop-gemini-icon-48.png
     ];
   };
@@ -29,11 +27,9 @@ stdenv.mkDerivation rec {
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
     # copy icon in correct folders
-    icon_sizes=("48" "64" "128" "256")
-    for icon in ''${icon_sizes[*]}
-    do
-      mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp desktop-gemini-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/desktop-gemini.png
-    done
+    mkdir -p $out/share/icons/hicolor/48x48/apps
+    cp desktop-gemini-icon-48.png $out/share/icons/hicolor/48x48/apps/desktop-gemini.png
+    mkdir -p $out/share/icons/hicolor/scalable/apps
+    cp desktop-gemini-icon.svg $out/share/icons/hicolor/scalable/apps/desktop-gemini.svg
   '';
 }
