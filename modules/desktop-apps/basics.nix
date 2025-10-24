@@ -16,15 +16,22 @@
         default = false;
         description = "Enabling Linux AppImage.";
       };
-      vpn.proton.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "ProtonVPN GUI";
-      };
-      vpn.tailscale.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "TailScale VPN";
+      vpn = {
+        proton.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "ProtonVPN GUI";
+        };
+        tailscale.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "TailScale VPN";
+        };
+        mullvad.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Mullvad VPN GUI";
+        };
       };
     };
   };
@@ -58,14 +65,21 @@
       pkgs.protonvpn-gui
     ];
 
-    # Enabling PCSC-lite for Yubikey
-    services.pcscd.enable = true;
+    services = {
+      # Enabling PCSC-lite for Yubikey
+      pcscd.enable = true;
 
-    # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
-    services.tailscale = {
-      enable = lib.mkDefault config.curios.desktop.apps.vpn.tailscale.enable;
-      permitCertUid = null;
-      useRoutingFeatures = "none";
+      # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
+      tailscale = {
+        enable = lib.mkDefault config.curios.desktop.apps.vpn.tailscale.enable;
+        permitCertUid = null;
+        useRoutingFeatures = "none";
+      };
+      # Mullvad VPN
+      mullvad-vpn = {
+        enable = lib.mkDefault config.curios.desktop.apps.vpn.mullvad.enable;
+        package = pkgs.mullvad-vpn; # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
+      };
     };
 
     # systemd

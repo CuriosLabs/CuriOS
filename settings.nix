@@ -85,6 +85,7 @@ in
       vpn = {
         proton.enable = false; # ProtonVPN with GUI
         tailscale.enable = false; # tailscale.com VPN
+        mullvad.enable = false; # mullvad VPN GUI
       };
     };
     services = {

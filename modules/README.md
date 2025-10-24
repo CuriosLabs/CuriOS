@@ -43,16 +43,23 @@ curios = {
       };
       devops = {
         enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
+        editor = {
+          zed.enable = false; # Zed.dev code editor
+          vscode.enable = false; # MS code editor
+        };
         networks.enable = false; # Nmap, Zenmap, Wireshark
         go.enable = false; # Go, gofmt, JetBrains GoLand
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
-        editor.zed.enable = false; # Zed - High-performance editor written in Rust.
-        editor.vscode.enable = false; # Code editor by Microsoft
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
       office.enable = false; # LibreOffice suite desktop apps - Slack webapp.
+      vpn = {
+        proton.enable = false; # ProtonVPN with GUI
+        tailscale.enable = false; # tailscale.com VPN
+        mullvad.enable = false; # mullvad VPN GUI
+      };
     };
     services = {
       enable = true; # Flatpak + flathub/cosmic repos, pipewire
