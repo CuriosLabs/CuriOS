@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+
+# Gum driven curiOS Manager.
+# Control everything related to CuriOS from here.
+#
+# Dependencies: gum, tte, brave, curl, curios-update, curios-dotfiles
+
+#------------- Colors -------------#
+readonly RED="\033[31;1m"          # Red and bold
+readonly GREEN="\033[32;1m"        # Green and bold
+readonly BLUE="\033[34;1m"         # Blue and bold
+readonly GREY="\033[37;1m"         # Grey and bold
+readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
+#readonly YELLOWBLK="\033[33;1;5m"  # Yellow, bold and slow blink
+#readonly UNDL="\033[4m"            # Underlined
+#readonly BOLD="\033[1m"            # Bold
+readonly NC="\033[0m"              # No Color
+
+#------------- Variables init
+readonly SCRIPT_VERSION="0.1";
+VERBOSE=0;
+readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
+
+#------------- Print help function
+usage () {
+  echo -e "CuriOS Manager version ${SCRIPT_VERSION}
+* modern script interface for managing your CuriOS system *
+
+${GREY}USAGE:${NC}
+  curios-manager [options]
+
+${GREY}OPTIONS:${NC}
+  ${GREY}-h, --help${NC}         Print this message.
+  ${GREY}-v, --verbose${NC}      Print more information.
+  ${GREY}--version${NC}          Print version number and exit."
+  exit 0
+}
+
+#------------- Scripts arguments parse options
+ARGS=$(getopt --longoptions="verbose,version,help" --options ":hv" --name "$0" -- "$@")
+eval set -- "$ARGS"
+
+while true; do
+  case "$1" in
+    -v | --verbose)
+      VERBOSE=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      ;;
+    --version)
+      echo "$SCRIPT_VERSION"
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ $VERBOSE -eq 1 ]; then
+  echo -e "Script current path: ${SCRIPT_PATH}"
+fi
+
+#------------- Check dependencies
+available() { command -v "$1" >/dev/null; }
+
+if ! available curl; then
+  echo -e "${RED}curl command not found!${NC}"
+  exit 2
+fi
+if ! available gum; then
+  echo -e "${RED}gum command not found!${NC}"
+  exit 2
+fi
+if ! available tte; then
+  echo -e "${RED}tte command not found!${NC}"
+  exit 2
+fi
+# Get current OS version
+if [ ! -f /etc/os-release ]; then
+  echo -e "${RED}/etc/os-release file not found!${NC}"
+  exit 1
+fi
+source /etc/os-release
+
+#------------- help menu
+help_menu () {
+  HELP_MENU=$(gum choose "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " Nixos Wiki" " Nixos forum" " Back" )
+  # open link with brave or xdg-open ?
+  case $HELP_MENU in
+    "󰄄 CuriOS")
+      xdg-open "https://github.com/VideoCurio/nixos-configuration" &
+      exit 0
+      ;;
+    "󰄄 CuriOS - report a bug")
+      brave --new-window --app=https://github.com/VideoCurio/nixos-configuration/issues
+      exit 0
+      ;;
+    " Nixos Wiki")
+      brave --new-window --app=https://nixos.wiki/wiki/Main_Page
+      exit 0
+      ;;
+    " Nixos forum")
+      brave --new-window --app=https://discourse.nixos.org/
+      exit 0
+      ;;
+    " Back")
+      main_menu
+      ;;
+  esac
+}
+
+#------------- system menu
+system_menu () {
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" "󱃶 Process Management" " Back" )
+  case $SYSTEM_MENU in
+    " Shutdown")
+      sudo shutdown -P now &
+      exit 0
+      ;;
+    " Reboot")
+      sudo reboot now &
+      exit 0
+      ;;
+    "󱃶 Process Management")
+      btop
+      ;;
+    " Back")
+      main_menu
+      ;;
+  esac
+}
+
+#------------- main menu
+main_menu () {
+  # Startup menu choice
+  MAIN_MENU=$(gum choose "󰀻 Apps" " Update" " System" "? Help" " About" "󰈆 Exit")
+  #echo "Your choice is: $MAIN_MENU"
+  case $MAIN_MENU in
+    "󰀻 Apps")
+      ;;
+    " Update")
+      sudo nix-collect-garbage --delete-older-than 7d && sudo nixos-rebuild switch --upgrade
+      sudo nix-store --gc
+      sudo nixos-rebuild list-generations
+      ;;
+    " System")
+      system_menu
+      ;;
+    "? Help")
+      help_menu
+      ;;
+    " About")
+      echo -e "${VARIANT} ${GREY}(${VARIANT_ID})${NC} - based on ${PRETTY_NAME}"
+      echo -e "Visit ${BLUE}${CURIOS_SRC_URL}${NC}"
+      ;;
+    "󰈆 Exit")
+      echo -e "${GREEN}Program exited...${NC}"
+      exit 0
+      ;;
+  esac
+  main_menu # self loop
+}
+
+#------------- starting function
+start () {
+  clear
+  if [ -f /etc/nixos/logo.txt ]; then
+    tte -i /etc/nixos/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
+    #echo -e "${BLUE}CuriOS${NC}"
+  else
+    echo -e "${RED}/etc/nixos/logo.txt file is missing!${NC}";
+  fi
+  main_menu
+}
+
+start
