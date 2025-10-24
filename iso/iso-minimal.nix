@@ -35,5 +35,11 @@ in {
   console.font = "LatArCyrHeb-16";
 
   networking.hostName = "CuriOS";
+
+  programs.bash.interactiveShellInit = ''
+  echo "Launching CuriOS installer..."
+  sleep 3
+  sudo curios-install
+  '';
 }
 

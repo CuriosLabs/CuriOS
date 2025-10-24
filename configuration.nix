@@ -133,7 +133,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20251023.1347";
+    nixos.variant_id = "unstable-20251024.1154";
   };
 
   # Collect garbage

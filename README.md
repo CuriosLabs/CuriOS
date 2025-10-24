@@ -48,32 +48,16 @@ This is my NixOS installer scripts and its configuration files. The desktop envi
    caligula burn -s $(cat ./curios-minimal_25.05.1_amd64-intel.iso.sha256)
    ```
    Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
-3. Boot your machine on the USB stick (F8 or F12 key on startup, see your motherboard manufacturer's instructions). An internet connection is *REQUIRED* to perform the installation !
-4. You should see a TTY command line as `nixos` user, switch to root user:
-   ```bash
-   sudo -i
-   ```
-5. (**OPTIONAL**) Switch keymap on non-us keyboard: 
-   ```bash
-   loadkeys fr
-   ```
-6. Launch the installer script:
-   ```bash
-   curios-install
-   ```
-   ![Curios ISO install cmd](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_cmd.png?raw=true "CuriOS install command") 
-7. Answer the various dialog questions:
+3. Boot your machine on the USB stick (F8 or F12 key on startup, see your motherboard manufacturer's instructions). An internet connection is *REQUIRED* to perform the installation!
+4. The installer should start automatically (otherwise launch it with `sudo curios-install`).
    ![CuriOS installation step 1](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
+5. Answer the various dialog questions: 
    ![CuriOS installation choose disk](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
    The full disk encryption option is **HIGHLY RECOMMENDED**.
    ![CuriOS full disk encryption](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
-   ```bash
-   # See --help option for more details:
-   curios-install --help
-   ```
-8. If everything went according to plan, reboot.
+6. If everything went according to plan, reboot (and remember to remove USB media installer).
    ![CuriOS install reboot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
-9. **Enjoy!** User temporary password is **"changeme"**.
+7. **Enjoy!** User temporary password is **"changeme"**.
     You can now change it, within COSMIC desktop: click on top right power button, then Parameters > System & Accounts > Users > "Your Account Name" > Change password.
     Or use the command `passwd` in a terminal.
 
