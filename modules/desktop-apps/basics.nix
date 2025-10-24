@@ -56,13 +56,17 @@
     ]
     ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
       pkgs.protonvpn-gui
-    ]
-    ++ lib.optionals config.curios.desktop.apps.vpn.tailscale.enable [
-      pkgs.tailscale
     ];
 
     # Enabling PCSC-lite for Yubikey
     services.pcscd.enable = true;
+
+    # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
+    services.tailscale = {
+      enable = lib.mkDefault config.curios.desktop.apps.vpn.tailscale.enable;
+      permitCertUid = null;
+      useRoutingFeatures = "none";
+    };
 
     # systemd
     systemd = {
