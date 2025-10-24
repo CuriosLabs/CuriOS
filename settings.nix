@@ -62,7 +62,7 @@ in
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects, ProtonVPN gui.
+      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
       crypto = {
         enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
@@ -70,14 +70,22 @@ in
       };
       devops = {
         enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
-        networks.enable = false; # Nmap, Zenmap, Wireshark
+        editor = {
+          zed.enable = false; # Zed.dev code editor
+          vscode.enable = false; # MS code editor
+        };
         go.enable = false; # Go, gofmt, JetBrains GoLand
+        networks.enable = false; # Nmap, Zenmap, Wireshark
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
       office.enable = false; # LibreOffice suite
+      vpn = {
+        proton.enable = false; # ProtonVPN with GUI
+        tailscale.enable = false; # tailscale.com VPN
+      };
     };
     services = {
       enable = true; # Flatpak + flathub/cosmic repos, pipewire

@@ -16,6 +16,16 @@
         default = false;
         description = "Enabling Linux AppImage.";
       };
+      vpn.proton.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "ProtonVPN GUI";
+      };
+      vpn.tailscale.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "TailScale VPN";
+      };
     };
   };
 
@@ -37,13 +47,18 @@
       pkgs.gparted
       pkgs.libsecret
       pkgs.polkit_gnome
-      pkgs.protonvpn-gui
       pkgs.signal-desktop
       pkgs.vlc
       pkgs.yubioath-flutter
 
       # webapp
       (import ./webapp-whatsapp.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
+      pkgs.protonvpn-gui
+    ]
+    ++ lib.optionals config.curios.desktop.apps.vpn.tailscale.enable [
+      pkgs.tailscale
     ];
 
     # Enabling PCSC-lite for Yubikey
