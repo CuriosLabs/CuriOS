@@ -5,6 +5,8 @@
 #
 # Dependencies: gum, tte, brave, curl, curios-update, curios-dotfiles
 
+# TODO: update ~/.zshrc alias and ~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom
+
 #------------- Colors -------------#
 readonly RED="\033[31;1m"          # Red and bold
 readonly GREEN="\033[32;1m"        # Green and bold
@@ -98,20 +100,23 @@ app_menu () {
 
 #------------- help menu
 help_menu () {
-  HELP_MENU=$(gum choose --header "Open a new browser window with:" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " Nixos Wiki" " Nixos forum" " Back" )
+  HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " Nixos Wiki" " Nixos forum" " Back" )
   # open link with brave or xdg-open ?
   case $HELP_MENU in
+    " Shortcuts")
+      cosmic-settings keyboard 2>/dev/null
+      ;;
     "󰄄 CuriOS")
-      xdg-open "https://github.com/VideoCurio/nixos-configuration" &
+      xdg-open "https://github.com/VideoCurio/nixos-configuration" 2>/dev/null
       ;;
     "󰄄 CuriOS - report a bug")
-      brave --new-window --app=https://github.com/VideoCurio/nixos-configuration/issues &
+      brave --new-window --app=https://github.com/VideoCurio/nixos-configuration/issues 2>/dev/null
       ;;
     " Nixos Wiki")
-      brave --new-window --app=https://nixos.wiki/wiki/Main_Page &
+      brave --new-window --app=https://nixos.wiki/wiki/Main_Page 2>/dev/null
       ;;
     " Nixos forum")
-      brave --new-window --app=https://discourse.nixos.org/ &
+      brave --new-window --app=https://discourse.nixos.org/ 2>/dev/null
       ;;
     " Back")
       main_menu
