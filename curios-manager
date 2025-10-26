@@ -78,6 +78,10 @@ if ! available curl; then
   echo -e "${RED}curl command not found!${NC}"
   exit 2
 fi
+if ! available fastfetch; then
+  echo -e "${RED}fastfetch command not found!${NC}"
+  exit 2
+fi
 if ! available gum; then
   echo -e "${RED}gum command not found!${NC}"
   exit 2
@@ -100,7 +104,7 @@ app_menu () {
 
 #------------- help menu
 help_menu () {
-  HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " Nixos Wiki" " Nixos forum" " Back" )
+  HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " NixOS Wiki" " NixOS forum" " NixOS manual" " Back" )
   # open link with brave or xdg-open ?
   case $HELP_MENU in
     " Shortcuts")
@@ -112,11 +116,14 @@ help_menu () {
     "󰄄 CuriOS - report a bug")
       brave --new-window --app=https://github.com/VideoCurio/nixos-configuration/issues 2>/dev/null
       ;;
-    " Nixos Wiki")
-      brave --new-window --app=https://nixos.wiki/wiki/Main_Page 2>/dev/null
+    " NixOS Wiki")
+      brave --new-window --app=https://wiki.nixos.org/wiki/NixOS_Wiki 2>/dev/null
       ;;
-    " Nixos forum")
+    " NixOS forum")
       brave --new-window --app=https://discourse.nixos.org/ 2>/dev/null
+      ;;
+    " NixOS manual")
+      brave --new-window --app=https://nixos.org/manual/nixos/stable/ 2>/dev/null
       ;;
     " Back")
       main_menu
@@ -126,18 +133,26 @@ help_menu () {
 
 #------------- system menu
 system_menu () {
-  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" "󱃶 Process Management" " Back" )
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
-      sudo shutdown -P now
+      #sudo shutdown -P now
+      cosmic-osd shutdown
       exit 0
       ;;
     " Reboot")
-      sudo reboot now
+      #sudo reboot now
+      cosmic-osd restart
       exit 0
+      ;;
+    " Lock session")
+      loginctl lock-session
       ;;
     "󱃶 Process Management")
       btop
+      ;;
+    " Info")
+      fastfetch
       ;;
     " Back")
       main_menu
@@ -157,7 +172,7 @@ main_menu () {
     " Update")
       sudo nix-collect-garbage --delete-older-than 7d && sudo nixos-rebuild switch --upgrade
       sudo nix-store --gc
-      sudo nixos-rebuild list-generations
+      nixos-rebuild list-generations
       ;;
     " Upgrade")
       sudo curios-update --upgrade
@@ -169,7 +184,11 @@ main_menu () {
       help_menu
       ;;
     " About")
+      LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
       echo -e "${VARIANT} ${GREY}(${VARIANT_ID})${NC} - based on ${PRETTY_NAME}"
+      LIST_GEN_DATE=$(echo "$LIST_GEN" | jq -r '.[0].date')
+      LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
+      echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
       echo -e "Visit ${BLUE}${CURIOS_SRC_URL}${NC}"
       ;;
     "󰈆 Exit")
