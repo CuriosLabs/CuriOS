@@ -170,9 +170,11 @@ main_menu () {
       app_menu
       ;;
     " Update")
-      sudo nix-collect-garbage --delete-older-than 7d && sudo nixos-rebuild switch --upgrade
-      sudo nix-store --gc
-      nixos-rebuild list-generations
+      sudo whoami 1>/dev/null # Force prompt for sudo password now
+      gum spin --spinner dot --title "Deleting oldest generations..." -- sudo nix-collect-garbage --delete-older-than 7d
+      gum spin --spinner dot --title "Upgrading packages..." -- sudo nixos-rebuild switch --upgrade
+      gum spin --spinner dot --title "Running store garbage collector..." -- sudo nix-store --gc
+      #nixos-rebuild list-generations
       ;;
     " Upgrade")
       sudo curios-update --upgrade
