@@ -191,6 +191,7 @@ main_menu () {
       LIST_GEN_DATE=$(echo "$LIST_GEN" | jq -r '.[0].date')
       LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
       echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
+      echo -e "CuriOS manager version: $SCRIPT_VERSION"
       echo -e "Visit ${BLUE}${CURIOS_SRC_URL}${NC}"
       ;;
     "󰈆 Exit")
