@@ -1,7 +1,7 @@
 # CuriOS Manager package.
 # Various tools to manage your CuriOS system.
 
-{ lib, stdenvNoCC }:
+{ lib, stdenvNoCC, pkgs }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
   version = "0.1";
