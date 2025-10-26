@@ -11,7 +11,7 @@ branch="$(git branch --show-current)"
 platform="amd64_intel"
 currentRelease=""
 releaseNumber=""
-if [[ "$branch" == testing ]]; then
+if [[ "$branch" == testing || "$branch" == feature* ]]; then
   currentRelease="CuriOS"
   releaseNumber=$(date --utc "+%Y%m%d.%H%M")
   releaseNumber="unstable-${releaseNumber}"
