@@ -19,7 +19,7 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.1";
+readonly SCRIPT_VERSION="0.2";
 VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
 
@@ -70,6 +70,14 @@ done
 if [ $VERBOSE -eq 1 ]; then
   echo -e "Script current path: ${SCRIPT_PATH}"
 fi
+
+#precmd() { print -Pn "\e]0;CuriOS Manager" }
+# Change terminal title
+case $TERM in
+  alacritty)
+    echo -en "\e]2;CuriOS Manager\a"
+    ;;
+esac
 
 #------------- Check dependencies
 available() { command -v "$1" >/dev/null; }
