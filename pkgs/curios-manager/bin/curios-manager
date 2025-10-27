@@ -197,7 +197,7 @@ main_menu () {
       LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
       LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
       if [[ $(uname -r) != $LIST_GEN_KERNEL ]]; then
-        echo -e "A new kernel was installed - You should ${YELLOW}REBOOT${NC} now."
+        echo -e "A new kernel was installed - ${YELLOW}You should REBOOT now${NC}."
         echo -e "${BLUE}Please${NC} ensure that all other applications are properly closed."
         gum confirm "Reboot now:" && sudo reboot now
       fi
