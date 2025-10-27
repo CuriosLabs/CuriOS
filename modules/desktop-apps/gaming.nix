@@ -11,6 +11,7 @@
       description = "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
     };
   };
+  # TODO: add RetroArch
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.gaming.enable {
