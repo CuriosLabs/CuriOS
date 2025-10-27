@@ -54,7 +54,14 @@ curios = {
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
-      office.enable = false; # LibreOffice suite desktop apps - Slack webapp.
+      office = {
+        enable = false; # LibreOffice suite
+        conferencing = {
+          slack.enable = false; # Slack.com webapp
+          teams.enable = false; # MS Teams webapp
+          zoom.enable = false; # Zoom.us video conference app
+        };
+      };
       vpn = {
         proton.enable = false; # ProtonVPN with GUI
         tailscale.enable = false; # tailscale.com VPN
