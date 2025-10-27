@@ -24,6 +24,8 @@ VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
 
 export GUM_CHOOSE_CURSOR_FOREGROUND="#26a269"
+#export GUM_CONFIRM_SELECTED_FOREGROUND="#d0cfcc"
+export GUM_CONFIRM_SELECTED_BACKGROUND="#26a269"
 
 #------------- Print help function
 usage () {
@@ -141,7 +143,7 @@ help_menu () {
 
 #------------- system menu
 system_menu () {
-  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" " Info" " Back" )
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" " Settings (manual edit)" "󱃶 Process Management" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
       #sudo shutdown -P now
@@ -155,6 +157,15 @@ system_menu () {
       ;;
     " Lock session")
       loginctl lock-session
+      ;;
+    " Settings (manual edit)")
+      SETTINGS_FILE="/etc/nixos/settings.nix"
+      SETTINGS_LAST_MOD=$(stat -c %Y $SETTINGS_FILE)
+      sudo "$EDITOR" $SETTINGS_FILE
+      if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
+        # Settings have changed, updating system.
+        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch
+      fi
       ;;
     "󱃶 Process Management")
       btop
@@ -171,18 +182,25 @@ system_menu () {
 #------------- main menu
 main_menu () {
   # Startup menu choice
-  MAIN_MENU=$(gum choose --header "Select an option:" "󰀻 Apps" " Update" " Upgrade" " System" "? Help" " About" "󰈆 Exit")
+  MAIN_MENU=$(gum choose --header "Select an option:" " Update" " Upgrade" " System" "? Help" " About" "󰈆 Exit")
   #echo "Your choice is: $MAIN_MENU"
   case $MAIN_MENU in
-    "󰀻 Apps")
-      app_menu
-      ;;
+    #"󰀻 Apps")
+    #  app_menu
+    #  ;;
     " Update")
       sudo whoami 1>/dev/null # Force prompt for sudo password now
-      gum spin --spinner dot --title "Deleting oldest generations..." -- sudo nix-collect-garbage --delete-older-than 7d
-      gum spin --spinner dot --title "Upgrading packages..." -- sudo nixos-rebuild switch --upgrade
-      gum spin --spinner dot --title "Running store garbage collector..." -- sudo nix-store --gc
-      #nixos-rebuild list-generations
+      gum spin --spinner dot --title "Deleting oldest generations..." --show-error -- sudo nix-collect-garbage --delete-older-than 7d
+      gum spin --spinner dot --title "Upgrading packages..." --show-error -- sudo nixos-rebuild switch --upgrade
+      gum spin --spinner dot --title "Running store garbage collector..." --show-error -- sudo nix-store --gc
+      # Check if a reboot is necessary
+      LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
+      LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
+      if [[ $(uname -r) != $LIST_GEN_KERNEL ]]; then
+        echo -e "A new kernel was installed - You should ${YELLOW}REBOOT${NC} now."
+        echo -e "${BLUE}Please${NC} ensure that all other applications are properly closed."
+        gum confirm "Reboot now:" && sudo reboot now
+      fi
       ;;
     " Upgrade")
       sudo curios-update --upgrade
