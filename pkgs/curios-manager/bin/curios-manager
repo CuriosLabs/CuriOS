@@ -164,7 +164,7 @@ system_menu () {
       sudo "$EDITOR" $SETTINGS_FILE
       if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
         # Settings have changed, updating system.
-        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch
+        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
       fi
       ;;
     "󱃶 Process Management")
@@ -191,7 +191,7 @@ main_menu () {
     " Update")
       sudo whoami 1>/dev/null # Force prompt for sudo password now
       gum spin --spinner dot --title "Deleting oldest generations..." --show-error -- sudo nix-collect-garbage --delete-older-than 7d
-      gum spin --spinner dot --title "Upgrading packages..." --show-error -- sudo nixos-rebuild switch --upgrade
+      gum spin --spinner dot --title "Upgrading packages..." --show-error -- sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
       gum spin --spinner dot --title "Running store garbage collector..." --show-error -- sudo nix-store --gc
       # Check if a reboot is necessary
       LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
@@ -204,6 +204,8 @@ main_menu () {
       ;;
     " Upgrade")
       sudo curios-update --upgrade
+      #CURRENT_KEYBOARD=$(grep -oP 'keyboard\s*=\s*"\K[^"]+' /etc/nixos/settings.nix)
+      #curios-dotfiles --lang "$CURRENT_KEYBOARD" "$HOME"
       ;;
     " System")
       system_menu
