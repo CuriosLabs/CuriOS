@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-teams";
-  version="0.1";
+  version="0.2";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://teams.microsoft.com/";
     desktopName = "MS Teams webapp";
     icon = "webapp-teams";
-    categories = [ "VideoConference" "Network" ];
+    categories = [ "Chat" "Network" "Office" ];
   };
   installPhase = ''
     mkdir -p $out/share

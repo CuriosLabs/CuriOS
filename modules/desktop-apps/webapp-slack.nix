@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-slack";
-  version="0.6";
+  version="0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://app.slack.com/client";
     desktopName = "Slack App";
     icon = "webapp-slack";
-    categories = [ "Office" ];
+    categories = [ "Chat" "Network" "Office" ];
   };
   installPhase = ''
     mkdir -p $out/share
