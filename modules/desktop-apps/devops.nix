@@ -8,12 +8,17 @@
     curios.desktop.apps.devops = {
       enable = lib.mkOption {
         type = lib.types.bool;
+        default = true;
+        description = "Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix.";
+      };
+      cloudflared.enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
-        description = "Desktop apps for developers.";
+        description = "Cloudflare tunnel client.";
       };
       editor.zed.enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "Zed - High-performance editor written in Rust.";
       };
       editor.vscode.enable = lib.mkOption {
@@ -58,7 +63,6 @@
     # other dev apps
     environment.systemPackages = with pkgs; [
       # Devops
-      cloudflared
       git-who
       gh
       whois
@@ -67,8 +71,9 @@
       # Nix linter
       statix
       #lefthook
-      # VNC
-      remmina
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
+      cloudflared
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.go.enable [
       go
@@ -101,6 +106,8 @@
       nmap
       zenmap
       wireshark # TODO: add user to wireshark group
+      # VNC
+      remmina
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [
       zed-editor

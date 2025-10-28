@@ -74,15 +74,16 @@ in
         btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.
       };
       devops = {
-        enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
+        enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
+        cloudflared.enable = false; # Cloudflare tunnel client
         editor = {
-          zed.enable = false; # Zed.dev code editor
+          zed.enable = true; # Zed.dev code editor
           vscode.enable = false; # MS code editor
         };
         go.enable = false; # Go, gofmt, JetBrains GoLand
-        networks.enable = false; # Nmap, Zenmap, Wireshark
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
