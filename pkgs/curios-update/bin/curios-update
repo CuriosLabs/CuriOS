@@ -122,7 +122,7 @@ if ! available wget; then
   exit 2
 fi
 if ! available curl; then
-  echo -e "${RED}xurl command not found!${NC}"
+  echo -e "${RED}curl command not found!${NC}"
   exit 2
 fi
 
