@@ -51,7 +51,7 @@ ${GREY}EXAMPLES:${NC}
 }
 
 #------------- var init state
-readonly SCRIPT_VERSION="0.2";
+readonly SCRIPT_VERSION="0.4";
 VERBOSE=0;
 CHECK_ONLINE=0;
 UPGRADE_SYSTEM=0;
@@ -115,6 +115,14 @@ available() { command -v "$1" >/dev/null; }
 
 if ! available notify-send; then
   echo -e "${RED}notify-send command not found!${NC}"
+  exit 2
+fi
+if ! available wget; then
+  echo -e "${RED}wget command not found!${NC}"
+  exit 2
+fi
+if ! available curl; then
+  echo -e "${RED}xurl command not found!${NC}"
   exit 2
 fi
 
@@ -182,7 +190,7 @@ if [ $CHECK_ONLINE -eq 1 ]; then
       UPGRADABLE=1;
       echo -e "${YELLOW}System should be upgraded.${NC}"
       if [ "$EUID" -ge 900 ]; then
-        /run/current-system/sw/bin/notify-send -a "CuriOS Updater" --urgency=critical "CuriOS ${LATEST_VERSION} is available." "In a terminal type: sudo curios-update --upgrade"
+        /run/current-system/sw/bin/notify-send -a "CuriOS Updater" --urgency=critical "CuriOS ${LATEST_VERSION} is available!" "Launch Curios Manager with Super+Return (+󰌑) >  Upgrade" "OR in a terminal type: sudo curios-update --upgrade"
       fi
     else
       UPGRADABLE=0;
