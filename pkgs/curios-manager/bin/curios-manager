@@ -17,7 +17,7 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.3";
+readonly SCRIPT_VERSION="0.4";
 VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
 
@@ -116,6 +116,7 @@ app_menu () {
 
 #------------- help menu
 help_menu () {
+  local HELP_MENU
   HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " NixOS Wiki" " NixOS forum" " NixOS manual" " Back" )
   # open link with brave or xdg-open ?
   case $HELP_MENU in
@@ -145,6 +146,7 @@ help_menu () {
 
 #------------- system menu
 system_menu () {
+  local SYSTEM_MENU
   SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
@@ -178,6 +180,14 @@ system_menu () {
 #------------- main menu
 main_menu () {
   # Startup menu choice
+  local MAIN_MENU
+  local CURRENT_KEYBOARD
+  local DOTFILES_VERSION
+  local HOME_DIR
+  local LIST_GEN
+  local LIST_GEN_DATE
+  local LIST_GEN_KERNEL
+  local SKEL_DIR
   MAIN_MENU=$(gum choose --header "Select an option:" " Update" " Upgrade" " System" " Settings (manual edit)" "? Help" " About" "󰈆 Exit")
   #echo "Your choice is: $MAIN_MENU"
   case $MAIN_MENU in
@@ -199,9 +209,24 @@ main_menu () {
       fi
       ;;
     " Upgrade")
+      DOTFILES_VERSION=$(curios-dotfiles --version)
+      HOME_DIR="/home/*/"
+      SKEL_DIR="/etc/skel/"
+      CURRENT_KEYBOARD=$(grep -oP 'keyboard\s*=\s*"\K[^"]+' /etc/nixos/settings.nix)
       sudo curios-update --upgrade
-      #CURRENT_KEYBOARD=$(grep -oP 'keyboard\s*=\s*"\K[^"]+' /etc/nixos/settings.nix)
-      #curios-dotfiles --lang "$CURRENT_KEYBOARD" "$HOME"
+      if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
+        # curios-dotfiles has been updated. We re-launch it.
+        echo -e "${GREEN}Updating CuriOS dotfiles...${NC}"
+        #curios-dotfiles --lang "$CURRENT_KEYBOARD" "$HOME"
+        for DIR in $HOME_DIR; do
+          if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
+            curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
+            #chown -R 1000:100 "$DIR" # Any way to predict OWNER at this stage ?
+          fi
+        done
+        mkdir -p "$SKEL_DIR"
+        curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
+      fi
       ;;
     " System")
       system_menu
