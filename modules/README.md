@@ -35,7 +35,7 @@ curios = {
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects, ProtonVPN gui.
+      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
       crypto = {
         enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
@@ -66,6 +66,15 @@ curios = {
         proton.enable = false; # ProtonVPN with GUI
         tailscale.enable = false; # tailscale.com VPN
         mullvad.enable = false; # mullvad VPN GUI
+      };
+      ai = {
+        chatgpt.enable = true; # ChatGPT web app
+        gemini.enable = false; # Google Gemini CLI
+        grok.enable = true; # Grok web app
+        mistral.enable = true; # Mistral LeChat web app
+      };
+      chat = {
+        whatsapp.enable = true; # WhatsApp web app
       };
     };
     services = {

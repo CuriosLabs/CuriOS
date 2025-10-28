@@ -33,6 +33,35 @@
           description = "Mullvad VPN GUI";
         };
       };
+      ai = {
+        chatgpt.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "ChatGPT web app.";
+        };
+        gemini.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Google Gemini CLI.";
+        };
+        grok.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Grok web app.";
+        };
+        mistral.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Mistral LeChat web app.";
+        };
+      };
+      chat = {
+        whatsapp.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "WhatsApp web app.";
+        };
+      };
     };
   };
 
@@ -57,12 +86,25 @@
       pkgs.signal-desktop
       pkgs.vlc
       pkgs.yubioath-flutter
-
-      # webapp
-      (import ./webapp-whatsapp.nix)
     ]
     ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
       pkgs.protonvpn-gui
+    ]
+    ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable [
+      (import ./webapp-chatgpt.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
+      pkgs.gemini-cli
+      (import ./desktop-gemini.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.ai.grok.enable [
+      (import ./webapp-grok.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable [
+      (import ./webapp-mistral.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable [
+      (import ./webapp-whatsapp.nix)
     ];
 
     services = {

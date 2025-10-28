@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-grok";
-  version="0.5";
+  version="0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.x.grok";
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://x.ai/grok";
-    desktopName = "Grok App";
+    desktopName = "Grok";
     icon = "webapp-grok";
     categories = [ "Science" "ArtificialIntelligence" ];
   };

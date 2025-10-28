@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-whatsapp";
-  version="0.6";
+  version="0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.whatsapp.web";
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://web.whatsapp.com/";
-    desktopName = "WhatsApp webapp";
+    desktopName = "WhatsApp";
     icon = "webapp-whatsapp";
     categories = [ "Chat" "Network" ];
   };

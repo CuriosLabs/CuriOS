@@ -94,12 +94,21 @@ in
         tailscale.enable = false; # tailscale.com VPN
         mullvad.enable = false; # mullvad VPN GUI
       };
+      ai = {
+        chatgpt.enable = true; # ChatGPT web app
+        gemini.enable = false; # Google Gemini CLI
+        grok.enable = true; # Grok web app
+        mistral.enable = true; # Mistral LeChat web app
+      };
+      chat = {
+        whatsapp.enable = true; # WhatsApp web app
+      };
     };
     services = {
       enable = true; # Flatpak + flathub/cosmic repos, pipewire
       printing.enable = false; # CUPS
       sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama with mistral-nemo, open-webui
+      ai.enable = false; # Ollama local AI with open-webui
     };
     virtualisation = {
       enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager

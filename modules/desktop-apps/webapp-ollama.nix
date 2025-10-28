@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-ollama-ui";
-  version="0.6";
+  version="0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.ollama.openwebui";
     exec = "/run/current-system/sw/bin/brave --new-window --app=http://localhost:8080/";
-    desktopName = "Ollama Open-WebUI (local)";
+    desktopName = "Ollama (local)";
     icon = "webapp-ollama-ui";
     categories = [ "Science" "ArtificialIntelligence" ];
   };

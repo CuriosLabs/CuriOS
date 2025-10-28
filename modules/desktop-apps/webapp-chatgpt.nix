@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-chatgpt";
-  version="0.6";
+  version="0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.chatgpt";
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://chatgpt.com/";
-    desktopName = "ChatGPT App";
+    desktopName = "ChatGPT";
     icon = "webapp-chatgpt";
     categories = [ "Science" "ArtificialIntelligence" ];
   };
