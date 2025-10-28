@@ -5,8 +5,6 @@
 #
 # Dependencies: gum, tte, brave, curl, curios-update, curios-dotfiles
 
-# TODO: update ~/.zshrc alias and ~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom
-
 #------------- Colors -------------#
 readonly RED="\033[31;1m"          # Red and bold
 readonly GREEN="\033[32;1m"        # Green and bold

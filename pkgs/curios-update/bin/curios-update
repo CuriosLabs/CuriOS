@@ -162,7 +162,7 @@ upgrade_curios() {
   cp -r -f "$extracted_source_path"/modules/ /etc/nixos/
   mkdir -p /etc/nixos/pkgs/
   cp -r -f "$extracted_source_path"/pkgs/ /etc/nixos/
-  /run/current-system/sw/bin/nixos-rebuild switch --upgrade
+  /run/current-system/sw/bin/nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
   echo -e "${GREEN}Done.${NC}"
   #cryptsetup config /dev/nvme0n1p2 --label "curiosystem"
 }
