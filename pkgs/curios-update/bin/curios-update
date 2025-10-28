@@ -51,7 +51,7 @@ ${GREY}EXAMPLES:${NC}
 }
 
 #------------- var init state
-readonly SCRIPT_VERSION="0.4";
+readonly SCRIPT_VERSION="0.5";
 VERBOSE=0;
 CHECK_ONLINE=0;
 UPGRADE_SYSTEM=0;
@@ -153,9 +153,6 @@ upgrade_curios() {
   # Installing
   echo -e "${GREEN}Installing update...${NC}"
   install -D -m 644 -t /etc/nixos/ "$extracted_source_path"/configuration.nix
-  if [ ! -f /etc/nixos/user-me.nix ]; then
-    install -D -m 644 -t /etc/nixos/ "$extracted_source_path"/user-me.nix
-  fi
   if [ ! -f /etc/nixos/settings.nix ]; then
     install -D -m 644 -t /etc/nixos/ "$extracted_source_path"/settings.nix
   fi

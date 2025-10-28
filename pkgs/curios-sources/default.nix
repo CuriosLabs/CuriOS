@@ -15,7 +15,6 @@ stdenvNoCC.mkDerivation {
     fileset = lib.fileset.unions [
       ../../configuration.nix
       ../../settings.nix
-      ../../user-me.nix
       ../../modules
       ../../pkgs
       ../../curios-install

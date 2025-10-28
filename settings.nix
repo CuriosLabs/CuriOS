@@ -10,6 +10,11 @@
 
 { config, lib, pkgs, ... }:
 let
+  # Following variables can be edited.
+  # Default user password. Change it later, after your first boot with COSMIC Parameters > System & Accounts
+  # OR with the 'passwd' command line.
+  # Do **NOT** set your real password HERE !
+  password = "changeme";
   # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
   # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
   # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
@@ -147,9 +152,38 @@ in
   ];
 
   ### Change user settings here:
-  users.users.nixos = {
-    description = "Me";
-    #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here
+  users = {
+    mutableUsers = true;
+    # Create plugdev group to access some USB devices without root privileges
+    extraGroups.plugdev = { };
+    # Define a user account
+    # <user> name and description will be updated by curios-install during ISO install
+    users.nixos = {
+      isNormalUser = true;
+      initialPassword = password;
+      description = "My Name";
+      extraGroups =  [
+        "wheel"
+        "audio"
+        "sound"
+        "video"
+        "plugdev"
+        "dialout"
+      ]
+      ++ lib.optionals config.curios.networking.enable [
+        "networkmanager"
+      ]
+      ++ lib.optionals config.curios.virtualisation.enable [
+        "docker"
+        "libvirtd"
+        "qemu-libvirtd"
+        "kvm"
+        "input"
+        "disk"
+      ];
+      useDefaultShell = true;
+      #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here
+    };
   };
 
   ### Change general settings here:

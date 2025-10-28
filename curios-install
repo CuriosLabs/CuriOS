@@ -145,10 +145,6 @@ if [ ! -f "$CURIOS_SRC_PATH"/settings.nix ]; then
   echo -e "${RED}settings.nix file not found!${NC}"
   exit 1
 fi
-if [ ! -f "$CURIOS_SRC_PATH"/user-me.nix ]; then
-  echo -e "${RED}user-me.nix file not found!${NC}"
-  exit 1
-fi
 if [ ! -d "$CURIOS_SRC_PATH"/modules/ ]; then
   echo -e "${RED}modules directory not found!${NC}"
   exit 1
@@ -1035,8 +1031,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   # Update time zone
   sed "s/timeZone = \".*/timeZone = \"${SELECTED_TZ//\//\\\/}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update user name
-  sed "s/users\.users\..*/users.users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/user-me.nix
-  sed "s/users\.users\..*/users.users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update hostname
   sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix

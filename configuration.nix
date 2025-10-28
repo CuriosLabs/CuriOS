@@ -15,9 +15,7 @@
     ##################### Step 2: Modules #####################
     # Import all modules, activate or deactivate them in settings.nix
     ./modules/default.nix
-    ##################### Step 3: User #####################
-    # Me
-    ./user-me.nix
+    ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
   ];
