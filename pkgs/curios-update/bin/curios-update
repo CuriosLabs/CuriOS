@@ -187,7 +187,7 @@ if [ $CHECK_ONLINE -eq 1 ]; then
       UPGRADABLE=1;
       echo -e "${YELLOW}System should be upgraded.${NC}"
       if [ "$EUID" -ge 900 ]; then
-        /run/current-system/sw/bin/notify-send -a "CuriOS Updater" --urgency=critical "CuriOS ${LATEST_VERSION} is available!" "Launch Curios Manager with Super+Return (+󰌑) >  Upgrade" "OR in a terminal type: sudo curios-update --upgrade"
+        /run/current-system/sw/bin/notify-send -a "CuriOS Updater" --urgency=critical "CuriOS ${LATEST_VERSION} is available!" "Launch Curios Manager with Super+Return (+󰌑) >  Upgrade OR in a terminal type: sudo curios-update --upgrade"
       fi
     else
       UPGRADABLE=0;
