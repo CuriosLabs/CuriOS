@@ -88,6 +88,10 @@ if ! available curl; then
   echo -e "${RED}curl command not found!${NC}"
   exit 2
 fi
+if ! available duf; then
+  echo -e "${RED}duf command not found!${NC}"
+  exit 2
+fi
 if ! available fastfetch; then
   echo -e "${RED}fastfetch command not found!${NC}"
   exit 2
@@ -143,7 +147,7 @@ help_menu () {
 
 #------------- system menu
 system_menu () {
-  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" " Info" " Back" )
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
       #sudo shutdown -P now
@@ -160,6 +164,9 @@ system_menu () {
       ;;
     "󱃶 Process Management")
       btop
+      ;;
+    "󰋊 Disk usage")
+      duf -only-mp "/","/boot","/home"
       ;;
     " Info")
       fastfetch
