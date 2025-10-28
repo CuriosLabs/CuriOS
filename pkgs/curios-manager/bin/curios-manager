@@ -227,6 +227,7 @@ main_menu () {
         mkdir -p "$SKEL_DIR"
         curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
       fi
+      # TODO: suggest to reboot now ?
       ;;
     " System")
       system_menu
