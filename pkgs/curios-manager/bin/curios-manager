@@ -166,10 +166,10 @@ system_menu () {
       btop
       ;;
     "󰋊 Disk usage")
-      duf -only-mp "/","/boot","/home"
+      duf -only-mp "/,/boot,/home"
       ;;
     " Info")
-      fastfetch
+      fastfetch --command-shell /run/current-system/sw/bin/zsh
       ;;
     " Back")
       main_menu
@@ -194,7 +194,7 @@ main_menu () {
       # Check if a reboot is necessary
       LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
       LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
-      if [[ $(uname -r) != $LIST_GEN_KERNEL ]]; then
+      if [[ $(uname -r) != "$LIST_GEN_KERNEL" ]]; then
         echo -e "A new kernel was installed - ${YELLOW}You should REBOOT now${NC}."
         echo -e "${BLUE}Please${NC} ensure that all other applications are properly closed."
         gum confirm "Reboot now:" && sudo reboot now

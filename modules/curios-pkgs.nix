@@ -2,14 +2,16 @@
 { pkgs, lib, ... }:
 let
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
+  curios-manager = pkgs.callPackage ../pkgs/curios-manager {};
   curios-update = pkgs.callPackage ../pkgs/curios-update {};
 in {
   environment.systemPackages = [
     curios-dotfiles
+    curios-manager
     curios-update
     pkgs.libnotify # required by curios-update
-    pkgs.terminaltexteffects
-    pkgs.gum
+    pkgs.terminaltexteffects # required by curios-manager
+    pkgs.gum # required by curios-manager
   ];
 
   # 'curios-update --check' as a systemd service/timer

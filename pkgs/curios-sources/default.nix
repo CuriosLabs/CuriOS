@@ -8,7 +8,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation {
   pname = "curios-sources";
-  version = "unstable-20251028.1034";
+  version = "unstable-20251028.1309";
 
   src = lib.fileset.toSource {
     root = ../../.;
@@ -40,6 +40,11 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/modules/platforms/ modules/platforms/*.nix
 
     install -D -m 644 -t $out/share/curios/pkgs/curios-dotfiles/ pkgs/curios-dotfiles/default.nix
+
+    install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
+    install -D -m 555 -t $out/share/curios/pkgs/curios-manager/bin/ pkgs/curios-manager/bin/curios-manager
+    install -D -m 644 -t $out/share/curios/pkgs/curios-manager/share/icons/hicolor/scalable/apps/ pkgs/curios-manager/share/icons/hicolor/scalable/apps/*.svg
+
     install -D -m 644 -t $out/share/curios/pkgs/curios-update/ pkgs/curios-update/default.nix
     install -D -m 555 -t $out/share/curios/pkgs/curios-update/bin/ pkgs/curios-update/bin/curios-update
 
