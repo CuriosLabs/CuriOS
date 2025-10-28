@@ -19,7 +19,7 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.2";
+readonly SCRIPT_VERSION="0.3";
 VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
 
@@ -143,7 +143,7 @@ help_menu () {
 
 #------------- system menu
 system_menu () {
-  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" " Settings (manual edit)" "󱃶 Process Management" " Info" " Back" )
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
       #sudo shutdown -P now
@@ -157,15 +157,6 @@ system_menu () {
       ;;
     " Lock session")
       loginctl lock-session
-      ;;
-    " Settings (manual edit)")
-      SETTINGS_FILE="/etc/nixos/settings.nix"
-      SETTINGS_LAST_MOD=$(stat -c %Y $SETTINGS_FILE)
-      sudo "$EDITOR" $SETTINGS_FILE
-      if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
-        # Settings have changed, updating system.
-        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
-      fi
       ;;
     "󱃶 Process Management")
       btop
@@ -182,7 +173,7 @@ system_menu () {
 #------------- main menu
 main_menu () {
   # Startup menu choice
-  MAIN_MENU=$(gum choose --header "Select an option:" " Update" " Upgrade" " System" "? Help" " About" "󰈆 Exit")
+  MAIN_MENU=$(gum choose --header "Select an option:" " Update" " Upgrade" " System" " Settings (manual edit)" "? Help" " About" "󰈆 Exit")
   #echo "Your choice is: $MAIN_MENU"
   case $MAIN_MENU in
     #"󰀻 Apps")
@@ -209,6 +200,15 @@ main_menu () {
       ;;
     " System")
       system_menu
+      ;;
+    " Settings (manual edit)")
+      SETTINGS_FILE="/etc/nixos/settings.nix"
+      SETTINGS_LAST_MOD=$(stat -c %Y $SETTINGS_FILE)
+      sudo "$EDITOR" $SETTINGS_FILE
+      if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
+        # Settings have changed, updating system.
+        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
+      fi
       ;;
     "? Help")
       help_menu

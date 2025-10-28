@@ -4,7 +4,7 @@
 { lib, stdenvNoCC, pkgs }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.2";
+  version = "0.3";
 
   src = lib.fileset.toSource {
     root = ./.;
