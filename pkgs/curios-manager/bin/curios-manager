@@ -17,9 +17,12 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.4";
+readonly SCRIPT_VERSION="0.5";
 VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
+LIST_GEN="";
+LIST_GEN_DATE="";
+LIST_GEN_KERNEL="";
 
 export GUM_CHOOSE_CURSOR_FOREGROUND="#26a269"
 #export GUM_CONFIRM_SELECTED_FOREGROUND="#d0cfcc"
@@ -109,12 +112,41 @@ if [ ! -f /etc/os-release ]; then
 fi
 source /etc/os-release
 
-#------------- Apps menu
-app_menu () {
-  echo -e "${RED}TBD${NC}"
+nix_generations() {
+  LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
+  LIST_GEN_DATE=$(echo "$LIST_GEN" | jq -r '.[0].date')
+  LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
 }
 
-#------------- help menu
+reboot_check() {
+  # Check if a reboot is necessary
+  if [[ $(uname -r) != "$LIST_GEN_KERNEL" ]]; then
+    echo -e "A new kernel was installed - ${YELLOW}You should REBOOT now${NC}."
+    echo -e "${BLUE}Please${NC} ensure that all other applications are properly closed."
+    gum confirm "Reboot now:" && sudo reboot now
+  fi
+}
+
+#------------- Apps menu
+app_menu () {
+  local APP_MENU
+  APP_MENU=$(gum choose --header "Select an option:" "󰣆 Apps menu" "󱓞 Launcher" " Back" )
+  case $APP_MENU in
+    "󰣆 Apps menu")
+      cosmic-app-library
+      exit 0
+      ;;
+    "󱓞 Launcher")
+      cosmic-launcher
+      exit 0
+      ;;
+    " Back")
+      main_menu
+      ;;
+  esac
+}
+
+#------------- Help menu
 help_menu () {
   local HELP_MENU
   HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " NixOS Wiki" " NixOS forum" " NixOS manual" " Back" )
@@ -144,7 +176,7 @@ help_menu () {
   esac
 }
 
-#------------- system menu
+#------------- System menu
 system_menu () {
   local SYSTEM_MENU
   SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Info" " Back" )
@@ -177,36 +209,28 @@ system_menu () {
   esac
 }
 
-#------------- main menu
+#------------- Main menu
 main_menu () {
   # Startup menu choice
   local MAIN_MENU
   local CURRENT_KEYBOARD
   local DOTFILES_VERSION
   local HOME_DIR
-  local LIST_GEN
-  local LIST_GEN_DATE
-  local LIST_GEN_KERNEL
   local SKEL_DIR
-  MAIN_MENU=$(gum choose --header "Select an option:" " Update" " Upgrade" " System" " Settings (manual edit)" "? Help" " About" "󰈆 Exit")
+  MAIN_MENU=$(gum choose --header "Select an option:" "󰀻 Apps" " Update" " Upgrade" " System" " Settings (manual edit)" "? Help" " About" "󰈆 Exit")
   #echo "Your choice is: $MAIN_MENU"
   case $MAIN_MENU in
-    #"󰀻 Apps")
-    #  app_menu
-    #  ;;
+    "󰀻 Apps")
+      app_menu
+      ;;
     " Update")
       sudo whoami 1>/dev/null # Force prompt for sudo password now
       gum spin --spinner dot --title "Deleting oldest generations..." --show-error -- sudo nix-collect-garbage --delete-older-than 7d
       gum spin --spinner dot --title "Upgrading packages..." --show-error -- sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
       gum spin --spinner dot --title "Running store garbage collector..." --show-error -- sudo nix-store --gc
       # Check if a reboot is necessary
-      LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
-      LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
-      if [[ $(uname -r) != "$LIST_GEN_KERNEL" ]]; then
-        echo -e "A new kernel was installed - ${YELLOW}You should REBOOT now${NC}."
-        echo -e "${BLUE}Please${NC} ensure that all other applications are properly closed."
-        gum confirm "Reboot now:" && sudo reboot now
-      fi
+      nix_generations
+      reboot_check
       ;;
     " Upgrade")
       DOTFILES_VERSION=$(curios-dotfiles --version)
@@ -227,7 +251,9 @@ main_menu () {
         mkdir -p "$SKEL_DIR"
         curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
       fi
-      # TODO: suggest to reboot now ?
+      # Check if a reboot is necessary
+      nix_generations
+      reboot_check
       ;;
     " System")
       system_menu
@@ -239,16 +265,17 @@ main_menu () {
       if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
         # Settings have changed, updating system.
         gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
+        nix_generations
+        echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
+        reboot_check
       fi
       ;;
     "? Help")
       help_menu
       ;;
     " About")
-      LIST_GEN=$(gum spin --spinner dot --title "Retrieving NixOS information..." -- nixos-rebuild list-generations --json)
+      nix_generations
       echo -e "${VARIANT} ${GREY}(${VARIANT_ID})${NC} - based on ${PRETTY_NAME}"
-      LIST_GEN_DATE=$(echo "$LIST_GEN" | jq -r '.[0].date')
-      LIST_GEN_KERNEL=$(echo "$LIST_GEN" | jq -r '.[0].kernelVersion')
       echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
       echo -e "CuriOS manager version: $SCRIPT_VERSION"
       echo -e "Visit ${BLUE}${CURIOS_SRC_URL}${NC}"
