@@ -23,16 +23,20 @@
   config = lib.mkIf config.curios.desktop.apps.crypto.enable {
     environment.systemPackages = [
       pkgs.secp256k1
+      pkgs.python312Packages.cryptography
+      pkgs.python313Packages.pyserial
+      pkgs.python312Packages.cbor2
+      (import ./webapp-coingecko.nix)
     ]
     ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
       pkgs.bisq2
-      pkgs.electrum
-      pkgs.sparrow
-      (import ./webapp-coingecko.nix)
+      # TODO: bug - Electrum and Sparrow seems to suffer from an outdated python package dependency in 25.05 channel.
+      #pkgs.electrum
+      #pkgs.sparrow
     ];
     # Add sparrow udev rules for hardware wallets
-    services.udev.packages = lib.mkIf config.curios.desktop.apps.crypto.btc.enable [
-      pkgs.sparrow
-    ];
+    #services.udev.packages = lib.mkIf config.curios.desktop.apps.crypto.btc.enable [
+    #  pkgs.sparrow
+    #];
   };
 }

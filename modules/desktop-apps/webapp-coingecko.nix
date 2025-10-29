@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname="webapp-coingecko";
-  version="0.5";
+  version="0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
     exec = "/run/current-system/sw/bin/brave --new-window --app=https://www.coingecko.com/en/coins/bitcoin";
     desktopName = "Coingecko Bitcoin Price";
     icon = "webapp-coingecko";
-    categories = [ "Finance" "Office" ];
+    categories = [ "Finance" ];
   };
   installPhase = ''
     mkdir -p $out/share
