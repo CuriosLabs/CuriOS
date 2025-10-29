@@ -39,6 +39,11 @@
           default = true;
           description = "ChatGPT web app.";
         };
+        claude.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Claude web app.";
+        };
         gemini.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -92,6 +97,9 @@
     ]
     ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable [
       (import ./webapp-chatgpt.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.ai.claude.enable [
+      (import ./webapp-claude.nix)
     ]
     ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
       pkgs.gemini-cli

@@ -70,6 +70,7 @@ curios = {
       };
       ai = {
         chatgpt.enable = true; # ChatGPT web app
+        claude.enable = true; # Claude web app
         gemini.enable = false; # Google Gemini CLI
         grok.enable = true; # Grok web app
         mistral.enable = true; # Mistral LeChat web app

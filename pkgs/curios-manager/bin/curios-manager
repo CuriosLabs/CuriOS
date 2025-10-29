@@ -241,15 +241,15 @@ main_menu () {
       if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
         # curios-dotfiles has been updated. We re-launch it.
         echo -e "${GREEN}Updating CuriOS dotfiles...${NC}"
-        #curios-dotfiles --lang "$CURRENT_KEYBOARD" "$HOME"
         for DIR in $HOME_DIR; do
           if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
+            # TODO: execute curios-dotfiles has owner of HOME_DIR
             curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
             #chown -R 1000:100 "$DIR" # Any way to predict OWNER at this stage ?
           fi
         done
-        mkdir -p "$SKEL_DIR"
-        curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
+        sudo mkdir -p "$SKEL_DIR"
+        sudo curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
       fi
       # Check if a reboot is necessary
       nix_generations
@@ -264,6 +264,7 @@ main_menu () {
       sudo "$EDITOR" $SETTINGS_FILE
       if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
         # Settings have changed, updating system.
+        sudo whoami 1>/dev/null # Force prompt for sudo password now
         gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
         nix_generations
         echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
