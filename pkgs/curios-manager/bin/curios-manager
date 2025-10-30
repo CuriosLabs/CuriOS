@@ -29,7 +29,7 @@ export GUM_CHOOSE_CURSOR_FOREGROUND="#26a269"
 export GUM_CONFIRM_SELECTED_BACKGROUND="#26a269"
 
 #------------- Print help function
-usage () {
+usage() {
   echo -e "CuriOS Manager version ${SCRIPT_VERSION}
 * modern script interface for managing your CuriOS system *
 
@@ -128,7 +128,7 @@ reboot_check() {
 }
 
 #------------- Apps menu
-app_menu () {
+app_menu() {
   local APP_MENU
   APP_MENU=$(gum choose --header "Select an option:" "󰣆 Apps menu" "󱓞 Launcher" " Back" )
   case $APP_MENU in
@@ -147,7 +147,7 @@ app_menu () {
 }
 
 #------------- Help menu
-help_menu () {
+help_menu() {
   local HELP_MENU
   HELP_MENU=$(gum choose --header "Open a new browser window with:" " Shortcuts" "󰄄 CuriOS" "󰄄 CuriOS - report a bug" " NixOS Wiki" " NixOS forum" " NixOS manual" " Back" )
   # open link with brave or xdg-open ?
@@ -177,7 +177,7 @@ help_menu () {
 }
 
 #------------- System menu
-system_menu () {
+system_menu() {
   local SYSTEM_MENU
   SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Info" " Back" )
   case $SYSTEM_MENU in
@@ -210,7 +210,7 @@ system_menu () {
 }
 
 #------------- Main menu
-main_menu () {
+main_menu() {
   # Startup menu choice
   local MAIN_MENU
   local CURRENT_KEYBOARD
@@ -291,7 +291,7 @@ main_menu () {
 }
 
 #------------- starting function
-start () {
+start() {
   clear
   if [ -f /etc/nixos/logo.txt ]; then
     tte -i /etc/nixos/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
