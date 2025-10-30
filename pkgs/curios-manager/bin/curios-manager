@@ -230,6 +230,7 @@ main_menu () {
       gum spin --spinner dot --title "Running store garbage collector..." --show-error -- sudo nix-store --gc
       # Check if a reboot is necessary
       nix_generations
+      echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
       reboot_check
       ;;
     " Upgrade")
