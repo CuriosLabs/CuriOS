@@ -76,6 +76,7 @@
     pinentry-curses
     gnused
     pciutils
+    smartmontools
   ]
   ++ lib.optionals config.services.desktopManager.cosmic.xwayland.enable [
     wl-clipboard
