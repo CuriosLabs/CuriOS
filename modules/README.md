@@ -37,6 +37,12 @@ curios = {
     desktop.apps = {
       basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      browser = {
+        chromium.enable = false; # Ungoogled Chromium Web Browser
+        firefox.enable = false; # Mozilla Firefox Web Browser
+        librewolf.enable = false; # Fork of Firefox Web Browser
+        vivaldi.enable = false; # Vivaldi Web Browser
+      };
       crypto = {
         enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
         btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.

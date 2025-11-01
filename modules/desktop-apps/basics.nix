@@ -16,6 +16,28 @@
         default = false;
         description = "Enabling Linux AppImage.";
       };
+      browser = {
+        chromium.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Ungoogled Chromium Web Browser";
+        };
+        firefox.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Mozilla Firefox Web Browser";
+        };
+        librewolf.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Fork of Firefox Web Browser";
+        };
+        vivaldi.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Vivaldi Web Browser";
+        };
+      };
       vpn = {
         proton.enable = lib.mkOption {
           type = lib.types.bool;
@@ -110,6 +132,18 @@
     ]
     ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable [
       (import ./webapp-mistral.nix)
+    ]
+    ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable [
+      pkgs.ungoogled-chromium
+    ]
+    ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable [
+      pkgs.firefox
+    ]
+    ++ lib.optionals config.curios.desktop.apps.browser.librewolf.enable [
+      pkgs.librewolf
+    ]
+    ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable [
+      pkgs.vivaldi
     ]
     ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable [
       (import ./webapp-whatsapp.nix)
