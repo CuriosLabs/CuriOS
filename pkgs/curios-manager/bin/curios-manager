@@ -127,6 +127,13 @@ reboot_check() {
   fi
 }
 
+# CuriOS system check and print warning to user.
+warning_print() {
+  if [ -f /etc/nixos/user-me.nix ]; then
+    gum style --foreground "#ff0000" --border-foreground "#e9d502" --border double --padding "2 4" --align center '/etc/nixos/user-me.nix has been marked as DEPRECATED' 'Copy its content into /etc/nixos/settings.nix and then remove it.'
+  fi
+}
+
 #------------- Apps menu
 app_menu() {
   local APP_MENU
@@ -299,6 +306,7 @@ start() {
   else
     echo -e "${RED}/etc/nixos/logo.txt file is missing!${NC}";
   fi
+  warning_print
   main_menu
 }
 

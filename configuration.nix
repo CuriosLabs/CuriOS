@@ -18,7 +18,9 @@
     ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
-  ];
+  ]
+  ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
+  # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -132,7 +134,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20251028.1640";
+    nixos.variant_id = "unstable-20251101.1415";
   };
 
   # Collect garbage
