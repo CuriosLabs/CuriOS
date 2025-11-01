@@ -31,6 +31,11 @@
         default = false;
         description = "Go, gofmt and JetBrains GoLand.";
       };
+      javascript.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "NodeJS (npm).";
+      };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -79,6 +84,9 @@
       go
       golangci-lint
       jetbrains.goland
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable [
+      nodejs_22
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
       # Python3

@@ -49,6 +49,7 @@ curios = {
           vscode.enable = false; # MS code editor
         };
         go.enable = false; # Go, gofmt, JetBrains GoLand
+        javascript.enable = false; # NodeJS (npm)
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
         networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
