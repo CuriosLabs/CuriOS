@@ -185,8 +185,10 @@ help_menu() {
 
 #------------- System menu
 system_menu() {
+  local SETTINGS_FILE
+  local SETTINGS_LAST_MOD
   local SYSTEM_MENU
-  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Info" " Back" )
+  SYSTEM_MENU=$(gum choose " Shutdown" " Reboot" " Lock session" "󱃶 Process Management" "󰋊 Disk usage" " Settings (manual edit)" " Info" " Back" )
   case $SYSTEM_MENU in
     " Shutdown")
       #sudo shutdown -P now
@@ -208,6 +210,19 @@ system_menu() {
       duf -only-mp "/,/boot,/home"
       #sudo smartctl -H -A /dev/disk/by-label/curiosystem
       ;;
+    " Settings (manual edit)")
+      SETTINGS_FILE="/etc/nixos/settings.nix"
+      SETTINGS_LAST_MOD=$(stat -c %Y $SETTINGS_FILE)
+      sudo "$EDITOR" $SETTINGS_FILE
+      if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
+        # Settings have changed, updating system.
+        sudo whoami 1>/dev/null # Force prompt for sudo password now
+        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
+        nix_generations
+        echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
+        reboot_check
+      fi
+      ;;
     " Info")
       fastfetch --command-shell /run/current-system/sw/bin/zsh
       ;;
@@ -225,7 +240,7 @@ main_menu() {
   local DOTFILES_VERSION
   local HOME_DIR
   local SKEL_DIR
-  MAIN_MENU=$(gum choose --header "Select an option:" "󰀻 Apps" " Update" " Upgrade" " System" " Settings (manual edit)" "? Help" " About" "󰈆 Exit")
+  MAIN_MENU=$(gum choose --header "Select an option:" "󰀻 Apps" " Update" " Upgrade" " System" "? Help" " About" "󰈆 Exit")
   #echo "Your choice is: $MAIN_MENU"
   case $MAIN_MENU in
     "󰀻 Apps")
@@ -266,19 +281,6 @@ main_menu() {
       ;;
     " System")
       system_menu
-      ;;
-    " Settings (manual edit)")
-      SETTINGS_FILE="/etc/nixos/settings.nix"
-      SETTINGS_LAST_MOD=$(stat -c %Y $SETTINGS_FILE)
-      sudo "$EDITOR" $SETTINGS_FILE
-      if [[ $(stat -c %Y $SETTINGS_FILE) -gt $SETTINGS_LAST_MOD ]]; then
-        # Settings have changed, updating system.
-        sudo whoami 1>/dev/null # Force prompt for sudo password now
-        gum spin --spinner dot --title "Updating system..." --show-error -- sudo nixos-rebuild switch --cores 0 --max-jobs auto
-        nix_generations
-        echo -e "Latest update: ${LIST_GEN_DATE} - Kernel: ${LIST_GEN_KERNEL}"
-        reboot_check
-      fi
       ;;
     "? Help")
       help_menu
