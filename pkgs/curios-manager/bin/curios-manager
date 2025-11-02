@@ -206,6 +206,7 @@ system_menu() {
       ;;
     "󰋊 Disk usage")
       duf -only-mp "/,/boot,/home"
+      #sudo smartctl -H -A /dev/disk/by-label/curiosystem
       ;;
     " Info")
       fastfetch --command-shell /run/current-system/sw/bin/zsh
