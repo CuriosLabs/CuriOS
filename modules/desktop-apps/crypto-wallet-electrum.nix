@@ -7,19 +7,36 @@ let
   pname = "electrum";
   version = "4.6.2";
 
-  src = pkgs.fetchurl {
-    url = "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage";
+   src = pkgs.fetchurl {
+    url = "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
     hash = "sha256-RFOYVpnkl69HaWxpAm0hUTQmxvSDoscGdBr7gDHnjU0=";
+
+    # Verify Appimage signature
+    nativeBuildInputs = [ pkgs.gnupg ];
+    downloadToTemp = true;
+
+    postFetch = ''
+      pushd $(mktemp -d)
+      export GNUPGHOME=$PWD/gnupg
+      mkdir -m 700 -p $GNUPGHOME
+      ln -s ${authorPubKey} ./authSignature.asc
+      gpg --import authSignature.asc
+      ln -s ${appSignature} ./appSignature.asc
+      ln -s $downloadedFile ./${pname}-${version}-x86_64.AppImage
+      gpg --batch --verify appSignature.asc ${pname}-${version}-x86_64.AppImage
+      popd
+      mv $downloadedFile $out
+    '';
   };
 
   appSignature = pkgs.fetchurl {
     url = "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "";
+    hash = "sha256-qwB4Th6N3Xr6iXGIKAmVJ7S1We4jcLVCwZ9tAxHhOlw=";
   };
 
   authorPubKey = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/ThomasV.asc";
-    hash = "";
+    hash = "sha256-37ApVZlI+2EevxQIKXVKVpktt1Ls3UbWq4dfio2ORdo=";
   };
 
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
