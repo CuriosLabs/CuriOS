@@ -178,6 +178,9 @@ in
         "plugdev"
         "dialout"
       ]
+      ++ lib.optionals config.curios.desktop.apps.crypto.enable [
+        "tty"
+      ]
       ++ lib.optionals config.curios.networking.enable [
         "networkmanager"
       ]
