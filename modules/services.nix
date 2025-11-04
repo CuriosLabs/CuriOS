@@ -27,6 +27,8 @@
   config = lib.mkIf config.curios.services.enable {
     # Services:
     services = {
+      # Firmware update - See: https://wiki.nixos.org/wiki/Fwupd
+      fwupd.enable = true;
       # X server
       xserver = {
         enable = lib.mkDefault true;

@@ -55,7 +55,7 @@ in
       # EXPERIMENTAL - laptop battery saver
       laptop.enable = false;
     };
-    # Required modules:
+    # REQUIRED modules:
     bootefi.enable = lib.mkDefault true;
     bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
     desktop.cosmic.enable = lib.mkDefault true;
@@ -119,7 +119,7 @@ in
       };
     };
     services = {
-      enable = true; # Flatpak + flathub/cosmic repos, pipewire
+      enable = true; # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
       printing.enable = false; # CUPS
       sshd.enable = false; # SSH daemon
       ai.enable = false; # Ollama local AI with open-webui
