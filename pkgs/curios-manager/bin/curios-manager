@@ -141,7 +141,7 @@ warning_print() {
 #------------- Apps menu
 app_menu() {
   local APP_MENU
-  APP_MENU=$(gum choose --header "Select an option:" "󰣆 Apps menu" "󱓞 Launcher" " Back" )
+  APP_MENU=$(gum choose --header "Select an option:" "󰣆 Apps menu" "󱓞 Launcher" " Store (Flatpak)" " Back" )
   case $APP_MENU in
     "󰣆 Apps menu")
       cosmic-app-library
@@ -149,6 +149,10 @@ app_menu() {
       ;;
     "󱓞 Launcher")
       cosmic-launcher
+      exit 0
+      ;;
+    " Store (Flatpak)")
+      cosmic-store 2>/dev/null
       exit 0
       ;;
     " Back")
