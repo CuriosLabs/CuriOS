@@ -152,8 +152,9 @@ app_menu() {
       exit 0
       ;;
     " Store (Flatpak)")
-      cosmic-store 2>/dev/null
-      exit 0
+      cosmic-store </dev/null &>/dev/null &
+      sleep 2
+      #exit 0
       ;;
     " Back")
       main_menu
