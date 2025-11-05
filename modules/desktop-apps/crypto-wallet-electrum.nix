@@ -53,8 +53,7 @@ let
   };
 in
 pkgs.appimageTools.wrapType2 {
-  inherit pname version src;
-  pkgs = pkgs;
+  inherit pname version pkgs src;
 
   #extraInstallCommands = ''
   #  mkdir -p $out/share/applications
