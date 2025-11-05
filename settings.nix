@@ -40,6 +40,10 @@ in
       hostname = "CuriOS";
       i18n.locale = "en_US.UTF-8";
       keyboard = "us";
+      pkgs = {
+        autoupgrade.enable = true; # Enable automated packages update and cleanup
+        gc.enable = true; # Enable automated packages garbage collect.
+      };
       timeZone = "Etc/GMT";
     };
     ### Activate or deactivate CuriOS modules/ from here:

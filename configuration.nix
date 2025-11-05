@@ -122,7 +122,7 @@
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
-      enable = true;
+      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
       dates = "03:40";
       randomizedDelaySec = "3min";
       allowReboot = false; # Reboot on new kernel, initrd or kernel module.
@@ -134,13 +134,13 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20251101.1415";
+    nixos.variant_id = "unstable-20251105.0911";
   };
 
   # Collect garbage
   nix = {
     gc = {
-      automatic = true;
+      automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
       dates = "daily";
       options = "--delete-older-than 7d";
     };
