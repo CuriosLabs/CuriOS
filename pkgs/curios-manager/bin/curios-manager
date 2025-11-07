@@ -246,7 +246,9 @@ system_menu() {
           echo -e "- ${GREEN}$DeviceName${NC} (${BLUE}$DeviceVendor${NC}) [$DeviceSummary]"
         done
         echo ""
-        gum confirm "Would you like to update all devices now ?" && sudo whoami 1>/dev/null && gum spin --spinner dot --title "Updating firmware..." --show-error -- sudo fwupdmgr update
+        #gum confirm "Would you like to update all devices now ?" && sudo whoami 1>/dev/null && gum spin --spinner dot --title "Updating firmware..." --show-error -- sudo fwupdmgr update
+        gum confirm "Would you like to update all devices now ?" || exit 0
+        sudo fwupdmgr update
       else
         echo -e "${GREEN}Nothing to update.${NC}"
       fi
