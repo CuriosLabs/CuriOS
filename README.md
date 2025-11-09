@@ -79,17 +79,20 @@ Most useful desktop shortcuts:
    ![CuriOS installation step 1](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
 5. Answer the various dialog questions:
    <details>
-      <summary>See 'choose disk' dialog options</summary>
+      <summary>Click to see 'choose disk' dialog options</summary>
+   
       ![CuriOS installation choose disk](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
    </details>
    The full disk encryption option is **HIGHLY RECOMMENDED**.
    <details>
-      <summary>See 'full disk encryption' dialog</summary>
+      <summary>Click to see 'full disk encryption' dialog</summary>
+   
       ![CuriOS full disk encryption](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
    </details>
 6. If everything went according to plan, reboot (and remember to remove USB media installer).
    <details>
-      <summary>See reboot dialog</summary>
+      <summary>Click to see reboot dialog</summary>
+   
       ![CuriOS install reboot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
    </details>
 7. **Enjoy!**
