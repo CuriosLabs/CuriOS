@@ -129,7 +129,9 @@ in
       ai.enable = false; # Ollama local AI with open-webui
     };
     virtualisation = {
-      enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager
+      enable = false; # QEMU/KVM, libvirt, virt-manager
+      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
+      podman.enable = false; # Podman containers, replacement for Docker.
       wine.enable = false; # Wine 32 and 64 bits with Wayland support.
     };
     hardened = {
@@ -189,12 +191,17 @@ in
         "networkmanager"
       ]
       ++ lib.optionals config.curios.virtualisation.enable [
-        "docker"
         "libvirtd"
         "qemu-libvirtd"
         "kvm"
         "input"
         "disk"
+      ]
+      ++ lib.optionals config.curios.virtualisation.docker.enable [
+        "docker"
+      ]
+      ++ lib.optionals config.curios.virtualisation.podman.enable [
+        "podman"
       ];
       useDefaultShell = true;
       #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here

@@ -97,7 +97,9 @@ curios = {
       ai.enable = false; # Ollama and open-webui services (local AI) - ChatGPT, Grok, Mistral, Ollama(local) webapps.
     };
     virtualisation = {
-      enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager
+      enable = false; # QEMU/KVM, libvirt, virt-manager
+      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
+      podman.enable = false; # Podman containers, replacement for Docker.
       wine.enable = false; # Wine 32 and 64 bits with Wayland support.
     };
     hardened = {
