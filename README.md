@@ -120,9 +120,9 @@ You want a package not in one of the already pre-configured [modules](https://gi
 
 ### System upgrade
 When a new version of Curi*OS* is available, you will see a pop-up appear on your desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater.png?raw=true "CuriOS updater")
+![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
 
-To start the system upgrade, launch `curios-manager` from a terminal (or with the shortcut: Super+Return) and click on the `Upgrade` option.
+To start the system upgrade, launch `curios-manager` from a terminal (shortcut: Super+Return) and click on the `Upgrade` option.
 
 ### Flatpak / desktop apps installation
 You can also install Linux applications as flatpak. [Flathub](https://flathub.org/) and COSMIC repositories come pre-installed by default. You can also use the "COSMIC store" app (it is sourced with flathub and COSMIC repos) as seen below:
