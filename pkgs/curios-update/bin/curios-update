@@ -51,7 +51,7 @@ ${GREY}EXAMPLES:${NC}
 }
 
 #------------- var init state
-readonly SCRIPT_VERSION="0.5";
+readonly SCRIPT_VERSION="0.6";
 VERBOSE=0;
 CHECK_ONLINE=0;
 UPGRADE_SYSTEM=0;

@@ -4,7 +4,7 @@
 { lib, stdenvNoCC, pkgs }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.5";
+  version = "0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -14,9 +14,12 @@ stdenvNoCC.mkDerivation rec {
     ];
   };
 
-  dontPatch = true;
+  dontPatch = false;
   dontConfigure = true;
   dontBuild = true;
+  postPatch = ''
+    patchShebangs
+  '';
   desktopItem = pkgs.makeDesktopItem {
     name = "com.videocurio.curios.manager";
     exec = "/run/current-system/sw/bin/alacritty -e curios-manager";

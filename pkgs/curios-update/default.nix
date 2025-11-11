@@ -4,7 +4,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-update";
-  version = "0.5";
+  version = "0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -13,9 +13,12 @@ stdenvNoCC.mkDerivation rec {
     ];
   };
 
-  dontPatch = true;
+  dontPatch = false;
   dontConfigure = true;
   dontBuild = true;
+  postPatch = ''
+    patchShebangs
+  '';
   installPhase = ''
     runHook preInstall
 

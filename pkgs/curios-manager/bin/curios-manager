@@ -17,12 +17,13 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.5";
+readonly SCRIPT_VERSION="0.6";
 VERBOSE=0;
 readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
 LIST_GEN="";
 LIST_GEN_DATE="";
 LIST_GEN_KERNEL="";
+readonly SYSTEM_CHANNEL_URI="https://channels.nixos.org/nixos-25.05"
 
 export GUM_CHOOSE_CURSOR_FOREGROUND="#26a269"
 export GUM_CHOOSE_SELECTED_FOREGROUND="#26a269"
@@ -292,6 +293,12 @@ main_menu() {
       SKEL_DIR="/etc/skel/"
       CURRENT_KEYBOARD=$(grep -oP 'keyboard\s*=\s*"\K[^"]+' /etc/nixos/settings.nix)
       sudo curios-update --upgrade
+      # Updating channel
+      if sudo nix-channel --list | grep -q "$SYSTEM_CHANNEL_URI"
+      then
+        echo -e "${RED}Channel need an update.${NC}"
+      fi
+      # Updating dotfiles
       if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
         # curios-dotfiles has been updated. We re-launch it.
         echo -e "${GREEN}Updating CuriOS dotfiles...${NC}"

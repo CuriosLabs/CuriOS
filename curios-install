@@ -1070,6 +1070,11 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}";
+  # Current stable channel
+  nix-channel --add https://channels.nixos.org/nixos-25.05 nixos
+  # Unstable channel, for testing ONLY !
+  #nix-channel --add https://channels.nixos.org/nixos-unstable nixos
+  nix-channel --update
   nixos-install --cores 0 --no-root-passwd
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
     dotfiles_install

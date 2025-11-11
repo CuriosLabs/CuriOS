@@ -92,7 +92,12 @@
 
     # systemd config
     systemd = {
+      # Systemd settings for NixOS 25.05
       extraConfig = "DefaultTimeoutStopSec=10s"; # Reduce timeout waiting to 10sec
+      # Systemd settings for NixOS 25.11
+      #settings.Manager = {
+      #  DefaultTimeoutStopSec = "10s";
+      #};
       # Flatpak system, add repo
       services.flatpak-repo = {
         enable = true;
@@ -142,7 +147,7 @@
     };
 
     # Other
-    programs.ssh.startAgent = true; # SSH start-agent - not compatible with gnupg.agent SSH
+    programs.ssh.startAgent = true; # SSH start-agent - not compatible with gnupg.agent SSH - NixOS 25.05 only
     security.rtkit.enable = true; # realtime scheduling priority for pipewire.
 
   };
