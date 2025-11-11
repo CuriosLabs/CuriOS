@@ -4,7 +4,7 @@
 { lib, stdenvNoCC, pkgs }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.6";
+  version = "0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -21,7 +21,7 @@ stdenvNoCC.mkDerivation rec {
     patchShebangs
   '';
   desktopItem = pkgs.makeDesktopItem {
-    name = "com.videocurio.curios.manager";
+    name = "dev.curioslabs.curios.manager";
     exec = "/run/current-system/sw/bin/alacritty -e curios-manager";
     desktopName = "CuriOS Manager CLI";
     icon = "desktop-curios-manager";
@@ -44,7 +44,7 @@ stdenvNoCC.mkDerivation rec {
 
   meta = {
     description = "CuriOS manager";
-    homepage = "https://github.com/VideoCurio/nixos-configuration";
+    homepage = "https://github.com/CuriosLabs/CuriOS";
     license = lib.licenses.gpl3Only;
     platforms = lib.platforms.linux;
   };

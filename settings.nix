@@ -4,6 +4,7 @@
 # Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 # See: https://nixos.org/manual/nixos/stable/
+# See: https://github.com/CuriosLabs/CuriOS
 # man configuration.nix
 #
 # Use `sudo nixos-rebuild switch` command in a terminal after an update in this file.

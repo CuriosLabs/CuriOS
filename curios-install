@@ -957,7 +957,7 @@ format_disk () {
   #pvremove "$LVM_MAPPED_DEVICE"
 }
 
-#------------- CuriOS dotfiles install, see: https://github.com/VideoCurio/nixos-dotfiles
+#------------- CuriOS dotfiles install, see: https://github.com/CuriosLabs/curios-dotfiles
 dotfiles_install () {
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"

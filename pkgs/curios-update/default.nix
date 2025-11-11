@@ -4,7 +4,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-update";
-  version = "0.6";
+  version = "0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -30,7 +30,7 @@ stdenvNoCC.mkDerivation rec {
 
   meta = {
     description = "CuriOS updater";
-    homepage = "https://github.com/VideoCurio/nixos-configuration";
+    homepage = "https://github.com/CuriosLabs/CuriOS";
     license = lib.licenses.gpl3Only;
     platforms = lib.platforms.linux;
   };

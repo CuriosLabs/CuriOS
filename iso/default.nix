@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
-#pkgs.callPackage ../pkgs/curios-dotfiles {}
-pkgs.callPackage ../pkgs/curios-manager {}
+pkgs.callPackage ../pkgs/curios-dotfiles {}
+#pkgs.callPackage ../pkgs/curios-manager {}
 #pkgs.callPackage ../pkgs/curios-sources {}
 #pkgs.callPackage ../pkgs/curios-update {}
 

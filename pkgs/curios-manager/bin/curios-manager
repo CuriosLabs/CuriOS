@@ -17,9 +17,9 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.6";
+readonly SCRIPT_VERSION="0.7";
 VERBOSE=0;
-readonly CURIOS_SRC_URL="https://github.com/VideoCurio/nixos-configuration";
+readonly CURIOS_SRC_URL="https://github.com/CuriosLabs/CuriOS";
 LIST_GEN="";
 LIST_GEN_DATE="";
 LIST_GEN_KERNEL="";
@@ -173,10 +173,10 @@ help_menu() {
       cosmic-settings keyboard 2>/dev/null
       ;;
     "󰄄 CuriOS")
-      xdg-open "https://github.com/VideoCurio/nixos-configuration" 2>/dev/null
+      xdg-open "https://github.com/CuriosLabs/CuriOS" 2>/dev/null
       ;;
     "󰄄 CuriOS - report a bug")
-      brave --new-window --app=https://github.com/VideoCurio/nixos-configuration/issues 2>/dev/null
+      brave --new-window --app=https://github.com/CuriosLabs/CuriOS/issues 2>/dev/null
       ;;
     " NixOS Wiki")
       brave --new-window --app=https://wiki.nixos.org/wiki/NixOS_Wiki 2>/dev/null

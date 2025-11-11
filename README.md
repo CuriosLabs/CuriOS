@@ -1,10 +1,10 @@
-[![NixOS Unstable](https://img.shields.io/badge/NixOS-25.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS 25.05](https://img.shields.io/badge/NixOS-25.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 
 # NixOS + COSMIC = Curi*OS*
 
 This is my NixOS installer scripts and its configuration files. The desktop environment is [COSMIC](https://system76.com/cosmic/).
-![Curios = NixOS + COSMIC Desktop](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Desktop.png?raw=true "NixOS with COSMIC DE - Curios")
-![Curios desktop tiles](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Tiles.png?raw=true "Curios desktop tiles")
+![Curios = NixOS + COSMIC Desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop.png?raw=true "NixOS with COSMIC DE - Curios")
+![Curios desktop tiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Tiles.png?raw=true "Curios desktop tiles")
 
 
 ------
@@ -16,8 +16,8 @@ This is my NixOS installer scripts and its configuration files. The desktop envi
 * 🌟 COSMIC, a Wayland desktop environment / windows manager by [System76](https://system76.com/cosmic/) with an excellent window's tile management.
 * 🚀 Pop_launcher, launch or switch to every application just with the Super key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget about your mouse, **use Super key combinations for everything!**
 * 📦 Flatpak with **auto-update**. COSMIC and Flathub repos pre-installed.
-* ⌨️ Alacritty terminal with ZSH and a lot of good modern commands. [My NixOS-dotfiles](https://github.com/VideoCurio/nixos-dotfiles) is pre-installed.
-* 📂 [Modular configuration files](https://github.com/VideoCurio/nixos-configuration/tree/master/modules) for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager, Python3, Rust and more...
+* ⌨️ Alacritty terminal with ZSH and a lot of good modern commands. [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
+* 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules) for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager, Python3, Rust and more...
 * Modular hardened systemd services configurations files. -WIP-
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
 * ⬆️ Curi*OS* updater. Check this GitHub repo for a new system version.
@@ -58,11 +58,11 @@ Most useful desktop shortcuts:
 
 1. Get the latest Curi*OS* 25.05 Minimal ISO image:
    ```bash
-   wget --content-disposition https://github.com/VideoCurio/nixos-configuration/releases/download/25.05.1/curios-minimal_25.05.1_amd64-intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.1/curios-minimal_25.05.1_amd64-intel.iso
    ```
    Download and check iso signature:
    ```bash
-   wget --content-disposition https://github.com/VideoCurio/nixos-configuration/releases/download/25.05.1/curios-minimal_25.05.1_amd64-intel.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.1/curios-minimal_25.05.1_amd64-intel.iso.sha256
    sha256sum --check curios-minimal_*.iso.sha256
    ```
 
@@ -76,24 +76,24 @@ Most useful desktop shortcuts:
    Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
 3. Boot your machine on the USB stick (F8 or F12 key on startup, see your motherboard manufacturer's instructions). An internet connection is *REQUIRED* to perform the installation!
 4. The installer should start automatically (otherwise launch it with `sudo curios-install`).
-   ![CuriOS installation step 1](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
+   ![CuriOS installation step 1](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
 5. Answer the various dialog questions:
    <details>
       <summary>Click to see 'choose disk' dialog options</summary>
    
-      ![CuriOS installation choose disk](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
+      ![CuriOS installation choose disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
    </details>
    The full disk encryption option is **HIGHLY RECOMMENDED**.
    <details>
       <summary>Click to see 'full disk encryption' dialog</summary>
    
-      ![CuriOS full disk encryption](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
+      ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
    </details>
 6. If everything went according to plan, reboot (and remember to remove USB media installer).
    <details>
       <summary>Click to see reboot dialog</summary>
    
-      ![CuriOS install reboot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
+      ![CuriOS install reboot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
    </details>
 7. **Enjoy!**
  
@@ -107,31 +107,31 @@ Most useful desktop shortcuts:
 ## Curi*OS* management
 
 Curi*OS* come with a TUI `curios-manager` (shortcut: Super+Return).
-![curios-manager screenshot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/CuriOS-manager.png?raw=true "CuriOS manager")
+![curios-manager screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager.png?raw=true "CuriOS manager")
 With it, you can update/upgrade the whole system, update your hardware firmwares, check your disk usage, launch the process manager (btop), and much more...
 But most importantly you can edit the Curi*OS* options settings from the menu `System > Settings`.
-![curios-manager settings screenshot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
 
 For example, you want to game and install Steam, Heroic launcher, Discord and more? Set: `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
+![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
 Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will then launch a system update if you saved any change.
 
-You want a package not in one of the already pre-configured [modules](https://github.com/VideoCurio/nixos-configuration/tree/master/modules)? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.05&size=50&sort=relevance&type=packages) and add it to `/etc/nixos/settings.nix`.
+You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.05&size=50&sort=relevance&type=packages) and add it to `/etc/nixos/settings.nix`.
 
 ### System upgrade
 When a new version of Curi*OS* is available, you will see a pop-up appear on your desktop:
-![CuriOS updater screenshot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Updater.png?raw=true "CuriOS updater")
+![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater.png?raw=true "CuriOS updater")
 
 To start the system upgrade, launch `curios-manager` from a terminal (or with the shortcut: Super+Return) and click on the `Upgrade` option.
 
 ### Flatpak / desktop apps installation
 You can also install Linux applications as flatpak. [Flathub](https://flathub.org/) and COSMIC repositories come pre-installed by default. You can also use the "COSMIC store" app (it is sourced with flathub and COSMIC repos) as seen below:
-![COSMIC Store screenshot](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Store.png?raw=true "COSMIC Store")
+![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
 
 ### Dot files
 
-[curios-dotfiles](https://github.com/VideoCurio/nixos-dotfiles) come pre-installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
-![Curios dotfiles](https://github.com/VideoCurio/nixos-configuration/blob/testing/img/Terminal.png?raw=true "Curios dotfiles")
+[curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
+![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Terminal.png?raw=true "Curios dotfiles")
 
 -----
 
@@ -166,7 +166,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## Version
 
-The current version is [25.05.1](https://github.com/VideoCurio/nixos-configuration/tree/release/25.05.1) based on a Nixos 25.05 build.
+The current version is [25.05.1](https://github.com/CuriosLabs/CuriOS/tree/release/25.05.1) based on a Nixos 25.05 build.
 
 -----
 

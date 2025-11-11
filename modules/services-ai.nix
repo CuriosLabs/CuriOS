@@ -15,7 +15,7 @@
 
   config = lib.mkIf config.curios.services.ai.enable {
     # Ollama, see: https://wiki.nixos.org/wiki/Ollama
-    # For a ZSH integration, see: https://github.com/VideoCurio/nixos-dotfiles
+    # For a ZSH integration, see: https://github.com/CuriosLabs/curios-dotfiles
     services.ollama = {
       enable = true;
       #home = "/home/ollama";

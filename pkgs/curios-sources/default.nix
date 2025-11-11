@@ -53,7 +53,7 @@ stdenvNoCC.mkDerivation {
 
   meta = {
     description = "Configuration nix files for CuriOS";
-    homepage = "https://github.com/VideoCurio/nixos-configuration";
+    homepage = "https://github.com/CuriosLabs/CuriOS";
     license = lib.licenses.gpl3Only;
     platforms = lib.platforms.linux;
   };

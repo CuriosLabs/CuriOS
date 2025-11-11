@@ -51,7 +51,7 @@ ${GREY}EXAMPLES:${NC}
 }
 
 #------------- var init state
-readonly SCRIPT_VERSION="0.6";
+readonly SCRIPT_VERSION="0.7";
 VERBOSE=0;
 CHECK_ONLINE=0;
 UPGRADE_SYSTEM=0;
@@ -131,8 +131,8 @@ get_latest_version() {
   if [ $VERBOSE -eq 1 ]; then
     echo "Checking github sources..."
   fi
-  LATEST_VERSION="$(curl -f --silent "https://api.github.com/repos/VideoCurio/nixos-configuration/tags" | jq -r '.[0].name')"
-  LATEST_SOURCE="$(curl -f --silent "https://api.github.com/repos/VideoCurio/nixos-configuration/tags" | jq -r '.[0].tarball_url')"
+  LATEST_VERSION="$(curl -f --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].name')"
+  LATEST_SOURCE="$(curl -f --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].tarball_url')"
 }
 
 # Upgrade the system
