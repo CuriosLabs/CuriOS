@@ -3,7 +3,7 @@
 # Gum driven curiOS Manager.
 # Control everything related to CuriOS from here.
 #
-# Dependencies: gum, tte, brave, curl, curios-update, curios-dotfiles
+# Dependencies: gum, tte, brave, curios-update, curios-dotfiles
 
 #------------- Colors -------------#
 readonly RED="\033[31;1m"          # Red and bold
@@ -86,10 +86,6 @@ esac
 #------------- Check dependencies
 available() { command -v "$1" >/dev/null; }
 
-if ! available curl; then
-  echo -e "${RED}curl command not found!${NC}"
-  exit 2
-fi
 if ! available duf; then
   echo -e "${RED}duf command not found!${NC}"
   exit 2

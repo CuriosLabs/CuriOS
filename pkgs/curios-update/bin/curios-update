@@ -131,8 +131,8 @@ get_latest_version() {
   if [ $VERBOSE -eq 1 ]; then
     echo "Checking github sources..."
   fi
-  LATEST_VERSION="$(curl -f --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].name')"
-  LATEST_SOURCE="$(curl -f --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].tarball_url')"
+  LATEST_VERSION="$(curl -f -L --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].name')"
+  LATEST_SOURCE="$(curl -f -L --silent "https://api.github.com/repos/CuriosLabs/CuriOS/tags" | jq -r '.[0].tarball_url')"
 }
 
 # Upgrade the system
