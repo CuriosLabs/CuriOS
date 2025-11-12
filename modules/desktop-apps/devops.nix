@@ -118,6 +118,8 @@
       remmina
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [
+      nil
+      nixd
       zed-editor
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.editor.vscode.enable [
