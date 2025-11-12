@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.4";
+readonly SCRIPT_VERSION="0.5";
 CURIOS_INSTALL_PATH=".";
 CURIOS_SRC_PATH=".";
 SCRIPT_PATH="$(dirname "$0")"
@@ -1070,10 +1070,14 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}";
-  # Current stable channel
-  nix-channel --add https://channels.nixos.org/nixos-25.05 nixos
-  # Unstable channel, for testing ONLY !
-  #nix-channel --add https://channels.nixos.org/nixos-unstable nixos
+  # Configure Nix channel
+  NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' "$NIXOS_CONFIG_DIR"/configuration.nix)
+  if [ -z "$NIX_CHANNEL_URL" ]; then
+    echo -e "${RED}Nix channel not found in configuration.nix!${NC}"
+    exit 1
+  fi
+  echo "Adding channel: $NIX_CHANNEL_URL"
+  nix-channel --add "$NIX_CHANNEL_URL" nixos
   nix-channel --update
   nixos-install --cores 0 --no-root-passwd
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
