@@ -1,14 +1,13 @@
 # Custom made packages for CuriOS
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
   curios-manager = pkgs.callPackage ../pkgs/curios-manager {};
-  curios-update = pkgs.callPackage ../pkgs/curios-update {};
 in {
   environment.systemPackages = [
     curios-dotfiles
     curios-manager
-    curios-update
+    # TODO: move below requirements to CuriosLabs/curios-manager
     pkgs.libnotify # required by curios-update
     pkgs.terminaltexteffects # required by curios-manager
     pkgs.gum # required by curios-manager

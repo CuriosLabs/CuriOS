@@ -42,11 +42,6 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/pkgs/curios-dotfiles/ pkgs/curios-dotfiles/default.nix
 
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
-    install -D -m 555 -t $out/share/curios/pkgs/curios-manager/bin/ pkgs/curios-manager/bin/curios-manager
-    install -D -m 644 -t $out/share/curios/pkgs/curios-manager/share/icons/hicolor/scalable/apps/ pkgs/curios-manager/share/icons/hicolor/scalable/apps/*.svg
-
-    install -D -m 644 -t $out/share/curios/pkgs/curios-update/ pkgs/curios-update/default.nix
-    install -D -m 555 -t $out/share/curios/pkgs/curios-update/bin/ pkgs/curios-update/bin/curios-update
 
     runHook postInstall
   '';
