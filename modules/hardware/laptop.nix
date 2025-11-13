@@ -1,6 +1,6 @@
 # Laptop hardware related packages.
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   # Declare options

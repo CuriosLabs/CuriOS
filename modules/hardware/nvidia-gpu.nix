@@ -2,7 +2,7 @@
 # Must be imported by configuration.nix
 # See: https://nixos.wiki/wiki/Nvidia
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   # Declare options

@@ -1,7 +1,7 @@
 # Must be imported by configuration.nix
 # AI tools packages.
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   # Declare options

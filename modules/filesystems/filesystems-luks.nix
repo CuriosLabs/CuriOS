@@ -1,7 +1,7 @@
 # LUKS + LVM filesystems
 # As defined by 'curios-install' when crypt full disk option is activated.
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   # Declare options

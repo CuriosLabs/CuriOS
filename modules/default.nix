@@ -1,7 +1,7 @@
 # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
 # Imports every other configurations files from here.
 
-{ pkgs, lib, ... }:
+{ ... }:
 {
   imports = [
     ./boot-efi.nix

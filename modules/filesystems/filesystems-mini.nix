@@ -1,7 +1,7 @@
 # Minimal LVM filesystems.
 # As defined by 'curios-install'
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   # Declare options

@@ -1,6 +1,6 @@
 # Networking settings
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   # Declare options
   options = {

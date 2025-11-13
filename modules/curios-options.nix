@@ -1,7 +1,7 @@
 # Must be imported by configuration.nix
 # CuriOS various custom options.
 
-{ config, lib, ... }:
+{ lib, ... }:
 
 {
   # Declare options

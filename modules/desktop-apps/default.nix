@@ -1,7 +1,7 @@
 # Imports every other configurations files from here.
 # webapp-*.nix and desktop-*.nix are imported in different nix files.
 
-{ pkgs, lib, ... }:
+{ ... }:
 {
   imports = [
     ./basics.nix
