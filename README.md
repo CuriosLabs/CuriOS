@@ -80,23 +80,23 @@ Most useful desktop shortcuts:
 5. Answer the various dialog questions:
    <details>
       <summary>Click to see 'choose disk' dialog options</summary>
-   
+
       ![CuriOS installation choose disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
    </details>
    The full disk encryption option is **HIGHLY RECOMMENDED**.
    <details>
       <summary>Click to see 'full disk encryption' dialog</summary>
-   
+
       ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
    </details>
 6. If everything went according to plan, reboot (and remember to remove USB media installer).
    <details>
       <summary>Click to see reboot dialog</summary>
-   
+
       ![CuriOS install reboot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
    </details>
 7. **Enjoy!**
- 
+
 > [!IMPORTANT]
 > Your temporary password is **"changeme"**.
 > You can now change it, within COSMIC desktop: click on top right power button, then Parameters > System & Accounts > Users > "Your Account Name" > Change password.
@@ -114,7 +114,7 @@ But most importantly you can edit the Curi*OS* options settings from the menu `S
 
 For example, you want to game and install Steam, Heroic launcher, Discord and more? Set: `gaming.enable` to `true;`, as seen below:
 ![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
-Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will then launch a system update if you saved any change.
+Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will then made a system update.
 
 You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.05&size=50&sort=relevance&type=packages) and add it to `/etc/nixos/settings.nix`.
 
@@ -122,10 +122,10 @@ You want a package not in one of the already pre-configured [modules](https://gi
 When a new version of Curi*OS* is available, you will see a pop-up appear on your desktop:
 ![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
 
-To start the system upgrade, launch `curios-manager` from a terminal (shortcut: Super+Return) and click on the `Upgrade` option.
+To start the system upgrade, launch `curios-manager` from a terminal (shortcut: Super+Return) and choose the `👆Upgrade` option.
 
 ### Flatpak / desktop apps installation
-You can also install Linux applications as flatpak. [Flathub](https://flathub.org/) and COSMIC repositories come pre-installed by default. You can also use the "COSMIC store" app (it is sourced with flathub and COSMIC repos) as seen below:
+You can also install Linux applications as flatpak. [Flathub](https://flathub.org/) and COSMIC repositories come pre-installed by default. Use the "COSMIC store" app as seen below:
 ![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
 
 ### Dot files
