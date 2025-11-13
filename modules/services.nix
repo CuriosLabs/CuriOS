@@ -93,11 +93,11 @@
     # systemd config
     systemd = {
       # Systemd settings for NixOS channel 25.05
-      extraConfig = "DefaultTimeoutStopSec=10s"; # Reduce timeout waiting to 10sec
+      #extraConfig = "DefaultTimeoutStopSec=10s"; # Reduce timeout waiting to 10sec
       # Systemd settings for NixOS channel 25.11
-      #settings.Manager = {
-      #  DefaultTimeoutStopSec = "10s";
-      #};
+      settings.Manager = {
+        DefaultTimeoutStopSec = "10s";
+      };
       # Flatpak system, add repo
       services.flatpak-repo = {
         enable = true;
