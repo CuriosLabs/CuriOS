@@ -28,6 +28,7 @@
       lld
       lswt
       isocodes
+      xdg-utils
     ];
     # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
 
@@ -40,6 +41,7 @@
     xdg = {
       icons.enable = true;
       mime.enable = true;
+      portal.xdgOpenUsePortal = true; # Set $NIXOS_XDG_OPEN_USE_PORTAL to 1 - could fix some bugs on flatpak usage of xdg-open.
     };
   };
 }
