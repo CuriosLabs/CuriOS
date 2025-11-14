@@ -41,7 +41,6 @@
     xdg = {
       icons.enable = true;
       mime.enable = true;
-      portal.xdgOpenUsePortal = true; # Set $NIXOS_XDG_OPEN_USE_PORTAL to 1 - could fix some bugs on flatpak usage of xdg-open.
     };
   };
 }
