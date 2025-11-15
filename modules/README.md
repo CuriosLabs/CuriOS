@@ -87,6 +87,7 @@ curios = {
         mistral.enable = true; # Mistral LeChat web app
       };
       chat = {
+        signal.enable = false; # Signal.org desktop app
         whatsapp.enable = true; # WhatsApp web app
       };
     };

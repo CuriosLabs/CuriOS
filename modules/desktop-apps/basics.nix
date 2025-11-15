@@ -83,6 +83,11 @@
         };
       };
       chat = {
+        signal.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Signal.org desktop app.";
+        };
         whatsapp.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -110,7 +115,6 @@
       pkgs.gparted
       pkgs.libsecret
       pkgs.polkit_gnome
-      pkgs.signal-desktop
       pkgs.vlc
       pkgs.yubioath-flutter
     ]
@@ -144,6 +148,9 @@
     ]
     ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable [
       pkgs.vivaldi
+    ]
+    ++ lib.optionals config.curios.desktop.apps.chat.signal.enable [
+      pkgs.signal-desktop
     ]
     ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable [
       (import ./webapp-whatsapp.nix)
