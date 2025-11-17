@@ -82,7 +82,7 @@ in
       };
       crypto = {
         enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
-        btc.enable = false; # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        btc.enable = false; # REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
       };
       devops = {
         enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
