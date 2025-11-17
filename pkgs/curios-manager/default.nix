@@ -1,16 +1,16 @@
 # CuriOS Manager package.
 # Various tools to manage your CuriOS system.
 
-{ lib, stdenvNoCC, fetchFromGitHub, pkgs }:
+{ lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.11";
+  version = "0.13";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-JB68Y7QO/FIq+YhayEZOpwnqy/WjtBKW4gsMGlGWF3o=";
+    hash = "sha256-CJxkEOLu2eWgMujj0+JsLd38PxDnxSg37hcPc2LZNH0=";
   };
 
   buildInputs = [
@@ -26,6 +26,7 @@ stdenvNoCC.mkDerivation rec {
     pkgs.terminaltexteffects
     pkgs.wget
   ];
+  nativeBuildInputs = [ makeWrapper ];
   dontPatch = true;
   dontConfigure = true;
   dontBuild = true;
@@ -46,6 +47,8 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p  $out/bin/
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-manager
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-update
+    wrapProgram $out/bin/curios-manager --prefix PATH : ${lib.makeBinPath buildInputs}
+    wrapProgram $out/bin/curios-update --prefix PATH : ${lib.makeBinPath buildInputs}
 
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
