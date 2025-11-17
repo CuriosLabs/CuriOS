@@ -82,7 +82,7 @@ in
       };
       crypto = {
         enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
-        btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.
+        btc.enable = false; # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
       };
       devops = {
         enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
@@ -120,7 +120,7 @@ in
         mistral.enable = true; # Mistral LeChat web app
       };
       chat = {
-        signal.enable = false; # Signal.org desktop app
+        signal.enable = true; # Signal.org desktop app
         whatsapp.enable = true; # WhatsApp web app
       };
     };
