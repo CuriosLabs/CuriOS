@@ -28,6 +28,7 @@
     # Services:
     services = {
       # Firmware update - See: https://wiki.nixos.org/wiki/Fwupd
+      # Required by curios-manager
       fwupd.enable = true;
       # X server
       xserver = {

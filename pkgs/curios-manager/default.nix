@@ -4,15 +4,28 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.10";
+  version = "0.11";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-KTeACgqMEcZ7Iy5x2iv8Rx9YvxkONf4dZ5FdzFLRwb8=";
+    hash = "sha256-JB68Y7QO/FIq+YhayEZOpwnqy/WjtBKW4gsMGlGWF3o=";
   };
 
+  buildInputs = [
+    pkgs.curl
+    pkgs.duf
+    pkgs.dust
+    pkgs.fastfetch
+    pkgs.gnutar
+    pkgs.gum
+    pkgs.jq
+    pkgs.libnotify
+    pkgs.smartmontools
+    pkgs.terminaltexteffects
+    pkgs.wget
+  ];
   dontPatch = true;
   dontConfigure = true;
   dontBuild = true;

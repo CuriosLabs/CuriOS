@@ -7,10 +7,6 @@ in {
   environment.systemPackages = [
     curios-dotfiles
     curios-manager
-    # TODO: move below requirements to CuriosLabs/curios-manager
-    pkgs.libnotify # required by curios-update
-    pkgs.terminaltexteffects # required by curios-manager
-    pkgs.gum # required by curios-manager
   ];
 
   # 'curios-update --check' as a systemd service/timer

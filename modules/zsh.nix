@@ -16,13 +16,14 @@
   config = lib.mkIf config.curios.shell.zsh.enable {
     environment.systemPackages = with pkgs; [
       # For ZSH:
-      fzf # fuzzy finder
-      jq # JSON parser
-      eza # ls replacement
       bat # cat replacement
       duf # df replacement
       dust # du replacement
+      eza # ls replacement
       fd # find alternative
+      fzf # fuzzy finder
+      jq # JSON parser
+      terminaltexteffects
       zoxide # Better cd
     ];
     # ZSH
