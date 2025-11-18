@@ -58,20 +58,20 @@ Most useful desktop shortcuts:
 
 1. Get the latest Curi*OS* 25.05 Minimal ISO image:
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/curios-minimal_25.05.2_amd64-intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/CuriOS_25.05.2_amd64_intel.iso
    ```
    Download and check iso signature:
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/curios-minimal_25.05.2_amd64-intel.iso.sha256
-   sha256sum --check curios-minimal_*.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/CuriOS_25.05.2_amd64_intel.iso.sha256
+   sha256sum --check CuriOS_*.iso.sha256
    ```
 
 2. Burn it on a USB stick with [Balena Etcher](https://etcher.balena.io/#download-etcher), [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
    ```bash
    # Good old dd:
-   sudo dd if=curios-minimal_25.05.2_amd64-intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_25.05.2_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
    # or shiny caligula:
-   caligula burn -s $(cat ./curios-minimal_25.05.2_amd64-intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_25.05.2_amd64_intel.iso.sha256)
    ```
    Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
 3. Boot your machine on the USB stick (F8 or F12 key on startup, see your motherboard manufacturer's instructions). An internet connection is *REQUIRED* to perform the installation!
