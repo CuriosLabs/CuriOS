@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.13";
+  version = "0.14";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-CJxkEOLu2eWgMujj0+JsLd38PxDnxSg37hcPc2LZNH0=";
+    hash = "sha256-4Q8pCXE8A5W9H5klGdzNJ0xyBW5Ykq997DnidqchcAI=";
   };
 
   buildInputs = [
