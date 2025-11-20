@@ -8,6 +8,11 @@
     curios.desktop.apps.office = {
       enable = lib.mkOption {
         type = lib.types.bool;
+        default = true;
+        description = "Default office desktop apps - Obsidian.";
+      };
+      libreoffice.enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
         description = "LibreOffice suite desktop apps.";
       };
@@ -34,6 +39,9 @@
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.office.enable {
     environment.systemPackages = [
+      pkgs.obsidian
+    ]
+    ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable [
       pkgs.libreoffice
     ]
     ++ lib.optionals config.curios.desktop.apps.office.conferencing.slack.enable [
