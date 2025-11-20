@@ -60,7 +60,9 @@ done
 sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./../configuration.nix
 sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./../pkgs/curios-sources/default.nix
 if [[ "$branch" == release* ]]; then
-  git commit -a -m "Release ${releaseNumber}"
+  if [[ $(git status --porcelain --untracked-files=no | wc -l) -gt 0 ]]; then
+    git commit -a -m "Release ${releaseNumber}"
+  fi
 fi
 
 # Build packages
