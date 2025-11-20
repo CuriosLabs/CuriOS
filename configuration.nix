@@ -107,16 +107,19 @@
     if config.curios.hardware.nvidiaGpu.enable then
       true
     else
-      if config.curios.desktop.apps.gaming.enable then
+      if config.curios.desktop.apps.office.enable then
         true
       else
-        if config.curios.desktop.apps.devops.rust.enable then
+        if config.curios.desktop.apps.gaming.enable then
           true
         else
-          if config.curios.desktop.apps.devops.go.enable then
+          if config.curios.desktop.apps.devops.rust.enable then
             true
           else
-            false
+            if config.curios.desktop.apps.devops.go.enable then
+              true
+            else
+              false
   ;
 
   system = {

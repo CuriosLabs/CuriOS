@@ -38,7 +38,6 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.office.enable {
-    nixpkgs.config.allowUnfree = lib.mkForce true; # unfree packages required for obsidian
     environment.systemPackages = [
       pkgs.obsidian
     ]
