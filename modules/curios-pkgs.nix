@@ -1,13 +1,12 @@
 # Custom made packages for CuriOS
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
-  curios-update = pkgs.callPackage ../pkgs/curios-update {};
+  curios-manager = pkgs.callPackage ../pkgs/curios-manager {};
 in {
   environment.systemPackages = [
     curios-dotfiles
-    curios-update
-    pkgs.libnotify # required by curios-update
+    curios-manager
   ];
 
   # 'curios-update --check' as a systemd service/timer

@@ -1,18 +1,14 @@
 # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
 # Imports every other configurations files from here.
 
-{ pkgs, lib, ... }:
+{ ... }:
 {
   imports = [
     ./boot-efi.nix
     ./cosmic.nix
     ./curios-options.nix
     ./curios-pkgs.nix
-    ./desktop-apps/basics.nix
-    ./desktop-apps/devops.nix
-    ./desktop-apps/gaming.nix
-    ./desktop-apps/office.nix
-    ./desktop-apps/studio.nix
+    ./desktop-apps/default.nix
     ./fonts.nix
     ./hardened/default.nix
     ./hardware/amd-gpu.nix

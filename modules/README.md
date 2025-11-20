@@ -8,6 +8,10 @@ curios = {
       hostname = "CuriOS";
       i18n.locale = "en_US.UTF-8";
       keyboard = "us";
+      pkgs = {
+        autoupgrade.enable = true; # Enable automated packages update and cleanup
+        gc.enable = true; # Enable automated packages garbage collect.
+      };
       timeZone = "Etc/GMT";
     };
     ### Activate or deactivate CuriOS modules/ from here:
@@ -35,27 +39,69 @@ curios = {
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects, ProtonVPN gui.
+      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      browser = {
+        chromium.enable = false; # Ungoogled Chromium Web Browser
+        firefox.enable = false; # Mozilla Firefox Web Browser
+        librewolf.enable = false; # Fork of Firefox Web Browser
+        vivaldi.enable = false; # Vivaldi Web Browser
+      };
+      crypto = {
+        enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.
+      };
       devops = {
-        enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
-        networks.enable = false; # Nmap, Zenmap, Wireshark
+        enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
+        cloudflared.enable = false; # Cloudflare tunnel client
+        editor = {
+          zed.enable = true; # Zed.dev code editor
+          vscode.enable = false; # MS code editor
+        };
         go.enable = false; # Go, gofmt, JetBrains GoLand
+        javascript.enable = false; # NodeJS (npm)
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
-      office.enable = false; # LibreOffice suite
+      office = {
+        enable = true; # Default office desktop apps - Obsidian (notes/ideas).
+        libreoffice.enable = false; #LibreOffice suite
+        conferencing = {
+          slack.enable = false; # Slack.com webapp
+          teams.enable = false; # MS Teams webapp
+          zoom.enable = false; # Zoom.us video conference app
+        };
+      };
+      vpn = {
+        proton.enable = false; # ProtonVPN with GUI
+        tailscale.enable = false; # tailscale.com VPN
+        mullvad.enable = false; # mullvad VPN GUI
+      };
+      ai = {
+        chatgpt.enable = true; # ChatGPT web app
+        claude.enable = true; # Claude web app
+        gemini.enable = false; # Google Gemini CLI
+        grok.enable = true; # Grok web app
+        mistral.enable = true; # Mistral LeChat web app
+      };
+      chat = {
+        signal.enable = true; # Signal.org desktop app
+        whatsapp.enable = true; # WhatsApp web app
+      };
     };
     services = {
       enable = true; # Flatpak + flathub/cosmic repos, pipewire
       printing.enable = false; # CUPS
       sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama with mistral-nemo, open-webui
+      ai.enable = false; # Ollama and open-webui services (local AI) - ChatGPT, Grok, Mistral, Ollama(local) webapps.
     };
     virtualisation = {
-      enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager
+      enable = false; # QEMU/KVM, libvirt, virt-manager
+      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
+      podman.enable = false; # Podman containers, replacement for Docker.
       wine.enable = false; # Wine 32 and 64 bits with Wayland support.
     };
     hardened = {

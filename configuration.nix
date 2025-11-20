@@ -15,12 +15,12 @@
     ##################### Step 2: Modules #####################
     # Import all modules, activate or deactivate them in settings.nix
     ./modules/default.nix
-    ##################### Step 3: User #####################
-    # Me
-    ./user-me.nix
+    ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
-  ];
+  ]
+  ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
+  # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -78,6 +78,7 @@
     pinentry-curses
     gnused
     pciutils
+    smartmontools
   ]
   ++ lib.optionals config.services.desktopManager.cosmic.xwayland.enable [
     wl-clipboard
@@ -106,16 +107,25 @@
     if config.curios.hardware.nvidiaGpu.enable then
       true
     else
-      if config.curios.desktop.apps.gaming.enable then
+      if config.curios.desktop.apps.office.enable then
         true
       else
-        false
+        if config.curios.desktop.apps.gaming.enable then
+          true
+        else
+          if config.curios.desktop.apps.devops.rust.enable then
+            true
+          else
+            if config.curios.desktop.apps.devops.go.enable then
+              true
+            else
+              false
   ;
 
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
-      enable = true;
+      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
       dates = "03:40";
       randomizedDelaySec = "3min";
       allowReboot = false; # Reboot on new kernel, initrd or kernel module.
@@ -127,13 +137,13 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.05.1";
+    nixos.variant_id = "25.05.2";
   };
 
   # Collect garbage
   nix = {
     gc = {
-      automatic = true;
+      automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
       dates = "daily";
       options = "--delete-older-than 7d";
     };

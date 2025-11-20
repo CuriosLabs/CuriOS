@@ -27,7 +27,10 @@
       jq
       lld
       lswt
+      isocodes
+      xdg-utils
     ];
+    # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
 
     # Env variables
     environment.sessionVariables = {

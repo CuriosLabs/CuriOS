@@ -4,10 +4,18 @@
 # Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 # See: https://nixos.org/manual/nixos/stable/
+# See: https://github.com/CuriosLabs/CuriOS
 # man configuration.nix
+#
+# Use `sudo nixos-rebuild switch` command in a terminal after an update in this file.
 
 { config, lib, pkgs, ... }:
 let
+  # Following variables can be edited.
+  # Default user password. Change it later, after your first boot with COSMIC Parameters > System & Accounts
+  # OR with the 'passwd' command line.
+  # Do **NOT** set your real password HERE !
+  password = "changeme";
   # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
   # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
   # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
@@ -17,6 +25,14 @@ let
     package = pkgs.protonvpn-gui;
     appendExtraArgs = [ "--start-minimized" ]; # append extra arguments to protonvpn-app Exec
   };
+  # Autostart Steam client in big picture mode example.
+  # add 'steam-bigpicture-autostart' to "environment.systemPackages" below.
+  # desktop.apps.gaming.enable option set to true is required. See below.
+  steam-bigpicture-autostart = pkgs.makeAutostartItem {
+    name = "steam";
+    package = pkgs.steam;
+    appendExtraArgs = [ "-bigpicture" ];
+  };
 in
 {
   ### CuriOS options settings goes here:
@@ -25,6 +41,10 @@ in
       hostname = "CuriOS";
       i18n.locale = "en_US.UTF-8";
       keyboard = "us";
+      pkgs = {
+        autoupgrade.enable = true; # Enable automated packages update and cleanup
+        gc.enable = true; # Enable automated packages garbage collect.
+      };
       timeZone = "Etc/GMT";
     };
     ### Activate or deactivate CuriOS modules/ from here:
@@ -40,7 +60,7 @@ in
       # EXPERIMENTAL - laptop battery saver
       laptop.enable = false;
     };
-    # Required modules:
+    # REQUIRED modules:
     bootefi.enable = lib.mkDefault true;
     bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
     desktop.cosmic.enable = lib.mkDefault true;
@@ -52,27 +72,69 @@ in
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects, ProtonVPN gui.
+      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
       appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      browser = {
+        chromium.enable = false; # Ungoogled Chromium Web Browser
+        firefox.enable = false; # Mozilla Firefox Web Browser
+        librewolf.enable = false; # Fork of Firefox Web Browser
+        vivaldi.enable = false; # Vivaldi Web Browser
+      };
+      crypto = {
+        enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        btc.enable = false; # REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+      };
       devops = {
-        enable = false; # Required by desktop.apps.devops options below. + Cloudlfared
-        networks.enable = false; # Nmap, Zenmap, Wireshark
+        enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
+        cloudflared.enable = false; # Cloudflare tunnel client
+        editor = {
+          zed.enable = true; # Zed.dev code editor
+          vscode.enable = false; # MS code editor
+        };
         go.enable = false; # Go, gofmt, JetBrains GoLand
+        javascript.enable = false; # NodeJS (npm)
         python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
       };
       gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
       studio.enable = false; # OBS, Audacity, DaVinci Resolve
-      office.enable = false; # LibreOffice suite
+      office = {
+        enable = true; # Default office desktop apps - Obsidian (notes/ideas).
+        libreoffice.enable = false; #LibreOffice suite
+        conferencing = {
+          slack.enable = false; # Slack.com webapp
+          teams.enable = false; # MS Teams webapp
+          zoom.enable = false; # Zoom.us video conference app
+        };
+      };
+      vpn = {
+        proton.enable = false; # ProtonVPN with GUI
+        tailscale.enable = false; # tailscale.com VPN
+        mullvad.enable = false; # mullvad VPN GUI
+      };
+      ai = {
+        chatgpt.enable = true; # ChatGPT web app
+        claude.enable = true; # Claude web app
+        gemini.enable = false; # Google Gemini CLI
+        grok.enable = true; # Grok web app
+        mistral.enable = true; # Mistral LeChat web app
+      };
+      chat = {
+        signal.enable = true; # Signal.org desktop app
+        whatsapp.enable = true; # WhatsApp web app
+      };
     };
     services = {
-      enable = true; # Flatpak + flathub/cosmic repos, pipewire
+      enable = true; # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
       printing.enable = false; # CUPS
       sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama with mistral-nemo, open-webui
+      ai.enable = false; # Ollama local AI with open-webui
     };
     virtualisation = {
-      enable = false; # docker, docker buildx, docker-compose, QEMU/KVM, libvirt, virt-manager
+      enable = false; # QEMU/KVM, libvirt, virt-manager
+      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
+      podman.enable = false; # Podman containers, replacement for Docker.
       wine.enable = false; # Wine 32 and 64 bits with Wayland support.
     };
     hardened = {
@@ -101,13 +163,52 @@ in
   ### NixOS packages
   environment.systemPackages = [
     #protonvpn-gui-autostart # Uncomment this line to autostart protonvpn-gui on user graphical session.
-    # Add your packages pkgs.foobar here:
+    #steam-bigpicture-autostart # Uncomment this line to autostart Steam client in big picture mode.
+    # Add your packages pkgs.foobar here - find package name at https://search.nixos.org/packages
+    #pkgs.inkscape-with-extensions # Uncomment this line to install Inkscape SVG image editor.
   ];
 
   ### Change user settings here:
-  users.users.nixos = {
-    description = "Me";
-    #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here
+  users = {
+    mutableUsers = true;
+    # Create plugdev group to access some USB devices without root privileges
+    extraGroups.plugdev = { };
+    # Define a user account
+    # <user> name and description will be updated by curios-install during ISO install
+    users.nixos = {
+      isNormalUser = true;
+      initialPassword = password;
+      description = "My Name";
+      extraGroups =  [
+        "wheel"
+        "audio"
+        "sound"
+        "video"
+        "plugdev"
+        "dialout"
+      ]
+      ++ lib.optionals config.curios.desktop.apps.crypto.enable [
+        "tty"
+      ]
+      ++ lib.optionals config.curios.networking.enable [
+        "networkmanager"
+      ]
+      ++ lib.optionals config.curios.virtualisation.enable [
+        "libvirtd"
+        "qemu-libvirtd"
+        "kvm"
+        "input"
+        "disk"
+      ]
+      ++ lib.optionals config.curios.virtualisation.docker.enable [
+        "docker"
+      ]
+      ++ lib.optionals config.curios.virtualisation.podman.enable [
+        "podman"
+      ];
+      useDefaultShell = true;
+      #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here
+    };
   };
 
   ### Change general settings here:
@@ -163,5 +264,6 @@ in
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
+  # NixOS original channel (at first install).
   system.stateVersion = "25.05"; # Did you read the comment?
 }

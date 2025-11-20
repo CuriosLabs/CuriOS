@@ -27,6 +27,9 @@
   config = lib.mkIf config.curios.services.enable {
     # Services:
     services = {
+      # Firmware update - See: https://wiki.nixos.org/wiki/Fwupd
+      # Required by curios-manager
+      fwupd.enable = true;
       # X server
       xserver = {
         enable = lib.mkDefault true;
@@ -90,7 +93,12 @@
 
     # systemd config
     systemd = {
+      # Systemd settings for NixOS channel 25.05
       extraConfig = "DefaultTimeoutStopSec=10s"; # Reduce timeout waiting to 10sec
+      # Systemd settings for NixOS channel 25.11
+      #settings.Manager = {
+      #  DefaultTimeoutStopSec = "10s";
+      #};
       # Flatpak system, add repo
       services.flatpak-repo = {
         enable = true;
@@ -140,8 +148,8 @@
     };
 
     # Other
-    programs.ssh.startAgent = true; # SSH start-agent - not compatible with gnupg.agent SSH
+    programs.ssh.startAgent = true; # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
+    services.gnome.gnome-keyring.enable = lib.mkForce false;
     security.rtkit.enable = true; # realtime scheduling priority for pipewire.
-
   };
 }

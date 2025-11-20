@@ -11,8 +11,6 @@
 # Test it with:
 # nix-shell -p dialog parted git
 
-# TODO: check internet connection
-
 #------------- Colors -------------#
 readonly RED="\033[31;1m"          # Red and bold
 readonly GREEN="\033[32;1m"        # Green and bold
@@ -25,7 +23,7 @@ readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
 readonly NC="\033[0m"              # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.4";
+readonly SCRIPT_VERSION="0.5";
 CURIOS_INSTALL_PATH=".";
 CURIOS_SRC_PATH=".";
 SCRIPT_PATH="$(dirname "$0")"
@@ -147,10 +145,6 @@ if [ ! -f "$CURIOS_SRC_PATH"/settings.nix ]; then
   echo -e "${RED}settings.nix file not found!${NC}"
   exit 1
 fi
-if [ ! -f "$CURIOS_SRC_PATH"/user-me.nix ]; then
-  echo -e "${RED}user-me.nix file not found!${NC}"
-  exit 1
-fi
 if [ ! -d "$CURIOS_SRC_PATH"/modules/ ]; then
   echo -e "${RED}modules directory not found!${NC}"
   exit 1
@@ -176,12 +170,20 @@ if ! available cryptsetup; then
   exit 2
 fi
 if ! available mkfs; then
-  eho -e "${RED}mkfs command not found!${NC}"
+  echo -e "${RED}mkfs command not found!${NC}"
   exit 2
 fi
 if ! available dialog; then
-  eho -e "${RED}dialog command not found!${NC}"
+  echo -e "${RED}dialog command not found!${NC}"
   exit 2
+fi
+
+#------------- Check internet connectivity
+if nc -zw1 github.com 443; then
+  echo -e "Internet connectivity: ${GREEN}Check${NC}"
+else
+  echo -e "${RED}No internet connectivity - an internet connection is required!${NC}"
+  exit 1
 fi
 
 # This script must be run as root
@@ -899,9 +901,9 @@ format_disk () {
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}UEFI partitioning...${NC}"
   parted --script "$SELECTED_DISK" mklabel gpt
-  parted --script "$SELECTED_DISK" mkpart ESP fat32 1MB 512MB
+  parted --script "$SELECTED_DISK" mkpart ESP fat32 1MB 1024MB
   parted --script "$SELECTED_DISK" set 1 esp on
-  parted --script "$SELECTED_DISK" mkpart system 512MB 100%
+  parted --script "$SELECTED_DISK" mkpart system 1024MB 100%
 
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
@@ -955,7 +957,7 @@ format_disk () {
   #pvremove "$LVM_MAPPED_DEVICE"
 }
 
-#------------- CuriOS dotfiles install, see: https://github.com/VideoCurio/nixos-dotfiles
+#------------- CuriOS dotfiles install, see: https://github.com/CuriosLabs/curios-dotfiles
 dotfiles_install () {
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
@@ -1009,15 +1011,17 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Preparing configurations files...${NC}"
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/logo.txt
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/ "$CURIOS_SRC_PATH"/modules/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.png
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.svg
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/filesystems/ "$CURIOS_SRC_PATH"/modules/filesystems/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardened/ "$CURIOS_SRC_PATH"/modules/hardened/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardware/ "$CURIOS_SRC_PATH"/modules/hardware/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/platforms/ "$CURIOS_SRC_PATH"/modules/platforms/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-dotfiles/ "$CURIOS_SRC_PATH"/pkgs/curios-dotfiles/default.nix
-  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-update/ "$CURIOS_SRC_PATH"/pkgs/curios-update/default.nix
-  install -D -m 555 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-update/bin/ "$CURIOS_SRC_PATH"/pkgs/curios-update/bin/curios-update
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager/ "$CURIOS_SRC_PATH"/pkgs/curios-manager/default.nix
 
   # Update user language:
   sed "s/i18n\.locale = \".*/i18n.locale = \"${SELECTED_LOCALE}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
@@ -1026,8 +1030,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   # Update time zone
   sed "s/timeZone = \".*/timeZone = \"${SELECTED_TZ//\//\\\/}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update user name
-  sed "s/users\.users\..*/users.users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/user-me.nix
-  sed "s/users\.users\..*/users.users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update hostname
   sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
@@ -1052,6 +1055,8 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   elif [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "Nvidia" ]]; then
     echo "Enabling Nvidia GPU..."
     sed 's/nvidiaGpu\.enable = .*/nvidiaGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    # Switch to LTS kernel by default for Nvidia GPU
+    sed 's/bootefi\.kernel\.latest = .*/bootefi.kernel.latest = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
   else
     echo "Disabling GPU..."
     sed 's/amdGpu\.enable = .*/amdGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
@@ -1061,6 +1066,15 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}";
+  # Configure Nix channel
+  NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' "$NIXOS_CONFIG_DIR"/configuration.nix)
+  if [ -z "$NIX_CHANNEL_URL" ]; then
+    echo -e "${RED}Nix channel not found in configuration.nix!${NC}"
+    exit 1
+  fi
+  echo "Adding channel: $NIX_CHANNEL_URL"
+  nix-channel --add "$NIX_CHANNEL_URL" nixos
+  nix-channel --update
   nixos-install --cores 0 --no-root-passwd
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
     dotfiles_install
@@ -1074,7 +1088,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     --no-collapse \
     --clear \
     --colors \
-    --msgbox "\Zb\Z2CuriOS was successfully installed! \Zn\nYou can now reboot." $DIALOG_HEIGHT $DIALOG_WIDTH \
+    --msgbox "\Zb\Z2CuriOS was successfully installed! \Zn\nRemember to remove USB installer!" $DIALOG_HEIGHT $DIALOG_WIDTH \
     2>&1 1>&3)
   exit_status=$?
   # Close file descriptor 3

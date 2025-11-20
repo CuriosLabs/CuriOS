@@ -8,18 +8,38 @@
     curios.desktop.apps.devops = {
       enable = lib.mkOption {
         type = lib.types.bool;
+        default = true;
+        description = "Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix.";
+      };
+      cloudflared.enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
-        description = "Desktop apps for developers.";
+        description = "Cloudflare tunnel client.";
+      };
+      editor.zed.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Zed - High-performance editor written in Rust.";
+      };
+      editor.vscode.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Code editor by Microsoft.";
       };
       go.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description = "Go, gofmt and JetBrains GoLand.";
       };
+      javascript.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "NodeJS (npm).";
+      };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Python3.12, pip3 and JetBrains PyCharm Community.";
+        description = "Python3.12, pip3, UV and JetBrains PyCharm Community.";
       };
       rust.enable = lib.mkOption {
         type = lib.types.bool;
@@ -48,7 +68,6 @@
     # other dev apps
     environment.systemPackages = with pkgs; [
       # Devops
-      cloudflared
       git-who
       gh
       whois
@@ -57,13 +76,17 @@
       # Nix linter
       statix
       #lefthook
-      # VNC
-      remmina
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
+      cloudflared
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.go.enable [
       go
       golangci-lint
       jetbrains.goland
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable [
+      nodejs_22
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
       # Python3
@@ -71,19 +94,36 @@
       python312Packages.pip
       python312Packages.setuptools
       python312Packages.cryptography
-      jetbrains.pycharm-community
+      python312Packages.uv
+      jetbrains.pycharm-community-bin
       ruff
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
       # Rust
       rustup # provide cargo, rustc, rust-analyzer and more
+      cargo-c
       jetbrains.rust-rover
+      # build tools
+      clang
+      libxkbcommon
+      llvmPackages_20.bintools
+      pkg-config
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.networks.enable [
       # Networks
       nmap
       zenmap
       wireshark # TODO: add user to wireshark group
+      # VNC
+      remmina
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [
+      nil
+      nixd
+      zed-editor
+    ]
+    ++ lib.optionals config.curios.desktop.apps.devops.editor.vscode.enable [
+      vscode-fhs
     ];
   };
 }

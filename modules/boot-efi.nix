@@ -50,6 +50,12 @@
       # It's still possible to open the bootloader list by pressing any key
       # It will just not appear on screen unless a key is pressed
       #loader.timeout = 0;
+
+      # Force disabling ZFS support (for unsupported latest kernel usage)
+      supportedFilesystems = {
+        btrfs = lib.mkForce false;
+        zfs = lib.mkForce false;
+      };
     };
   };
 }

@@ -10,11 +10,11 @@ let
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
 in {
   imports = [
-    "${modulesPath}/installer/cd-dvd/installation-cd-minimal-new-kernel.nix"
-    #"${modulesPath}/installer/cd-dvd/installation-cd-minimal-combined.nix"
+    #"${modulesPath}/installer/cd-dvd/installation-cd-minimal-new-kernel.nix"
+    "${modulesPath}/installer/cd-dvd/installation-cd-minimal-combined.nix"
     # Provide an initial copy of the NixOS channel so that the user
     # doesn't need to run "nix-channel --update" first.
-    "${modulesPath}/installer/cd-dvd/channel.nix"
+    #"${modulesPath}/installer/cd-dvd/channel.nix"
   ];
 
   # Enabling or disabling modules:
@@ -35,5 +35,11 @@ in {
   console.font = "LatArCyrHeb-16";
 
   networking.hostName = "CuriOS";
+
+  programs.bash.interactiveShellInit = ''
+  echo "Launching CuriOS installer..."
+  sleep 5
+  sudo curios-install
+  '';
 }
 

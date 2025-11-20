@@ -1,6 +1,6 @@
 # x86_64 AMD, Intel configurations
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   # Declare options
   options = {

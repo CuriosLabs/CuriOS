@@ -1,7 +1,7 @@
 # Must be imported by configuration.nix
 # CuriOS various custom options.
 
-{ config, lib, ... }:
+{ lib, ... }:
 
 {
   # Declare options
@@ -20,6 +20,16 @@
       type = with lib.types; either str path;
       default = "us";
       description = "Set system keyboard map settings.";
+    };
+    curios.system.pkgs.autoupgrade.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable automated packages update and cleanup.";
+    };
+    curios.system.pkgs.gc.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable automated packages garbage collect.";
     };
     curios.system.timeZone = lib.mkOption {
       type = lib.types.str;
