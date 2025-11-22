@@ -73,7 +73,7 @@ in
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
       basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
-      appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      appImage.enable = lib.mkDefault true; # Enabling Linux AppImage
       browser = {
         chromium.enable = false; # Ungoogled Chromium Web Browser
         firefox.enable = false; # Mozilla Firefox Web Browser
