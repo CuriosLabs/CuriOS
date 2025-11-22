@@ -32,6 +32,7 @@ in
       pkgs.python313Packages.pyserial
       pkgs.python312Packages.cbor2
       (import ./webapp-coingecko.nix)
+      (import ./webapp-mempool.nix)
     ]
     ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
       pkgs.bisq2
