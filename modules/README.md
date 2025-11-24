@@ -55,6 +55,7 @@ curios = {
         enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
         cloudflared.enable = false; # Cloudflare tunnel client
         editor = {
+          default.nvim.enable = false; # Set Neovim as the default editor instead of nano.
           zed.enable = true; # Zed.dev code editor
           vscode.enable = false; # MS code editor
         };

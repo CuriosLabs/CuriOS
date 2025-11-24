@@ -16,15 +16,22 @@
         default = false;
         description = "Cloudflare tunnel client.";
       };
-      editor.zed.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Zed - High-performance editor written in Rust.";
-      };
-      editor.vscode.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Code editor by Microsoft.";
+      editor = {
+        default.nvim.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Set Neovim as the default editor instead of nano.";
+        };
+        zed.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Zed - High-performance editor written in Rust.";
+        };
+        vscode.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Code editor by Microsoft.";
+        };
       };
       go.enable = lib.mkOption {
         type = lib.types.bool;
@@ -60,7 +67,7 @@
     programs.neovim =  {
       enable = true;
       package = pkgs.neovim-unwrapped;
-      defaultEditor = false;
+      defaultEditor = config.curios.desktop.apps.devops.editor.default.nvim.enable;
       viAlias = true;
       vimAlias = true;
     };
@@ -76,6 +83,8 @@
       # Nix linter
       statix
       #lefthook
+      # Neovim plugins:
+      vimPlugins.LazyVim
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
       cloudflared
