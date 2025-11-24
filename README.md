@@ -17,6 +17,7 @@ This is my NixOS installer scripts and its configuration files. The desktop envi
 * 🚀 Pop_launcher, launch or switch to every application just with the Super key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget about your mouse, **use Super key combinations for everything!**
 * 📦 Flatpak with **auto-update**. COSMIC and Flathub repos pre-installed.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands. [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
+* ⚡️ Neovim + LazyVim plugin with starter configuration.
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules) for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager, Python3, Rust and more...
 * Modular hardened systemd services configurations files. -WIP-
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.

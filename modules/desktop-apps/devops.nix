@@ -85,6 +85,7 @@
       #lefthook
       # Neovim plugins:
       vimPlugins.LazyVim
+      vimPlugins.nvim-treesitter
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
       cloudflared
