@@ -1,4 +1,6 @@
 [![NixOS 25.05](https://img.shields.io/badge/NixOS-25.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
+
 
 # NixOS + COSMIC = Curi*OS*
 
