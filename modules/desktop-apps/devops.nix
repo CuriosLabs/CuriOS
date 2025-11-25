@@ -86,8 +86,13 @@
       # Neovim plugins / dependencies:
       vimPlugins.LazyVim
       vimPlugins.nvim-treesitter
+      vimPlugins.fzf-lua
       clang
       #libclang ??
+      fd
+      fzf
+      lazygit
+      ripgrep
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
       cloudflared
