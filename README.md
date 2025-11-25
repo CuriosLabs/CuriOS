@@ -1,13 +1,18 @@
-[![NixOS 25.05](https://img.shields.io/badge/NixOS-25.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS 25.11](https://img.shields.io/badge/NixOS-25.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
 
 
-# NixOS + COSMIC = Curi*OS*
+# Curi*OS*
 
-This is my NixOS installer scripts and its configuration files. The desktop environment is [COSMIC](https://system76.com/cosmic/).
+Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the [COSMIC](https://system76.com/cosmic) desktop environment. It ships with everything a modern advanced user need to be productive as quickly as possible on his laptop / desktop.
+Curi*OS* goal is to take advantage of NixOS mechanisms like declarative builds and deployments and its unique approach to system configuration and package management. Curi*OS* also take advantage of COSMIC power to customize UX and theme.
+
+> [!IMPORTANT]
+> **Disclaimer:** This is a work in progress for a NixOS customized install - Development should be considered at a Beta stage.
+> You should be familiar with [NixOS manual](https://nixos.org/manual/nixos/stable/) and [NixOS Wiki](https://nixos.wiki/wiki/Main_Page), for NixOS related questions go to [NixOS discourse](https://discourse.nixos.org/).
+
 ![Curios = NixOS + COSMIC Desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop.png?raw=true "NixOS with COSMIC DE - Curios")
 ![Curios desktop tiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Tiles.png?raw=true "Curios desktop tiles")
-
 
 ------
 
@@ -50,31 +55,27 @@ Most useful desktop shortcuts:
 
 -----
 
-> [!IMPORTANT]
-> **Disclaimer:** This is a work in progress for a NixOS install and a Desktop Environment (COSMIC) still in Alpha stage.
-> You should be familiar with [NixOS manual](https://nixos.org/manual/nixos/stable/) and [NixOS Wiki](https://nixos.wiki/wiki/Main_Page), for NixOS related questions go to [NixOS discourse](https://discourse.nixos.org/).
-
 ## Quick start
 
 > [!WARNING]
 > The installation script will **FORMAT** your disk !!! Backup your data before.
 
-1. Get the latest Curi*OS* 25.05 Minimal ISO image:
+1. Get the latest Curi*OS* 25.11 Minimal ISO image:
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/CuriOS_25.05.2_amd64_intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.0/CuriOS_25.11.0_amd64_intel.iso
    ```
    Download and check iso signature:
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.05.2/CuriOS_25.05.2_amd64_intel.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.0/CuriOS_25.11.0_amd64_intel.iso.sha256
    sha256sum --check CuriOS_*.iso.sha256
    ```
 
 2. Burn it on a USB stick with [Balena Etcher](https://etcher.balena.io/#download-etcher), [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
    ```bash
    # Good old dd:
-   sudo dd if=CuriOS_25.05.2_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_25.11.0_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
    # or shiny caligula:
-   caligula burn -s $(cat ./CuriOS_25.05.2_amd64_intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_25.11.0_amd64_intel.iso.sha256)
    ```
    Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
 3. Boot your machine on the USB stick (F8 or F12 key on startup, see your motherboard manufacturer's instructions). An internet connection is *REQUIRED* to perform the installation!
@@ -119,7 +120,7 @@ For example, you want to game and install Steam, Heroic launcher, Discord and mo
 ![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
 Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will then made a system update.
 
-You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.05&size=50&sort=relevance&type=packages) and add it to `/etc/nixos/settings.nix`.
+You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages) and add it to `/etc/nixos/settings.nix`.
 
 ### System upgrade
 When a new version of Curi*OS* is available, you will see a pop-up appear on your desktop:
@@ -169,7 +170,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## Version
 
-The current version is [25.05.2](https://github.com/CuriosLabs/CuriOS/tree/release/25.05.2) based on a Nixos 25.05 build.
+The current version is [25.11.0](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.0) based on a Nixos 25.11 build.
 
 -----
 
