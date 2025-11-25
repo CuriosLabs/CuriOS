@@ -83,9 +83,11 @@
       # Nix linter
       statix
       #lefthook
-      # Neovim plugins:
+      # Neovim plugins / dependencies:
       vimPlugins.LazyVim
       vimPlugins.nvim-treesitter
+      clang
+      #libclang ??
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable [
       cloudflared
