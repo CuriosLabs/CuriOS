@@ -25,15 +25,14 @@
       # GPU accel
       #acceleration = "false"; # "false": 100% CPU, "cuda": modern Nvidia GPU, "rocm": modern AMD GPU
       acceleration =
-      (
-        if (config.curios.hardware.nvidiaGpu.enable == true) then
+        if config.curios.hardware.nvidiaGpu.enable then
           "cuda"
-        else (
-          if (config.curios.hardware.amdGpu.enable == true) then
+        else
+          if config.curios.hardware.amdGpu.enable then
             "rocm"
-          else "false"
-        )
-      );
+          else
+            "false"
+      ;
     };
     # Open WebUI, see: https://docs.openwebui.com/
     services.open-webui = {
