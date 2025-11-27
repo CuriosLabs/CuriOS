@@ -4,6 +4,7 @@
 { ... }:
 {
   imports = [
+    ./backup.nix
     ./boot-efi.nix
     ./cosmic.nix
     ./curios-options.nix

@@ -89,6 +89,25 @@
           };
         };
       };
+      # TODO: Custom udev rules for USB drive - trigger mounting upon insertion
+      # See: `udisksctl mount -b /dev/sda1` `ls -lh /run/media/${USER}`
+      #udev.extraRules = ''
+      #  # USB drive mount to /media
+      #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+      #'';
+      # OR
+      #services.udev.packages = [
+      #  (pkgs.writeTextFile {
+      #    name = "udisks2-rules-share-mounts";
+      #    text = ''
+      #      ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"
+      #    '';
+      #    destination = "/etc/udev/rules.d/99-udisks2.rules";
+      #  })
+      #];
+      #systemd.tmpfiles.rules = [
+      #  "d /media 0755 root root 99999y"
+      #];
     };
 
     # systemd config

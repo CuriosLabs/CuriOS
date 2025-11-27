@@ -28,6 +28,7 @@ curios = {
       laptop.enable = false;
     };
     # Required modules:
+    backup.enable = lib.mkDefault true; # Enable Restic backup
     bootefi.enable = lib.mkDefault true;
     bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
     desktop.cosmic.enable = lib.mkDefault true;
