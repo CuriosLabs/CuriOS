@@ -1,3 +1,4 @@
+# Marked as DEPRECATED - use modules/filesystems/filesystems-mini-v2.nix instead
 # Minimal LVM filesystems.
 # As defined by 'curios-install'
 

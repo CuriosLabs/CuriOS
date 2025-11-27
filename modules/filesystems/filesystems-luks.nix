@@ -1,3 +1,4 @@
+# Marked as DEPRECATED - use modules/filesystems/filesystems-luks-v2.nix instead
 # LUKS + LVM filesystems
 # As defined by 'curios-install' when crypt full disk option is activated.
 
