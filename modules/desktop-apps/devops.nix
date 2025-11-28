@@ -107,7 +107,7 @@
     ]
     ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
       # Python3
-      python312Full
+      python312
       python312Packages.pip
       python312Packages.setuptools
       python312Packages.cryptography
