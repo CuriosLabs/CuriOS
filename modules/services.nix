@@ -92,6 +92,10 @@
       # TODO: Custom udev rules for USB drive - trigger mounting upon insertion
       # See: `udisksctl mount -b /dev/sda1` `ls -lh /run/media/${USER}`
       #udev.extraRules = ''
+      #  # USB drive mount to /run/media/$USER
+      #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="/run/current-system/sw/bin/udisksctl mount -b $devnode"
+      #'';
+      #udev.extraRules = ''
       #  # USB drive mount to /media
       #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
       #'';
