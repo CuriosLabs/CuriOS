@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-dotfiles";
-  version = "0.7";
+  version = "0.8";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-dotfiles";
     rev = version;
-    hash = "sha256-/fSjFDBz7z4ARfQttUwE1s0YCHuidPEfKvjK0Wf92uY=";
+    hash = "sha256-l0JwJmyqUTDj2BlpHYVbm5QlZs11SmxB+K+DAimktJo=";
   };
 
   dontPatch = true;
@@ -23,6 +23,7 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p  $out/share/
     install -D -m 555 -t $out/bin/ curios-dotfiles
     cp -r .config/ $out/share/
+    install -D -m 644 -t $out/share/ .npmrc
     install -D -m 644 -t $out/share/ .zshrc
     install -D -m 644 -t $out/share/ .zshrc-ai.plugin.zsh
 
