@@ -1,33 +1,48 @@
-# AGENTS.md development guide
+# CuriOS Development Guide
 
-## Project overview
+This guide provides instructions and best practices for developers contributing to the CuriOS project.
 
-- **Project name**: CuriOS
-- **Purpose**: CuriOS is a Linux distribution based on NixOS and the COSMIC desktop environment. It ships with everything a modern advanced user need to be productive as quickly as possible on his laptop / desktop.
+## Project Overview
+
+- **Project Name**: CuriOS
+- **Purpose**: A Linux distribution based on NixOS and the COSMIC desktop environment, designed for modern advanced users to be productive quickly.
 - **Target OS**: NixOS
-- **Main configuration areas**: desktop apps, networking, services.
+- **Main Configuration Areas**: Desktop apps, networking, services.
 
-## Directory structure
+## Directory Structure
 
-- **Nix custom packages**: Custom pkgs goes into `pkgs/` directory and should only contain a `default.nix` file like `pkgs/curios-manager/default.nix` for example.
-- **Nix modular configuration**: use `modules/` directory and it's subdirectories for new modules, like `modules/desktop-apps/`, `modules/filesystems/`, `modules/hardware/` or `modules/platforms/`
-- **Import of nix module**: import files SHOULD be done in `modules/default.nix` not in `configuration.nix`
+- **Nix Custom Packages**: Custom packages should be placed in the `pkgs/` directory, with each package having its own `default.nix` file (e.g., `pkgs/curios-manager/default.nix`).
+- **Nix Modular Configuration**: New modules should be placed in the `modules/` directory and its subdirectories (e.g., `modules/desktop-apps/`, `modules/filesystems/`, `modules/hardware/`, `modules/platforms/`).
+- **Module Imports**: All module imports should be done in `modules/default.nix`, not in `configuration.nix`.
 
-## Coding style and best pratices
+## Coding Style and Best Practices
 
-- **Variable naming**: config options must start with `config.curios` (e.g., `config.curios.desktop.apps.browser.chromium.enable`)
-- **Code style**: Use 2 spaces for tabulation.
-- **Comments**: Add a short descriptive comments to explain complex configurations.
+- **Variable Naming**: Configuration options must start with `config.curios` (e.g., `config.curios.desktop.apps.browser.chromium.enable`).
+- **Code Style**: Use 2 spaces for indentation in Nix files.
+- **Comments**: Add short, descriptive comments to explain complex configurations.
 
 ## Build, Test, and Development Commands
 
-- **Lint nix files**: lint with statix example:`fd ".nix" ./ | xargs -n 1 statix check`
-- **Lint shell scripts**: bash script MUST be check with shellcheck: `shellcheck --color=always -f tty -x example.sh`
-- **Supported version**: NixOS 25.11 or superior.
-- **Test**: test custom Nix packages with: `nix-build && nix-env -i -f default.nix`
+- **Lint Nix Files**: Lint Nix files using `statix`. You can use `fd` to find all `.nix` files:
+  ```bash
+  fd ".nix" . | xargs -n 1 statix check
+  ```
+  If you don't have `fd` installed, you can use `find`:
+  ```bash
+  find . -name "*.nix" -print0 | xargs -0 -n 1 statix check
+  ```
+- **Lint Shell Scripts**: Shell scripts must be checked with `shellcheck`:
+  ```bash
+  shellcheck --color=always -f tty -x your_script.sh
+  ```
+- **Supported Version**: NixOS 25.11 or later.
+- **Test Custom Packages**: Test custom Nix packages with:
+  ```bash
+  nix-build && nix-env -i -f default.nix
+  ```
 
 ## Contributing
 
-- **Project source**: [CuriOS github](https://github.com/CuriosLabs/CuriOS)
-- **Contributing policy**: [CONTRIBUTING.md](https://raw.githubusercontent.com/CuriosLabs/CuriOS/refs/heads/release/25.11.0/CONTRIBUTING.md)
-- **New feature**: Create your "feature" branch (e.g., `git checkout -b feature/AmazingFeature`) - the branch name MUST start with "feature/".
+- **Project Source**: [CuriOS GitHub](https://github.com/CuriosLabs/CuriOS)
+- **Contributing Policy**: See [CONTRIBUTING.md](https://raw.githubusercontent.com/CuriosLabs/CuriOS/refs/heads/release/25.11.0/CONTRIBUTING.md).
+- **Branching Strategy**: For new features, create a branch named `feature/<YourFeatureName>` (e.g., `git checkout -b feature/AmazingFeature`).
