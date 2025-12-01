@@ -9,13 +9,15 @@
     curios.filesystems.luks.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Filesystems with LUKS + LVM as defined by 'curios-install' full disk encryption option.";
+      description =
+        "Filesystems with LUKS + LVM as defined by 'curios-install' full disk encryption option.";
     };
   };
 
   config = lib.mkIf config.curios.filesystems.luks.enable {
     boot.initrd.kernelModules = [ "dm-snapshot" "cryptd" ];
-    boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-label/curiosystem";
+    boot.initrd.luks.devices."cryptroot".device =
+      "/dev/disk/by-label/curiosystem";
 
     fileSystems = {
       "/" = {
@@ -30,6 +32,6 @@
       };
     };
 
-    swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
+    swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
   };
 }
