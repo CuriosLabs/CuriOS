@@ -37,12 +37,13 @@
       timeZone = lib.mkOption {
         type = lib.types.str;
         default = "Europe/Paris";
-        description = "Set system time zone. See <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
-            for a comprehensive list of possible values for this setting.";
+        description = ''
+          Set system time zone. See <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
+                      for a comprehensive list of possible values for this setting.'';
       };
     };
   };
 
   # Declare configuration
-  config = {};
+  config = { };
 }

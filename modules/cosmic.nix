@@ -1,7 +1,6 @@
 # COSMIC desktop environment
 
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.desktop.cosmic.enable = lib.mkOption {
@@ -23,13 +22,7 @@
       package = pkgs.cosmic-greeter;
     };
 
-    environment.systemPackages = with pkgs; [
-      jq
-      lld
-      lswt
-      isocodes
-      xdg-utils
-    ];
+    environment.systemPackages = with pkgs; [ jq lld lswt isocodes xdg-utils ];
     # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
 
     # Env variables
