@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.14";
+  version = "0.15";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-4Q8pCXE8A5W9H5klGdzNJ0xyBW5Ykq997DnidqchcAI=";
+    hash = "sha256-6uFZliRK2NLzAhYKpxA0GUJ3v8WIzk+K7GZ5hItEzlw=";
   };
 
   buildInputs = [
@@ -47,8 +47,12 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p  $out/bin/
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-manager
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-update
-    wrapProgram $out/bin/curios-manager --prefix PATH : ${lib.makeBinPath buildInputs}
-    wrapProgram $out/bin/curios-update --prefix PATH : ${lib.makeBinPath buildInputs}
+    wrapProgram $out/bin/curios-manager --prefix PATH : ${
+      lib.makeBinPath buildInputs
+    }
+    wrapProgram $out/bin/curios-update --prefix PATH : ${
+      lib.makeBinPath buildInputs
+    }
 
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
