@@ -21,7 +21,7 @@ else
     exit 1
   fi
   currentRelease="CuriOS"
-  releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<< "$branch")
+  releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"$branch")
 fi
 
 isoFilename="${currentRelease}_${releaseNumber}_${platform}.iso"
@@ -60,7 +60,7 @@ nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.sys
 
 #### Save and rename ISO file
 cp ./result/iso/nixos-minimal-*.iso "$isoFilePath"
-sha256sum "$isoFilePath" >> "$isoFilePath".sha256
+sha256sum "$isoFilePath" >>"$isoFilePath".sha256
 chmod 0444 "$isoFilePath".sha256
 
 printf "\e[32m Build done...\e[0m\n"
@@ -69,20 +69,24 @@ printf "\e[32m Build done...\e[0m\n"
 gh auth status
 #gh auth login --hostname github.com --git-protocol ssh --web
 while true; do
-read -r -p "Push ISO file to GitHub.com ? (y/n): " yn
-case $yn in
-  [yY] ) echo "gh release upload..."
+  read -r -p "Push ISO file to GitHub.com ? (y/n): " yn
+  case $yn in
+  [yY])
+    echo "gh release upload..."
     git push --set-upstream origin "$branch"
     gh release create "$releaseNumber" --target "$branch" --title "$releaseNumber" --prerelease --generate-notes
     gh release upload "$releaseNumber" "$isoFilePath"
     gh release upload "$releaseNumber" "$isoFilePath".sha256
     #git tag -a "$releaseNumber" -m "Release ${releaseNumber}"
     #git push --tags
-    break;;
-  [nN] ) echo "Proceeding without pushing...";
-    break;;
-  * ) echo "Invalid response";;
-esac
+    break
+    ;;
+  [nN])
+    echo "Proceeding without pushing..."
+    break
+    ;;
+  *) echo "Invalid response" ;;
+  esac
 done
 
 printf "\e[32m All done...\e[0m\n"
