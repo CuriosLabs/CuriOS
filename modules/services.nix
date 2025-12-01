@@ -1,7 +1,6 @@
 # CuriOS services base configuration
 
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.services = {
@@ -40,7 +39,8 @@
           variant = "";
           #options = "eurosign:e,caps:escape";
         };
-        displayManager.sessionCommands = "setxkbmap -layout ${config.curios.system.keyboard}";
+        displayManager.sessionCommands =
+          "setxkbmap -layout ${config.curios.system.keyboard}";
       };
       # OpenSSH server.
       openssh = {
@@ -48,7 +48,8 @@
         settings = {
           PermitRootLogin = "no";
           StrictModes = true;
-          PasswordAuthentication = false; # Set users.users.<name>.openssh.authorizedKeys.keys to your ssh pubkey
+          # Set users.users.<name>.openssh.authorizedKeys.keys to your ssh pubkey
+          PasswordAuthentication = false;
           KbdInteractiveAuthentication = false;
           PrintMotd = true;
           UsePAM = true;
@@ -65,17 +66,13 @@
         alsa.enable = true;
         pulse.enable = true;
         extraConfig.pipewire."92-low-latency" = {
-          "context.properties" = {
-            "default.clock.rate" = 48000;
-          };
+          "context.properties" = { "default.clock.rate" = 48000; };
         };
         extraConfig.pipewire-pulse."92-low-latency" = {
-          "context.properties" = [
-            {
-              name = "libpipewire-module-protocol-pulse";
-              args = { };
-            }
-          ];
+          "context.properties" = [{
+            name = "libpipewire-module-protocol-pulse";
+            args = { };
+          }];
           "pulse.properties" = {
             "pulse.min.req" = "256/48000";
             "pulse.default.req" = "512/48000";
@@ -117,9 +114,7 @@
     # systemd config
     systemd = {
       # Systemd settings for NixOS channel 25.11
-      settings.Manager = {
-        DefaultTimeoutStopSec = "10s";
-      };
+      settings.Manager = { DefaultTimeoutStopSec = "10s"; };
       # Flatpak system, add repo
       services.flatpak-repo = {
         enable = true;
@@ -128,16 +123,12 @@
         requires = [ "network-online.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [ pkgs.flatpak ];
-        script =
-          if config.curios.desktop.cosmic.enable then
-            ''
-              /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-              /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
-            ''
-          else
-            ''
-              /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-            '';
+        script = if config.curios.desktop.cosmic.enable then ''
+          /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
+        '' else ''
+          /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        '';
       };
       # Flatpak user auto update
       # systemctl --user list-units --type=service
@@ -150,7 +141,8 @@
           #path = [ pkgs.flatpak ];
           serviceConfig = {
             Type = "oneshot";
-            ExecStart = "/run/current-system/sw/bin/flatpak update --noninteractive --assumeyes";
+            ExecStart =
+              "/run/current-system/sw/bin/flatpak update --noninteractive --assumeyes";
           };
           wantedBy = [ ];
         };
@@ -169,7 +161,8 @@
     };
 
     # Other
-    programs.ssh.startAgent = true; # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
+    # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
+    programs.ssh.startAgent = true;
     services.gnome.gnome-keyring.enable = lib.mkForce false;
     security.rtkit.enable = true; # realtime scheduling priority for pipewire.
   };

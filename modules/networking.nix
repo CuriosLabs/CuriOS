@@ -1,7 +1,6 @@
 # Networking settings
 
-{ config, lib, ... }:
-{
+{ config, lib, ... }: {
   # Declare options
   options = {
     curios.networking.enable = lib.mkOption {
@@ -14,8 +13,10 @@
   # Declare configuration
   config = lib.mkIf config.curios.networking.enable {
     networking = {
-      wireless.enable = false;  # Enables wireless support via wpa_supplicant OR
-      networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+      # Enables wireless support via wpa_supplicant OR
+      wireless.enable = false;
+      # via networkmanager: easiest to use and most distros use this by default.
+      networkmanager.enable = true;
     };
   };
 }

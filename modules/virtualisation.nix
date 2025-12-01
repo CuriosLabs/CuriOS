@@ -14,7 +14,8 @@
       docker.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enabling Docker containers + docker-compose, docker-buildx, lazydocker.";
+        description =
+          "Enabling Docker containers + docker-compose, docker-buildx, lazydocker.";
       };
       podman.enable = lib.mkOption {
         type = lib.types.bool;
@@ -38,11 +39,13 @@
         enable = lib.mkDefault config.curios.virtualisation.docker.enable;
       };
       # Podman
-      containers.enable = lib.mkDefault config.curios.virtualisation.podman.enable;
+      containers.enable =
+        lib.mkDefault config.curios.virtualisation.podman.enable;
       podman = {
         enable = lib.mkDefault config.curios.virtualisation.podman.enable;
         dockerCompat = true;
-        defaultNetwork.settings.dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+        # Required for containers under podman-compose to be able to talk to each other.
+        defaultNetwork.settings.dns_enabled = true;
       };
       # QEMU + KVM + virt-manager
       # See: https://nixos.wiki/wiki/Libvirt
@@ -76,37 +79,36 @@
       nsswins = lib.mkDefault config.curios.virtualisation.wine.enable;
     };
 
-    environment.systemPackages = with pkgs; [
-      # QEMU + KVM + virt-manager
-      virt-manager
-      # Optional: QEMU support of different arch
-      qemu-user
+    environment.systemPackages = with pkgs;
+      [
+        # QEMU + KVM + virt-manager
+        virt-manager
+        # Optional: QEMU support of different arch
+        qemu-user
 
-      # WinApps missing dependencies - https://github.com/winapps-org/winapps/tree/main
-      dialog
-      freerdp
-      netcat
-    ]
-    ++ lib.optionals config.curios.virtualisation.docker.enable [
-      # Docker
-      docker-buildx
-      docker-compose
-      lazydocker
-      # Store creds with pass (gnupg required)
-      # echo '{ "credStore": "pass" }' >> $HOME/.docker/config.json
-      # gpg --generate-key
-      # pass init dxxxxxxxxxx@xxxxxxxxxx.com
-      # pass insert docker-credential-helpers/docker-pass-initialized-check
-      # echo $GH_TOKEN | docker login ghcr.io -u dxxxxxxxxxxx@xxxxxxxxx.com --password-stdin
-      # cat ~/.docker/config.json
-      docker-credential-helpers
-      pass
-    ]
-    ++ lib.optionals config.curios.virtualisation.wine.enable [
-      wineWowPackages.waylandFull
-      winetricks
-      wineWowPackages.fonts
-      wineWow64Packages.fonts
-    ];
+        # WinApps missing dependencies - https://github.com/winapps-org/winapps/tree/main
+        dialog
+        freerdp
+        netcat
+      ] ++ lib.optionals config.curios.virtualisation.docker.enable [
+        # Docker
+        docker-buildx
+        docker-compose
+        lazydocker
+        # Store creds with pass (gnupg required)
+        # echo '{ "credStore": "pass" }' >> $HOME/.docker/config.json
+        # gpg --generate-key
+        # pass init dxxxxxxxxxx@xxxxxxxxxx.com
+        # pass insert docker-credential-helpers/docker-pass-initialized-check
+        # echo $GH_TOKEN | docker login ghcr.io -u dxxxxxxxxxxx@xxxxxxxxx.com --password-stdin
+        # cat ~/.docker/config.json
+        docker-credential-helpers
+        pass
+      ] ++ lib.optionals config.curios.virtualisation.wine.enable [
+        wineWowPackages.waylandFull
+        winetricks
+        wineWowPackages.fonts
+        wineWow64Packages.fonts
+      ];
   };
 }
