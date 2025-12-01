@@ -1,7 +1,6 @@
 # backup options
 
-{ config, lib, pkgs, ... }:
-  {
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.backup.enable = lib.mkOption {
@@ -13,8 +12,6 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.backup.enable {
-    environment.systemPackages = with pkgs; [
-      restic
-    ];
+    environment.systemPackages = with pkgs; [ restic ];
   };
 }
