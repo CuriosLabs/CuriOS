@@ -12,37 +12,37 @@
 # nix-shell -p dialog parted git
 
 #------------- Colors -------------#
-readonly RED="\033[31;1m"          # Red and bold
-readonly GREEN="\033[32;1m"        # Green and bold
-readonly BLUE="\033[34;1m"         # Blue and bold
-readonly GREY="\033[37;1m"         # Grey and bold
-readonly YELLOW="\033[33;1;3m"     # Yellow, bold and italic
+readonly RED="\033[31;1m"      # Red and bold
+readonly GREEN="\033[32;1m"    # Green and bold
+readonly BLUE="\033[34;1m"     # Blue and bold
+readonly GREY="\033[37;1m"     # Grey and bold
+readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 #readonly YELLOWBLK="\033[33;1;5m"  # Yellow, bold and slow blink
 #readonly UNDL="\033[4m"            # Underlined
 #readonly BOLD="\033[1m"            # Bold
-readonly NC="\033[0m"              # No Color
+readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.5";
-CURIOS_INSTALL_PATH=".";
-CURIOS_SRC_PATH=".";
+readonly SCRIPT_VERSION="0.6"
+CURIOS_INSTALL_PATH="."
+CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
-LANG_CHOICE=0;
-PC_HOSTNAME="CuriOS";
-SELECTED_DISK="";
-SELECTED_LOCALE="en_US.UTF-8";
-SELECTED_LOCALE_CONSOLE="us";
-SELECTED_TZ="";
-USERNAME="nixos";
-FULLNAME="";
-ENCRYPT_DISK=0;
-DISK_LUKS_KEY="";
-GPU_VENDOR_DETECTED="";
-GPU_INSTALL=0;
-CONFIRM_INSTALL=0;
-NIXOS_CONFIG_DIR="/mnt/etc/nixos";
-DO_DOTFILES_INSTALL=1;
-VERBOSE=0;
+LANG_CHOICE=0
+PC_HOSTNAME="CuriOS"
+SELECTED_DISK=""
+SELECTED_LOCALE="en_US.UTF-8"
+SELECTED_LOCALE_CONSOLE="us"
+SELECTED_TZ=""
+USERNAME="nixos"
+FULLNAME=""
+ENCRYPT_DISK=0
+DISK_LUKS_KEY=""
+GPU_VENDOR_DETECTED=""
+GPU_INSTALL=0
+CONFIRM_INSTALL=0
+NIXOS_CONFIG_DIR="/mnt/etc/nixos"
+DO_DOTFILES_INSTALL=1
+VERBOSE=0
 readonly DIALOG_OK=0
 readonly DIALOG_CANCEL=1
 #readonly DIALOG_HELP=2
@@ -82,7 +82,7 @@ LOCALES_TZ=(
 )
 
 #------------- Print help function
-usage () {
+usage() {
   echo -e "CuriOS installer version ${SCRIPT_VERSION}
 * Dialog interface for CuriOS install script *
 
@@ -102,24 +102,24 @@ eval set -- "$ARGS"
 
 while true; do
   case "$1" in
-    -v | --verbose)
-      VERBOSE=1
-      shift
-      ;;
-    -h | --help)
-      usage
-      ;;
-    --version)
-      echo "$SCRIPT_VERSION"
-      exit 0
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      break
-      ;;
+  -v | --verbose)
+    VERBOSE=1
+    shift
+    ;;
+  -h | --help)
+    usage
+    ;;
+  --version)
+    echo "$SCRIPT_VERSION"
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    break
+    ;;
   esac
 done
 
@@ -242,149 +242,149 @@ choose_lang() {
   # Close file descriptor 3
   exec 3>&-
   case $selection in
-    C )
-      SELECTED_LOCALE="C.UTF-8"
-      SELECTED_LOCALE_CONSOLE="us"
-      LANG_CHOICE=0
-      ;;
-    us )
-      SELECTED_LOCALE="en_US.UTF-8"
-      SELECTED_LOCALE_CONSOLE="us"
-      LANG_CHOICE=1
-      ;;
-    gb )
-      SELECTED_LOCALE="en_GB.UTF-8"
-      SELECTED_LOCALE_CONSOLE="gb"
-      LANG_CHOICE=2
-      ;;
-    fr )
-      SELECTED_LOCALE="fr_FR.UTF-8"
-      SELECTED_LOCALE_CONSOLE="fr"
-      LANG_CHOICE=3
-      ;;
-    es )
-      SELECTED_LOCALE="es_ES.UTF-8"
-      SELECTED_LOCALE_CONSOLE="es"
-      LANG_CHOICE=4
-      ;;
-    de )
-      SELECTED_LOCALE="de_DE.UTF-8"
-      SELECTED_LOCALE_CONSOLE="de"
-      LANG_CHOICE=5
-      ;;
-    zh )
-      SELECTED_LOCALE="zh_CN.UTF-8"
-      SELECTED_LOCALE_CONSOLE="zh"
-      LANG_CHOICE=6
-      ;;
-    ja )
-      SELECTED_LOCALE="ja_JP.UTF-8"
-      SELECTED_LOCALE_CONSOLE="ja"
-      LANG_CHOICE=7
-      ;;
-    pt )
-      SELECTED_LOCALE="pt_PT.UTF-8"
-      SELECTED_LOCALE_CONSOLE="pt"
-      LANG_CHOICE=8
-      ;;
-    ru )
-      SELECTED_LOCALE="ru_RU.UTF-8"
-      SELECTED_LOCALE_CONSOLE="ru"
-      LANG_CHOICE=9
-      ;;
-    it )
-      SELECTED_LOCALE="it_IT.UTF-8"
-      SELECTED_LOCALE_CONSOLE="it"
-      LANG_CHOICE=10
-      ;;
-    ko )
-      SELECTED_LOCALE="ko_KR.UTF-8"
-      SELECTED_LOCALE_CONSOLE="ko"
-      LANG_CHOICE=11
-      ;;
-    ar )
-      SELECTED_LOCALE="ar_SA.UTF-8"
-      SELECTED_LOCALE_CONSOLE="ar"
-      LANG_CHOICE=12
-      ;;
-    nl )
-      SELECTED_LOCALE="nl_NL.UTF-8"
-      SELECTED_LOCALE_CONSOLE="nl"
-      LANG_CHOICE=13
-      ;;
-    pl )
-      SELECTED_LOCALE="pl_PL.UTF-8"
-      SELECTED_LOCALE_CONSOLE="pl"
-      LANG_CHOICE=14
-      ;;
-    sv )
-      SELECTED_LOCALE="sv_SE.UTF-8"
-      SELECTED_LOCALE_CONSOLE="sv"
-      LANG_CHOICE=15
-      ;;
-    tr )
-      SELECTED_LOCALE="tr_TR.UTF-8"
-      SELECTED_LOCALE_CONSOLE="tr"
-      LANG_CHOICE=16
-      ;;
-    cs )
-      SELECTED_LOCALE="cs_CZ.UTF-8"
-      SELECTED_LOCALE_CONSOLE="cs"
-      LANG_CHOICE=17
-      ;;
-    da )
-      SELECTED_LOCALE="da_DK.UTF-8"
-      SELECTED_LOCALE_CONSOLE="da"
-      LANG_CHOICE=18
-      ;;
-    hu )
-      SELECTED_LOCALE="hu_HU.UTF-8"
-      SELECTED_LOCALE_CONSOLE="hu"
-      LANG_CHOICE=19
-      ;;
-    no )
-      SELECTED_LOCALE="no_NO.UTF-8"
-      SELECTED_LOCALE_CONSOLE="no"
-      LANG_CHOICE=20
-      ;;
-    he )
-      SELECTED_LOCALE="he_IL.UTF-8"
-      SELECTED_LOCALE_CONSOLE="he"
-      LANG_CHOICE=21
-      ;;
-    uk )
-      SELECTED_LOCALE="uk_UA.UTF-8"
-      SELECTED_LOCALE_CONSOLE="uk"
-      LANG_CHOICE=22
-      ;;
-    hi )
-      SELECTED_LOCALE="hi_IN.UTF-8"
-      SELECTED_LOCALE_CONSOLE="hi"
-      LANG_CHOICE=23
-      ;;
-    el )
-      SELECTED_LOCALE="el_GR.UTF-8"
-      SELECTED_LOCALE_CONSOLE="el"
-      LANG_CHOICE=24
-      ;;
+  C)
+    SELECTED_LOCALE="C.UTF-8"
+    SELECTED_LOCALE_CONSOLE="us"
+    LANG_CHOICE=0
+    ;;
+  us)
+    SELECTED_LOCALE="en_US.UTF-8"
+    SELECTED_LOCALE_CONSOLE="us"
+    LANG_CHOICE=1
+    ;;
+  gb)
+    SELECTED_LOCALE="en_GB.UTF-8"
+    SELECTED_LOCALE_CONSOLE="gb"
+    LANG_CHOICE=2
+    ;;
+  fr)
+    SELECTED_LOCALE="fr_FR.UTF-8"
+    SELECTED_LOCALE_CONSOLE="fr"
+    LANG_CHOICE=3
+    ;;
+  es)
+    SELECTED_LOCALE="es_ES.UTF-8"
+    SELECTED_LOCALE_CONSOLE="es"
+    LANG_CHOICE=4
+    ;;
+  de)
+    SELECTED_LOCALE="de_DE.UTF-8"
+    SELECTED_LOCALE_CONSOLE="de"
+    LANG_CHOICE=5
+    ;;
+  zh)
+    SELECTED_LOCALE="zh_CN.UTF-8"
+    SELECTED_LOCALE_CONSOLE="zh"
+    LANG_CHOICE=6
+    ;;
+  ja)
+    SELECTED_LOCALE="ja_JP.UTF-8"
+    SELECTED_LOCALE_CONSOLE="ja"
+    LANG_CHOICE=7
+    ;;
+  pt)
+    SELECTED_LOCALE="pt_PT.UTF-8"
+    SELECTED_LOCALE_CONSOLE="pt"
+    LANG_CHOICE=8
+    ;;
+  ru)
+    SELECTED_LOCALE="ru_RU.UTF-8"
+    SELECTED_LOCALE_CONSOLE="ru"
+    LANG_CHOICE=9
+    ;;
+  it)
+    SELECTED_LOCALE="it_IT.UTF-8"
+    SELECTED_LOCALE_CONSOLE="it"
+    LANG_CHOICE=10
+    ;;
+  ko)
+    SELECTED_LOCALE="ko_KR.UTF-8"
+    SELECTED_LOCALE_CONSOLE="ko"
+    LANG_CHOICE=11
+    ;;
+  ar)
+    SELECTED_LOCALE="ar_SA.UTF-8"
+    SELECTED_LOCALE_CONSOLE="ar"
+    LANG_CHOICE=12
+    ;;
+  nl)
+    SELECTED_LOCALE="nl_NL.UTF-8"
+    SELECTED_LOCALE_CONSOLE="nl"
+    LANG_CHOICE=13
+    ;;
+  pl)
+    SELECTED_LOCALE="pl_PL.UTF-8"
+    SELECTED_LOCALE_CONSOLE="pl"
+    LANG_CHOICE=14
+    ;;
+  sv)
+    SELECTED_LOCALE="sv_SE.UTF-8"
+    SELECTED_LOCALE_CONSOLE="sv"
+    LANG_CHOICE=15
+    ;;
+  tr)
+    SELECTED_LOCALE="tr_TR.UTF-8"
+    SELECTED_LOCALE_CONSOLE="tr"
+    LANG_CHOICE=16
+    ;;
+  cs)
+    SELECTED_LOCALE="cs_CZ.UTF-8"
+    SELECTED_LOCALE_CONSOLE="cs"
+    LANG_CHOICE=17
+    ;;
+  da)
+    SELECTED_LOCALE="da_DK.UTF-8"
+    SELECTED_LOCALE_CONSOLE="da"
+    LANG_CHOICE=18
+    ;;
+  hu)
+    SELECTED_LOCALE="hu_HU.UTF-8"
+    SELECTED_LOCALE_CONSOLE="hu"
+    LANG_CHOICE=19
+    ;;
+  no)
+    SELECTED_LOCALE="no_NO.UTF-8"
+    SELECTED_LOCALE_CONSOLE="no"
+    LANG_CHOICE=20
+    ;;
+  he)
+    SELECTED_LOCALE="he_IL.UTF-8"
+    SELECTED_LOCALE_CONSOLE="he"
+    LANG_CHOICE=21
+    ;;
+  uk)
+    SELECTED_LOCALE="uk_UA.UTF-8"
+    SELECTED_LOCALE_CONSOLE="uk"
+    LANG_CHOICE=22
+    ;;
+  hi)
+    SELECTED_LOCALE="hi_IN.UTF-8"
+    SELECTED_LOCALE_CONSOLE="hi"
+    LANG_CHOICE=23
+    ;;
+  el)
+    SELECTED_LOCALE="el_GR.UTF-8"
+    SELECTED_LOCALE_CONSOLE="el"
+    LANG_CHOICE=24
+    ;;
   esac
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      loadkeys $SELECTED_LOCALE_CONSOLE
-      set_tz
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      echo "Program terminated." >&2
-      exit 1
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    loadkeys $SELECTED_LOCALE_CONSOLE
+    set_tz
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    echo "Program terminated." >&2
+    exit 1
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -409,25 +409,25 @@ set_tz() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      SELECTED_TZ=$result
-      if ! [[ $SELECTED_TZ =~ ^[a-zA-Z0-9/_+\-]+$ ]]; then
-        display_error "\Zb\Z1Invalid time zone!\Zn It could only contain alphanumerical, '/', '-', '+' or '_' characters like 'America/New_York' or 'Etc/GMT+2'."
-        set_tz
-      else
-        set_hostname
-      fi
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      choose_lang
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    SELECTED_TZ=$result
+    if ! [[ $SELECTED_TZ =~ ^[a-zA-Z0-9/_+\-]+$ ]]; then
+      display_error "\Zb\Z1Invalid time zone!\Zn It could only contain alphanumerical, '/', '-', '+' or '_' characters like 'America/New_York' or 'Etc/GMT+2'."
+      set_tz
+    else
+      set_hostname
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    choose_lang
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -451,25 +451,25 @@ set_hostname() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      PC_HOSTNAME=$result
-      if ! [[ $PC_HOSTNAME =~ ^[[:alnum:].]+$ ]]; then
-        display_error "\Zb\Z1Invalid hostname!\Zn It could only contain alphanumerical or '.' characters."
-        set_hostname
-      else
-        set_username
-      fi
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      set_tz
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    PC_HOSTNAME=$result
+    if ! [[ $PC_HOSTNAME =~ ^[[:alnum:].]+$ ]]; then
+      display_error "\Zb\Z1Invalid hostname!\Zn It could only contain alphanumerical or '.' characters."
+      set_hostname
+    else
+      set_username
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    set_tz
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -493,28 +493,28 @@ set_username() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      USERNAME=$result
-      if [ -z "$USERNAME" ]; then
-        display_error "\Zb\Z1username cannot be empty.\Zn"
-        set_username
-      elif ! [[ $USERNAME =~ ^[[:alnum:]]+$ ]]; then
-        display_error "\Zb\Z1Invalid username!\Zn It could only contain alphanumerical characters."
-        set_username
-      else
-        set_fullname
-      fi
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      set_hostname
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    USERNAME=$result
+    if [ -z "$USERNAME" ]; then
+      display_error "\Zb\Z1username cannot be empty.\Zn"
+      set_username
+    elif ! [[ $USERNAME =~ ^[[:alnum:]]+$ ]]; then
+      display_error "\Zb\Z1Invalid username!\Zn It could only contain alphanumerical characters."
+      set_username
+    else
+      set_fullname
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    set_hostname
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -538,28 +538,28 @@ set_fullname() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      FULLNAME=$result
-      if [ -z "$FULLNAME" ]; then
-        FULLNAME="Dwight K. Schrute"
-      fi
-      if ! [[ $FULLNAME =~ ^[[:alnum:][:space:].]+$ ]]; then
-        display_error "\Zb\Z1Invalid full name!\Zn it could only contain alphanumerical, '.' or space characters."
-        set_fullname
-      else
-        display_password_info
-      fi
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      set_username
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    FULLNAME=$result
+    if [ -z "$FULLNAME" ]; then
+      FULLNAME="Dwight K. Schrute"
+    fi
+    if ! [[ $FULLNAME =~ ^[[:alnum:][:space:].]+$ ]]; then
+      display_error "\Zb\Z1Invalid full name!\Zn it could only contain alphanumerical, '.' or space characters."
+      set_fullname
+    else
+      display_password_info
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    set_username
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -580,15 +580,15 @@ display_password_info() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      choose_disk
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    choose_disk
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -627,20 +627,20 @@ choose_disk() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      SELECTED_DISK=$selection
-      choose_disk_encryption
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      set_fullname
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    SELECTED_DISK=$selection
+    choose_disk_encryption
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    set_fullname
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -671,22 +671,22 @@ choose_disk_encryption() {
   fi
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      ENCRYPT_DISK=1
-      DISK_LUKS_KEY=$result
-      confirm_disk_passphrase
-      ;;
-    "$DIALOG_CANCEL")
-      ENCRYPT_DISK=0
-      clear
-      choose_disk
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    ENCRYPT_DISK=1
+    DISK_LUKS_KEY=$result
+    confirm_disk_passphrase
+    ;;
+  "$DIALOG_CANCEL")
+    ENCRYPT_DISK=0
+    clear
+    choose_disk
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -707,24 +707,24 @@ confirm_disk_passphrase() {
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      if [ "$DISK_LUKS_KEY" != "$result" ]; then
-        display_error "Passphrase and confirmation are different!"
-        choose_disk_encryption
-      else
-        hardware_detection_gpu
-      fi
-      ;;
-    "$DIALOG_CANCEL")
-      clear
+  "$DIALOG_OK")
+    clear
+    if [ "$DISK_LUKS_KEY" != "$result" ]; then
+      display_error "Passphrase and confirmation are different!"
       choose_disk_encryption
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+    else
+      hardware_detection_gpu
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    choose_disk_encryption
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -754,19 +754,19 @@ hardware_detection_gpu() {
       # Close file descriptor 3
       exec 3>&-
       case $exit_status in
-        "$DIALOG_OK")
-          GPU_INSTALL=1
-          clear
-          ;;
-        "$DIALOG_CANCEL")
-          GPU_INSTALL=0
-          clear
-          ;;
-        "$DIALOG_ESC")
-          clear
-          echo "Program aborted." >&2
-          exit 1
-          ;;
+      "$DIALOG_OK")
+        GPU_INSTALL=1
+        clear
+        ;;
+      "$DIALOG_CANCEL")
+        GPU_INSTALL=0
+        clear
+        ;;
+      "$DIALOG_ESC")
+        clear
+        echo "Program aborted." >&2
+        exit 1
+        ;;
       esac
     fi
   fi
@@ -787,20 +787,20 @@ confirm_install() {
   # Close file descriptor 3
   exec 3>&-
   case $exit_status in
-    "$DIALOG_OK")
-      CONFIRM_INSTALL=1
-      clear
-      ;;
-    "$DIALOG_CANCEL")
-      clear
-      echo "Program terminated without install." >&2
-      #exit 1
-      ;;
-    "$DIALOG_ESC")
-      clear
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    CONFIRM_INSTALL=1
+    clear
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    echo "Program terminated without install." >&2
+    #exit 1
+    ;;
+  "$DIALOG_ESC")
+    clear
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -823,7 +823,7 @@ if [ $VERBOSE -eq 1 ]; then
 fi
 
 #------------- Format disk function
-format_disk () {
+format_disk() {
   set -eu
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
@@ -868,7 +868,7 @@ format_disk () {
     echo -e "${BLUE}Creating encrypted partition...${NC}"
     DEVICE_NAME="cryptroot" # /dev/mapper/ name
     LVM_MAPPED_DEVICE="/dev/mapper/$DEVICE_NAME"
-    cryptsetup -q --label="curiosystem" --type=luks2 luksFormat "$SELECTED_DISK2" <<< "${DISK_LUKS_KEY}"
+    cryptsetup -q --label="curiosystem" --type=luks2 luksFormat "$SELECTED_DISK2" <<<"${DISK_LUKS_KEY}"
     # open the encrypted partition and map it to /dev/mapper/$DEVICE_NAME
     echo -n "$DISK_LUKS_KEY" | cryptsetup luksOpen "$SELECTED_DISK2" $DEVICE_NAME -
   fi
@@ -906,7 +906,7 @@ format_disk () {
 }
 
 #------------- CuriOS dotfiles install, see: https://github.com/CuriosLabs/curios-dotfiles
-dotfiles_install () {
+dotfiles_install() {
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Custom dotfiles installation...${NC}"
@@ -917,7 +917,8 @@ dotfiles_install () {
   for DIR in $HOME_DIR; do
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
-      chown -R 1000:100 "$DIR" # TODO: Any way to predict OWNER at this stage ?
+      # TODO: Any way to predict OWNER at this stage ?
+      chown -R 1000:100 "$DIR"
     fi
   done
 }
@@ -1010,7 +1011,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
 
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
-  echo -e "${BLUE}Launching NixOS installer...${NC}";
+  echo -e "${BLUE}Launching NixOS installer...${NC}"
   # Configure Nix channel
   NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' "$NIXOS_CONFIG_DIR"/configuration.nix)
   if [ -z "$NIX_CHANNEL_URL" ]; then
@@ -1040,13 +1041,13 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   exec 3>&-
   # Act on exit status
   case $exit_status in
-    "$DIALOG_OK")
-      clear
-      reboot now
-      ;;
-    "$DIALOG_ESC")
-      echo "Program aborted." >&2
-      exit 1
-      ;;
+  "$DIALOG_OK")
+    clear
+    reboot now
+    ;;
+  "$DIALOG_ESC")
+    echo "Program aborted." >&2
+    exit 1
+    ;;
   esac
 fi
