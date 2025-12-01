@@ -7,8 +7,9 @@ let
   pname = "electrum";
   version = "4.6.2";
 
-   src = pkgs.fetchurl {
-    url = "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
+  src = pkgs.fetchurl {
+    url =
+      "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
     hash = "sha256-RFOYVpnkl69HaWxpAm0hUTQmxvSDoscGdBr7gDHnjU0=";
 
     # Verify Appimage signature
@@ -32,12 +33,14 @@ let
   };
 
   appSignature = pkgs.fetchurl {
-    url = "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
+    url =
+      "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
     hash = "sha256-qwB4Th6N3Xr6iXGIKAmVJ7S1We4jcLVCwZ9tAxHhOlw=";
   };
 
   authorPubKey = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/ThomasV.asc";
+    url =
+      "https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/ThomasV.asc";
     hash = "sha256-37ApVZlI+2EevxQIKXVKVpktt1Ls3UbWq4dfio2ORdo=";
   };
 
@@ -58,8 +61,7 @@ let
     type = "Application";
     mimeTypes = [ "x-scheme-handler/bitcoin" "x-scheme-handler/lightning" ];
   };
-in
-pkgs.appimageTools.wrapType2 {
+in pkgs.appimageTools.wrapType2 {
   inherit pname version pkgs src;
 
   #extraInstallCommands = ''

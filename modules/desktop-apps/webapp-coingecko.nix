@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-coingecko";
-  version="0.6";
+  pname = "webapp-coingecko";
+  version = "0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -19,7 +19,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.coingecko.btc";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://www.coingecko.com/en/coins/bitcoin";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://www.coingecko.com/en/coins/bitcoin";
     desktopName = "Coingecko Bitcoin Price";
     icon = "webapp-coingecko";
     categories = [ "Finance" ];
@@ -36,3 +37,4 @@ stdenv.mkDerivation rec {
     done
   '';
 }
+

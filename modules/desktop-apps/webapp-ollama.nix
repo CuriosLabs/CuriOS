@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-ollama-ui";
-  version="0.7";
+  pname = "webapp-ollama-ui";
+  version = "0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.ollama.openwebui";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=http://localhost:8080/";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=http://localhost:8080/";
     desktopName = "Ollama (local)";
     icon = "webapp-ollama-ui";
     categories = [ "Science" "ArtificialIntelligence" ];
@@ -32,3 +33,4 @@ stdenv.mkDerivation rec {
     cp webapp-ollama-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-ollama-ui.svg
   '';
 }
+

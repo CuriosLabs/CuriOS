@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="desktop-gemini";
-  version="0.2";
+  pname = "desktop-gemini";
+  version = "0.2";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -33,3 +33,4 @@ stdenv.mkDerivation rec {
     cp desktop-gemini-icon.svg $out/share/icons/hicolor/scalable/apps/desktop-gemini.svg
   '';
 }
+

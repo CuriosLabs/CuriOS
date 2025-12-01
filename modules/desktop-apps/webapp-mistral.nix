@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-mistral";
-  version="0.9";
+  pname = "webapp-mistral";
+  version = "0.9";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.mistral.chat";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://chat.mistral.ai/chat";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://chat.mistral.ai/chat";
     desktopName = "Mistral LeChat";
     icon = "webapp-mistral";
     categories = [ "Science" "ArtificialIntelligence" ];
@@ -32,3 +33,4 @@ stdenv.mkDerivation rec {
     cp webapp-mistral-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-mistral.svg
   '';
 }
+

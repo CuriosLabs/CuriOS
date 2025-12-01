@@ -38,20 +38,14 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.office.enable {
-    environment.systemPackages = [
-      pkgs.obsidian
-    ]
-    ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable [
-      pkgs.libreoffice
-    ]
-    ++ lib.optionals config.curios.desktop.apps.office.conferencing.slack.enable [
-      (import ./webapp-slack.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.office.conferencing.teams.enable [
-      (import ./webapp-teams.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.office.conferencing.zoom.enable [
-      pkgs.zoom-us
-    ];
+    environment.systemPackages = [ pkgs.obsidian ]
+      ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable
+      [ pkgs.libreoffice ] ++ lib.optionals
+      config.curios.desktop.apps.office.conferencing.slack.enable
+      [ (import ./webapp-slack.nix) ] ++ lib.optionals
+      config.curios.desktop.apps.office.conferencing.teams.enable
+      [ (import ./webapp-teams.nix) ] ++ lib.optionals
+      config.curios.desktop.apps.office.conferencing.zoom.enable
+      [ pkgs.zoom-us ];
   };
 }

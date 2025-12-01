@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-mempool";
-  version="0.1";
+  pname = "webapp-mempool";
+  version = "0.1";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -19,7 +19,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "space.mempool";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://mempool.space/mempool-block/0";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://mempool.space/mempool-block/0";
     desktopName = "Bitcoin blockchain mempool";
     icon = "webapp-mempool";
     categories = [ "Finance" ];

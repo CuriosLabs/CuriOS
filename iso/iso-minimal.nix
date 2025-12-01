@@ -6,8 +6,8 @@
 
 { pkgs, modulesPath, ... }:
 let
-  curios-sources = pkgs.callPackage ../pkgs/curios-sources {};
-  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
+  curios-sources = pkgs.callPackage ../pkgs/curios-sources { };
+  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
 in {
   imports = [
     #"${modulesPath}/installer/cd-dvd/installation-cd-minimal-new-kernel.nix"
@@ -37,9 +37,9 @@ in {
   networking.hostName = "CuriOS";
 
   programs.bash.interactiveShellInit = ''
-  echo "Launching CuriOS installer..."
-  sleep 5
-  sudo curios-install
+    echo "Launching CuriOS installer..."
+    sleep 5
+    sudo curios-install
   '';
 }
 

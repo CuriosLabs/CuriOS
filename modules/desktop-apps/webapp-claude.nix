@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-claude";
-  version="0.1";
+  pname = "webapp-claude";
+  version = "0.1";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.claude.chats";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://claude.ai/chats";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://claude.ai/chats";
     desktopName = "Claude";
     icon = "webapp-claude";
     categories = [ "Science" "ArtificialIntelligence" ];
@@ -32,3 +33,4 @@ stdenv.mkDerivation rec {
     cp webapp-claude-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-claude.svg
   '';
 }
+
