@@ -117,8 +117,8 @@
       randomizedDelaySec = "3min";
       allowReboot = false; # Reboot on new kernel, initrd or kernel module.
       # See: https://channels.nixos.org/
-      channel =
-        "https://channels.nixos.org/nixos-25.11"; # The URI of the NixOS channel to use for automatic upgrades.
+      # The URI of the NixOS channel to use for automatic upgrades.
+      channel = "https://channels.nixos.org/nixos-25.11";
     };
     # Copy the NixOS configuration file and link it from the resulting system
     # (/run/current-system/configuration.nix). This is useful in case you
