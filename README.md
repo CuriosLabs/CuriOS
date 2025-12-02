@@ -186,8 +186,9 @@ Generations older than 7 days are automatically garbage collected. You can also
 manually do the equivalent with:
 
 ```bash
-sudo nix-collect-garbage --delete-older-than 7d && sudo nixos-rebuild switch 
---upgrade && sudo nixos-rebuild list-generations
+sudo nix-collect-garbage --delete-older-than 7d &&
+sudo nixos-rebuild switch --upgrade &&
+sudo nixos-rebuild list-generations
 ```
 
 ## Contributing
