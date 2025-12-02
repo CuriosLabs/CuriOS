@@ -71,6 +71,8 @@ curios = {
       office = {
         enable = true; # Default office desktop apps - Obsidian (notes/ideas).
         libreoffice.enable = false; #LibreOffice suite
+        # ONLYOFFICE suite
+        onlyoffice.desktopeditors.enable = false;
         conferencing = {
           slack.enable = false; # Slack.com webapp
           teams.enable = false; # MS Teams webapp

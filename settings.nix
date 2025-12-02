@@ -128,7 +128,10 @@ in {
       office = {
         # Default office desktop apps - Obsidian (notes/ideas).
         enable = true;
+        # LibreOffice suite
         libreoffice.enable = false;
+        # ONLYOFFICE suite
+        onlyoffice.desktopeditors.enable = true;
         # conferencing web apps
         conferencing = {
           slack.enable = false;

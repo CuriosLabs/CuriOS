@@ -16,6 +16,11 @@
         default = false;
         description = "LibreOffice suite desktop apps.";
       };
+      onlyoffice.desktopeditors.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "OnlyOffice Desktop Editors suite.";
+      };
       conferencing = {
         slack.enable = lib.mkOption {
           type = lib.types.bool;
@@ -41,6 +46,8 @@
     environment.systemPackages = [ pkgs.obsidian ]
       ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
+      config.curios.desktop.apps.office.onlyoffice.desktopeditors.enable
+      [ pkgs.onlyoffice-desktopeditors ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.slack.enable
       [ (import ./webapp-slack.nix) ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.teams.enable
