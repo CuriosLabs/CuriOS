@@ -162,8 +162,8 @@
 
     # Other
     # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
-    programs.ssh.startAgent = true;
-    services.gnome.gnome-keyring.enable = lib.mkForce false;
+    #programs.ssh.startAgent = true;
+    #services.gnome.gnome-keyring.enable = lib.mkForce false;
     security.rtkit.enable = true; # realtime scheduling priority for pipewire.
   };
 }
