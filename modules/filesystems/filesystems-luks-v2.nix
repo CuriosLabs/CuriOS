@@ -1,4 +1,3 @@
-# Marked as DEPRECATED - use modules/filesystems/filesystems-luks-v2.nix instead
 # LUKS + LVM filesystems
 # As defined by 'curios-install' when crypt full disk option is activated.
 
@@ -10,22 +9,19 @@
     curios.filesystems.luks.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Filesystems with LUKS + LVM as defined by 'curios-install' full disk encryption option.";
+      description =
+        "Filesystems with LUKS + LVM as defined by 'curios-install' full disk encryption option.";
     };
   };
 
   config = lib.mkIf config.curios.filesystems.luks.enable {
     boot.initrd.kernelModules = [ "dm-snapshot" "cryptd" ];
-    boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-label/curiosystem";
+    boot.initrd.luks.devices."cryptroot".device =
+      "/dev/disk/by-label/curiosystem";
 
     fileSystems = {
       "/" = {
         device = "/dev/disk/by-label/nixos";
-        fsType = "ext4";
-      };
-
-      "/home" = {
-        device = "/dev/disk/by-label/home";
         fsType = "ext4";
       };
 
@@ -36,6 +32,6 @@
       };
     };
 
-    swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
+    swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
   };
 }

@@ -2,22 +2,21 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-teams";
-  version="0.2";
+  pname = "webapp-teams";
+  version = "0.2";
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.unions [
-      ./webapp-teams-icon.svg
-      ./webapp-teams-icon-48.png
-    ];
+    fileset =
+      lib.fileset.unions [ ./webapp-teams-icon.svg ./webapp-teams-icon-48.png ];
   };
 
   dontBuild = true;
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.microsoft.teams";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://teams.microsoft.com/";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://teams.microsoft.com/";
     desktopName = "MS Teams webapp";
     icon = "webapp-teams";
     categories = [ "Chat" "Network" "Office" ];
@@ -32,3 +31,4 @@ stdenv.mkDerivation rec {
     cp webapp-teams-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-teams.svg
   '';
 }
+

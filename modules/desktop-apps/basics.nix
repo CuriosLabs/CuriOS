@@ -117,44 +117,31 @@
       pkgs.polkit_gnome
       pkgs.vlc
       pkgs.yubioath-flutter
-    ]
-    ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
-      pkgs.protonvpn-gui
-    ]
-    ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable [
-      (import ./webapp-chatgpt.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.ai.claude.enable [
-      (import ./webapp-claude.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
-      pkgs.gemini-cli
-      (import ./desktop-gemini.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.ai.grok.enable [
-      (import ./webapp-grok.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable [
-      (import ./webapp-mistral.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable [
-      pkgs.ungoogled-chromium
-    ]
-    ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable [
-      pkgs.firefox
-    ]
-    ++ lib.optionals config.curios.desktop.apps.browser.librewolf.enable [
-      pkgs.librewolf
-    ]
-    ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable [
-      pkgs.vivaldi
-    ]
-    ++ lib.optionals config.curios.desktop.apps.chat.signal.enable [
-      pkgs.signal-desktop
-    ]
-    ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable [
-      (import ./webapp-whatsapp.nix)
-    ];
+    ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable
+      [ pkgs.protonvpn-gui ]
+      ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable
+      [ (import ./webapp-chatgpt.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.claude.enable
+      [ (import ./webapp-claude.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
+        pkgs.gemini-cli
+        (import ./desktop-gemini.nix)
+      ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable
+      [ (import ./webapp-grok.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
+      [ (import ./webapp-mistral.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable
+      [ pkgs.ungoogled-chromium ]
+      ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable
+      [ pkgs.firefox ]
+      ++ lib.optionals config.curios.desktop.apps.browser.librewolf.enable
+      [ pkgs.librewolf ]
+      ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable
+      [ pkgs.vivaldi ]
+      ++ lib.optionals config.curios.desktop.apps.chat.signal.enable
+      [ pkgs.signal-desktop ]
+      ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
+      [ (import ./webapp-whatsapp.nix) ];
 
     services = {
       # Enabling PCSC-lite for Yubikey
@@ -169,7 +156,8 @@
       # Mullvad VPN
       mullvad-vpn = {
         enable = lib.mkDefault config.curios.desktop.apps.vpn.mullvad.enable;
-        package = pkgs.mullvad-vpn; # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
+        # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
+        package = pkgs.mullvad-vpn;
       };
     };
 
@@ -184,7 +172,8 @@
           after = [ "graphical-session.target" ];
           serviceConfig = {
             Type = "simple";
-            ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+            ExecStart =
+              "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
             Restart = "on-failure";
             RestartSec = 1;
             TimeoutStopSec = 10;
@@ -194,7 +183,9 @@
     };
 
     # Enabling Linux AppImage
-    programs.appimage.enable = lib.mkDefault config.curios.desktop.apps.appImage.enable;
-    programs.appimage.binfmt = lib.mkDefault config.curios.desktop.apps.appImage.enable;
+    programs.appimage.enable =
+      lib.mkDefault config.curios.desktop.apps.appImage.enable;
+    programs.appimage.binfmt =
+      lib.mkDefault config.curios.desktop.apps.appImage.enable;
   };
 }

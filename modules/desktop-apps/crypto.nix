@@ -2,10 +2,8 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  electrumApp = import ./crypto-wallet-electrum.nix { inherit pkgs lib; };
-in
-{
+let electrumApp = import ./crypto-wallet-electrum.nix { inherit pkgs lib; };
+in {
   # Declare options
   options = {
     curios.desktop.apps.crypto = {
@@ -17,7 +15,8 @@ in
       btc.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange - Coingecko webapp.";
+        description =
+          "Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange - Coingecko webapp.";
       };
     };
   };
@@ -32,8 +31,8 @@ in
       pkgs.python313Packages.pyserial
       pkgs.python312Packages.cbor2
       (import ./webapp-coingecko.nix)
-    ]
-    ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
+      (import ./webapp-mempool.nix)
+    ] ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
       pkgs.bisq2
       electrumApp
       # TODO: bug - Electrum and Sparrow seems to suffer from an outdated python package dependency in 25.05 channel.

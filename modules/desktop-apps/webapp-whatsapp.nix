@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-whatsapp";
-  version="0.7";
+  pname = "webapp-whatsapp";
+  version = "0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.whatsapp.web";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://web.whatsapp.com/";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://web.whatsapp.com/";
     desktopName = "WhatsApp";
     icon = "webapp-whatsapp";
     categories = [ "Chat" "Network" ];
@@ -32,3 +33,4 @@ stdenv.mkDerivation rec {
     cp webapp-whatsapp-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-whatsapp.svg
   '';
 }
+

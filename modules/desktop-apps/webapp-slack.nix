@@ -2,22 +2,21 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-slack";
-  version="0.7";
+  pname = "webapp-slack";
+  version = "0.7";
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.unions [
-      ./webapp-slack-icon.svg
-      ./webapp-slack-icon-48.png
-    ];
+    fileset =
+      lib.fileset.unions [ ./webapp-slack-icon.svg ./webapp-slack-icon-48.png ];
   };
 
   dontBuild = true;
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.slack.app";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://app.slack.com/client";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://app.slack.com/client";
     desktopName = "Slack App";
     icon = "webapp-slack";
     categories = [ "Chat" "Network" "Office" ];
@@ -32,3 +31,4 @@ stdenv.mkDerivation rec {
     cp webapp-slack-icon.svg $out/share/icons/hicolor/scalable/apps/webapp-slack.svg
   '';
 }
+

@@ -1,28 +1,28 @@
-# Create a desktop shortcut for Coingecko BTC price app
+# Create a desktop shortcut for mempool.space
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname = "webapp-coingecko";
-  version = "0.6";
+  pname = "webapp-mempool";
+  version = "0.1";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      ./webapp-coingecko-icon-256.png
-      ./webapp-coingecko-icon-128.png
-      ./webapp-coingecko-icon-64.png
-      ./webapp-coingecko-icon-48.png
+      ./webapp-mempool-icon-256.png
+      ./webapp-mempool-icon-128.png
+      ./webapp-mempool-icon-64.png
+      ./webapp-mempool-icon-48.png
     ];
   };
 
   dontBuild = true;
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
-    name = "com.coingecko.btc";
+    name = "space.mempool";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://www.coingecko.com/en/coins/bitcoin";
-    desktopName = "Coingecko Bitcoin Price";
-    icon = "webapp-coingecko";
+      "/run/current-system/sw/bin/brave --new-window --app=https://mempool.space/mempool-block/0";
+    desktopName = "Bitcoin blockchain mempool";
+    icon = "webapp-mempool";
     categories = [ "Finance" ];
   };
   installPhase = ''
@@ -33,8 +33,7 @@ stdenv.mkDerivation rec {
     for icon in ''${icon_sizes[*]}
     do
       mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp webapp-coingecko-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-coingecko.png
+      cp webapp-mempool-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/webapp-mempool.png
     done
   '';
 }
-

@@ -1,13 +1,10 @@
 # Custom made packages for CuriOS
 { pkgs, ... }:
 let
-  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles {};
-  curios-manager = pkgs.callPackage ../pkgs/curios-manager {};
+  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
+  curios-manager = pkgs.callPackage ../pkgs/curios-manager { };
 in {
-  environment.systemPackages = [
-    curios-dotfiles
-    curios-manager
-  ];
+  environment.systemPackages = [ curios-dotfiles curios-manager ];
 
   # 'curios-update --check' as a systemd service/timer
   # systemctl --user status curios-updater.timer
@@ -15,15 +12,7 @@ in {
     services.curios-updater = {
       enable = true;
       description = "CuriOS system updater check";
-      path = with pkgs; [
-        coreutils
-        curl
-        gnutar
-        jq
-        libnotify
-        util-linux
-        wget
-      ];
+      path = with pkgs; [ coreutils curl gnutar jq libnotify util-linux wget ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "/run/current-system/sw/bin/curios-update --check";

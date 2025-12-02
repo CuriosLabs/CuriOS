@@ -23,13 +23,11 @@
 
     # Nvidia GPU
     # Enable OpenGL
-    hardware.graphics = {
-      enable = lib.mkDefault true;
-    };
+    hardware.graphics = { enable = lib.mkDefault true; };
 
     # Load nvidia driver for Xorg and Wayland
     services.xserver.enable = lib.mkDefault true;
-    services.xserver.videoDrivers = ["nvidia"];
+    services.xserver.videoDrivers = [ "nvidia" ];
 
     # Allow unfree packages
     nixpkgs.config.allowUnfree = lib.mkForce true;

@@ -23,7 +23,8 @@ let
   protonvpn-gui-autostart = pkgs.makeAutostartItem {
     name = "protonvpn-app";
     package = pkgs.protonvpn-gui;
-    appendExtraArgs = [ "--start-minimized" ]; # append extra arguments to protonvpn-app Exec
+    # append extra arguments to protonvpn-app Exec
+    appendExtraArgs = [ "--start-minimized" ];
   };
   # Autostart Steam client in big picture mode example.
   # add 'steam-bigpicture-autostart' to "environment.systemPackages" below.
@@ -33,8 +34,7 @@ let
     package = pkgs.steam;
     appendExtraArgs = [ "-bigpicture" ];
   };
-in
-{
+in {
   ### CuriOS options settings goes here:
   curios = {
     system = {
@@ -42,8 +42,10 @@ in
       i18n.locale = "en_US.UTF-8";
       keyboard = "us";
       pkgs = {
-        autoupgrade.enable = true; # Enable automated packages update and cleanup
-        gc.enable = true; # Enable automated packages garbage collect.
+        # Enable automated packages update and cleanup
+        autoupgrade.enable = true;
+        # Enable automated packages update and cleanup
+        gc.enable = true;
       };
       timeZone = "Etc/GMT";
     };
@@ -61,81 +63,125 @@ in
       laptop.enable = false;
     };
     # REQUIRED modules:
+    # Enable Restic backup
+    backup.enable = lib.mkDefault true;
     bootefi.enable = lib.mkDefault true;
-    bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
+    # Use latest stable kernel available if true, otherwise use LTS kernel.
+    bootefi.kernel.latest = lib.mkDefault true;
     desktop.cosmic.enable = lib.mkDefault true;
-    fonts.enable = lib.mkDefault true; # Fira, Noto, some Nerds fonts, JetBrains Mono
-    networking.enable = lib.mkDefault true; # NetworkManager (required by COSMIC).
-    shell.zsh.enable = lib.mkDefault true; # ZSH shell, REQUIRED
+    # Fira, Noto, some Nerds fonts, JetBrains Mono
+    fonts.enable = lib.mkDefault true;
+    # NetworkManager (required by COSMIC).
+    networking.enable = lib.mkDefault true;
+    # ZSH shell, REQUIRED
+    shell.zsh.enable = lib.mkDefault true;
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
-      appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
+      basics.enable = lib.mkDefault true;
+      # Enabling Linux AppImage
+      appImage.enable = lib.mkDefault true;
+      # Various web browser
       browser = {
-        chromium.enable = false; # Ungoogled Chromium Web Browser
-        firefox.enable = false; # Mozilla Firefox Web Browser
-        librewolf.enable = false; # Fork of Firefox Web Browser
-        vivaldi.enable = false; # Vivaldi Web Browser
+        chromium.enable = false;
+        firefox.enable = false;
+        librewolf.enable = false;
+        vivaldi.enable = false;
       };
       crypto = {
-        enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
-        btc.enable = false; # REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        enable = false;
+        # btc.enable REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        btc.enable = false;
       };
       devops = {
-        enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
-        cloudflared.enable = false; # Cloudflare tunnel client
+        # Desktop apps for developers - Neovim+LazyVim, git for github (gh), shellcheck, statix
+        enable = true;
+        # Cloudflare tunnel client
+        cloudflared.enable = false;
         editor = {
-          zed.enable = true; # Zed.dev code editor
-          vscode.enable = false; # MS code editor
+          # Set Neovim as the default editor instead of nano.
+          default.nvim.enable = false;
+          # Zed.dev code editor
+          zed.enable = true;
+          # MS code editor
+          vscode.enable = false;
         };
-        go.enable = false; # Go, gofmt, JetBrains GoLand
-        javascript.enable = false; # NodeJS (npm)
-        python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
-        rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
-        networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
+        # Go, gofmt, JetBrains GoLand
+        go.enable = false;
+        # NodeJS (npm)
+        javascript.enable = false;
+        # Python3.12, pip, setuptools, JetBrains PyCharm-Community
+        python312.enable = false;
+        # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        rust.enable = false;
+        # Nmap, Zenmap, Wireshark, Remmina
+        networks.enable = false;
       };
-      gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
-      studio.enable = false; # OBS, Audacity, DaVinci Resolve
+      # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+      gaming.enable = false;
+      # OBS, Audacity, DaVinci Resolve
+      studio.enable = false;
       office = {
-        enable = true; # Default office desktop apps - Obsidian (notes/ideas).
-        libreoffice.enable = false; #LibreOffice suite
+        # Default office desktop apps - Obsidian (notes/ideas).
+        enable = true;
+        libreoffice.enable = false;
+        # conferencing web apps
         conferencing = {
-          slack.enable = false; # Slack.com webapp
-          teams.enable = false; # MS Teams webapp
-          zoom.enable = false; # Zoom.us video conference app
+          slack.enable = false;
+          teams.enable = false;
+          zoom.enable = false;
         };
       };
       vpn = {
-        proton.enable = false; # ProtonVPN with GUI
-        tailscale.enable = false; # tailscale.com VPN
-        mullvad.enable = false; # mullvad VPN GUI
+        # ProtonVPN with GUI
+        proton.enable = false;
+        # tailscale.com VPN
+        tailscale.enable = false;
+        # mullvad VPN GUI
+        mullvad.enable = false;
       };
       ai = {
-        chatgpt.enable = true; # ChatGPT web app
-        claude.enable = true; # Claude web app
-        gemini.enable = false; # Google Gemini CLI
-        grok.enable = true; # Grok web app
-        mistral.enable = true; # Mistral LeChat web app
+        # ChatGPT web app
+        chatgpt.enable = true;
+        # Claude web app
+        claude.enable = true;
+        # Google Gemini CLI
+        gemini.enable = false;
+        # Grok web app
+        grok.enable = true;
+        # Mistral LeChat web app
+        mistral.enable = true;
       };
       chat = {
-        signal.enable = true; # Signal.org desktop app
-        whatsapp.enable = true; # WhatsApp web app
+        # Signal.org desktop app
+        signal.enable = true;
+        # WhatsApp web app
+        whatsapp.enable = true;
       };
     };
     services = {
-      enable = true; # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
-      printing.enable = false; # CUPS
-      sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama local AI with open-webui
+      # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
+      enable = true;
+      # CUPS printing
+      printing.enable = false;
+      # SSH daemon
+      sshd.enable = false;
+      # Ollama local AI with open-webui
+      ai.enable = false;
     };
     virtualisation = {
-      enable = false; # QEMU/KVM, libvirt, virt-manager
-      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
-      podman.enable = false; # Podman containers, replacement for Docker.
-      wine.enable = false; # Wine 32 and 64 bits with Wayland support.
+      # QEMU/KVM, libvirt, virt-manager
+      enable = false;
+      # Docker containers + docker-compose, docker-buildx, lazydocker
+      docker.enable = false;
+      # Podman containers, replacement for Docker.
+      podman.enable = false;
+      # Wine 32 and 64 bits with Wayland support.
+      wine.enable = false;
     };
     hardened = {
       # Hardened configurations -WIP-
@@ -147,15 +193,19 @@ in
       dbus.enable = false;
       display-manager.enable = false;
       docker.enable = false;
-      getty.enable = false; # WARNING: will prevent TTY console login
-      networkManager.enable = false; # TODO: proton-vpn bug if set to true
-      networkManager-dispatcher.enable = false; # TODO: proton-vpn bug if set to true
+      # WARNING: will prevent TTY console login if true:
+      getty.enable = false;
+      # TODO: proton-vpn bug if set to true:
+      networkManager.enable = false;
+      # TODO: proton-vpn bug if set to true:
+      networkManager-dispatcher.enable = false;
       nix-daemon.enable = false;
       nscd.enable = false;
       rescue.enable = false;
       rtkit-daemon.enable = false;
       sshd.enable = false;
-      user.enable = false; # TODO: 'Flatpak run' bug if set to true
+      # TODO: 'Flatpak run' bug if set to true:
+      user.enable = false;
       wpa_supplicant.enable = false;
     };
   };
@@ -164,7 +214,7 @@ in
   environment.systemPackages = [
     #protonvpn-gui-autostart # Uncomment this line to autostart protonvpn-gui on user graphical session.
     #steam-bigpicture-autostart # Uncomment this line to autostart Steam client in big picture mode.
-    # Add your packages pkgs.foobar here - find package name at https://search.nixos.org/packages
+    # Add your packages here - find package name at https://search.nixos.org/packages
     #pkgs.inkscape-with-extensions # Uncomment this line to install Inkscape SVG image editor.
   ];
 
@@ -179,42 +229,34 @@ in
       isNormalUser = true;
       initialPassword = password;
       description = "My Name";
-      extraGroups =  [
-        "wheel"
-        "audio"
-        "sound"
-        "video"
-        "plugdev"
-        "dialout"
-      ]
-      ++ lib.optionals config.curios.desktop.apps.crypto.enable [
-        "tty"
-      ]
-      ++ lib.optionals config.curios.networking.enable [
-        "networkmanager"
-      ]
-      ++ lib.optionals config.curios.virtualisation.enable [
-        "libvirtd"
-        "qemu-libvirtd"
-        "kvm"
-        "input"
-        "disk"
-      ]
-      ++ lib.optionals config.curios.virtualisation.docker.enable [
-        "docker"
-      ]
-      ++ lib.optionals config.curios.virtualisation.podman.enable [
-        "podman"
-      ];
+      extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
+        ++ lib.optionals config.curios.desktop.apps.crypto.enable [ "tty" ]
+        ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
+        ++ lib.optionals config.curios.virtualisation.enable [
+          "libvirtd"
+          "qemu-libvirtd"
+          "kvm"
+          "input"
+          "disk"
+        ]
+        ++ lib.optionals config.curios.virtualisation.docker.enable [ "docker" ]
+        ++ lib.optionals config.curios.virtualisation.podman.enable
+        [ "podman" ];
       useDefaultShell = true;
-      #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];  # Set your SSH pubkey here
+      # Set your SSH pubkey here:
+      #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];
     };
   };
 
   ### Change general settings here:
   # networking
   networking = {
-    nameservers = [ "9.9.9.9" "1.1.1.1" "2620:fe::fe" "2620:fe::9" ]; # Quad9 and cloudflare DNS servers.
+    nameservers = [
+      "9.9.9.9"
+      "1.1.1.1"
+      "2620:fe::fe"
+      "2620:fe::9"
+    ]; # Quad9 and cloudflare DNS servers.
     # Use DHCP to get an IP address:
     useDHCP = lib.mkDefault true;
     # Open ports in the firewall.
@@ -232,7 +274,8 @@ in
   # pipewire sound settings:
   services.pipewire = {
     extraConfig.pipewire."92-low-latency" = {
-      "default.clock.quantum" = 512; # Keep increasing the quant value until you get no sound crackles
+      # Keep increasing the quantum value until you get no sound crackles
+      "default.clock.quantum" = 512;
       "default.clock.min-quantum" = 256;
       "default.clock.max-quantum" = 16384;
     };
@@ -242,7 +285,8 @@ in
     # For AMD Ryzen 7 PRO hardware, uncomment lines below.
     # To adjust value, see command result of: nix-shell -p "rocmPackages.rocminfo" --run "rocminfo" | grep "gfx"
     #environmentVariables = {
-    #  HCC_AMDGPU_TARGET = "gfx1103"; # used to be necessary, but doesn't seem to anymore
+    # used to be necessary, but doesn't seem to anymore
+    #  HCC_AMDGPU_TARGET = "gfx1103";
     #};
     #rocmOverrideGfx = "11.0.2";
   };
@@ -265,5 +309,5 @@ in
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   # NixOS original channel (at first install).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 }

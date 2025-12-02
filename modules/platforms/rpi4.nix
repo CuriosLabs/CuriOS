@@ -17,8 +17,13 @@
   config = lib.mkIf config.curios.platform.rpi4.enable {
     boot = {
       kernelPackages = lib.mkDefault pkgs.linuxKernel.packages.linux_rpi4;
-      kernelParams = [ "snd_bcm2835.enable_hdmi=1" "snd_bcm2835.enable_headphones=1" "usbhid.mousepoll=8" ];
-      initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" "vc4" ];
+      kernelParams = [
+        "snd_bcm2835.enable_hdmi=1"
+        "snd_bcm2835.enable_headphones=1"
+        "usbhid.mousepoll=8"
+      ];
+      initrd.availableKernelModules =
+        [ "xhci_pci" "usbhid" "usb_storage" "vc4" ];
       loader = {
         grub.enable = lib.mkDefault false;
         generic-extlinux-compatible.enable = lib.mkDefault true;
@@ -37,7 +42,8 @@
     swapDevices = [ ];
 
     networking = {
-      networkmanager.wifi.powersave = lib.mkDefault false; # Prevent host becoming unreachable on wifi after some time.
+      # Prevent host becoming unreachable on wifi after some time.
+      networkmanager.wifi.powersave = lib.mkDefault false;
     };
 
     nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";

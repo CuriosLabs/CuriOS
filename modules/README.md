@@ -28,6 +28,7 @@ curios = {
       laptop.enable = false;
     };
     # Required modules:
+    backup.enable = lib.mkDefault true; # Enable Restic backup
     bootefi.enable = lib.mkDefault true;
     bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
     desktop.cosmic.enable = lib.mkDefault true;
@@ -55,6 +56,7 @@ curios = {
         enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
         cloudflared.enable = false; # Cloudflare tunnel client
         editor = {
+          default.nvim.enable = false; # Set Neovim as the default editor instead of nano.
           zed.enable = true; # Zed.dev code editor
           vscode.enable = false; # MS code editor
         };

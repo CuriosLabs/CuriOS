@@ -1,7 +1,6 @@
 # EFI boot options
 
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.bootefi.enable = lib.mkOption {
@@ -12,27 +11,28 @@
     curios.bootefi.kernel.latest = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+      description =
+        "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
     };
   };
 
   config = lib.mkIf config.curios.bootefi.enable {
     # Use the systemd-boot EFI boot loader.
     boot = {
-      kernelPackages =
-        if config.curios.bootefi.kernel.latest then
-          pkgs.linuxPackages_latest
-        else
-          pkgs.linuxPackages
-        ;
+      kernelPackages = if config.curios.bootefi.kernel.latest then
+        pkgs.linuxPackages_latest
+      else
+        pkgs.linuxPackages;
       initrd.systemd.enable = true;
       kernel.sysctl = {
-        "vm.swappiness" = 10; # Reduce the frequency of swapping data from RAM to swap space.
+        # Reduce the frequency of swapping data from RAM to swap space.
+        "vm.swappiness" = 10;
       };
       loader = {
         systemd-boot.enable = true;
         efi.canTouchEfiVariables = true;
-        systemd-boot.configurationLimit = 5; # Limit the number of generations to keep
+        # Limit the number of generations to keep
+        systemd-boot.configurationLimit = 5;
       };
       tmp.cleanOnBoot = true;
 

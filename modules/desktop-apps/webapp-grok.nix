@@ -2,8 +2,8 @@
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
-  pname="webapp-grok";
-  version="0.6";
+  pname = "webapp-grok";
+  version = "0.6";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -19,7 +19,8 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.x.grok";
-    exec = "/run/current-system/sw/bin/brave --new-window --app=https://x.ai/grok";
+    exec =
+      "/run/current-system/sw/bin/brave --new-window --app=https://x.ai/grok";
     desktopName = "Grok";
     icon = "webapp-grok";
     categories = [ "Science" "ArtificialIntelligence" ];
@@ -36,3 +37,4 @@ stdenv.mkDerivation rec {
     done
   '';
 }
+

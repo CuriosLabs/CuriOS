@@ -1,4 +1,3 @@
-# Marked as DEPRECATED - use modules/filesystems/filesystems-mini-v2.nix instead
 # Minimal LVM filesystems.
 # As defined by 'curios-install'
 
@@ -23,11 +22,6 @@
         fsType = "ext4";
       };
 
-      "/home" = {
-        device = "/dev/disk/by-label/home";
-        fsType = "ext4";
-      };
-
       "/boot" = {
         device = "/dev/disk/by-label/boot";
         fsType = "vfat";
@@ -35,6 +29,6 @@
       };
     };
 
-    swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
+    swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
   };
 }

@@ -1,5 +1,6 @@
 .venv/
 .idea/
 iso/result/
+iso/*.iso
+iso/*.iso.sha256
 result/
-autocorrect.py

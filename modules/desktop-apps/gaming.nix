@@ -8,7 +8,8 @@
     curios.desktop.apps.gaming.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
+      description =
+        "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
     };
   };
   # TODO: add RetroArch
@@ -16,21 +17,21 @@
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.gaming.enable {
     # Steam
-    nixpkgs.config.allowUnfree = lib.mkForce true; # unfree packages required for Steam and Lutris
+    # unfree packages required for Steam and Lutris
+    nixpkgs.config.allowUnfree = lib.mkForce true;
     programs.steam = {
       enable = true;
       #remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       #dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
       #localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-      extraCompatPackages = with pkgs; [
-        proton-ge-bin # proton-ge-custom by GloriousEggroll
-      ];
+      extraCompatPackages = with pkgs;
+        [
+          proton-ge-bin # proton-ge-custom by GloriousEggroll
+        ];
     };
 
     # Various packages
-    services.input-remapper = {
-      enable = true;
-    };
+    services.input-remapper = { enable = true; };
     environment.systemPackages = with pkgs; [
       discord
       # Heroic launcher
