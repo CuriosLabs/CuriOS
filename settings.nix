@@ -16,17 +16,6 @@ let
   # OR with the 'passwd' command line.
   # Do **NOT** set your real password HERE !
   password = "changeme";
-  # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
-  # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
-  # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
-  # Autostart Steam client in big picture mode example.
-  # add 'steam-bigpicture-autostart' to "environment.systemPackages" below.
-  # desktop.apps.gaming.enable option set to true is required. See below.
-  steam-bigpicture-autostart = pkgs.makeAutostartItem {
-    name = "steam";
-    package = pkgs.steam;
-    appendExtraArgs = [ "-bigpicture" ];
-  };
 in {
   ### CuriOS options settings goes here:
   curios = {
@@ -114,8 +103,11 @@ in {
         # Nmap, Zenmap, Wireshark, Remmina
         networks.enable = false;
       };
-      # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
-      gaming.enable = false;
+      gaming = {
+        # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+        enable = false;
+        steam.bigpicture.autoStart = false;
+      };
       # OBS, Audacity, DaVinci Resolve
       studio.enable = false;
       office = {
@@ -209,8 +201,6 @@ in {
 
   ### NixOS packages
   environment.systemPackages = [
-    # Uncomment this line to autostart Steam client in big picture mode.
-    #steam-bigpicture-autostart
     # Add your packages here - find package name at https://search.nixos.org/packages
     #pkgs.inkscape-with-extensions
   ];
