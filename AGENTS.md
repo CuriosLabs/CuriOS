@@ -13,21 +13,48 @@ environment, designed for modern advanced users to be productive quickly.
 
 ## Directory Structure
 
-- **Nix Custom Packages**: Custom packages should be placed in the `pkgs/`
-directory, with each package having its own `default.nix` file
-(e.g., `pkgs/curios-manager/default.nix`).
-- **Nix Modular Configuration**: New modules should be placed in the `modules/`
-directory and its subdirectories (e.g., `modules/desktop-apps/`,
-`modules/filesystems/`, `modules/hardware/`, `modules/platforms/`).
+The project follows a modular architecture, with different aspects of the system
+configuration separated into distinct Nix modules. The main directories are:
+
+- `iso/`: Contains the files for building the bootable ISO image.
+- `modules/`: The core of the project, containing the Nix modules that define
+the system configuration.
+  - `desktop-apps/`: Modules for installing and configuring desktop applications
+  including web apps.
+  - `filesystems/`: Modules for configuring file systems, including options for
+  LUKS encryption.
+  - `hardened/`: Modules for applying security hardening to the system.
+  - `hardware/`: Hardware-specific configurations, such as GPU drivers.
+  - `platforms/`: Platform-specific configurations, like for `amd64` and `rpi4`.
+- `pkgs/`: Contains custom packages built for CuriOS, with each package
+having its own `default.nix` file (e.g., `pkgs/curios-manager/default.nix`).
 - **Module Imports**: All module imports should be done in `modules/default.nix`
 not in `configuration.nix`.
 
+## Key Files
+
+- `configuration.nix`: The main NixOS configuration file for a CuriOS system.
+- `settings.nix`: A file for user-specific settings, which is imported into the
+main configuration.
+- `iso/iso.nix`: The Nix expression that defines the contents and configuration
+of the bootable ISO image.
+- `modules/default.nix`: The top-level module that imports all other modules in
+the `modules/` directory.
+- `curios-install`: A script for installing CuriOS to a target system.
+
 ## Coding Style and Best Practices
 
+- **Modularity:** The project is highly modular. When adding new features,
+it's important to create new modules or extend existing ones in a logical and
+organized manner.
+- **Descriptive Naming:** File and module names are descriptive and follow a
+consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
 (e.g., `config.curios.desktop.apps.browser.chromium.enable`).
 - **Code Style**: Use 2 spaces for indentation in Nix files.
-- **Comments**: Add short, descriptive comments to explain complex configurations.
+- **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
+- **Comments**: The code is sparsely commented. When adding new code, add
+comments only when necessary to explain complex logic.
 
 ## Build, Test, and Development Commands
 
@@ -60,6 +87,6 @@ all `.nix` files:
 ## Contributing
 
 - **Project Source**: [CuriOS GitHub](https://github.com/CuriosLabs/CuriOS)
-- **Contributing Policy**: See [CONTRIBUTING.md](https://raw.githubusercontent.com/CuriosLabs/CuriOS/refs/heads/release/25.11.0/CONTRIBUTING.md).
+- **Contributing Policy**: See @CONTRIBUTING.md
 - **Branching Strategy**: For new features, create a branch named
 `feature/<YourFeatureName>` (e.g., `git checkout -b feature/AmazingFeature`).
