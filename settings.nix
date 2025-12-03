@@ -98,6 +98,7 @@ in {
         javascript.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
+        python313.enable = false;
         # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
         rust.enable = false;
         # Nmap, Zenmap, Wireshark, Remmina
