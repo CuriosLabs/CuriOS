@@ -88,6 +88,11 @@
           default = true;
           description = "Grok web app.";
         };
+        lmstudio.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "LM Studio - Local AI on your computer.";
+        };
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -146,6 +151,8 @@
         (import ./desktop-gemini.nix)
       ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.lmstudio.enable
+      [ pkgs.lmstudio ]
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable

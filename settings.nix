@@ -143,6 +143,8 @@ in {
         gemini.enable = false;
         # Grok web app
         grok.enable = true;
+        # lmstudio.ai local AI model
+        lmstudio.enable = false;
         # Mistral LeChat web app
         mistral.enable = true;
       };
