@@ -118,6 +118,8 @@ in {
         libreoffice.enable = false;
         # ONLYOFFICE suite
         onlyoffice.desktopeditors.enable = true;
+        # Mozilla Thunderbird email client
+        thunderbird.enable = false;
         # conferencing web apps
         conferencing = {
           slack.enable = false;
