@@ -100,6 +100,8 @@
         fzf
         lazygit
         ripgrep
+        # YQ - yaml/xml/toml parser
+        yq
       ] ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable
       [ cloudflared ]
       ++ lib.optionals config.curios.desktop.apps.devops.go.enable [
