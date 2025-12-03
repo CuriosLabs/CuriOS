@@ -39,10 +39,19 @@
         };
       };
       vpn = {
-        proton.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "ProtonVPN GUI";
+        proton = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "ProtonVPN GUI";
+          };
+          autoStart = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "Whether ProtonVPN should started automatically on user desktop login.";
+            example = false;
+          };
         };
         tailscale.enable = lib.mkOption {
           type = lib.types.bool;
@@ -117,9 +126,15 @@
       pkgs.polkit_gnome
       pkgs.vlc
       pkgs.yubioath-flutter
-    ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable
-      [ pkgs.protonvpn-gui ]
-      ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable
+    ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
+      pkgs.protonvpn-gui
+      (lib.mkIf config.curios.desktop.apps.vpn.proton.autoStart
+        (pkgs.makeAutostartItem {
+          name = "proton.vpn.app.gtk";
+          package = pkgs.protonvpn-gui;
+          appendExtraArgs = [ "--start-minimized" ];
+        }))
+    ] ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable
       [ (import ./webapp-chatgpt.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.claude.enable
       [ (import ./webapp-claude.nix) ]

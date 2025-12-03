@@ -19,13 +19,6 @@ let
   # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
   # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
   # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
-  # Next step: add 'protonvpn-gui-autostart' to "environment.systemPackages" below.
-  protonvpn-gui-autostart = pkgs.makeAutostartItem {
-    name = "protonvpn-app";
-    package = pkgs.protonvpn-gui;
-    # append extra arguments to protonvpn-app Exec
-    appendExtraArgs = [ "--start-minimized" ];
-  };
   # Autostart Steam client in big picture mode example.
   # add 'steam-bigpicture-autostart' to "environment.systemPackages" below.
   # desktop.apps.gaming.enable option set to true is required. See below.
@@ -142,6 +135,7 @@ in {
       vpn = {
         # ProtonVPN with GUI
         proton.enable = false;
+        proton.autoStart = false;
         # tailscale.com VPN
         tailscale.enable = false;
         # mullvad VPN GUI
@@ -215,10 +209,10 @@ in {
 
   ### NixOS packages
   environment.systemPackages = [
-    #protonvpn-gui-autostart # Uncomment this line to autostart protonvpn-gui on user graphical session.
-    #steam-bigpicture-autostart # Uncomment this line to autostart Steam client in big picture mode.
+    # Uncomment this line to autostart Steam client in big picture mode.
+    #steam-bigpicture-autostart
     # Add your packages here - find package name at https://search.nixos.org/packages
-    #pkgs.inkscape-with-extensions # Uncomment this line to install Inkscape SVG image editor.
+    #pkgs.inkscape-with-extensions
   ];
 
   ### Change user settings here:
