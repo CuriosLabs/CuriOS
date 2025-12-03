@@ -21,6 +21,11 @@
         default = false;
         description = "OnlyOffice Desktop Editors suite.";
       };
+      thunderbird.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Mozilla Thunderbird email client.";
+      };
       conferencing = {
         slack.enable = lib.mkOption {
           type = lib.types.bool;
@@ -47,7 +52,9 @@
       ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
       config.curios.desktop.apps.office.onlyoffice.desktopeditors.enable
-      [ pkgs.onlyoffice-desktopeditors ] ++ lib.optionals
+      [ pkgs.onlyoffice-desktopeditors ]
+      ++ lib.optionals config.curios.desktop.apps.office.thunderbird.enable
+      [ pkgs.thunderbird ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.slack.enable
       [ (import ./webapp-slack.nix) ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.teams.enable
