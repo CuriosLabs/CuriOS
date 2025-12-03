@@ -45,6 +45,9 @@
             default = false;
             description = "ProtonVPN GUI";
           };
+          # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
+          # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
+          # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
           autoStart = lib.mkOption {
             type = lib.types.bool;
             default = false;
