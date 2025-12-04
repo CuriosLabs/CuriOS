@@ -112,10 +112,20 @@
         };
       };
       utility = {
+        bitwarden.enable = lib mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Bitwarden password manager.";
+        };
         flameshot.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
           description = "Flameshot screenshot tool.";
+        };
+        keepassxc.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "KeePassXC password manager.";
         };
       };
     };
@@ -131,7 +141,6 @@
       # alacritty-theme
 
       # 3rd party apps
-      pkgs.bitwarden-desktop
       pkgs.brave
       pkgs.easyeffects
       pkgs.ffmpeg_6-full
@@ -174,6 +183,10 @@
       [ pkgs.signal-desktop ]
       ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
       [ (import ./webapp-whatsapp.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.utility.bitwarden.enable
+      [ pkgs.bitwarden-desktop ]
+      ++ lib.optionals config.curios.desktop.apps.utility.keepassxc.enable
+      [ pkgs.keepassxc ]
       ++ lib.optionals config.curios.desktop.apps.utility.flameshot.enable
       [ pkgs.flameshot ];
 

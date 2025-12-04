@@ -62,7 +62,7 @@ in {
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
+      # Brave browser, Alacritty, Signal, Yubico auth, Gimp3, EasyEffects.
       basics.enable = lib.mkDefault true;
       # Enabling Linux AppImage
       appImage.enable = lib.mkDefault true;
@@ -166,7 +166,14 @@ in {
         # WhatsApp web app
         whatsapp.enable = true;
       };
-      utility = { flameshot.enable = false; };
+      utility = {
+        # Bitwarden password manager
+        bitwarden.enable = true;
+        # Flameshot screenshot app
+        flameshot.enable = false;
+        # KeePassXC password manager
+        keepassxc.enable = false;
+      };
     };
     services = {
       # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
