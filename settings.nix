@@ -166,6 +166,7 @@ in {
         # WhatsApp web app
         whatsapp.enable = true;
       };
+      utility = { flameshot.enable = false; };
     };
     services = {
       # REQUIRED - Flatpak + flathub/cosmic repos, pipewire

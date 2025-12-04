@@ -111,6 +111,13 @@
           description = "WhatsApp web app.";
         };
       };
+      utility = {
+        flameshot.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Flameshot screenshot tool.";
+        };
+      };
     };
   };
 
@@ -166,7 +173,9 @@
       ++ lib.optionals config.curios.desktop.apps.chat.signal.enable
       [ pkgs.signal-desktop ]
       ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
-      [ (import ./webapp-whatsapp.nix) ];
+      [ (import ./webapp-whatsapp.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.utility.flameshot.enable
+      [ pkgs.flameshot ];
 
     services = {
       # Enabling PCSC-lite for Yubikey
