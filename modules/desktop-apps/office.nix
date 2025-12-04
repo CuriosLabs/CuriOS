@@ -26,6 +26,20 @@
         default = false;
         description = "Mozilla Thunderbird email client.";
       };
+      crm = {
+        salesforce = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Salesforce CRM web app.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.str;
+            default = "your-domain.my.salesforce.com";
+            description = "Your Salesforce 'My Domain' base URL.";
+          };
+        };
+      };
       projects = {
         jira = {
           enable = lib.mkOption {
@@ -71,6 +85,8 @@
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.apps.office.thunderbird.enable
       [ pkgs.thunderbird ]
+      ++ lib.optionals config.curios.desktop.apps.office.crm.salesforce.enable
+      [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.apps.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals

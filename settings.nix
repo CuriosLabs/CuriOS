@@ -123,6 +123,13 @@ in {
         onlyoffice.desktopeditors.enable = true;
         # Mozilla Thunderbird email client
         thunderbird.enable = false;
+        # CRM web apps
+        crm = {
+          salesforce = {
+            enable = lib.mkDefault false;
+            baseUrl = lib.mkDefault "your-domain.my.salesforce.com";
+          };
+        };
         # Projects management apps - replace baseUrl with your company Jira URL.
         projects = {
           jira = {
