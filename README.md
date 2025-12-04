@@ -220,6 +220,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+## Notice
+
+All product names, trademarks, and registered trademarks are the property of
+their respective owners. Icons are used for identification purposes only and
+do not imply endorsement.
+
 ## Sources
 
 [Cosmic desktop](https://github.com/pop-os/cosmic-epoch) by system76.
