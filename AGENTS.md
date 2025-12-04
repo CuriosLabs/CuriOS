@@ -84,6 +84,12 @@ all `.nix` files:
   nix-build && nix-env -i -f default.nix
   ```
 
+- Analyze: Get latest added developments from git:
+
+  ```bash
+  git log
+  ```
+
 ## Contributing
 
 - **Project Source**: [CuriOS GitHub](https://github.com/CuriosLabs/CuriOS)
