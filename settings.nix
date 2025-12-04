@@ -123,6 +123,13 @@ in {
         onlyoffice.desktopeditors.enable = true;
         # Mozilla Thunderbird email client
         thunderbird.enable = false;
+        # Projects management apps - replace baseUrl with your company Jira URL.
+        projects = {
+          jira = {
+            enable = false;
+            baseUrl = "example.atlassian.net";
+          };
+        };
         # conferencing web apps
         conferencing = {
           slack.enable = false;

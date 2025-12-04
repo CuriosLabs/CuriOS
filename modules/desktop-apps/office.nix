@@ -26,6 +26,22 @@
         default = false;
         description = "Mozilla Thunderbird email client.";
       };
+      projects = {
+        jira = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Atlassian Jira web-based project management.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description =
+              "Your Jira cloud custom domain like: mycompany.atlassian.net";
+            example = "mycompany.atlassian.net";
+          };
+        };
+      };
       conferencing = {
         slack.enable = lib.mkOption {
           type = lib.types.bool;
@@ -54,7 +70,9 @@
       config.curios.desktop.apps.office.onlyoffice.desktopeditors.enable
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.apps.office.thunderbird.enable
-      [ pkgs.thunderbird ] ++ lib.optionals
+      [ pkgs.thunderbird ]
+      ++ lib.optionals curios.desktop.apps.office.projects.jira.enable
+      [ (import ./webapp-jira.nix) ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.slack.enable
       [ (import ./webapp-slack.nix) ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.teams.enable
