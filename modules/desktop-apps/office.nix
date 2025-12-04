@@ -48,7 +48,7 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.apps.office.enable {
-    environment.systemPackages = [ pkgs.obsidian ]
+    environment.systemPackages = [ pkgs.obsidian pkgs.joplin-desktop ]
       ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
       config.curios.desktop.apps.office.onlyoffice.desktopeditors.enable
