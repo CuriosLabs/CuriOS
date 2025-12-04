@@ -74,13 +74,16 @@ in {
         vivaldi.enable = false;
       };
       crypto = {
-        # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        # Cryptocurrencies desktop apps.
+        # Required by desktop.apps.crypto options below.
         enable = false;
-        # btc.enable REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        # btc.enable REQUIRE appImage.enable = true !!!
+        # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
         btc.enable = false;
       };
       devops = {
-        # Desktop apps for developers - Neovim+LazyVim, git for github (gh), shellcheck, statix
+        # Desktop apps for developers - Neovim+LazyVim, git for github (gh),
+        # shellcheck, statix
         enable = true;
         # Cloudflare tunnel client
         cloudflared.enable = false;
