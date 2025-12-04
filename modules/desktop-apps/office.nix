@@ -71,8 +71,9 @@
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.apps.office.thunderbird.enable
       [ pkgs.thunderbird ]
-      ++ lib.optionals curios.desktop.apps.office.projects.jira.enable
-      [ (import ./webapp-jira.nix) ] ++ lib.optionals
+      ++ lib.optionals config.curios.desktop.apps.office.projects.jira.enable
+      [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.slack.enable
       [ (import ./webapp-slack.nix) ] ++ lib.optionals
       config.curios.desktop.apps.office.conferencing.teams.enable

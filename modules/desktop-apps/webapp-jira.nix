@@ -1,7 +1,8 @@
 # Create a desktop shortcut for Atlassian Jira cloud web app
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
-with import <nixpkgs> { };
-stdenv.mkDerivation rec {
+
+{ config, pkgs, lib }:
+pkgs.stdenv.mkDerivation rec {
   pname = "webapp-jira";
   version = "0.1";
 
@@ -16,7 +17,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "net.atlassian.jira";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://\${config.curios.desktop.apps.office.projects.jira.baseUrl}";
+      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.apps.office.projects.jira.baseUrl}";
     desktopName = "Jira";
     icon = "webapp-jira";
     categories = [ "Office" ];
