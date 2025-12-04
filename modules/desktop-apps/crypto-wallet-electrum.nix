@@ -56,7 +56,7 @@ let
     exec = "/run/current-system/sw/bin/electrum";
     desktopName = "Electrum Bitcoin Wallet";
     icon = "electrum";
-    categories = [ "Finance" "Network" ];
+    categories = [ "Finance" ];
     terminal = false;
     type = "Application";
     mimeTypes = [ "x-scheme-handler/bitcoin" "x-scheme-handler/lightning" ];
