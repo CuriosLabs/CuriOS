@@ -1,4 +1,4 @@
-# Create a desktop shortcut for Atlassian Jira web app
+# Create a desktop shortcut for SalesForce web app
 # See https://specifications.freedesktop.org/menu-spec/1.0/category-registry.html
 
 { config, pkgs, lib }:
