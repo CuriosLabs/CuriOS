@@ -112,7 +112,7 @@ in {
         enable = false;
         steam.bigpicture.autoStart = false;
       };
-      # OBS, Audacity, DaVinci Resolve
+      # OBS, Audacity, DaVinci Resolve, Darktable
       studio.enable = false;
       office = {
         # Default office desktop apps - Obsidian (notes/ideas).
