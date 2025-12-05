@@ -84,7 +84,7 @@ all `.nix` files:
   nix-build && nix-env -i -f default.nix
   ```
 
-- Analyze: Get latest added developments from git:
+- Analyze: Get latest code changes from git:
 
   ```bash
   git log
