@@ -125,12 +125,17 @@ in {
         thunderbird.enable = false;
         # CRM web apps
         crm = {
+          # SalesForce web app - edit baseUrl to your company SalesForce URL.
           salesforce = {
             enable = lib.mkDefault false;
             baseUrl = lib.mkDefault "your-domain.my.salesforce.com";
           };
+          hubspot = {
+            enable = lib.mkDefault false;
+            baseUrl = "app.hubspot.com";
+          };
         };
-        # Projects management apps - replace baseUrl with your company Jira URL.
+        # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
           jira = {
             enable = false;

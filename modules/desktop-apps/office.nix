@@ -39,6 +39,18 @@
             description = "Your Salesforce 'My Domain' base URL.";
           };
         };
+        hubspot = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "HubSpot CRM web app.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.str;
+            default = "app.hubspot.com";
+            description = "HubSpot web app base URL.";
+          };
+        };
       };
       projects = {
         jira = {
@@ -87,6 +99,8 @@
       [ pkgs.thunderbird ]
       ++ lib.optionals config.curios.desktop.apps.office.crm.salesforce.enable
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.apps.office.crm.hubspot.enable
+      [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.apps.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals

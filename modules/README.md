@@ -107,6 +107,48 @@ curios = {
         onlyoffice.desktopeditors.enable = true;
         # Mozilla Thunderbird email client
         thunderbird.enable = false;
+        crm = {
+          salesforce = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Salesforce CRM web app.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.str;
+              default = "your-domain.my.salesforce.com";
+              description = "Your Salesforce 'My Domain' base URL.";
+            };
+          };
+          hubspot = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "HubSpot CRM web app.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.str;
+              default = "app.hubspot.com";
+              description = "HubSpot web app base URL.";
+            };
+          };
+        };
+        projects = {
+          jira = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Atlassian Jira web-based project management.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              description =
+                "Your Jira cloud custom domain like: mycompany.atlassian.net";
+              example = "mycompany.atlassian.net";
+            };
+          };
+        };
         # conferencing web apps
         conferencing = {
           slack.enable = false;
