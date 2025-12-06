@@ -7,9 +7,6 @@
 import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-basics-all-options-test";
 
-  # Give this test more time, as it installs a lot of packages.
-  #deadline = 1800;
-
   nodes.machine = { config, pkgs, ... }: {
     imports = [ ../modules/desktop-apps/basics.nix ];
 
