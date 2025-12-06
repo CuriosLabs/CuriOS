@@ -84,6 +84,23 @@ all `.nix` files:
   nix-build && nix-env -i -f default.nix
   ```
 
+- **Test NixOS Modules**: CuriOS uses the built-in NixOS test driver to run
+integration tests in a virtual machine. Test files are located in the `tests/`
+directory.
+
+  To run a specific test:
+  
+  ```bash
+  nix-build tests/flameshot.nix
+  ```
+
+  This command will build a minimal NixOS system in a QEMU virtual machine,
+  boot it, and execute the test script defined in the file.
+
+  **Important**: Running tests will create many files in `/nix/store`. After
+  you are finished with testing, run `nix-collect-garbage -d` to clean up the
+  build artifacts and reclaim disk space.
+
 - Analyze: Get latest code changes from git:
 
   ```bash
