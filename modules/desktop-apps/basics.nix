@@ -112,7 +112,7 @@
         };
       };
       utility = {
-        bitwarden.enable = lib mkOption {
+        bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
           description = "Bitwarden password manager.";
