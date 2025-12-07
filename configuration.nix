@@ -102,6 +102,8 @@
     true
   else if config.curios.desktop.apps.gaming.enable then
     true
+  else if config.curios.desktop.apps.studio.enable then
+    true
   else if config.curios.desktop.apps.devops.rust.enable then
     true
   else if config.curios.desktop.apps.devops.go.enable then
