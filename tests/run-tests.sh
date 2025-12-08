@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+nix-build ./backup.nix --show-trace
 nix-build ./basics-all-options.nix --show-trace
 nix-build ./crypto-all-options.nix --show-trace
 nix-build ./devops-all-options.nix --show-trace
