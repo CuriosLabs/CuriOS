@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 nix-build ./basics-all-options.nix --show-trace
+nix-build ./crypto-all-options.nix --show-trace
 nix-build ./devops-all-options.nix --show-trace
 nix-build ./gaming-all-options.nix --show-trace
 nix-build ./office-all-options.nix --show-trace

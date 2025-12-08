@@ -37,7 +37,7 @@ in {
       electrumApp
       # TODO: bug - Electrum and Sparrow seems to suffer from an outdated python package dependency in 25.05 channel.
       #pkgs.electrum
-      #pkgs.sparrow
+      pkgs.sparrow
     ];
     # Add sparrow udev rules for hardware wallets
     #services.udev.packages = lib.mkIf config.curios.desktop.apps.crypto.btc.enable [
