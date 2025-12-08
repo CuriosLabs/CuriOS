@@ -17,6 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         podman.enable = false;
         wine.enable = true;
       };
+      # TODO: check samba
 
       # Wine requires some unfree packages
       nixpkgs.config.allowUnfree = true;
