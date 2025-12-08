@@ -11,6 +11,6 @@ nix-build ./office-all-options.nix --show-trace
 nix-build ./services-ai.nix --show-trace
 nix-build ./services.nix --show-trace
 nix-build ./studio-all-options.nix --show-trace
-#nix repl ./basics-all-options.nix
-#&& nix-instantiate ./basics-all-options.nix
+nix-build ./virtualisation-podman.nix --show-trace
+nix-build ./virtualisation.nix --show-trace
 rm -rf result/
