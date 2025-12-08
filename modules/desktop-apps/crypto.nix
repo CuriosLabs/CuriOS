@@ -35,7 +35,6 @@ in {
     ] ++ lib.optionals config.curios.desktop.apps.crypto.btc.enable [
       pkgs.bisq2
       electrumApp
-      # TODO: bug - Electrum and Sparrow seems to suffer from an outdated python package dependency in 25.05 channel.
       #pkgs.electrum
       pkgs.sparrow
     ];
