@@ -13,4 +13,5 @@ nix-build ./services.nix --show-trace
 nix-build ./studio-all-options.nix --show-trace
 nix-build ./virtualisation-podman.nix --show-trace
 nix-build ./virtualisation.nix --show-trace
+nix-build ./zsh.nix --show-trace
 rm -rf result/
