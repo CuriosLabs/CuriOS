@@ -5,6 +5,7 @@ nix-build ./cosmic.nix --show-trace
 nix-build ./crypto-all-options.nix --show-trace
 nix-build ./curios-pkgs.nix --show-trace
 nix-build ./devops-all-options.nix --show-trace
+nix-build ./fonts.nix --show-trace
 nix-build ./gaming-all-options.nix --show-trace
 nix-build ./office-all-options.nix --show-trace
 nix-build ./studio-all-options.nix --show-trace
