@@ -981,7 +981,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   # User settings
   sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
-  sed "s/initialHashedPassword = \".*/initialHashedPassword = \"${HASHED_USER_PASSWD}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s#initialHashedPassword = \".*#initialHashedPassword = \"${HASHED_USER_PASSWD}\";#g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update hostname
   sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # platform settings:
