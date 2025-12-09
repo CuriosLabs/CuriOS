@@ -249,7 +249,8 @@ in {
     # <user> name and description will be updated by curios-install during ISO install
     users.nixos = {
       isNormalUser = true;
-      initialPassword = password;
+      #initialPassword = password;
+      initialHashedPassword = "";
       description = "My Name";
       extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
         ++ lib.optionals config.curios.desktop.apps.crypto.enable [ "tty" ]
