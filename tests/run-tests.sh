@@ -15,4 +15,9 @@ nix-build ./studio.nix --show-trace
 nix-build ./virtualisation-podman.nix --show-trace
 nix-build ./virtualisation.nix --show-trace
 nix-build ./zsh.nix --show-trace
+
+nix-build ./pkgs-curios-dotfiles.nix --show-trace
+nix-build ./pkgs-curios-manager.nix --show-trace
+nix-build ./pkgs-curios-sources.nix --show-trace
+
 rm -rf result/
