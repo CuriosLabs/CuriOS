@@ -21,3 +21,9 @@ nix-build ./pkgs-curios-manager.nix --show-trace
 nix-build ./pkgs-curios-sources.nix --show-trace
 
 rm -rf result/
+
+# Test pkgs locally with:
+#nix-build && nix-env -i -f default.nix
+# See:
+#nix profile list
+#nix-env --uninstall curios-sources
