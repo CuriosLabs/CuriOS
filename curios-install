@@ -582,7 +582,7 @@ set_user_passwd() {
     --clear \
     --colors \
     --insecure \
-    --passwordform "Please enter and confirm your password." 0 0 0 \
+    --passwordform "Please enter and confirm your password. 6 characters length minimum." $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
     "Password:" 1 1 "" 1 10 25 30 \
     "Confirm:" 2 1 "" 2 10 25 30 \
     2>&1 1>&3)
@@ -593,11 +593,15 @@ set_user_passwd() {
     clear
     password=$(echo "$result" | head -n 1)
     confirm=$(echo "$result" | tail -n 1)
+    line_count=$(echo -n "$result" | wc -l)
     # Compare and check password length
     if [ "${#password}" -le 5 ]; then
       display_error "\Zb\Z1Password is too short!\Zn It should be at least 6 characters long."
       set_user_passwd
     elif [[ "$password" != "$confirm" ]]; then
+      display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
+      set_user_passwd
+    elif [ "$line_count" -ne 1 ]; then
       display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
       set_user_passwd
     else
@@ -681,70 +685,41 @@ choose_disk_encryption() {
     --clear \
     --colors \
     --insecure \
-    --passwordbox "Should your disk be fully encrypted ?\n\Zb\Z4HIGHLY\Zn recommended.\nA passphrase will be needed during PC boot sequence.\nEnter your passphrase for the full disk encryption:" $DIALOG_HEIGHT $DIALOG_WIDTH \
+    --passwordform "Should your disk be fully encrypted ?\n\Zb\Z4HIGHLY\Zn recommended.\nA passphrase will be needed during your computer's boot sequence.\nEnter your passphrase for the full disk encryption:" $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
+    "Passphrase:" 1 1 "" 1 12 25 30 \
+    "Confirm:" 2 1 "" 2 12 25 30 \
     2>&1 1>&3)
   exit_status=$?
   # Close file descriptor 3
   exec 3>&-
-  if [ $exit_status -eq $DIALOG_OK ]; then
-    if [ ${#result} -le 7 ]; then
-      display_error "\Zb\Z1Passphrase is too short!\Zn It should be at least 8 characters long."
-      choose_disk_encryption
-    elif ! [[ $result =~ ^[[:alnum:]]+$ ]]; then
-      display_error "\Zb\Z1Invalid passphrase!\Zn it could only contain alphanumerical characters."
-      choose_disk_encryption
-    fi
-  fi
   # Act on exit status
   case $exit_status in
   "$DIALOG_OK")
     clear
+    passphrase=$(echo "$result" | head -n 1)
+    confirm=$(echo "$result" | tail -n 1)
+    line_count=$(echo -n "$result" | wc -l)
+    if [ ${#passphrase} -le 7 ]; then
+      display_error "\Zb\Z1Passphrase is too short!\Zn It should be at least 8 characters long."
+      choose_disk_encryption
+    elif ! [[ $passphrase =~ ^[[:alnum:]]+$ ]]; then
+      display_error "\Zb\Z1Invalid passphrase!\Zn it could only contain alphanumerical characters."
+      choose_disk_encryption
+    elif [[ "$passphrase" != "$confirm" ]]; then
+      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
+      choose_disk_encryption
+    elif [ "$line_count" -ne 1 ]; then
+      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
+      choose_disk_encryption
+    fi
     ENCRYPT_DISK=1
-    DISK_LUKS_KEY=$result
-    confirm_disk_passphrase
+    DISK_LUKS_KEY=$passphrase
+    hardware_detection_gpu
     ;;
   "$DIALOG_CANCEL")
     ENCRYPT_DISK=0
     clear
-    choose_disk
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
-}
-
-confirm_disk_passphrase() {
-  # on descriptor 3
-  exec 3>&1
-  result=$(dialog --backtitle "Disk Partition -- $DIALOG_HELP_TITLE" \
-    --no-collapse \
-    --cancel-label "Cancel" \
-    --ok-label "Ok" \
-    --clear \
-    --colors \
-    --insecure \
-    --passwordbox "Confirm disk passphrase:" $DIALOG_HEIGHT $DIALOG_WIDTH \
-    2>&1 1>&3)
-  exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    if [ "$DISK_LUKS_KEY" != "$result" ]; then
-      display_error "Passphrase and confirmation are different!"
-      choose_disk_encryption
-    else
-      hardware_detection_gpu
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
-    choose_disk_encryption
+    hardware_detection_gpu
     ;;
   "$DIALOG_ESC")
     clear
@@ -844,6 +819,7 @@ if [ $VERBOSE -eq 1 ]; then
   echo "user full name: $FULLNAME"
   echo "install on disk: $SELECTED_DISK"
   echo "encrypt disk: $ENCRYPT_DISK"
+  echo "disk LUKS key: $DISK_LUKS_KEY"
   echo "GPU hardware vendor: $GPU_VENDOR_DETECTED"
   echo "install GPU driver: $GPU_INSTALL"
   echo -e "${YELLOW}End of options.${NC}"
