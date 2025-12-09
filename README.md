@@ -109,7 +109,7 @@ Most useful desktop shortcuts:
    <details>
       <summary>Click to see 'full disk encryption' dialog</summary>
 
-      ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4.png?raw=true "CuriOS full disk encryption")
+      ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS full disk encryption")
    </details>
 6. If everything went according to plan, reboot (and remember to remove USB
    media installer).
@@ -119,12 +119,6 @@ Most useful desktop shortcuts:
       ![CuriOS install reboot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
    </details>
 7. **Enjoy!**
-
-> [!IMPORTANT]
-> Your temporary password is **"changeme"**.
-> You can now change it, within COSMIC desktop: click on top right power button,
-> then Parameters > System & Accounts > Users > "Your Account Name" > Change password.
-> Or use the command `passwd` in a terminal.
 
 ## Curi*OS* management
 
