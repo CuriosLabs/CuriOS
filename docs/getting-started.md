@@ -26,7 +26,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
    An `sha256sum` signature is also downloadable if you want to verify it.
 2. **Flash the ISO**:
-    You can flash it to a USB drive using tools like [Etcher](https://etcher.balena.io/#download-etcher).
+    You can flash it to a USB drive using tools like [Etcher](https://etcher.balena.io/#download-etcher)
     OR on Linux you can try with `caligula`:
 
     ```bash
@@ -38,7 +38,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
     ```bash
     # Find your USB disk path with fdsik, it will probably be /dev/sda or /dev/sdb
     fdisk -l
-    # Copy the iso to the USB (/dev/sda)
+    # Copy the iso to the USB (/dev/sda in our case)
     sudo dd if=CuriOS_25.11.0_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
     ```
 
@@ -62,10 +62,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
 
 ## Basic Usage
 
-After installation, you can explore the CuriOS system.
+After installation, you can now [explore the CuriOS system](first-steps.md).
 
-* **NixOS Configuration**: Your system configuration is managed in `configuration.nix` and `settings.nix`.
-* **Custom Packages**: Explore custom packages in the `pkgs/` directory.
-* **Desktop Environment**: CuriOS features the COSMIC desktop environment.
-
-For more advanced configurations and troubleshooting, please refer to the NixOS documentation.
+For more advanced configurations and troubleshooting, please refer to the
+[NixOS documentation](https://nixos.org/manual/nixos/stable/) and [NixOS Wiki](https://nixos.wiki/wiki/Main_Page).

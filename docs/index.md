@@ -19,7 +19,11 @@ To get started with CuriOS, please refer to the [Getting Started Guide](getting-
 
 ## Explore the Curi*OS* system
 
-You are now ready for your [first steps](first-setps.md) in the system.
+You are now ready for your [first steps](first-steps.md) in the system.
+
+## Applications
+
+TBD.
 
 ## Architecture
 
