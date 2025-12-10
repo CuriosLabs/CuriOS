@@ -54,6 +54,11 @@
         default = false;
         description = "Python3.13, pip3, UV and JetBrains PyCharm Community.";
       };
+      ruby.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Ruby, gem, bundle, erb, irb and more.";
+      };
       rust.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -128,7 +133,8 @@
         python313Packages.uv
         jetbrains.pycharm-community-bin
         ruff
-      ] ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
+      ] ++ lib.optionals config.curios.desktop.apps.devops.ruby.enable [ ruby ]
+      ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
         # Rust provide cargo, rustc, rust-analyzer and more
         rustup
         cargo-c

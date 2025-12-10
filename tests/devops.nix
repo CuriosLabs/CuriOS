@@ -30,6 +30,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         javascript.enable = true;
         python312.enable = true;
         python313.enable = true;
+        ruby.enable = true;
         rust.enable = true;
         networks.enable = true;
       };
@@ -85,6 +86,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("uv")
         check_which("pycharm-community")
         check_which("ruff")
+
+    with subtest("check-ruby"):
+        check_which("ruby")
+        check_which("gem")
 
     with subtest("check-rust"):
         check_which("rustup")
