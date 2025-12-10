@@ -4,17 +4,15 @@ This guide will help you get started with installing and using CuriOS.
 
 ## Prerequisites
 
-* A machine capable of running NixOS, any Intel or AMD x86-64/AMD64 modern
-  CPU, with an UEFI boot system should be good, any motherboard sell during
-  the last 10/15 years should be good.
+* A machine capable of running NixOS. Any modern Intel or AMD x86-64/AMD64 CPU with a UEFI boot system should suffice, and any motherboard sold within the last 10-15 years should be compatible.
 * Basic understanding of NixOS concepts is recommended.
-* An USB stick to burn the Curi*OS* ISO on. You can use the [Balena Etcher](https://etcher.balena.io/#download-etcher)
+* A USB stick to burn the CuriOS ISO on. You can use the [Balena Etcher](https://etcher.balena.io/#download-etcher)
   program if you are on a Windows machine, or on a Linux machine you can use
   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
 * An internet connection will be required during the installation. It is
   recommended to use an Ethernet cable for this operation. If you can only use
-  WiFi, please note that the ISO does not include `NetworkManager`, therefore you
-  will have to manually set-up the connection with `wpa_supplicant`.
+  WiFi, please note that the ISO does not include `NetworkManager`; therefore, you
+  will have to manually set up the connection with `wpa_supplicant`.
 
 ## Installation
 
@@ -24,7 +22,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
 > The installation script will **FORMAT** your disk !!! Backup your data before.
 
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
-   An `sha256sum` signature is also downloadable if you want to verify it.
+   An `sha256sum` signature is also available for download if you want to verify it.
 2. **Flash the ISO**:
     You can flash it to a USB drive using tools like [Etcher](https://etcher.balena.io/#download-etcher)
     OR on Linux you can try with `caligula`:
@@ -36,7 +34,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
     or with `dd`:
 
     ```bash
-    # Find your USB disk path with fdsik, it will probably be /dev/sda or /dev/sdb
+    # Find your USB disk path with `fdisk`; it will probably be `/dev/sda` or `/dev/sdb`
     fdisk -l
     # Copy the iso to the USB (/dev/sda in our case)
     sudo dd if=CuriOS_25.11.0_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
@@ -44,7 +42,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
 
 3. **Boot from USB**:
     Boot your machine from the USB drive. You will probably need to hit the F8
-    or the F12 key on your computer startup, see your motherboard
+    or F12 key during your computer's startup; refer to your motherboard
     manufacturer's instructions.
     ![CuriOS installation boot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_0.png?raw=true "CuriOS installation boot")
 4. **Run the installer**:
@@ -57,7 +55,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
     ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation language selection")
     ![CuriOS installation - disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS installation disk encryption")
     GPU hardware (Nvidia, AMD) will be automatically detected and installed.
-    Once the installation is finished you will be invited to reboot. Do not
+    Once the installation is finished, you will be invited to reboot. Do not
     forget to remove the USB stick once your computer has restarted.
 
 ## Basic Usage

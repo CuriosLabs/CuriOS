@@ -12,26 +12,26 @@ reproducibility.
 
 ## Directory Structure
 
-The project organizes its configurations into distinct directories:
+The project's configuration is organized into the following directories:
 
 * `iso/`: Contains files for building the bootable ISO image.
-* `modules/`: The core of the project, housing Nix modules that define system configuration.
-  * `desktop-apps/`: Modules for desktop applications, including web apps.
-  * `filesystems/`: File system configurations, including LUKS encryption.
-  * `hardened/`: Security hardening modules.
-  * `hardware/`: Hardware-specific configurations (e.g., GPU drivers).
-  * `platforms/`: Platform-specific configurations (e.g., `amd64`, `rpi4`).
+* `modules/`: The core of the project, which houses Nix modules that define the system configuration.
+  * `desktop-apps/`: Modules for desktop and web applications.
+  * `filesystems/`: File system configurations, including options for LUKS encryption.
+  * `hardened/`: Modules for security hardening.
+  * `hardware/`: Hardware-specific configurations (e.g., for GPU drivers).
+  * `platforms/`: Platform-specific configurations (e.g., for `amd64` and `rpi4`).
 * `pkgs/`: Custom packages built specifically for CuriOS.
-* `tests/`: Integration tests using the NixOS test driver.
+* `tests/`: Integration tests that use the NixOS test driver.
 
 ## Module Imports
 
-All module imports are consolidated in `modules/default.nix`, ensuring a centralized and organized configuration management.
+All module imports are consolidated in `modules/default.nix` for centralized and organized configuration management.
 
 ## Coding Style and Conventions
 
-* **Modularity**: New features should extend existing modules or create new ones logically.
+* **Modularity**: New features should extend existing modules or be created as new, logically-named modules.
 * **Descriptive Naming**: Files and modules follow consistent and descriptive naming patterns.
-* **Variable Naming**: Configuration options begin with `config.curios`.
-* **Code Style**: 2 spaces for indentation in Nix files.
+* **Variable Naming**: Configuration options start with `config.curios`.
+* **Code Style**: Use 2 spaces for indentation in Nix files.
 * **Nix Formatting**: `nixfmt` is used for consistent Nix code formatting.
