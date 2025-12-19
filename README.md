@@ -73,13 +73,13 @@ Most useful desktop shortcuts:
 1. Get the latest Curi*OS* 25.11 Minimal ISO image:
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.0/CuriOS_25.11.0_amd64_intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso
    ```
 
    Download and check iso signature:
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.0/CuriOS_25.11.0_amd64_intel.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso.sha256
    sha256sum --check CuriOS_*.iso.sha256
    ```
 
@@ -88,9 +88,9 @@ Most useful desktop shortcuts:
 
    ```bash
    # Good old dd:
-   sudo dd if=CuriOS_25.11.0_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_25.11.1_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
    # or shiny caligula:
-   caligula burn -s $(cat ./CuriOS_25.11.0_amd64_intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_25.11.1_amd64_intel.iso.sha256)
    ```
 
    Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
@@ -190,11 +190,11 @@ sudo nixos-rebuild list-generations
 Contributions are what make the open source community such an amazing place to
 learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.0/CONTRIBUTING.md).
+See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/master?tab=contributing-ov-file).
 
 ## Version
 
-The current version is [25.11.0](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.0)
+The current version is [25.11.1](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.1)
 based on a Nixos 25.11 build.
 
 ## License

@@ -28,7 +28,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
     OR on Linux you can try with `caligula`:
 
     ```bash
-    caligula burn -s $(cat ./CuriOS_25.11.0_amd64_intel.iso.sha256)
+    caligula burn -s $(cat ./CuriOS_25.11.1_amd64_intel.iso.sha256)
     ```
 
     or with `dd`:
@@ -37,7 +37,7 @@ The primary method for installing CuriOS is by using the bootable ISO image.
     # Find your USB disk path with `fdisk`; it will probably be `/dev/sda` or `/dev/sdb`
     fdisk -l
     # Copy the iso to the USB (/dev/sda in our case)
-    sudo dd if=CuriOS_25.11.0_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
+    sudo dd if=CuriOS_25.11.1_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
     ```
 
 3. **Boot from USB**:
