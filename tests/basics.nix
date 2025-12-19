@@ -56,6 +56,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           bitwarden.enable = true;
           flameshot.enable = true;
           keepassxc.enable = true;
+          localsend.enable = true;
         };
       };
     };
@@ -103,6 +104,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("bitwarden")
         check_which("flameshot")
         check_which("keepassxc")
+        check_which("localsend_app")
 
     with subtest("check-unconditional-basics"):
         check_which("alacritty")

@@ -185,6 +185,8 @@ in {
         flameshot.enable = false;
         # KeePassXC password manager
         keepassxc.enable = false;
+        # LocalSend - Cross-platform file sharing on your local network
+        localsend.enable = true;
       };
     };
     services = {

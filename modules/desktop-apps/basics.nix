@@ -127,6 +127,12 @@
           default = false;
           description = "KeePassXC password manager.";
         };
+        localsend.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description =
+            "LocalSend - Cross-platform file sharing on your local network.";
+        };
       };
     };
   };
@@ -229,10 +235,16 @@
       };
     };
 
-    # Enabling Linux AppImage
-    programs.appimage.enable =
-      lib.mkDefault config.curios.desktop.apps.appImage.enable;
-    programs.appimage.binfmt =
-      lib.mkDefault config.curios.desktop.apps.appImage.enable;
+    programs = {
+      # Enabling Linux AppImage
+      appimage.enable =
+        lib.mkDefault config.curios.desktop.apps.appImage.enable;
+      appimage.binfmt =
+        lib.mkDefault config.curios.desktop.apps.appImage.enable;
+      localsend = {
+        enable =
+          lib.mkDefault config.curios.desktop.apps.utility.localsend.enable;
+      };
+    };
   };
 }
