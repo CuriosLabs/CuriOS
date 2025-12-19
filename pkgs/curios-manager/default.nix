@@ -4,35 +4,43 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.15";
+  version = "0.16";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-6uFZliRK2NLzAhYKpxA0GUJ3v8WIzk+K7GZ5hItEzlw=";
+    hash = "sha256-JKLSOGrrPJyehllY0Xldxht16YegtDLUyffFwc2QypA=";
   };
 
   buildInputs = [
+    pkgs.btop
+    #pkgs.cosmic-applibrary
+    #pkgs.cosmic-launcher
+    #pkgs.cosmic-osd
+    #pkgs.cosmic-settings
+    #pkgs.cosmic-store
     pkgs.curl
+    #pkgs.curios-dotfiles
     pkgs.duf
     pkgs.dust
     pkgs.fastfetch
+    pkgs.fwupd
     pkgs.gnutar
     pkgs.gum
     pkgs.jq
     pkgs.libnotify
     pkgs.smartmontools
+    #pkgs.systemd
     pkgs.terminaltexteffects
     pkgs.wget
   ];
   nativeBuildInputs = [ makeWrapper ];
-  dontPatch = true;
   dontConfigure = true;
   dontBuild = true;
-  #postPatch = ''
-  #  patchShebangs
-  #'';
+  postPatch = ''
+    patchShebangs .
+  '';
   desktopItem = pkgs.makeDesktopItem {
     name = "dev.curioslabs.curiosmanager";
     exec = "/run/current-system/sw/bin/alacritty -e curios-manager";
@@ -45,8 +53,11 @@ stdenvNoCC.mkDerivation rec {
     runHook preInstall
 
     mkdir -p  $out/bin/
+    mkdir -p  $out/bin/functions/
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-manager
     install -D -m 555 -t $out/bin/ pkgs/curios-manager/bin/curios-update
+    install -D -m 444 -t $out/bin/ pkgs/curios-manager/bin/constants.sh
+    install -D -m 444 -t $out/bin/functions pkgs/curios-manager/bin/functions/*
     wrapProgram $out/bin/curios-manager --prefix PATH : ${
       lib.makeBinPath buildInputs
     }
