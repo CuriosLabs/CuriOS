@@ -1,7 +1,7 @@
+# Curi*OS*
+
 [![NixOS 25.11](https://img.shields.io/badge/NixOS-25.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
-
-# Curi*OS*
 
 Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the
 [COSMIC](https://system76.com/cosmic) desktop environment. It ships with
