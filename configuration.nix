@@ -80,10 +80,13 @@
       pciutils
       smartmontools
     ] ++ lib.optionals config.services.desktopManager.cosmic.xwayland.enable
-    [ wl-clipboard ]
-    ++ lib.optionals config.curios.hardware.amdGpu.enable [ btop-rocm ]
-    ++ lib.optionals config.curios.hardware.nvidiaGpu.enable [ btop-cuda ]
-    ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
+    [ wl-clipboard ] ++ lib.optionals config.curios.hardware.amdGpu.enable [
+      btop-rocm
+      nvtopPackages.amd
+    ] ++ lib.optionals config.curios.hardware.nvidiaGpu.enable [
+      btop-cuda
+      nvtopPackages.nvidia
+    ] ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
       && !config.curios.hardware.amdGpu.enable) [ btop ];
 
   # Some programs need SUID wrappers, can be configured further or are
