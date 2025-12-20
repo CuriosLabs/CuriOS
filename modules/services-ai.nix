@@ -30,7 +30,7 @@
       else if config.curios.hardware.amdGpu.enable then
         "rocm"
       else
-        "false";
+        false;
     };
     # Open WebUI, see: https://docs.openwebui.com/
     services.open-webui = {

@@ -102,6 +102,8 @@
     true
   else if config.curios.desktop.apps.gaming.enable then
     true
+  else if config.curios.desktop.apps.studio.enable then
+    true
   else if config.curios.desktop.apps.devops.rust.enable then
     true
   else if config.curios.desktop.apps.devops.go.enable then
@@ -126,7 +128,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.0";
+    nixos.variant_id = "25.11.1";
   };
 
   # Collect garbage

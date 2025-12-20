@@ -4,10 +4,10 @@
 # Meant to be run during an NixOS ISO installation.
 # !IMPORTANT! Run this script as sudo
 # It will create 3 partitions for '/boot', '/' and a 8Go swap
-# OR with --crypt option, it will create a 512Mo boot and a LUKS partition.
-# The encrypted LUKS partition will contain LVM partitions for '/' and a 8Go swap.
+# If disk encryption is choosed, the encrypted LUKS partition will contain LVM
+# partitions for '/' and a 8Go swap.
 #
-# Dependencies: dialog, parted, git.
+# Dependencies: dialog, parted, git, mkpasswd.
 # Test it with:
 # nix-shell -p dialog parted git
 
@@ -35,6 +35,7 @@ SELECTED_LOCALE_CONSOLE="us"
 SELECTED_TZ=""
 USERNAME="nixos"
 FULLNAME=""
+HASHED_USER_PASSWD=""
 ENCRYPT_DISK=0
 DISK_LUKS_KEY=""
 GPU_VENDOR_DETECTED=""
@@ -169,6 +170,10 @@ if ! available mkfs; then
   echo -e "${RED}mkfs command not found!${NC}"
   exit 2
 fi
+if ! available mkpasswd; then
+  echo -e "${RED}mkpasswd command not found!${NC}"
+  exit 2
+fi
 if ! available dialog; then
   echo -e "${RED}dialog command not found!${NC}"
   exit 2
@@ -182,11 +187,14 @@ else
   exit 1
 fi
 
+#------------- Settings and checks
 # This script must be run as root
 if [ "$EUID" -ne 0 ]; then
   echo -e "${RED}This script MUST be run as root:${NC} sudo curios-install" >&2
   exit 1
 fi
+
+setterm -blink on
 
 # A standard dialog message box, for printing error message
 display_error() {
@@ -548,7 +556,7 @@ set_fullname() {
       display_error "\Zb\Z1Invalid full name!\Zn it could only contain alphanumerical, '.' or space characters."
       set_fullname
     else
-      display_password_info
+      set_user_passwd
     fi
     ;;
   "$DIALOG_CANCEL")
@@ -563,26 +571,47 @@ set_fullname() {
   esac
 }
 
-#------------- User temp password info
-display_password_info() {
-  # on descriptor 3
+#------------- Set user password
+set_user_passwd() {
   exec 3>&1
-  result=$(dialog --backtitle "User Information" \
+  result=$(dialog --backtitle "User Password -- $DIALOG_HELP_TITLE" \
     --title "User Password" \
+    --cancel-label "Previous" \
     --ok-label "Next" \
     --no-collapse \
     --clear \
     --colors \
-    --msgbox "Your temporary password is set to \Zb\Z2changeme\Zn.\nChange it later from the desktop user interface or with the 'passwd' command in a terminal." $DIALOG_HEIGHT $DIALOG_WIDTH \
+    --insecure \
+    --passwordform "Please enter and confirm your password. 6 characters length minimum." $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
+    "Password:" 1 1 "" 1 10 25 45 \
+    "Confirm:" 2 1 "" 2 10 25 45 \
     2>&1 1>&3)
   exit_status=$?
-  # Close file descriptor 3
   exec 3>&-
-  # Act on exit status
   case $exit_status in
   "$DIALOG_OK")
     clear
-    choose_disk
+    password=$(echo "$result" | head -n 1)
+    confirm=$(echo "$result" | tail -n 1)
+    line_count=$(echo -n "$result" | wc -l)
+    # Compare and check password length
+    if [ "${#password}" -le 5 ]; then
+      display_error "\Zb\Z1Password is too short!\Zn It should be at least 6 characters long."
+      set_user_passwd
+    elif [[ "$password" != "$confirm" ]]; then
+      display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
+      set_user_passwd
+    elif [ "$line_count" -ne 1 ]; then
+      display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
+      set_user_passwd
+    else
+      HASHED_USER_PASSWD=$(mkpasswd -m yescrypt "$password")
+      choose_disk
+    fi
+    ;;
+  "$DIALOG_CANCEL")
+    clear
+    set_fullname
     ;;
   "$DIALOG_ESC")
     clear
@@ -590,6 +619,7 @@ display_password_info() {
     exit 1
     ;;
   esac
+
 }
 
 #------------- Choose install disk
@@ -634,7 +664,7 @@ choose_disk() {
     ;;
   "$DIALOG_CANCEL")
     clear
-    set_fullname
+    set_user_passwd
     ;;
   "$DIALOG_ESC")
     clear
@@ -655,70 +685,41 @@ choose_disk_encryption() {
     --clear \
     --colors \
     --insecure \
-    --passwordbox "Should your disk be fully encrypted ?\n\Zb\Z4HIGHLY\Zn recommended.\nA passphrase will be needed during PC boot sequence.\nEnter your passphrase for the full disk encryption:" $DIALOG_HEIGHT $DIALOG_WIDTH \
+    --passwordform "Should your disk be fully encrypted ?\n\Zb\Z4HIGHLY\Zn recommended.\nA passphrase will be needed during your computer's boot sequence.\nEnter your passphrase for the full disk encryption:" $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
+    "Passphrase:" 1 1 "" 1 12 25 45 \
+    "Confirm:" 2 1 "" 2 12 25 45 \
     2>&1 1>&3)
   exit_status=$?
   # Close file descriptor 3
   exec 3>&-
-  if [ $exit_status -eq $DIALOG_OK ]; then
-    if [ ${#result} -le 7 ]; then
-      display_error "\Zb\Z1Passphrase is too short!\Zn It should be at least 8 characters long."
-      choose_disk_encryption
-    elif ! [[ $result =~ ^[[:alnum:]]+$ ]]; then
-      display_error "\Zb\Z1Invalid passphrase!\Zn it could only contain alphanumerical characters."
-      choose_disk_encryption
-    fi
-  fi
   # Act on exit status
   case $exit_status in
   "$DIALOG_OK")
     clear
+    passphrase=$(echo "$result" | head -n 1)
+    confirm=$(echo "$result" | tail -n 1)
+    line_count=$(echo -n "$result" | wc -l)
+    if [ ${#passphrase} -le 7 ]; then
+      display_error "\Zb\Z1Passphrase is too short!\Zn It should be at least 8 characters long."
+      choose_disk_encryption
+    elif ! [[ $passphrase =~ ^[[:alnum:]]+$ ]]; then
+      display_error "\Zb\Z1Invalid passphrase!\Zn it could only contain alphanumerical characters."
+      choose_disk_encryption
+    elif [[ "$passphrase" != "$confirm" ]]; then
+      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
+      choose_disk_encryption
+    elif [ "$line_count" -ne 1 ]; then
+      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
+      choose_disk_encryption
+    fi
     ENCRYPT_DISK=1
-    DISK_LUKS_KEY=$result
-    confirm_disk_passphrase
+    DISK_LUKS_KEY=$passphrase
+    hardware_detection_gpu
     ;;
   "$DIALOG_CANCEL")
     ENCRYPT_DISK=0
     clear
-    choose_disk
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
-}
-
-confirm_disk_passphrase() {
-  # on descriptor 3
-  exec 3>&1
-  result=$(dialog --backtitle "Disk Partition -- $DIALOG_HELP_TITLE" \
-    --no-collapse \
-    --cancel-label "Cancel" \
-    --ok-label "Ok" \
-    --clear \
-    --colors \
-    --insecure \
-    --passwordbox "Confirm disk passphrase:" $DIALOG_HEIGHT $DIALOG_WIDTH \
-    2>&1 1>&3)
-  exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    if [ "$DISK_LUKS_KEY" != "$result" ]; then
-      display_error "Passphrase and confirmation are different!"
-      choose_disk_encryption
-    else
-      hardware_detection_gpu
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
-    choose_disk_encryption
+    hardware_detection_gpu
     ;;
   "$DIALOG_ESC")
     clear
@@ -814,9 +815,11 @@ if [ $VERBOSE -eq 1 ]; then
   echo "time zone: $SELECTED_TZ"
   echo "hostname: $PC_HOSTNAME"
   echo "username: $USERNAME"
+  echo "user hashed password: $HASHED_USER_PASSWD"
   echo "user full name: $FULLNAME"
   echo "install on disk: $SELECTED_DISK"
   echo "encrypt disk: $ENCRYPT_DISK"
+  echo "disk LUKS key: $DISK_LUKS_KEY"
   echo "GPU hardware vendor: $GPU_VENDOR_DETECTED"
   echo "install GPU driver: $GPU_INSTALL"
   echo -e "${YELLOW}End of options.${NC}"
@@ -975,9 +978,10 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   sed "s/keyboard = \".*/keyboard = \"${SELECTED_LOCALE_CONSOLE}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update time zone
   sed "s/timeZone = \".*/timeZone = \"${SELECTED_TZ//\//\\\/}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
-  # Update user name
+  # User settings
   sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s#initialHashedPassword = \".*#initialHashedPassword = \"${HASHED_USER_PASSWD}\";#g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # Update hostname
   sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # platform settings:

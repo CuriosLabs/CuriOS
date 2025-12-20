@@ -1,6 +1,9 @@
 .venv/
 .idea/
+.zed/
 iso/result/
 iso/*.iso
 iso/*.iso.sha256
 result/
+tests/result/
+

@@ -16,24 +16,6 @@ let
   # OR with the 'passwd' command line.
   # Do **NOT** set your real password HERE !
   password = "changeme";
-  # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
-  # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
-  # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
-  # Next step: add 'protonvpn-gui-autostart' to "environment.systemPackages" below.
-  protonvpn-gui-autostart = pkgs.makeAutostartItem {
-    name = "protonvpn-app";
-    package = pkgs.protonvpn-gui;
-    # append extra arguments to protonvpn-app Exec
-    appendExtraArgs = [ "--start-minimized" ];
-  };
-  # Autostart Steam client in big picture mode example.
-  # add 'steam-bigpicture-autostart' to "environment.systemPackages" below.
-  # desktop.apps.gaming.enable option set to true is required. See below.
-  steam-bigpicture-autostart = pkgs.makeAutostartItem {
-    name = "steam";
-    package = pkgs.steam;
-    appendExtraArgs = [ "-bigpicture" ];
-  };
 in {
   ### CuriOS options settings goes here:
   curios = {
@@ -80,7 +62,7 @@ in {
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
+      # Brave browser, Alacritty, Signal, Yubico auth, Gimp3, EasyEffects.
       basics.enable = lib.mkDefault true;
       # Enabling Linux AppImage
       appImage.enable = lib.mkDefault true;
@@ -92,13 +74,16 @@ in {
         vivaldi.enable = false;
       };
       crypto = {
-        # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
+        # Cryptocurrencies desktop apps.
+        # Required by desktop.apps.crypto options below.
         enable = false;
-        # btc.enable REQUIRE appImage.enable = true !!! Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        # btc.enable REQUIRE appImage.enable = true !!!
+        # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
         btc.enable = false;
       };
       devops = {
-        # Desktop apps for developers - Neovim+LazyVim, git for github (gh), shellcheck, statix
+        # Desktop apps for developers - Neovim+LazyVim, git for github (gh),
+        # shellcheck, statix
         enable = true;
         # Cloudflare tunnel client
         cloudflared.enable = false;
@@ -116,19 +101,47 @@ in {
         javascript.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
+        python313.enable = false;
         # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
         rust.enable = false;
         # Nmap, Zenmap, Wireshark, Remmina
         networks.enable = false;
       };
-      # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
-      gaming.enable = false;
-      # OBS, Audacity, DaVinci Resolve
+      gaming = {
+        # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+        enable = false;
+        steam.bigpicture.autoStart = false;
+      };
+      # OBS, Audacity, DaVinci Resolve, Darktable
       studio.enable = false;
       office = {
         # Default office desktop apps - Obsidian (notes/ideas).
         enable = true;
+        # LibreOffice suite
         libreoffice.enable = false;
+        # ONLYOFFICE suite
+        onlyoffice.desktopeditors.enable = true;
+        # Mozilla Thunderbird email client
+        thunderbird.enable = false;
+        # CRM web apps
+        crm = {
+          # SalesForce web app - edit baseUrl to your company SalesForce URL.
+          salesforce = {
+            enable = lib.mkDefault false;
+            baseUrl = lib.mkDefault "your-domain.my.salesforce.com";
+          };
+          hubspot = {
+            enable = lib.mkDefault false;
+            baseUrl = "app.hubspot.com";
+          };
+        };
+        # Projects management apps - edit baseUrl to your company Jira URL.
+        projects = {
+          jira = {
+            enable = false;
+            baseUrl = "example.atlassian.net";
+          };
+        };
         # conferencing web apps
         conferencing = {
           slack.enable = false;
@@ -139,6 +152,7 @@ in {
       vpn = {
         # ProtonVPN with GUI
         proton.enable = false;
+        proton.autoStart = false;
         # tailscale.com VPN
         tailscale.enable = false;
         # mullvad VPN GUI
@@ -153,6 +167,8 @@ in {
         gemini.enable = false;
         # Grok web app
         grok.enable = true;
+        # lmstudio.ai local AI model
+        lmstudio.enable = false;
         # Mistral LeChat web app
         mistral.enable = true;
       };
@@ -161,6 +177,16 @@ in {
         signal.enable = true;
         # WhatsApp web app
         whatsapp.enable = true;
+      };
+      utility = {
+        # Bitwarden password manager
+        bitwarden.enable = true;
+        # Flameshot screenshot app
+        flameshot.enable = false;
+        # KeePassXC password manager
+        keepassxc.enable = false;
+        # LocalSend - Cross-platform file sharing on your local network
+        localsend.enable = true;
       };
     };
     services = {
@@ -212,10 +238,8 @@ in {
 
   ### NixOS packages
   environment.systemPackages = [
-    #protonvpn-gui-autostart # Uncomment this line to autostart protonvpn-gui on user graphical session.
-    #steam-bigpicture-autostart # Uncomment this line to autostart Steam client in big picture mode.
     # Add your packages here - find package name at https://search.nixos.org/packages
-    #pkgs.inkscape-with-extensions # Uncomment this line to install Inkscape SVG image editor.
+    #pkgs.inkscape-with-extensions
   ];
 
   ### Change user settings here:
@@ -227,7 +251,8 @@ in {
     # <user> name and description will be updated by curios-install during ISO install
     users.nixos = {
       isNormalUser = true;
-      initialPassword = password;
+      #initialPassword = password;
+      initialHashedPassword = "";
       description = "My Name";
       extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
         ++ lib.optionals config.curios.desktop.apps.crypto.enable [ "tty" ]
@@ -251,12 +276,8 @@ in {
   ### Change general settings here:
   # networking
   networking = {
-    nameservers = [
-      "9.9.9.9"
-      "1.1.1.1"
-      "2620:fe::fe"
-      "2620:fe::9"
-    ]; # Quad9 and cloudflare DNS servers.
+    # Quad9 and cloudflare DNS servers.
+    nameservers = [ "9.9.9.9" "1.1.1.1" "2620:fe::fe" "2620:fe::9" ];
     # Use DHCP to get an IP address:
     useDHCP = lib.mkDefault true;
     # Open ports in the firewall.

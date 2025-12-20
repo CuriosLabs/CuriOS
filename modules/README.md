@@ -1,6 +1,7 @@
 # Curi*OS* modules
 
-Activate or deactivate modules by modifying `settings.nix` file: `sudo nano /etc/nixos/settings.nix` and then rebuild nixos: `sudo nixos-rebuild switch`
+Activate or deactivate modules by modifying `settings.nix` file:
+`sudo nano /etc/nixos/settings.nix` and then rebuild nixos: `sudo nixos-rebuild switch`
 
 ```bash
 curios = {
@@ -14,7 +15,7 @@ curios = {
       };
       timeZone = "Etc/GMT";
     };
-    ### Activate or deactivate CuriOS modules/ from here:
+        ### Activate or deactivate CuriOS modules/ from here:
     # Hardware platform settings updated by curios-install during ISO install
     platform.amd64.enable = lib.mkDefault true;
     platform.rpi4.enable = lib.mkDefault false;
@@ -27,84 +28,183 @@ curios = {
       # EXPERIMENTAL - laptop battery saver
       laptop.enable = false;
     };
-    # Required modules:
-    backup.enable = lib.mkDefault true; # Enable Restic backup
+    # REQUIRED modules:
+    # Enable Restic backup
+    backup.enable = lib.mkDefault true;
     bootefi.enable = lib.mkDefault true;
-    bootefi.kernel.latest = lib.mkDefault true; # Use latest stable kernel available if true, otherwise use LTS kernel.
+    # Use latest stable kernel available if true, otherwise use LTS kernel.
+    bootefi.kernel.latest = lib.mkDefault true;
     desktop.cosmic.enable = lib.mkDefault true;
-    fonts.enable = lib.mkDefault true; # Fira, Noto, some Nerds fonts, JetBrains Mono
-    networking.enable = lib.mkDefault true; # NetworkManager (required by COSMIC).
-    shell.zsh.enable = lib.mkDefault true; # ZSH shell, REQUIRED
+    # Fira, Noto, some Nerds fonts, JetBrains Mono
+    fonts.enable = lib.mkDefault true;
+    # NetworkManager (required by COSMIC).
+    networking.enable = lib.mkDefault true;
+    # ZSH shell, REQUIRED
+    shell.zsh.enable = lib.mkDefault true;
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      basics.enable = lib.mkDefault true; # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
-      appImage.enable = lib.mkDefault false; # Enabling Linux AppImage
+      # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
+      basics.enable = lib.mkDefault true;
+      # Enabling Linux AppImage
+      appImage.enable = lib.mkDefault true;
+      # Various web browser
       browser = {
-        chromium.enable = false; # Ungoogled Chromium Web Browser
-        firefox.enable = false; # Mozilla Firefox Web Browser
-        librewolf.enable = false; # Fork of Firefox Web Browser
-        vivaldi.enable = false; # Vivaldi Web Browser
+        chromium.enable = false;
+        firefox.enable = false;
+        librewolf.enable = false;
+        vivaldi.enable = false;
       };
       crypto = {
-        enable = false; # Cryptocurrencies desktop apps. Required by desktop.apps.crypto options below.
-        btc.enable = false; # Bitcoin - Electrum, Sparrow wallets - Bisq2 decentralized exchange.
+        # Cryptocurrencies desktop apps. 
+        # Required by desktop.apps.crypto options below.
+        enable = false;
+        # btc.enable REQUIRE appImage.enable = true !!! 
+        # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
+        btc.enable = false;
       };
       devops = {
-        enable = true; # Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix
-        cloudflared.enable = false; # Cloudflare tunnel client
+        # Desktop apps for developers - Neovim+LazyVim, git for github (gh), 
+        # shellcheck, statix
+        enable = true;
+        # Cloudflare tunnel client
+        cloudflared.enable = false;
         editor = {
-          default.nvim.enable = false; # Set Neovim as the default editor instead of nano.
-          zed.enable = true; # Zed.dev code editor
-          vscode.enable = false; # MS code editor
+          # Set Neovim as the default editor instead of nano.
+          default.nvim.enable = false;
+          # Zed.dev code editor
+          zed.enable = true;
+          # MS code editor
+          vscode.enable = false;
         };
-        go.enable = false; # Go, gofmt, JetBrains GoLand
-        javascript.enable = false; # NodeJS (npm)
-        python312.enable = false; # Python3.12, pip, setuptools, JetBrains PyCharm-Community
-        rust.enable = false; # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
-        networks.enable = false; # Nmap, Zenmap, Wireshark, Remmina
+        # Go, gofmt, JetBrains GoLand
+        go.enable = false;
+        # NodeJS (npm)
+        javascript.enable = false;
+        # Python3.12, pip, setuptools, JetBrains PyCharm-Community
+        python312.enable = false;
+        python313.enable = false;
+        # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
+        rust.enable = false;
+        # Nmap, Zenmap, Wireshark, Remmina
+        networks.enable = false;
       };
-      gaming.enable = false; # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
-      studio.enable = false; # OBS, Audacity, DaVinci Resolve
+      gaming = {
+        # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+        enable = false;
+        steam.bigpicture.autoStart = false;
+      };
+      # OBS, Audacity, DaVinci Resolve, Darktable
+      studio.enable = false;
       office = {
-        enable = true; # Default office desktop apps - Obsidian (notes/ideas).
-        libreoffice.enable = false; #LibreOffice suite
+        # Default office desktop apps - Obsidian (notes/ideas).
+        enable = true;
+        # LibreOffice suite
+        libreoffice.enable = false;
+        # ONLYOFFICE suite
+        onlyoffice.desktopeditors.enable = true;
+        # Mozilla Thunderbird email client
+        thunderbird.enable = false;
+        crm = {
+          salesforce = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Salesforce CRM web app.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.str;
+              default = "your-domain.my.salesforce.com";
+              description = "Your Salesforce 'My Domain' base URL.";
+            };
+          };
+          hubspot = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "HubSpot CRM web app.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.str;
+              default = "app.hubspot.com";
+              description = "HubSpot web app base URL.";
+            };
+          };
+        };
+        projects = {
+          jira = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Atlassian Jira web-based project management.";
+            };
+            baseUrl = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              description =
+                "Your Jira cloud custom domain like: mycompany.atlassian.net";
+              example = "mycompany.atlassian.net";
+            };
+          };
+        };
+        # conferencing web apps
         conferencing = {
-          slack.enable = false; # Slack.com webapp
-          teams.enable = false; # MS Teams webapp
-          zoom.enable = false; # Zoom.us video conference app
+          slack.enable = false;
+          teams.enable = false;
+          zoom.enable = false;
         };
       };
       vpn = {
-        proton.enable = false; # ProtonVPN with GUI
-        tailscale.enable = false; # tailscale.com VPN
-        mullvad.enable = false; # mullvad VPN GUI
+        # ProtonVPN with GUI
+        proton.enable = false;
+        proton.autoStart = false;
+        # tailscale.com VPN
+        tailscale.enable = false;
+        # mullvad VPN GUI
+        mullvad.enable = false;
       };
       ai = {
-        chatgpt.enable = true; # ChatGPT web app
-        claude.enable = true; # Claude web app
-        gemini.enable = false; # Google Gemini CLI
-        grok.enable = true; # Grok web app
-        mistral.enable = true; # Mistral LeChat web app
+        # ChatGPT web app
+        chatgpt.enable = true;
+        # Claude web app
+        claude.enable = true;
+        # Google Gemini CLI
+        gemini.enable = false;
+        # Grok web app
+        grok.enable = true;
+        # lmstudio.ai local AI model
+        lmstudio.enable = false;
+        # Mistral LeChat web app
+        mistral.enable = true;
       };
       chat = {
-        signal.enable = true; # Signal.org desktop app
-        whatsapp.enable = true; # WhatsApp web app
+        # Signal.org desktop app
+        signal.enable = true;
+        # WhatsApp web app
+        whatsapp.enable = true;
       };
     };
     services = {
-      enable = true; # Flatpak + flathub/cosmic repos, pipewire
-      printing.enable = false; # CUPS
-      sshd.enable = false; # SSH daemon
-      ai.enable = false; # Ollama and open-webui services (local AI) - ChatGPT, Grok, Mistral, Ollama(local) webapps.
+      # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
+      enable = true;
+      # CUPS printing
+      printing.enable = false;
+      # SSH daemon
+      sshd.enable = false;
+      # Ollama local AI with open-webui
+      ai.enable = false;
     };
     virtualisation = {
-      enable = false; # QEMU/KVM, libvirt, virt-manager
-      docker.enable = false; # Docker containers + docker-compose, docker-buildx, lazydocker
-      podman.enable = false; # Podman containers, replacement for Docker.
-      wine.enable = false; # Wine 32 and 64 bits with Wayland support.
+      # QEMU/KVM, libvirt, virt-manager
+      enable = false;
+      # Docker containers + docker-compose, docker-buildx, lazydocker
+      docker.enable = false;
+      # Podman containers, replacement for Docker.
+      podman.enable = false;
+      # Wine 32 and 64 bits with Wayland support.
+      wine.enable = false;
     };
     hardened = {
       # Hardened configurations -WIP-
@@ -116,15 +216,19 @@ curios = {
       dbus.enable = false;
       display-manager.enable = false;
       docker.enable = false;
-      getty.enable = false; # WARNING: will prevent TTY console login
-      networkManager.enable = false; # TODO: proton-vpn bug if set to true
-      networkManager-dispatcher.enable = false; # TODO: proton-vpn bug if set to true
+      # WARNING: will prevent TTY console login if true:
+      getty.enable = false;
+      # TODO: proton-vpn bug if set to true:
+      networkManager.enable = false;
+      # TODO: proton-vpn bug if set to true:
+      networkManager-dispatcher.enable = false;
       nix-daemon.enable = false;
       nscd.enable = false;
       rescue.enable = false;
       rtkit-daemon.enable = false;
       sshd.enable = false;
-      user.enable = false; # TODO: 'Flatpak run' bug if set to true
+      # TODO: 'Flatpak run' bug if set to true:
+      user.enable = false;
       wpa_supplicant.enable = false;
     };
   };

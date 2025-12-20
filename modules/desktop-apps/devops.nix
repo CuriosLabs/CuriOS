@@ -49,6 +49,16 @@
         default = false;
         description = "Python3.12, pip3, UV and JetBrains PyCharm Community.";
       };
+      python313.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Python3.13, pip3, UV and JetBrains PyCharm Community.";
+      };
+      ruby.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Ruby, gem, bundle, erb, irb and more.";
+      };
       rust.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -95,6 +105,8 @@
         fzf
         lazygit
         ripgrep
+        # YQ - yaml/xml/toml parser
+        yq
       ] ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable
       [ cloudflared ]
       ++ lib.optionals config.curios.desktop.apps.devops.go.enable [
@@ -104,7 +116,7 @@
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
       [ nodejs_22 ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
-        # Python3
+        # Python 3.12
         python312
         python312Packages.pip
         python312Packages.setuptools
@@ -112,9 +124,19 @@
         python312Packages.uv
         jetbrains.pycharm-community-bin
         ruff
-      ] ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
-        # Rust
-        rustup # provide cargo, rustc, rust-analyzer and more
+      ] ++ lib.optionals config.curios.desktop.apps.devops.python313.enable [
+        # Python 3.13
+        python313
+        python313Packages.pip
+        python313Packages.setuptools
+        python313Packages.cryptography
+        python313Packages.uv
+        jetbrains.pycharm-community-bin
+        ruff
+      ] ++ lib.optionals config.curios.desktop.apps.devops.ruby.enable [ ruby ]
+      ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
+        # Rust provide cargo, rustc, rust-analyzer and more
+        rustup
         cargo-c
         jetbrains.rust-rover
         # build tools
@@ -126,7 +148,8 @@
         # Networks
         nmap
         zenmap
-        wireshark # TODO: add user to wireshark group
+        # TODO: add user to wireshark group?
+        wireshark
         # VNC
         remmina
       ] ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [

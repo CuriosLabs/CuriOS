@@ -39,10 +39,22 @@
         };
       };
       vpn = {
-        proton.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "ProtonVPN GUI";
+        proton = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "ProtonVPN GUI";
+          };
+          # App autostart example: It copy the desktop file from the package $package/share/applications/$srcPrefix$name.desktop
+          # to $out/etc/xdg/autostart/$name.desktop so the app will be launched on user graphical session opening.
+          # See: https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/make-startupitem/default.nix
+          autoStart = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "Whether ProtonVPN should started automatically on user desktop login.";
+            example = false;
+          };
         };
         tailscale.enable = lib.mkOption {
           type = lib.types.bool;
@@ -76,6 +88,11 @@
           default = true;
           description = "Grok web app.";
         };
+        lmstudio.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "LM Studio - Local AI on your computer.";
+        };
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -94,6 +111,29 @@
           description = "WhatsApp web app.";
         };
       };
+      utility = {
+        bitwarden.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Bitwarden password manager.";
+        };
+        flameshot.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Flameshot screenshot tool.";
+        };
+        keepassxc.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "KeePassXC password manager.";
+        };
+        localsend.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description =
+            "LocalSend - Cross-platform file sharing on your local network.";
+        };
+      };
     };
   };
 
@@ -107,7 +147,6 @@
       # alacritty-theme
 
       # 3rd party apps
-      pkgs.bitwarden-desktop
       pkgs.brave
       pkgs.easyeffects
       pkgs.ffmpeg_6-full
@@ -117,9 +156,15 @@
       pkgs.polkit_gnome
       pkgs.vlc
       pkgs.yubioath-flutter
-    ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable
-      [ pkgs.protonvpn-gui ]
-      ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable
+    ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
+      pkgs.protonvpn-gui
+      (lib.mkIf config.curios.desktop.apps.vpn.proton.autoStart
+        (pkgs.makeAutostartItem {
+          name = "proton.vpn.app.gtk";
+          package = pkgs.protonvpn-gui;
+          appendExtraArgs = [ "--start-minimized" ];
+        }))
+    ] ++ lib.optionals config.curios.desktop.apps.ai.chatgpt.enable
       [ (import ./webapp-chatgpt.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.claude.enable
       [ (import ./webapp-claude.nix) ]
@@ -128,6 +173,8 @@
         (import ./desktop-gemini.nix)
       ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.lmstudio.enable
+      [ pkgs.lmstudio ]
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable
@@ -141,7 +188,13 @@
       ++ lib.optionals config.curios.desktop.apps.chat.signal.enable
       [ pkgs.signal-desktop ]
       ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
-      [ (import ./webapp-whatsapp.nix) ];
+      [ (import ./webapp-whatsapp.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.utility.bitwarden.enable
+      [ pkgs.bitwarden-desktop ]
+      ++ lib.optionals config.curios.desktop.apps.utility.keepassxc.enable
+      [ pkgs.keepassxc ]
+      ++ lib.optionals config.curios.desktop.apps.utility.flameshot.enable
+      [ pkgs.flameshot ];
 
     services = {
       # Enabling PCSC-lite for Yubikey
@@ -182,10 +235,16 @@
       };
     };
 
-    # Enabling Linux AppImage
-    programs.appimage.enable =
-      lib.mkDefault config.curios.desktop.apps.appImage.enable;
-    programs.appimage.binfmt =
-      lib.mkDefault config.curios.desktop.apps.appImage.enable;
+    programs = {
+      # Enabling Linux AppImage
+      appimage.enable =
+        lib.mkDefault config.curios.desktop.apps.appImage.enable;
+      appimage.binfmt =
+        lib.mkDefault config.curios.desktop.apps.appImage.enable;
+      localsend = {
+        enable =
+          lib.mkDefault config.curios.desktop.apps.utility.localsend.enable;
+      };
+    };
   };
 }

@@ -5,11 +5,19 @@
 {
   # Declare options
   options = {
-    curios.desktop.apps.gaming.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description =
-        "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
+    curios.desktop.apps.gaming = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
+      };
+      steam.bigpicture.autoStart = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Launch Steam in big picture mode on user desktop login.";
+        example = false;
+      };
     };
   };
   # TODO: add RetroArch
@@ -32,17 +40,23 @@
 
     # Various packages
     services.input-remapper = { enable = true; };
-    environment.systemPackages = with pkgs; [
-      discord
+    environment.systemPackages = [
+      pkgs.discord
       # Heroic launcher
-      heroic
+      pkgs.heroic
       # TS
-      teamspeak6-client
-      # Steam, set game property > launch option to "gamemoderun %command%" for Windows only games.
+      pkgs.teamspeak6-client
+      # In Steam, set game property > launch option to "gamemoderun %command%" for Windows only games.
       # See: https://www.protondb.com/ for more launch options.
       # See: https://github.com/FeralInteractive/gamemode
-      gamemode
-      steam-run
+      pkgs.gamemode
+      pkgs.steam-run
+      (lib.mkIf config.curios.desktop.apps.gaming.steam.bigpicture.autoStart
+        (pkgs.makeAutostartItem {
+          name = "steam";
+          package = pkgs.steam;
+          appendExtraArgs = [ "--bigpicture" ];
+        }))
     ];
   };
 }

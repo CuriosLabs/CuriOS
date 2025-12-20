@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-dotfiles";
-  version = "0.10";
+  version = "0.11";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-dotfiles";
     rev = version;
-    hash = "sha256-tXIQW/x1fvEKDTE5IGxbxdtAyEW+f70HGNWTGi03rCY=";
+    hash = "sha256-PjhfAvlruY29G7Inpn6TTOoOwp/ttz3ZDprsQCrWmNY=";
   };
 
   dontPatch = true;
