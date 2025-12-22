@@ -137,6 +137,10 @@ in {
         };
         # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
+          basecamp = {
+            enable = true;
+            baseUrl = "launchpad.37signals.com/signin";
+          };
           jira = {
             enable = false;
             baseUrl = "example.atlassian.net";
