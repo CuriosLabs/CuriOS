@@ -52,6 +52,13 @@
           };
         };
       };
+      finance = {
+        gnucash.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Free software for accounting.";
+        };
+      };
       projects = {
         basecamp = {
           enable = lib.mkOption {
@@ -114,6 +121,8 @@
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.apps.office.crm.hubspot.enable
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.apps.office.finance.gnucash.enable
+      [ pkgs.gnucash ]
       ++ lib.optionals
       config.curios.desktop.apps.office.projects.basecamp.enable
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]

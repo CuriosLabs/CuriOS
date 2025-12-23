@@ -25,6 +25,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           salesforce.enable = true;
           hubspot.enable = true;
         };
+        finance = {
+          gnucash.enable = true;
+        };
         projects = {
           basecamp.enable = true;
           basecamp.baseUrl = "launchpad.37signals.com/signin";
@@ -65,6 +68,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-crm-webapps"):
         check_webapp("com.salesforce")
         check_webapp("com.hubspot")
+
+    with subtest("check-finance-apps"):
+        check_which("gnucash")
 
     with subtest("check-project-management-webapps"):
         check_webapp("com.basecamp")

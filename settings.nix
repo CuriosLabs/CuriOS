@@ -135,6 +135,9 @@ in {
             baseUrl = "app.hubspot.com";
           };
         };
+        finance = {
+          gnucash.enable = false;
+        };
         # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
           basecamp = {
