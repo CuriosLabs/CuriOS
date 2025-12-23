@@ -3,6 +3,14 @@
 This guide provides instructions and best practices for developers contributing
 to the CuriOS project.
 
+## Context
+
+You are an expert software architect and project analysis assistant. Analyze
+the current project directory and help developers that interacts with this
+project. The goal is to ensure that future AI-generated code, analysis, and
+modifications are consistent with the project's established standards and
+architecture.
+
 ## Project Overview
 
 - **Project Name**: CuriOS
@@ -10,6 +18,14 @@ to the CuriOS project.
 environment, designed for modern advanced users to be productive quickly.
 - **Target OS**: NixOS
 - **Main Configuration Areas**: Desktop apps, networking, services.
+
+## Core Technologies
+
+* **Nix:** The primary language used in this project is Nix. All configurations
+, packages, and the final ISO image are defined using the Nix language.
+* **NixOS:** The project builds a custom version of the NixOS Linux distribution.
+* **Shell:** The project uses shell scripts for some automation tasks, such as
+the ISO build script.
 
 ## Directory Structure
 
@@ -36,8 +52,8 @@ not in `configuration.nix`.
 - `configuration.nix`: The main NixOS configuration file for a CuriOS system.
 - `settings.nix`: A file for user-specific settings, which is imported into the
 main configuration.
-- `iso/iso.nix`: The Nix expression that defines the contents and configuration
-of the bootable ISO image.
+- `iso/iso-minimal.nix`: The Nix expression that defines the contents and
+configuration of the bootable ISO image.
 - `modules/default.nix`: The top-level module that imports all other modules in
 the `modules/` directory.
 - `curios-install`: A script for installing CuriOS to a target system.
@@ -74,7 +90,7 @@ all `.nix` files:
 - **Lint Shell Scripts**: Shell scripts must be checked with `shellcheck`:
 
   ```bash
-  shellcheck --color=always -f tty -x your_script.sh
+  shellcheck --color=always -f tty -x ./curios-install ./iso/build.sh
   ```
 
 - **Supported Version**: NixOS 25.11 or later.
@@ -88,10 +104,10 @@ all `.nix` files:
 integration tests in a virtual machine. Test files are located in the `tests/`
 directory.
 
-  To run a specific test:
+  To run a specific test (e.g., the office desktop apps):
   
   ```bash
-  nix-build tests/flameshot.nix
+  nix-build ./tests/office.nix --show-trace
   ```
 
   This command will build a minimal NixOS system in a QEMU virtual machine,
