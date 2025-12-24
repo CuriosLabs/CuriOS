@@ -21,10 +21,10 @@ environment, designed for modern advanced users to be productive quickly.
 
 ## Core Technologies
 
-* **Nix:** The primary language used in this project is Nix. All configurations
+- **Nix:** The primary language used in this project is Nix. All configurations
 , packages, and the final ISO image are defined using the Nix language.
-* **NixOS:** The project builds a custom version of the NixOS Linux distribution.
-* **Shell:** The project uses shell scripts for some automation tasks, such as
+- **NixOS:** The project builds a custom version of the NixOS Linux distribution.
+- **Shell:** The project uses shell scripts for some automation tasks, such as
 the ISO build script.
 
 ## Directory Structure
