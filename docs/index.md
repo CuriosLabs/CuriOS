@@ -10,6 +10,7 @@ Curi*OS* goal is to take advantage of NixOS mechanisms like declarative builds
 and deployments and its unique approach to system configuration and package
 management. Curi*OS* also take advantage of COSMIC desktop environment power to
 customize UX and custom themes.
+![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop1.png "CuriOS desktop")
 
 ## Main goals
 
