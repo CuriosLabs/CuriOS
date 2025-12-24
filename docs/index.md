@@ -1,4 +1,4 @@
-# Welcome to CuriOS Documentation
+# Welcome to Curi*OS* Documentation
 
 Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) operating
 system and the [COSMIC](https://system76.com/cosmic) desktop environment. It is
@@ -32,7 +32,7 @@ about your mouse, use Super key combinations for everything!
 - 🔁 System packages auto-update every night or at first boot of the day.
 - 📦 More packages with Flatpak! COSMIC and Flathub repos pre-installed.
 Packages installed from Flatpak are also auto-updated every day.
-- 💻 CuriOS TUI manager (shortcut: Super+Return). Manage/update/upgrade/backup
+- 💻 Curi*OS* TUI manager (shortcut: Super+Return). Manage/update/upgrade/backup
 the whole system from a modern TUI.
 - ⌨️ Alacritty terminal with ZSH and a lot of good modern commands, including
 Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd and many more...
@@ -43,7 +43,7 @@ Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd and many more...
 
 To get started with Curi*OS*, please refer to the [Getting Started Guide](getting-started.md).
 
-## Explore the CuriOS system
+## Explore the Curi*OS* system
 
 You are now ready for your [first steps](first-steps.md) in the system.
 
