@@ -2,7 +2,8 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+in {
   # Declare options
   options = {
     curios.desktop.apps = {
@@ -174,7 +175,7 @@
       ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.lmstudio.enable
-      [ pkgs.lmstudio ]
+      [ lmstudioApp ]
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable

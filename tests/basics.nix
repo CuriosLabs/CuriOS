@@ -93,7 +93,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.claude.chats")
         check_which("gemini") # Executable for gemini-cli
         check_webapp("ai.x.grok")
-        check_which("lm-studio")
+        check_which("lmstudio")
+        #check_which("lms") # LM Studio CLI
         check_webapp("ai.mistral.chat")
 
     with subtest("check-chat-apps"):

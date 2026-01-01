@@ -10,7 +10,7 @@ let
   src = pkgs.fetchurl {
     url =
       "https://installers.lmstudio.ai/linux/x64/${version}/LM-Studio-${version}-x64.AppImage";
-    hash = "";
+    hash = "sha256-HwmwvMk2wH6bf/xgD07fWxF3JuGTYZmy7mK93F4LA+4=";
   };
 
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
@@ -29,13 +29,8 @@ in pkgs.appimageTools.wrapType2 {
   extraInstallCommands = ''
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
-    # copy icon in correct folders
-    icon_sizes=("48" "64" "128" "256")
-    for icon in ''${icon_sizes[*]}
-    do
-      mkdir -p $out/share/icons/hicolor/$icon\x$icon/apps
-      cp desktop-lm-studio-icon-$icon.png $out/share/icons/hicolor/$icon\x$icon/apps/lmstudio.png
-    done
+    mkdir -p $out/share/icons/hicolor/1024x1024/apps
+    install -m 444 -D ${appimageContents}/lm-studio.png $out/share/icons/hicolor/1024x1024/apps/lmstudio.png
   '';
 
   meta = {
