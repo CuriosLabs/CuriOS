@@ -156,6 +156,7 @@ in {
       pkgs.imagemagick
       pkgs.libsecret
       pkgs.polkit_gnome
+      pkgs.procs
       pkgs.tldr
       pkgs.vlc
       pkgs.yubioath-flutter

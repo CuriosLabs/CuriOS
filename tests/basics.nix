@@ -112,5 +112,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("vlc")
         check_which("gimp")
         check_which("tldr")
+        check_which("procs")
   '';
 }
