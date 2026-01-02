@@ -156,6 +156,7 @@ in {
       pkgs.imagemagick
       pkgs.libsecret
       pkgs.polkit_gnome
+      pkgs.tldr
       pkgs.vlc
       pkgs.yubioath-flutter
     ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
