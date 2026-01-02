@@ -4,7 +4,7 @@
 
 { pkgs, lib }:
 let
-  pname = "lmstudio";
+  pname = "lm-studio";
   version = "0.3.36-1";
 
   src = pkgs.fetchurl {
@@ -14,6 +14,7 @@ let
   };
 
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
+  downloadToTemp = true;
 
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.lmstudio";
@@ -21,16 +22,22 @@ let
     desktopName = "LM Studio local AI";
     icon = "lmstudio";
     categories = [ "Science" "ArtificialIntelligence" ];
-    terminal = true;
+    terminal = false;
+    type = "Application";
   };
 in pkgs.appimageTools.wrapType2 {
   inherit pname version pkgs src;
 
+  nativeBuildInputs = [ pkgs.imagemagick ];
+
   extraInstallCommands = ''
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
-    mkdir -p $out/share/icons/hicolor/1024x1024/apps
-    install -m 444 -D ${appimageContents}/lm-studio.png $out/share/icons/hicolor/1024x1024/apps/lmstudio.png
+    # copy and resize icon in correct folders
+    for size in 48 64 128 256; do
+      mkdir -p $out/share/icons/hicolor/"$size"x"$size"/apps
+      convert -background none -resize "$size"x"$size" ${appimageContents}/lm-studio.png $out/share/icons/hicolor/"$size"x"$size"/apps/lmstudio.png
+    done
   '';
 
   meta = {

@@ -153,6 +153,7 @@ in {
       pkgs.ffmpeg_6-full
       pkgs.gimp3-with-plugins
       pkgs.gparted
+      pkgs.imagemagick
       pkgs.libsecret
       pkgs.polkit_gnome
       pkgs.vlc
