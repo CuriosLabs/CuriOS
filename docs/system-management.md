@@ -44,6 +44,29 @@ your desktop:
 To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option.
 
+## NixOS management
+
+Curi*OS* is build on top of NixOS, a Linux distribution based on the Nix
+package manager and build system. It supports reproducible and declarative
+system-wide configuration management as well as atomic upgrades and rollbacks,
+although it can additionally support imperative package and user management.
+In NixOS, all components of the distribution — including the kernel, installed
+packages and system configuration files — are built by Nix from pure functions
+called Nix expressions.
+See [NixOS manual](https://nixos.org/manual/nixos/stable/) to learn more.
+
+The default 'configuration.nix' is set to **AUTO UPDATE** every night at 03:40
+or on your first boot of the day, see `systemctl list-timers`.
+
+Generations older than 7 days are automatically garbage collected. You can also
+manually do the equivalent with:
+
+```bash
+sudo nix-collect-garbage --delete-older-than 7d &&
+sudo nixos-rebuild switch --upgrade &&
+sudo nixos-rebuild list-generations
+```
+
 **Next**: .
 
 **Previous**: [First Steps](first-steps.md).
