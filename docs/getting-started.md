@@ -13,7 +13,7 @@ This guide will help you get started with installing and using Curi*OS*.
   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
 - An internet connection will be required during the installation. It is
   recommended to use an Ethernet cable for this operation. If you can only use
-  WiFi, please note that the ISO does not include `NetworkManager`; therefore, you
+  Wi-Fi, please note that the ISO does not include `NetworkManager`; therefore, you
   will have to manually set up the connection with `wpa_supplicant`.
 - Curi*OS* does not support Secure Boot/TPM for the moment. You may have to turn
   it off in the UEFI menu of your PC.
@@ -23,7 +23,7 @@ This guide will help you get started with installing and using Curi*OS*.
 The primary method for installing Curi*OS* is by using a bootable ISO image.
 
 > [!WARNING]
-> The installation script will **FORMAT** your disk !!! Backup your data before.
+> The installation script will **FORMAT** your disk!!! Back up your data beforehand.
 
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
 
@@ -31,7 +31,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso
    ```
 
-   Download and check iso signature:
+   Download and check ISO signature:
 
    ```bash
    wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso.sha256
@@ -50,7 +50,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    ```bash
    # Find your USB disk path with `fdisk`; it will probably be `/dev/sda` or `/dev/sdb`
    fdisk -l
-   # Copy the iso to the USB (/dev/sda in our case)
+   # Copy the ISO to the USB (/dev/sda in our case)
    sudo dd if=CuriOS_25.11.1_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
    ```
 
@@ -61,9 +61,9 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 4. **Run the installer**: The installer should start automatically, or use the
    `sudo curios-install` script provided in the live environment.
    ![CuriOS installation auto-start](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_0b.png?raw=true "CuriOS installation start")
-5. **Follow on-screen instructions**: Use Up/Down arrow key to move cursor,
-   Space bar to select, Enter to validate your choice, Tab to move between form
-   and buttons.
+5. **Follow on-screen instructions**: Use the Up/Down arrow keys to move the cursor,
+   the Space bar to select, Enter to validate your choice, and Tab to move between
+   forms and buttons.
    ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation language selection")
    ![CuriOS installation - disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS installation disk encryption")
    GPU hardware (Nvidia, AMD) will be automatically detected and installed. Once

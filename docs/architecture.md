@@ -9,7 +9,7 @@ reproducibility.
 - **Nix**: The primary language for all configurations, packages, and the final
   ISO image.
 - **NixOS**: The project builds a custom version of the NixOS Linux distribution.
-- **Shell**: Used for some automation tasks, like the ISO build script.
+- **Shell**: Used for some automation tasks, such as the ISO build script.
 
 ## Directory Structure
 
@@ -34,7 +34,7 @@ organized configuration management.
 ## Coding Style and Conventions
 
 - **Modularity**: New features should extend existing modules or be created as
-  new, logically-named modules.
+  new, logically named modules.
 - **Descriptive Naming**: Files and modules follow consistent and descriptive
   naming patterns.
 - **Variable Naming**: Configuration options start with `config.curios`.
