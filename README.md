@@ -76,7 +76,7 @@ If you wan to know more about [system update, installing programs](https://githu
 
 [curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-
 installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
-![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Terminal.png?raw=true "Curios dotfiles")
+![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/DesktopTUI2.png?raw=true "Curios dotfiles")
 
 ## Contributing
 
