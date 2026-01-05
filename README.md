@@ -46,9 +46,10 @@ Python3, Rust and more...
 * 🐧 Use of the latest stable Linux kernel by default.
 * 🗛 bunch of nerd fonts...
 
-## Quick start
+## Quick start / installation guide
 
-See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md).
+See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md)
+on how to install Curi*OS*.
 
 ## First steps
 
@@ -71,50 +72,11 @@ See more in our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/ma
 
 If you wan to know more about [system update, installing programs](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
 
-### System upgrade
-
-When a new version of Curi*OS* is available, you will see a pop-up appear on
-your desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
-
-To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
-Super+Return) and choose the `👆Upgrade` option.
-
-### Flatpak / desktop apps installation
-
-You can also install Linux applications as flatpak. [Flathub](https://flathub.org/)
-and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
-app as seen below:
-![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
-
-### Dot files
+### Dot files / Theme
 
 [curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-
 installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
 ![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Terminal.png?raw=true "Curios dotfiles")
-
-## NixOS management
-
-Curi*OS* is build on top of NixOS, a Linux distribution based on the Nix
-package manager and build system. It supports reproducible and declarative
-system-wide configuration management as well as atomic upgrades and rollbacks,
-although it can additionally support imperative package and user management.
-In NixOS, all components of the distribution — including the kernel, installed
-packages and system configuration files — are built by Nix from pure functions
-called Nix expressions.
-See [NixOS manual](https://nixos.org/manual/nixos/stable/) to learn more.
-
-The default 'configuration.nix' is set to **AUTO UPDATE** every night at 03:40
-or on your first boot of the day, see `systemctl list-timers`.
-
-Generations older than 7 days are automatically garbage collected. You can also
-manually do the equivalent with:
-
-```bash
-sudo nix-collect-garbage --delete-older-than 7d &&
-sudo nixos-rebuild switch --upgrade &&
-sudo nixos-rebuild list-generations
-```
 
 ## Contributing
 
