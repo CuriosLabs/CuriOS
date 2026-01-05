@@ -65,27 +65,11 @@ Most useful desktop shortcuts:
 | Launch File manager         | Super + F                          |
 | Launch a terminal           | Super + T                          |
 
-See more at our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
+See more in our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
 
-## Curi*OS* management
+## System management
 
-Curi*OS* come with a TUI `curios-manager` (shortcut: Super+Return).
-![curios-manager screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager.png?raw=true "CuriOS manager")
-With it, you can update/upgrade the whole system, update your hardware firmware
-, check your disk usage, launch the process manager (btop), and much more...
-But most importantly you can edit the Curi*OS* options settings from the menu
-`System > Settings`.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
-
-For example, you want to game and install Steam, Heroic launcher, Discord and
-more? Set: `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
-Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will
-then made a system update.
-
-You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages)
-and add it to `/etc/nixos/settings.nix`.
+If you wan to know more about [system update, installing programs](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
 
 ### System upgrade
 

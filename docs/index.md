@@ -48,9 +48,9 @@ To get started with Curi*OS*, please refer to the [Getting Started Guide](gettin
 
 You are now ready for your [first steps](first-steps.md) in the system.
 
-## Applications
+## System management / Applications
 
-TBD.
+[How to update / upgrade your system, install programs and more](system-management.md)...
 
 ## Architecture
 

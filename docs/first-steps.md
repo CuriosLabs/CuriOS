@@ -5,7 +5,7 @@ It is a tiled windows manager by default. You can control everything from a
 few keyboard shortcuts.
 ![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop1.png?raw=true "CuriOS desktop")
 
-Most useful desktop shortcuts:
+## Desktop shortcuts
 
 | **Action**                  | Shortcut (Super=Windows key)       |
 |-----------------------------|------------------------------------|
@@ -36,4 +36,12 @@ Other desktop shortcuts (may depend on your installed applications):
 | Mistral AI web application  | Super + alt + M                    |
 | Ollama local AI             | Super + alt + O                    |
 
+## Boot sequence
+
+By default, during the installation you had to choose a full disk encryption
+passphrase. You have to enter it during the boot sequence:
+![CuriOS boot passphrase](https://github.com/CuriosLabs/CuriOS/blob/master/img/Boot_crypt.png?raw=true "CuriOS disk encryption")
+
+**Next**: [Curi*OS* management](system-management.md).
+**Previous**: [Getting started](getting-started.md).
 **Back**: [index](index.md).
