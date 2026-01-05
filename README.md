@@ -32,6 +32,8 @@ detected during installation.
 key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget about
 your mouse, **use Super key combinations for everything!**
 * 📦 Flatpak with **auto-update**. COSMIC and Flathub repos pre-installed.
+* 💻 Curi*OS* TUI manager (shortcut: Super+Return). Manage/update/upgrade/backup
+the whole system from a modern TUI.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
@@ -43,6 +45,12 @@ Python3, Rust and more...
 * ⬆️ Curi*OS* updater. Check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
 * 🗛 bunch of nerd fonts...
+
+## Quick start
+
+See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md).
+
+## First steps
 
 Most useful desktop shortcuts:
 
@@ -56,69 +64,8 @@ Most useful desktop shortcuts:
 | Launch web browser          | Super + B                          |
 | Launch File manager         | Super + F                          |
 | Launch a terminal           | Super + T                          |
-| Applications menu           | Super + A                          |
-| Maximize application        | Super + M                          |
-| Close application           | Super + Q                          |
-| Tile mode on/off            | Super + Y                          |
-| Workspaces overview         | Super + W                          |
-| Lock session                | Super + Esc                        |
-| Logout                      | Super + Shift + Esc                |
-| Process management (btop)   | Ctrl + Alt + Del                   |
 
-## Quick start
-
-> [!WARNING]
-> The installation script will **FORMAT** your disk !!! Backup your data before.
-
-1. Get the latest Curi*OS* 25.11 Minimal ISO image:
-
-   ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso
-   ```
-
-   Download and check iso signature:
-
-   ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso.sha256
-   sha256sum --check CuriOS_*.iso.sha256
-   ```
-
-2. Burn it on a USB stick with [Balena Etcher](https://etcher.balena.io/#download-etcher),
-   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
-
-   ```bash
-   # Good old dd:
-   sudo dd if=CuriOS_25.11.1_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
-   # or shiny caligula:
-   caligula burn -s $(cat ./CuriOS_25.11.1_amd64_intel.iso.sha256)
-   ```
-
-   Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
-3. Boot your machine on the USB stick (F8 or F12 key on startup, see your
-   motherboard manufacturer's instructions). An internet connection is *REQUIRED*
-   to perform the installation!
-4. The installer should start automatically (otherwise launch it with `sudo curios-install`).
-   ![CuriOS installation step 1](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
-5. Answer the various dialog questions:
-   <details>
-      <summary>Click to see 'choose disk' dialog options</summary>
-
-      ![CuriOS installation choose disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
-   </details>
-   The full disk encryption option is **HIGHLY RECOMMENDED**.
-   <details>
-      <summary>Click to see 'full disk encryption' dialog</summary>
-
-      ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS full disk encryption")
-   </details>
-6. If everything went according to plan, reboot (and remember to remove USB
-   media installer).
-   <details>
-      <summary>Click to see reboot dialog</summary>
-
-      ![CuriOS install reboot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
-   </details>
-7. **Enjoy!**
+See more at our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
 
 ## Curi*OS* management
 

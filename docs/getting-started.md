@@ -26,8 +26,18 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 > The installation script will **FORMAT** your disk !!! Backup your data before.
 
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
-   An `sha256sum` signature is also available for download if you want to verify
-   it.
+
+   ```bash
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso
+   ```
+
+   Download and check iso signature:
+
+   ```bash
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso.sha256
+   sha256sum --check CuriOS_*.iso.sha256
+   ```
+
 2. **Flash the ISO**: You can flash it to a USB drive using tools like [Etcher](https://etcher.balena.io/#download-etcher)
    OR on Linux you can try with `caligula`:
 
