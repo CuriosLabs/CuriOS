@@ -76,4 +76,5 @@ For more advanced configurations and troubleshooting, please refer to the
 ## Basic Usage
 
 **Next**: After installation, you can now [explore the Curi*OS* system](first-steps.md).
+
 **Back**: [index](index.md).

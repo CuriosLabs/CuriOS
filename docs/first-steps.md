@@ -43,5 +43,7 @@ passphrase. You have to enter it during the boot sequence:
 ![CuriOS boot passphrase](https://github.com/CuriosLabs/CuriOS/blob/master/img/Boot_crypt.png?raw=true "CuriOS disk encryption")
 
 **Next**: [Curi*OS* management](system-management.md).
+
 **Previous**: [Getting started](getting-started.md).
+
 **Back**: [index](index.md).
