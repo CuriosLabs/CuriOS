@@ -39,6 +39,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         ai = {
           chatgpt.enable = true;
           claude.enable = true;
+          cursor.enable = true;
           gemini.enable = true;
           grok.enable = true;
           lmstudio.enable = true;
@@ -91,6 +92,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-ai-apps"):
         check_webapp("com.chatgpt")
         check_webapp("ai.claude.chats")
+        check_which("cursor")
+        check_which("cursor-agent")
         check_which("gemini") # Executable for gemini-cli
         check_webapp("ai.x.grok")
         check_which("lm-studio")

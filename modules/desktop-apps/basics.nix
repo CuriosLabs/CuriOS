@@ -79,6 +79,11 @@ in {
           default = true;
           description = "Claude web app.";
         };
+        cursor.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "AI-assisted IDE - desktop app and CLI.";
+        };
         gemini.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -172,7 +177,10 @@ in {
       [ (import ./webapp-chatgpt.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.claude.enable
       [ (import ./webapp-claude.nix) ]
-      ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
+      ++ lib.optionals config.curios.desktop.apps.ai.cursor.enable [
+        pkgs.cursor-cli
+        pkgs.code-cursor
+      ] ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
         pkgs.gemini-cli
         (import ./desktop-gemini.nix)
       ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable

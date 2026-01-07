@@ -170,6 +170,8 @@ in {
         chatgpt.enable = true;
         # Claude web app
         claude.enable = true;
+        # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
+        cursor.enable = false;
         # Google Gemini CLI
         gemini.enable = false;
         # Grok web app
