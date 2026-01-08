@@ -3,8 +3,9 @@
 let
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
   curios-manager = pkgs.callPackage ../pkgs/curios-manager { };
+  snitch = pkgs.callPackage ../pkgs/snitch { };
 in {
-  environment.systemPackages = [ curios-dotfiles curios-manager ];
+  environment.systemPackages = [ curios-dotfiles curios-manager snitch ];
 
   # 'curios-update --check' as a systemd service/timer
   # systemctl --user status curios-updater.timer

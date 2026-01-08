@@ -4,13 +4,13 @@
 { lib, stdenv, fetchFromGitHub, buildGoModule, installShellFiles, makeBinaryWrapper }:
 buildGoModule rec {
   pname = "snitch";
-  version = "0.1.8";
+  version = "0.2.2";
 
   src = fetchFromGitHub {
     owner = "karol-broda";
     repo = "snitch";
     tag = "v${version}";
-    hash = "sha256-ZXVQN09vCwf2ZBaUJ8ugCvknYVutIJn0LvlHd/t01Dg=";
+    hash = "sha256-SssAiRUfUaDgAoVO2rDacru8e914Wl+4sA4JQ4Mv4eA=";
   };
 
   vendorHash = "sha256-fX3wOqeOgjH7AuWGxPQxJ+wbhp240CW8tiF4rVUUDzk=";

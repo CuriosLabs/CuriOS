@@ -35,8 +35,8 @@ and add them to `/etc/nixos/settings.nix`.
   - Local AI: LM Studio.
   - Project management: Basecamp.
   - Office: OnlyOffice, Obsidian, Joplin.
-  - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, whois, yq, shellcheck,
-  statix, zsh.
+  - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, snitch, whois, yq,
+  shellcheck, statix, zsh.
   - Backup: Restic (see backups menu in `curios-manager`).
 
 - **System Tools**: CuriOS Manager, Flatpak/Flathub apps, COSMIC store
