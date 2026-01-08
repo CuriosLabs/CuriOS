@@ -81,7 +81,7 @@ in {
         };
         cursor.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description = "AI-assisted IDE - desktop app and CLI.";
         };
         gemini.enable = lib.mkOption {
@@ -96,7 +96,7 @@ in {
         };
         lmstudio.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description = "LM Studio - Local AI on your computer.";
         };
         mistral.enable = lib.mkOption {

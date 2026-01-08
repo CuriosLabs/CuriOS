@@ -135,9 +135,7 @@ in {
             baseUrl = "app.hubspot.com";
           };
         };
-        finance = {
-          gnucash.enable = false;
-        };
+        finance = { gnucash.enable = false; };
         # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
           basecamp = {
@@ -171,13 +169,13 @@ in {
         # Claude web app
         claude.enable = true;
         # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
-        cursor.enable = false;
+        cursor.enable = true;
         # Google Gemini CLI
         gemini.enable = false;
         # Grok web app
         grok.enable = true;
         # lmstudio.ai local AI model
-        lmstudio.enable = false;
+        lmstudio.enable = true;
         # Mistral LeChat web app
         mistral.enable = true;
       };
