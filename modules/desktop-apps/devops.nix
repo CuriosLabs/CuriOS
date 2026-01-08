@@ -114,7 +114,7 @@
         golangci-lint
         jetbrains.goland
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
-      [ nodejs_22 ]
+      [ nodejs_24 ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312
