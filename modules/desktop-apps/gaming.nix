@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = false;
         description =
-          "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
+          "Gaming desktop apps: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
       };
       steam.bigpicture.autoStart = lib.mkOption {
         type = lib.types.bool;

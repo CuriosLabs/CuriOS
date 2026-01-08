@@ -108,7 +108,7 @@ in {
         networks.enable = false;
       };
       gaming = {
-        # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+        # Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.
         enable = false;
         steam.bigpicture.autoStart = false;
       };
