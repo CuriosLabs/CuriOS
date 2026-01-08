@@ -180,8 +180,12 @@ in {
         mistral.enable = true;
       };
       chat = {
+        # Discord desktop app
+        discord.enable = false;
         # Signal.org desktop app
         signal.enable = true;
+        # TeamSpeak6 desktop app
+        teamspeak.enable = false;
         # WhatsApp web app
         whatsapp.enable = true;
       };

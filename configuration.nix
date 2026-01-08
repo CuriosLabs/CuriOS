@@ -103,6 +103,8 @@
     true
   else if config.curios.desktop.apps.office.enable then
     true
+  else if config.curios.desktop.apps.chat.teamspeak.enable then
+    true
   else if config.curios.desktop.apps.gaming.enable then
     true
   else if config.curios.desktop.apps.studio.enable then

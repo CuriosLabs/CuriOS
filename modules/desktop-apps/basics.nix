@@ -106,10 +106,20 @@ in {
         };
       };
       chat = {
+        discord.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Discord desktop app.";
+        };
         signal.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
           description = "Signal.org desktop app.";
+        };
+        teamspeak.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "TeamSpeak6 desktop app.";
         };
         whatsapp.enable = lib.mkOption {
           type = lib.types.bool;
@@ -197,8 +207,12 @@ in {
       [ pkgs.librewolf ]
       ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable
       [ pkgs.vivaldi ]
+      ++ lib.optionals config.curios.desktop.apps.chat.discord.enable
+      [ pkgs.discord ]
       ++ lib.optionals config.curios.desktop.apps.chat.signal.enable
       [ pkgs.signal-desktop ]
+      ++ lib.optionals config.curios.desktop.apps.chat.teamspeak.enable
+      [ pkgs.teamspeak6-client ]
       ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
       [ (import ./webapp-whatsapp.nix) ]
       ++ lib.optionals config.curios.desktop.apps.utility.bitwarden.enable

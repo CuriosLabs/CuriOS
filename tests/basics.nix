@@ -48,7 +48,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         # Chat Apps
         chat = {
+          discord.enable = true;
           signal.enable = true;
+          teamspeak.enable = true;
           whatsapp.enable = true;
         };
 
@@ -101,7 +103,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.mistral.chat")
 
     with subtest("check-chat-apps"):
+        check_which("Discord")
         check_which("signal-desktop")
+        check_which("TeamSpeak")
         check_webapp("com.whatsapp.web")
 
     with subtest("check-utilities"):

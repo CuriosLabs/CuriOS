@@ -41,11 +41,8 @@
     # Various packages
     services.input-remapper = { enable = true; };
     environment.systemPackages = [
-      pkgs.discord
       # Heroic launcher
       pkgs.heroic
-      # TS
-      pkgs.teamspeak6-client
       # In Steam, set game property > launch option to "gamemoderun %command%" for Windows only games.
       # See: https://www.protondb.com/ for more launch options.
       # See: https://github.com/FeralInteractive/gamemode
