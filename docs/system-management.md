@@ -34,7 +34,7 @@ and add them to `/etc/nixos/settings.nix`.
   - AI web applications: ChatGPT, Claude, Grok, Mistral.
   - Local AI: LM Studio.
   - Project management: Basecamp.
-  - Office: OnlyOffice, Obsidian, Joplin, Basecamp.
+  - Office: OnlyOffice, Obsidian, Joplin.
   - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, whois, yq, shellcheck,
   statix, zsh.
   - Backup: Restic (see backups menu in `curios-manager`).
