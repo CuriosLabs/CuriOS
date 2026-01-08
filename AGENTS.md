@@ -199,11 +199,13 @@ to run integration tests in a virtual machine. Test files are located in the
 When working with CuriOS modules, here are common configuration patterns:
 
 - **Enable a desktop app category**:
+
   ```nix
   config.curios.desktop.apps.office.enable = true;
   ```
 
 - **Enable specific apps within a category**:
+
   ```nix
   config.curios.desktop.apps.browser = {
     chromium.enable = true;
@@ -212,6 +214,7 @@ When working with CuriOS modules, here are common configuration patterns:
   ```
 
 - **Enable system services**:
+
   ```nix
   config.curios.services = {
     enable = true;
@@ -221,6 +224,7 @@ When working with CuriOS modules, here are common configuration patterns:
   ```
 
 - **Configure hardware**:
+
   ```nix
   config.curios.hardware = {
     nvidiaGpu.enable = true;
