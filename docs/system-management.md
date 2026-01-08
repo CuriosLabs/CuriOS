@@ -27,7 +27,49 @@ and add them to `/etc/nixos/settings.nix`.
 
 ## Available Applications
 
-TBD
+- **Core Apps** (Enabled by default):
+  - Brave browser, Alacritty terminal, Signal, WhatsApp, VLC, Gimp3, EasyEffects.
+  - Bitwarden password manager, Yubico authenticator, LocalSend file sharing.
+  - Zed.dev code editor, Neovim+LazyVim terminal IDE, Cursor AI-assisted IDE.
+  - AI web applications: ChatGPT, Claude, Grok, Mistral.
+  - Local AI: LM Studio.
+  - Project management: Basecamp.
+  - Office: OnlyOffice, Obsidian, Joplin, Basecamp.
+  - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, whois, yq, shellcheck,
+  statix, zsh.
+  - Backup: Restic (see backups menu in `curios-manager`).
+
+- **System Tools**: CuriOS Manager, Flatpak/Flathub apps, COSMIC store
+
+The followings applications (packages) are available in `/etc/nixos/settings.nix`
+but not installed by default, see previous chapter on how to install them.
+
+- **Browsers**: Chromium, Firefox, LibreWolf, Vivaldi.
+
+- **Office Apps**: LibreOffice, Thunderbird email client.
+
+- **Project Management**: Jira web apps.
+
+- **CRM**: Salesforce/Hubspot web apps.
+
+- **Communication**: Slack/Teams/Zoom web apps.
+
+- **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
+
+- **AI Tools**: Ollama local AI, Gemini CLI.
+
+- **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
+npx), Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual Studio Code.
+
+- **Virtualisation**: Qemu, KVM, virt-manager.
+
+- **Gaming**: Steam, Steam auto-start (BigPicture mode), ProtonGE for Steam,
+Discord, Heroic Launcher, TeamSpeak6 client.
+
+- **Specialized Apps**:
+  - OBS Studio, Audacity, DaVinci Resolve, Darktable.
+  - Nmap/Zenmap, Wireshark, Remmina, Cloudflared.
+  - Bitcoin: Electrum/Sparrow wallets, Coingecko, Bisq2, mempool web app.
 
 ## Flatpak / Desktop Apps Installation
 
