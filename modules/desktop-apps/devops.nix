@@ -42,7 +42,7 @@
       javascript.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "NodeJS (npm).";
+        description = "NodeJS (npm, npx) - bun.";
       };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
@@ -114,8 +114,10 @@
         golangci-lint
         jetbrains.goland
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
-      [ nodejs_24 ]
-      ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
+      [
+        bun
+        nodejs_24
+      ] ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312
         python312Packages.pip

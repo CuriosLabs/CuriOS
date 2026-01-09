@@ -97,7 +97,7 @@ in {
         };
         # Go, gofmt, JetBrains GoLand
         go.enable = false;
-        # NodeJS (npm)
+        # NodeJS (npm, npx) - bun
         javascript.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;

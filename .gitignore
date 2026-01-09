@@ -1,6 +1,11 @@
+.cursor/
+.gemini/
+.opencode/
 .venv/
 .idea/
 .zed/
+_bmad/
+_bmad-output/
 iso/result/
 iso/*.iso
 iso/*.iso.sha256
