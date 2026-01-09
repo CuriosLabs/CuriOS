@@ -101,6 +101,10 @@
   # Allow unfree packages, could be overridden by some modules.
   nixpkgs.config.allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
     true
+  else if config.curios.desktop.apps.ai.cursor.enable then
+    true
+  else if config.curios.desktop.apps.ai.windsurf.enable then
+    true
   else if config.curios.desktop.apps.office.enable then
     true
   else if config.curios.desktop.apps.chat.teamspeak.enable then
