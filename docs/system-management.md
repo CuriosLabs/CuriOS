@@ -56,10 +56,10 @@ but not installed by default, see previous chapter on how to install them.
 
 - **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
 
-- **AI Tools**: Ollama local AI, Gemini CLI.
+- **AI Tools**: Ollama local AI, Gemini CLI, Windsurf AI-assisted IDE.
 
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
-npx), Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual Studio Code.
+npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual Studio Code.
 
 - **Virtualisation**: Qemu, KVM, virt-manager.
 

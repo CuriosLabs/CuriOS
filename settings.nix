@@ -178,6 +178,8 @@ in {
         lmstudio.enable = true;
         # Mistral LeChat web app
         mistral.enable = true;
+        # Windsurf AI-assisted IDE desktop app.
+        windsurf.enable = false;
       };
       chat = {
         # Discord desktop app

@@ -82,7 +82,7 @@ in {
         cursor.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "AI-assisted IDE - desktop app and CLI.";
+          description = "Cursor AI-assisted IDE - desktop app and CLI.";
         };
         gemini.enable = lib.mkOption {
           type = lib.types.bool;
@@ -103,6 +103,11 @@ in {
           type = lib.types.bool;
           default = true;
           description = "Mistral LeChat web app.";
+        };
+        windsurf.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Windsurf AI-assisted IDE - desktop app.";
         };
       };
       chat = {
@@ -199,6 +204,8 @@ in {
       [ lmstudioApp ]
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.windsurf.enable
+      [ windsurf ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable
       [ pkgs.ungoogled-chromium ]
       ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable
