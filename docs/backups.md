@@ -10,7 +10,8 @@ fast and secure backup program that can back up your files to **many different
 storage types**, including self-hosted and online services. **Securely**, with use
 of cryptography in every parts of the process. **Verifiability**, enabling you to
 make sure that your files can be restored when needed.
-
+![curios-manager backup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_backup.png?raw=true "curios-manager backup")
+![curios-manager backup menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_now.png?raw=true "curios-manager backup menu")
 ## Setup a Repository
 
 ## Backing Up
