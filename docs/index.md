@@ -50,7 +50,10 @@ You are now ready for your [first steps](first-steps.md) in the system.
 
 ## System Management / Applications
 
-[How to update/upgrade your system, install programs, and more](system-management.md)...
+How-to:
+
+- [Update/upgrade your system, install programs, and more](system-management.md).
+- [Backup your Computer](backups.md)
 
 ## Architecture
 

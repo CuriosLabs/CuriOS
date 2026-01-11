@@ -9,12 +9,14 @@ more.
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
-Most importantly, you can manually edit the Curi*OS* system settings file
-`/etc/nixos/settings.nix` from the `System > Settings` menu.
+## Install/uninstall applications
+
+You can manually edit the Curi*OS* system settings file
+`/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to
+install/uninstall applications or change some system settings.
 ![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
 
-For example, do you want to game and install Steam, Heroic Launcher, Discord,
-and more?
+For example, do you want to game and install Steam, Heroic Launcher, and more?
 
 Set `gaming.enable` to `true;`, as seen below:
 ![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
@@ -23,7 +25,8 @@ perform a whole system update.
 
 Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 ? Find more packages or configuration options at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages)
-and add them to `/etc/nixos/settings.nix`.
+and add them to `/etc/nixos/settings.nix` under the `environment.systemPackages`
+section.
 
 ## Available Applications
 
@@ -52,19 +55,20 @@ but not installed by default, see previous chapter on how to install them.
 
 - **CRM**: Salesforce/Hubspot web apps.
 
-- **Communication**: Slack/Teams/Zoom web apps.
+- **Communication**: Slack/Teams/Zoom web apps - Discord, TeamSpeak6 desktop apps.
 
 - **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
 
 - **AI Tools**: Ollama local AI, Gemini CLI, Windsurf AI-assisted IDE.
 
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
-npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual Studio Code.
+npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual
+Studio Code.
 
 - **Virtualisation**: Qemu, KVM, virt-manager.
 
-- **Gaming**: Steam, Steam auto-start (BigPicture mode), ProtonGE for Steam,
-Discord, Heroic Launcher, TeamSpeak6 client.
+- **Gaming**: Steam, Steam auto-start (BigPicture mode), ProtonGE for Steam, Heroic
+Launcher.
 
 - **Specialized Apps**:
   - OBS Studio, Audacity, DaVinci Resolve, Darktable.
@@ -110,7 +114,7 @@ sudo nixos-rebuild switch --upgrade &&
 sudo nixos-rebuild list-generations
 ```
 
-**Next**: .
+**Next**: [Backup your computer](backups.md).
 
 **Previous**: [First Steps](first-steps.md).
 
