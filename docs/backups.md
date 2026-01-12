@@ -4,11 +4,11 @@ One of the main goals of Curi*OS* is to get you up and running quickly. This inc
 making it easy to manage your backups.
 
 The Curi*OS* management tool, `curios-manager` (shortcut: Super+Return), includes
-a `Backup` tool. This tool is powered by [restic](https://restic.net/), a fast and secure program
-that can back up your files to **many different storage types**, including
-self-hosted and online services. **Securely**, with use of cryptography in every parts
-of the process. **Reliability**, enabling you to make sure that your files can be
-restored when needed.
+a `Backup` tool. This tool is powered by [restic](https://restic.net/), a fast
+and secure program that can back up your files to **many different storage types**,
+including self-hosted and online services. **Securely**, with use of cryptography
+in every parts of the process. **Reliability**, enabling you to make sure that your
+files can be restored when needed.
 ![curios-manager backup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_backup.png?raw=true "curios-manager backup")
 
 ## Setup a Repository
@@ -27,6 +27,7 @@ Every repository type setup will require you to define a password.
 Passwords are securely stored with `secret-tool`.
 
 Available repository type are:
+
 - Local USB hard drives.
 - Amazon AWS (S3 server).
 - Other S3-compatible server like MinIO and RustFS.
@@ -53,9 +54,9 @@ To back up to AWS S3, you first need an Amazon Web Services account. Within your
 AWS account, you must create an S3 bucket (which is like a root folder for
 storage) and generate an "Access Key" and "Secret Key" for authentication.
 
-*   **AWS Access Key:** Your unique access key ID.
-*   **AWS Secret Key:** Your secret password for the access key.
-*   **S3 Bucket URL:** The address of your bucket, including its region (e.g., `s3.us-east-1.amazonaws.com/my-backup-bucket`).
+- **AWS Access Key:** Your unique access key ID.
+- **AWS Secret Key:** Your secret password for the access key.
+- **S3 Bucket URL:** The address of your bucket, including its region (e.g., `s3.us-east-1.amazonaws.com/my-backup-bucket`).
 
 Please consult the official AWS documentation for instructions on how to create
 a bucket and generate security credentials. Once you have them, you can enter

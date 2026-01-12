@@ -79,7 +79,7 @@ Launcher.
 With `curios-manager` you can also backup your computer on a local USB drive or
 a cloud-based service. See our [Backup your Computer guide](backups.md).
 
-### System management.
+### System management
 
 From `curios-manager` system menu:
 ![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_menu.png?raw=true "curios-manager system menu")

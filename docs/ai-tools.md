@@ -73,7 +73,7 @@ applications:
 
 If you are a developer you will probably prefer a TUI application able to interact
 with your code directly on your machine. Most of the following TUI can be
-installed with `npm`, **Node.js** and `npm` come pre-installed with Curi*OS* (if 
+installed with `npm`, **Node.js** and `npm` come pre-installed with Curi*OS* (if
 not check if `devops.javascript.enable` is set to true in `/etc/nixos/settings.nix`).
 
 ## Claude code
