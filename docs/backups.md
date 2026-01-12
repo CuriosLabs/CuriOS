@@ -48,12 +48,17 @@ this repository. The repository will then be initialized, you can now use the
 
 ### Amazon AWS
 
+For AWS S3 storage, you will need to provide your AWS access key, your AWS secret
+key and the S3 bucket URL (including region), i.e: `s3.us-east-1.amazonaws.com/bucket_name`
+You will also be prompted to set a repository password. The repository will then
+be initialized, you can now use the `Backup now` menu.
+
 ### S3-compatible server (MinIO, RustFS...)
 
 For S3-compatible storage that is **not** Amazon AWS, you must provide an access
 key and the secret key of your S3 bucket. You must also provide the complete URL
 (IP/host name and port number included) of the bucket. For example on a RustFS
-running on a NAS on your local network, the URL look like this:
+running on a NAS on your local network, the URL could look like this:
 `http://192.168.1.231:9000/bucket_name`.
 You will also be prompted to set a repository password. The repository will then
 be initialized, you can now use the `Backup now` menu.
@@ -72,10 +77,16 @@ Content of a backup at a specific point in time is called a "snapshot".
 
 ## Restoring from a Repository
 
+To restore your home directory use the `Backup > Restore from backup` menu. You
+will be presented with a list of available snapshots:
 ![curios-manager backup restore menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_restore.png?raw=true "curios-manager backup restore menu")
+Choose one and let the tool do his work. Already existing files will be overwrite.
+New files in your HOME directory will **not** be deleted.
 
 ## Repository Stats
 
+To check your repository status and list the available snapshots, go to
+`Backup > Backup stats`.
 ![curios-manager backup stats](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_snapshots.png?raw=true "curios-manager backup stats")
 
 ## Notes
