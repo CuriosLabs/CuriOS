@@ -1,5 +1,6 @@
 .cursor/
 .gemini/
+.obsidian/
 .opencode/
 .venv/
 .idea/

@@ -1,7 +1,6 @@
 # Curi*OS* Management
 
 Curi*OS* comes with a TUI `curios-manager` (shortcut: Super+Return).
-![curios-manager screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/CuriOS-manager.png?raw=true "CuriOS manager")
 
 With it, you can update/upgrade the entire system, update your hardware
 firmware, check your disk usage, launch the process manager (btop), and much
@@ -14,7 +13,7 @@ Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort
 You can manually edit the Curi*OS* system settings file
 `/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to
 install/uninstall applications or change some system settings.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_settings.png?raw=true "CuriOS manager settings")
 
 For example, do you want to game and install Steam, Heroic Launcher, and more?
 
@@ -28,7 +27,7 @@ Do you want a package not included in one of the already pre-configured [modules
 and add them to `/etc/nixos/settings.nix` under the `environment.systemPackages`
 section.
 
-## Available Applications
+### Available Applications
 
 - **Core Apps** (Enabled by default):
   - Brave browser, Alacritty terminal, Signal, WhatsApp, VLC, Gimp3, EasyEffects.
@@ -74,6 +73,23 @@ Launcher.
   - OBS Studio, Audacity, DaVinci Resolve, Darktable.
   - Nmap/Zenmap, Wireshark, Remmina, Cloudflared.
   - Bitcoin: Electrum/Sparrow wallets, Coingecko, Bisq2, mempool web app.
+
+### Backup your computer
+
+With `curios-manager` you can also backup your computer on a local USB drive or
+a cloud-based service. See our [Backup your Computer guide](backups.md).
+
+### System management.
+
+From `curios-manager` system menu:
+![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_menu.png?raw=true "curios-manager system menu")
+
+You can shutdown/reboot/lock your computer. Manage running process on your CPU
+and GPU (with `btop` and `nvtop`). See all the current network connection (with
+`snitch`). You can also check your disk usage, and update your firmware (UEFI
+BIOS and more).
+![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_systems_disk.png?raw=true "curios-manager system disk")
+![curios-manager firmware update](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_firmware.png?raw=true "curios-manager firmware update")
 
 ## Flatpak / Desktop Apps Installation
 
