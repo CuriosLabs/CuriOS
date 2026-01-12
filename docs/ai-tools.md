@@ -128,4 +128,3 @@ Learn more on the [opencode documentation](https://opencode.ai/docs/).
 **Previous**: [Backup your Computer](backups.md)
 
 **Back**: [index](index.md)
-
