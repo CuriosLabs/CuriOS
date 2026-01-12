@@ -73,8 +73,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 For more advanced configurations and troubleshooting, please refer to the
 [NixOS documentation](https://nixos.org/manual/nixos/stable/) and [NixOS Wiki](https://nixos.wiki/wiki/Main_Page).
 
-## Basic Usage
-
+---
 **Next**: After installation, you can now [explore the Curi*OS* system](first-steps.md).
 
 **Back**: [index](index.md).

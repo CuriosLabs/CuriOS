@@ -106,6 +106,7 @@ Configuration details like the repository URL and S3 access key are stored in a
 hidden file named `.env` located in your home directory (`~/`).
 S3 secret key and repository password are safely stored with `secret-tool`.
 
+---
 **Next**: [Work with AI tools](ai-tools.md).
 
 **Previous**: [First Steps](first-steps.md).

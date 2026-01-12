@@ -42,6 +42,7 @@ By default, during installation, you had to choose a full disk encryption
 passphrase. You must enter it during the boot sequence:
 ![CuriOS boot passphrase](https://github.com/CuriosLabs/CuriOS/blob/master/img/Boot_crypt.png?raw=true "CuriOS disk encryption")
 
+---
 **Next**: [Curi*OS* Management](system-management.md).
 
 **Previous**: [Getting Started](getting-started.md).

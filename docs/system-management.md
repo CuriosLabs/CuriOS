@@ -130,6 +130,7 @@ sudo nixos-rebuild switch --upgrade &&
 sudo nixos-rebuild list-generations
 ```
 
+---
 **Next**: [Backup your computer](backups.md).
 
 **Previous**: [First Steps](first-steps.md).

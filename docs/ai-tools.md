@@ -1,132 +1,99 @@
-# AI tools
+# AI Tools on CuriOS
 
-Curi*OS* will help you working with AI, both locally or remotely, in the terminal
-or with desktop applications.
+Curi*OS* provides a range of tools to help you work with Artificial Intelligence,
+whether on your own computer or using online services. This guide covers both
+easy-to-use desktop applications and more advanced tools for developers.
 
-## Local AI
+A quick note on terms: **LLMs** (Large Language Models) are the powerful AI
+models behind services like ChatGPT.
 
-If you have a Nvidia or AMD GPU, Curi*OS* should have installed the corresponding
-driver during the OS installation. Therefore you can run AI locally with the help
-of LM studio or Ollama.
+---
+
+## Easy-to-Use Desktop AI
+
+These applications are graphical, work with a mouse and keyboard, and are the
+best place to start.
 
 ### LM Studio
 
-**LM Studio** is a desktop applications providing an interactive chat, an interface
-to search, download and run LLMs on your machine, launch it from its desktop
-shortcut or from a terminal with the command:
+If your computer has a powerful graphics card (like a recent Nvidia or AMD model),
+Curi*OS* automatically installs the necessary software to run AI models locally.
 
-```bash
-lm-studio
-```
+**LM Studio** is a desktop application that provides an interactive chat, an interface
+to search and download different LLMs, and the ability to run them on your machine.
+
+You can launch it from its desktop shortcut or by typing `lm-studio` in a terminal.
 
 ![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/testing/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
 
-You can monitor your GPU usage as in the picture above with the command:
+> **Tip:** You can monitor your graphics card's usage with the command `nvtop` or
+through the `curios-manager` application in the menu `System > Process
+Management (GPU)`.
 
-```bash
-nvtop
-```
+LM Studio can also power the AI features in other programs on your computer. It
+does this by running an AI engine in the background that other apps can connect
+to. Learn more on the [LM Studio documentation](https://lmstudio.ai/docs/app).
 
-Or from the `curios-manager` TUI in the menu `System > Process Management (GPU)`.
+### Web Application Shortcuts
 
-**LM Studio** can also run a local server and act as a local LLM provider for
-third-party applications like **Zed** editor, **opencode** TUI, etc...
-Learn more on [LM Studio documentation](https://lmstudio.ai/docs/app).
-
-### Ollama
-
-**Ollama** is a CLI to get and run LLMs locally. It also come with the **open-webui**
-server to chat with your LLM from your browser. To install it, edit the file
-`/etc/nixos/settings.nix` or from the `curios-manager` TUI go to the `Settings
-(manual edit)` menu and set `services.ai.enable = true;`, save the file (Ctrl+O
-then Ctrl+X) and `curios-manager` will do the install.
-
-To download a model:
-
-```bash
-ollama pull gemma3
-```
-
-Search for models on [Ollama website](https://ollama.com/).
-
-To list installed models:
-
-```bash
-ollama ls
-```
-
-The **open-webui** chat is reachable at [http://localhost:11434](http://localhost:11434).
-
-Learn more at [Ollama documentation](https://docs.ollama.com/).
-
-## Web applications
-
-Curi*OS* come installed with desktop shortcuts for the following AI chat web
-applications:
+Curi*OS* comes with pre-installed desktop shortcuts for popular AI chat web applications:
 
 - ChatGPT
 - Claude
 - Grok
 - Mistral LeChat
 
-## Terminal applications
+---
 
-If you are a developer you will probably prefer a TUI application able to interact
-with your code directly on your machine. Most of the following TUI can be
-installed with `npm`, **Node.js** and `npm` come pre-installed with Curi*OS* (if
-not check if `devops.javascript.enable` is set to true in `/etc/nixos/settings.nix`).
+## For Advanced Users & Developers
 
-## Claude code
+The following tools are primarily designed for developers or users comfortable
+with the command line. They often run in the terminal in a **TUI** (Text-based
+User Interface).
 
-To always get the latest up-to-date version, install it with:
+### Ollama
 
-```bash
-npm install -g @anthropic-ai/claude-code
-```
+**Ollama** is a command-line tool to download and run LLMs locally. It also includes
+**open-webui**, which provides a chat interface in your web browser.
 
-And then run it with:
+To install it, open the `curios-manager` TUI, go to the `Settings (manual edit)`
+menu, and set `services.ai.enable = true;`. After you save the file (`Ctrl+O`
+then `Ctrl+X`), `curios-manager` will handle the installation.
 
-```bash
-claude
-```
+- **Download a model** (e.g., gemma): `ollama pull gemma`
+- **List installed models**: `ollama ls`
 
-See [Claude code documentation](https://code.claude.com/docs/en/quickstart).
+The web chat is available at [http://localhost:11434](http://localhost:11434) in
+your browser. Find more models on the [Ollama website](https://ollama.com/).
 
-## Gemini CLI
+### AI-Powered Code Editors
 
-To always get the latest up-to-date version, install it with:
+These applications are advanced code editors (**IDEs**) with built-in AI assistance.
 
-```bash
-npm install -g @google/gemini-cli
-```
+- **Zed**: Installed by default. You can connect it to LM Studio. See the [Zed documentation](https://zed.dev/docs/ai/llm-providers).
+- **Cursor**: An AI-first code editor. Launch the graphical app with `cursor` or
+the terminal version with `cursor-agent`. See the [Cursor documentation](https://cursor.com/docs).
+- **Windsurf**: Another AI-assisted editor. To install, set
+`ai.windsurf.enable = true;` in your settings via `curios-manager`. Launch with
+`windsurf`. See the [Windsurf documentation](https://docs.windsurf.com/windsurf/getting-started).
 
-And then run it with:
+### Terminal (CLI) Tools
 
-```bash
-gemini
-```
+These tools require **Node.js** and its package manager, **npm**, which come
+pre-installed on Curi*OS*. You can install them with the `npm install -g` command.
 
-See [Gemini CLI documentation](https://geminicli.com/docs/).
-
-## opencode
-
-You can install opencode with the following command:
-
-```bash
-nix profile add nixpkgs#opencode
-```
-
-And then run it with:
+- **Claude Code**: Run with `claude`. Install with `npm install -g @anthropic-ai/claude-code`.
+- **Gemini CLI**: Run with `gemini`. Install with `npm install -g @google/gemini-cli`.
+- **opencode**: A terminal-based coding assistant. Install with
+`nix profile add nixpkgs#opencode` and run with `opencode`. You can connect it
+to your LM Studio server by editing its configuration file. For example, open
+it with a basic text editor:
 
 ```bash
-opencode
+nano ~/.config/opencode/opencode.json
 ```
 
-You can connect opencode to your **LM Studio** server to act as a LLM provider:
-
-```bash
-$EDITOR ~/.config/opencode/opencode.json
-```
+Then, add your provider and model details, for example:
 
 ```json
 {
@@ -154,48 +121,11 @@ $EDITOR ~/.config/opencode/opencode.json
 }
 ```
 
-Adapt the "models" to your downloaded models. Learn more on [opencode documentation](https://opencode.ai/docs/).
+Learn more on the [opencode documentation](https://opencode.ai/docs/).
 
-## AI-assisted desktop applications
+---
 
-### Zed
-
-**Zed.dev** editor is installed by default with Curi*OS*. It is a powerful code
-editor. You can connect it to your **LM Studio**, see [Zed documentation](https://zed.dev/docs/ai/llm-providers).
-
-### Cursor
-
-**Cursor** is an AI-assisted IDE and also a TUI.
-Launch the desktop application with:
-
-```bash
-cursor
-```
-
-And the TUI with:
-
-```bash
-cursor-agent
-```
-
-See [Cursor documentation](https://cursor.com/docs).
-
-### Windsurf
-
-**Windsurf** is also an AI-assisted IDE. To install it, edit the file
-`/etc/nixos/settings.nix` or from the `curios-manager` TUI go to the `Settings
-(manual edit)` menu and set `ai.windsurf.enable = true;`, save the file (Ctrl+O
-then Ctrl+X) and `curios-manager` will do the install.
-Launch it with the following command:
-
-```bash
-windsurf
-```
-
-See [Windsurf documentation](https://docs.windsurf.com/windsurf/getting-started).
-
-**Next**: .
-
-**Previous**: [Backup your Computer](backups.md).
+**Previous**: [Backup your Computer](backups.md)
 
 **Back**: [index](index.md)
+
