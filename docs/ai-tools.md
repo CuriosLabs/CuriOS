@@ -90,6 +90,8 @@ And then run it with:
 claude
 ```
 
+See [Claude code documentation](https://code.claude.com/docs/en/quickstart).
+
 ## Gemini CLI
 
 To always get the latest up-to-date version, install it with:
@@ -104,18 +106,93 @@ And then run it with:
 gemini
 ```
 
+See [Gemini CLI documentation](https://geminicli.com/docs/).
+
 ## opencode
+
+You can install opencode with the following command:
+
+```bash
+nix profile add nixpkgs#opencode
+```
+
+And then run it with:
+
+```bash
+opencode
+```
+
+You can connect opencode to your **LM Studio** server to act as a LLM provider:
+
+```bash
+$EDITOR ~/.config/opencode/opencode.json
+```
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Theme configuration
+  "theme": "opencode",
+  "autoupdate": false,
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1"
+      },
+      "models": {
+        "qwen/qwen3-4b-2507": {
+          "name": "Qwen3 4b 2507"
+        },
+        "mistralai/ministral-3-3b": {
+          "name": "Ministral3"
+        }
+      }
+    }
+  }
+}
+```
+
+Adapt the "models" to your downloaded models. Learn more on [opencode documentation](https://opencode.ai/docs/).
 
 ## AI-assisted desktop applications
 
 ### Zed
 
 **Zed.dev** editor is installed by default with Curi*OS*. It is a powerful code
-editor.
+editor. You can connect it to your **LM Studio**, see [Zed documentation](https://zed.dev/docs/ai/llm-providers).
 
 ### Cursor
 
+**Cursor** is an AI-assisted IDE and also a TUI.
+Launch the desktop application with:
+
+```bash
+cursor
+```
+
+And the TUI with:
+
+```bash
+cursor-agent
+```
+
+See [Cursor documentation](https://cursor.com/docs).
+
 ### Windsurf
+
+**Windsurf** is also an AI-assisted IDE. To install it, edit the file
+`/etc/nixos/settings.nix` or from the `curios-manager` TUI go to the `Settings
+(manual edit)` menu and set `ai.windsurf.enable = true;`, save the file (Ctrl+O
+then Ctrl+X) and `curios-manager` will do the install.
+Launch it with the following command:
+
+```bash
+windsurf
+```
+
+See [Windsurf documentation](https://docs.windsurf.com/windsurf/getting-started).
 
 **Next**: .
 
