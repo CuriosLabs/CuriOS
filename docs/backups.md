@@ -1,24 +1,23 @@
 # Backup Your Computer
 
-One of Curi*OS*'s main goal is to provide rapid deployment, you should become
-operational in less than 10 minutes on your machine, and it include managing
-backups.
+One of the main goals of Curi*OS* is to get you up and running quickly. This includes
+making it easy to manage your backups.
 
-Curi*OS* management tool `curios-manager` (shortcut: Super+Return) came with a
-`Backup` tool. Under the hood it run [restic](https://restic.net/), it provide
-fast and secure backup program that can back up your files to **many different
-storage types**, including self-hosted and online services. **Securely**, with use
-of cryptography in every parts of the process. **Reliability**, enabling you to
-make sure that your files can be restored when needed.
+The Curi*OS* management tool, `curios-manager` (shortcut: Super+Return), includes
+a `Backup` tool. This tool is powered by [restic](https://restic.net/), a fast and secure program
+that can back up your files to **many different storage types**, including
+self-hosted and online services. **Securely**, with use of cryptography in every parts
+of the process. **Reliability**, enabling you to make sure that your files can be
+restored when needed.
 ![curios-manager backup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_backup.png?raw=true "curios-manager backup")
 
 ## Setup a Repository
 
-The `Backup > Setup your backup` menu will prepare a new repository. This is simply
-a directory containing a set of sub-directories and files created by `restic` to
-store your backups, some corresponding metadata and encryption keys.
+The `Backup > Setup your backup` menu prepares a "repository". A repository is the
+secure location (for example, a folder on your USB drive) where `restic` will store
+your encrypted backups and the information needed to manage them.
 ![curios-manager repository setup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_repo_config.png?raw=true "curios-manager repository setup")
-Every repository type setup required you to define a password.
+Every repository type setup will require you to define a password.
 
 > [!WARNING]
 > Remembering your password is important! If you lose it, you won’t be able to
@@ -50,6 +49,17 @@ this repository. The repository will then be initialized, you can now use the
 
 For AWS S3 storage, you will need to provide your AWS access key, your AWS secret
 key and the S3 bucket URL (including region), i.e: `s3.us-east-1.amazonaws.com/bucket_name`
+To back up to AWS S3, you first need an Amazon Web Services account. Within your
+AWS account, you must create an S3 bucket (which is like a root folder for
+storage) and generate an "Access Key" and "Secret Key" for authentication.
+
+*   **AWS Access Key:** Your unique access key ID.
+*   **AWS Secret Key:** Your secret password for the access key.
+*   **S3 Bucket URL:** The address of your bucket, including its region (e.g., `s3.us-east-1.amazonaws.com/my-backup-bucket`).
+
+Please consult the official AWS documentation for instructions on how to create
+a bucket and generate security credentials. Once you have them, you can enter
+them here.
 You will also be prompted to set a repository password. The repository will then
 be initialized, you can now use the `Backup now` menu.
 
@@ -57,8 +67,8 @@ be initialized, you can now use the `Backup now` menu.
 
 For S3-compatible storage that is **not** Amazon AWS, you must provide an access
 key and the secret key of your S3 bucket. You must also provide the complete URL
-(IP/host name and port number included) of the bucket. For example on a RustFS
-running on a NAS on your local network, the URL could look like this:
+(IP/host name and port number included) of the bucket. For example on a **RustFS**
+server running on a NAS on your local network, the URL could look like this:
 `http://192.168.1.231:9000/bucket_name`.
 You will also be prompted to set a repository password. The repository will then
 be initialized, you can now use the `Backup now` menu.
@@ -67,7 +77,7 @@ be initialized, you can now use the `Backup now` menu.
 
 ![curios-manager backup menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_now.png?raw=true "curios-manager backup menu")
 
-The `Backup > Backup now` menu will backing up your HOME directory `/home/<username>`
+The `Backup > Backup now` menu will back up your HOME directory `/home/<username>`
 content including hidden directories. The root partition `/` and its content
 will not be backed up in order to save space on your backups repository. In case
 of catastrophic failure it will be easier to re-install your system from fresh
@@ -80,7 +90,7 @@ Content of a backup at a specific point in time is called a "snapshot".
 To restore your home directory use the `Backup > Restore from backup` menu. You
 will be presented with a list of available snapshots:
 ![curios-manager backup restore menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_restore.png?raw=true "curios-manager backup restore menu")
-Choose one and let the tool do his work. Already existing files will be overwrite.
+Choose one and let the tool do his work. Already existing files will be overwritten.
 New files in your HOME directory will **not** be deleted.
 
 ## Repository Stats
@@ -91,8 +101,11 @@ To check your repository status and list the available snapshots, go to
 
 ## Notes
 
-Repository URL and access key (for S3 server) are stored in your `~/.env` file.
+Configuration details like the repository URL and S3 access key are stored in a
+hidden file named `.env` located in your home directory (`~/`).
 S3 secret key and repository password are safely stored with `secret-tool`.
+
+**Next**: [Work with AI tools](ai-tools.md).
 
 **Previous**: [First Steps](first-steps.md).
 
