@@ -37,6 +37,9 @@ the whole system from a modern TUI.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
+* ✨AI tools: LM Studio to run local AI on your GPU (Ollama is also easily installable).
+Cursor for an AI-assisted IDE. Desktop shortcuts for AI chat web applications
+(ChatGPT, Claude, Grok and Mistral).
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager,
 Python3, Rust and more...
