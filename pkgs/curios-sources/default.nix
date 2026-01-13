@@ -8,7 +8,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation {
   pname = "curios-sources";
-  version = "25.11.1";
+  version = "25.11.2";
 
   src = lib.fileset.toSource {
     root = ../../.;
@@ -41,6 +41,7 @@ stdenvNoCC.mkDerivation {
 
     install -D -m 644 -t $out/share/curios/pkgs/curios-dotfiles/ pkgs/curios-dotfiles/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/snitch/ pkgs/snitch/default.nix
 
     runHook postInstall
   '';

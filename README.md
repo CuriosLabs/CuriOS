@@ -87,7 +87,7 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [25.11.1](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.1)
+The current version is [25.11.2](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.2)
 based on a Nixos 25.11 build.
 
 ## License
