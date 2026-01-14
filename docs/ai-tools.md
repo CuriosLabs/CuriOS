@@ -107,7 +107,7 @@ Then, add your provider and model details, for example:
   // Theme configuration
   "theme": "opencode",
   "autoupdate": false,
-  // LLMs providers
+  // LLMs Providers - Adjust to your LM Studio configuration
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
