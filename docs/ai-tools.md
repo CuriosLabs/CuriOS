@@ -98,9 +98,16 @@ Then, add your provider and model details, for example:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
+  // Settings
+  "permission": {
+    "edit": "ask",
+    "bash": "ask",
+    "webfetch": "allow"
+  },
   // Theme configuration
   "theme": "opencode",
   "autoupdate": false,
+  // LLMs providers
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
