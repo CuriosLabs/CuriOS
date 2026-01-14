@@ -205,7 +205,7 @@ in {
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.windsurf.enable
-      [ windsurf ]
+      [ pkgs.windsurf ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable
       [ pkgs.ungoogled-chromium ]
       ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable
