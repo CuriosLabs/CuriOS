@@ -102,6 +102,9 @@ Then, add your provider and model details, for example:
   "permission": {
     "edit": "ask",
     "bash": "ask",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
     "webfetch": "allow"
   },
   // Theme configuration
