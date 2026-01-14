@@ -22,6 +22,7 @@
       eza # ls replacement
       fd # find alternative
       fzf # fuzzy finder
+      gdu # pretty fast disk usage analyzer in Go.
       jq # JSON parser
       terminaltexteffects
       zoxide # Better cd

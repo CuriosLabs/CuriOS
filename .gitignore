@@ -1,6 +1,13 @@
+.cursor/
+.gemini/
+.obsidian/
+.opencode/
 .venv/
 .idea/
 .zed/
+_bmad/
+_bmad-output/
+docs/.obsidian/
 iso/result/
 iso/*.iso
 iso/*.iso.sha256

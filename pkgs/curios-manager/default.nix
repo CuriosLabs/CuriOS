@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.16";
+  version = "0.18";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-JKLSOGrrPJyehllY0Xldxht16YegtDLUyffFwc2QypA=";
+    hash = "sha256-5sYQ/IOzij/LTvaFpTPduw6aJOKVAoVZJb63HiaBeco=";
   };
 
   buildInputs = [
@@ -23,10 +23,10 @@ stdenvNoCC.mkDerivation rec {
     pkgs.curl
     #pkgs.curios-dotfiles
     pkgs.duf
-    pkgs.dust
     pkgs.fastfetch
     pkgs.fwupd
     pkgs.gnutar
+    pkgs.gdu
     pkgs.gum
     pkgs.jq
     pkgs.libnotify
@@ -44,10 +44,11 @@ stdenvNoCC.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "dev.curioslabs.curiosmanager";
     exec = "/run/current-system/sw/bin/alacritty -e curios-manager";
-    desktopName = "CuriOS Manager CLI";
-    icon = "desktop-curios-manager";
+    desktopName = "CuriOS Manager TUI";
+    icon = "curios";
     categories = [ "System" ];
-    terminal = true;
+    terminal = false;
+    type = "Application";
   };
   installPhase = ''
     runHook preInstall
@@ -68,7 +69,7 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p $out/share
     cp -r ${desktopItem}/share/applications $out/share
     mkdir -p $out/share/icons/hicolor/scalable/apps
-    cp pkgs/curios-manager/share/icons/hicolor/scalable/apps/nixos.svg $out/share/icons/hicolor/scalable/apps/desktop-curios-manager.svg
+    cp pkgs/curios-manager/share/icons/hicolor/scalable/apps/curios.svg $out/share/icons/hicolor/scalable/apps/curios.svg
 
     runHook postInstall
   '';

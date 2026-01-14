@@ -80,10 +80,13 @@
       pciutils
       smartmontools
     ] ++ lib.optionals config.services.desktopManager.cosmic.xwayland.enable
-    [ wl-clipboard ]
-    ++ lib.optionals config.curios.hardware.amdGpu.enable [ btop-rocm ]
-    ++ lib.optionals config.curios.hardware.nvidiaGpu.enable [ btop-cuda ]
-    ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
+    [ wl-clipboard ] ++ lib.optionals config.curios.hardware.amdGpu.enable [
+      btop-rocm
+      nvtopPackages.amd
+    ] ++ lib.optionals config.curios.hardware.nvidiaGpu.enable [
+      btop-cuda
+      nvtopPackages.nvidia
+    ] ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
       && !config.curios.hardware.amdGpu.enable) [ btop ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -98,7 +101,13 @@
   # Allow unfree packages, could be overridden by some modules.
   nixpkgs.config.allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
     true
+  else if config.curios.desktop.apps.ai.cursor.enable then
+    true
+  else if config.curios.desktop.apps.ai.windsurf.enable then
+    true
   else if config.curios.desktop.apps.office.enable then
+    true
+  else if config.curios.desktop.apps.chat.teamspeak.enable then
     true
   else if config.curios.desktop.apps.gaming.enable then
     true
@@ -128,7 +137,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.1";
+    nixos.variant_id = "25.11.2";
   };
 
   # Collect garbage

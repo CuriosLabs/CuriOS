@@ -36,9 +36,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-gaming-executables"):
         check_which("steam")
-        check_which("Discord")
         check_which("heroic")
-        check_which("TeamSpeak")
         check_which("gamemoderun")
         check_which("steam-run")
         check_which("input-remapper-gtk")

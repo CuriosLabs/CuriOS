@@ -2,7 +2,8 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+in {
   # Declare options
   options = {
     curios.desktop.apps = {
@@ -78,6 +79,11 @@
           default = true;
           description = "Claude web app.";
         };
+        cursor.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Cursor AI-assisted IDE - desktop app and CLI.";
+        };
         gemini.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -90,7 +96,7 @@
         };
         lmstudio.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description = "LM Studio - Local AI on your computer.";
         };
         mistral.enable = lib.mkOption {
@@ -98,12 +104,27 @@
           default = true;
           description = "Mistral LeChat web app.";
         };
+        windsurf.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Windsurf AI-assisted IDE - desktop app.";
+        };
       };
       chat = {
+        discord.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Discord desktop app.";
+        };
         signal.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
           description = "Signal.org desktop app.";
+        };
+        teamspeak.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "TeamSpeak6 desktop app.";
         };
         whatsapp.enable = lib.mkOption {
           type = lib.types.bool;
@@ -152,8 +173,11 @@
       pkgs.ffmpeg_6-full
       pkgs.gimp3-with-plugins
       pkgs.gparted
+      pkgs.imagemagick
       pkgs.libsecret
       pkgs.polkit_gnome
+      pkgs.procs
+      pkgs.tldr
       pkgs.vlc
       pkgs.yubioath-flutter
     ] ++ lib.optionals config.curios.desktop.apps.vpn.proton.enable [
@@ -168,15 +192,20 @@
       [ (import ./webapp-chatgpt.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.claude.enable
       [ (import ./webapp-claude.nix) ]
-      ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
+      ++ lib.optionals config.curios.desktop.apps.ai.cursor.enable [
+        pkgs.cursor-cli
+        pkgs.code-cursor
+      ] ++ lib.optionals config.curios.desktop.apps.ai.gemini.enable [
         pkgs.gemini-cli
         (import ./desktop-gemini.nix)
       ] ++ lib.optionals config.curios.desktop.apps.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
       ++ lib.optionals config.curios.desktop.apps.ai.lmstudio.enable
-      [ pkgs.lmstudio ]
+      [ lmstudioApp ]
       ++ lib.optionals config.curios.desktop.apps.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
+      ++ lib.optionals config.curios.desktop.apps.ai.windsurf.enable
+      [ pkgs.windsurf ]
       ++ lib.optionals config.curios.desktop.apps.browser.chromium.enable
       [ pkgs.ungoogled-chromium ]
       ++ lib.optionals config.curios.desktop.apps.browser.firefox.enable
@@ -185,8 +214,12 @@
       [ pkgs.librewolf ]
       ++ lib.optionals config.curios.desktop.apps.browser.vivaldi.enable
       [ pkgs.vivaldi ]
+      ++ lib.optionals config.curios.desktop.apps.chat.discord.enable
+      [ pkgs.discord ]
       ++ lib.optionals config.curios.desktop.apps.chat.signal.enable
       [ pkgs.signal-desktop ]
+      ++ lib.optionals config.curios.desktop.apps.chat.teamspeak.enable
+      [ pkgs.teamspeak6-client ]
       ++ lib.optionals config.curios.desktop.apps.chat.whatsapp.enable
       [ (import ./webapp-whatsapp.nix) ]
       ++ lib.optionals config.curios.desktop.apps.utility.bitwarden.enable

@@ -18,7 +18,7 @@
       };
       onlyoffice.desktopeditors.enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "OnlyOffice Desktop Editors suite.";
       };
       thunderbird.enable = lib.mkOption {
@@ -52,7 +52,27 @@
           };
         };
       };
+      finance = {
+        gnucash.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Free software for accounting.";
+        };
+      };
       projects = {
+        basecamp = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Basecamp.com project management by 37signals.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.str;
+            default = "launchpad.37signals.com/signin";
+            description = "Basecamp web app base URL.";
+            example = "3.basecamp.com/0123456/";
+          };
+        };
         jira = {
           enable = lib.mkOption {
             type = lib.types.bool;
@@ -101,6 +121,11 @@
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.apps.office.crm.hubspot.enable
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.apps.office.finance.gnucash.enable
+      [ pkgs.gnucash ]
+      ++ lib.optionals
+      config.curios.desktop.apps.office.projects.basecamp.enable
+      [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.apps.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals

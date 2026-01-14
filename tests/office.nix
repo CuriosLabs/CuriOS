@@ -25,7 +25,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           salesforce.enable = true;
           hubspot.enable = true;
         };
+        finance = {
+          gnucash.enable = true;
+        };
         projects = {
+          basecamp.enable = true;
+          basecamp.baseUrl = "launchpad.37signals.com/signin";
           jira.enable = true;
           jira.baseUrl = "my-company.atlassian.net";
         };
@@ -64,7 +69,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("com.salesforce")
         check_webapp("com.hubspot")
 
+    with subtest("check-finance-apps"):
+        check_which("gnucash")
+
     with subtest("check-project-management-webapps"):
+        check_webapp("com.basecamp")
         check_webapp("net.atlassian.jira")
 
     with subtest("check-conferencing-apps"):

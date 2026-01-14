@@ -39,15 +39,19 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         ai = {
           chatgpt.enable = true;
           claude.enable = true;
+          cursor.enable = true;
           gemini.enable = true;
           grok.enable = true;
           lmstudio.enable = true;
           mistral.enable = true;
+          windsurf.enable = true;
         };
 
         # Chat Apps
         chat = {
+          discord.enable = true;
           signal.enable = true;
+          teamspeak.enable = true;
           whatsapp.enable = true;
         };
 
@@ -91,13 +95,19 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-ai-apps"):
         check_webapp("com.chatgpt")
         check_webapp("ai.claude.chats")
+        check_which("cursor")
+        check_which("cursor-agent")
         check_which("gemini") # Executable for gemini-cli
         check_webapp("ai.x.grok")
         check_which("lm-studio")
+        #check_which("lms") # LM Studio CLI
         check_webapp("ai.mistral.chat")
+        check_which("windsurf")
 
     with subtest("check-chat-apps"):
+        check_which("Discord")
         check_which("signal-desktop")
+        check_which("TeamSpeak")
         check_webapp("com.whatsapp.web")
 
     with subtest("check-utilities"):
@@ -110,5 +120,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("alacritty")
         check_which("vlc")
         check_which("gimp")
+        check_which("tldr")
+        check_which("procs")
   '';
 }

@@ -97,8 +97,10 @@ in {
         };
         # Go, gofmt, JetBrains GoLand
         go.enable = false;
-        # NodeJS (npm)
-        javascript.enable = false;
+        # NodeJS (npm, npx) JavaScript runtime
+        javascript.enable = true;
+        # bun JavaScript runtime
+        javascript.bun.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
         python313.enable = false;
@@ -108,7 +110,7 @@ in {
         networks.enable = false;
       };
       gaming = {
-        # Steam, Heroic Launcher, gamemoderun, Input-Remapper, TeamSpeak6 client
+        # Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.
         enable = false;
         steam.bigpicture.autoStart = false;
       };
@@ -135,8 +137,13 @@ in {
             baseUrl = "app.hubspot.com";
           };
         };
+        finance = { gnucash.enable = false; };
         # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
+          basecamp = {
+            enable = true;
+            baseUrl = "launchpad.37signals.com/signin";
+          };
           jira = {
             enable = false;
             baseUrl = "example.atlassian.net";
@@ -163,18 +170,26 @@ in {
         chatgpt.enable = true;
         # Claude web app
         claude.enable = true;
+        # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
+        cursor.enable = true;
         # Google Gemini CLI
         gemini.enable = false;
         # Grok web app
         grok.enable = true;
         # lmstudio.ai local AI model
-        lmstudio.enable = false;
+        lmstudio.enable = true;
         # Mistral LeChat web app
         mistral.enable = true;
+        # Windsurf AI-assisted IDE desktop app.
+        windsurf.enable = false;
       };
       chat = {
+        # Discord desktop app
+        discord.enable = false;
         # Signal.org desktop app
         signal.enable = true;
+        # TeamSpeak6 desktop app
+        teamspeak.enable = false;
         # WhatsApp web app
         whatsapp.enable = true;
       };

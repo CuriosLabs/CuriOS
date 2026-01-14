@@ -27,6 +27,8 @@ let
       ln -s $downloadedFile ./${pname}-${version}-x86_64.AppImage
       # TODO: gpg --verify exit code 2 (even with authSignature.asc marked as trusted) seems to bug the postFetch process.
       #gpg --batch --verify appSignature.asc ${pname}-${version}-x86_64.AppImage
+      #TODO: test gpg verify
+      #gpg --batch --verify --fingerprint "6694D8DE7BE8EE5631BED9502BD5824B7F9470E6" appSignature.asc
       popd
       mv $downloadedFile $out
     '';

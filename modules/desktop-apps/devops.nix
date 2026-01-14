@@ -41,8 +41,13 @@
       };
       javascript.enable = lib.mkOption {
         type = lib.types.bool;
+        default = true;
+        description = "NodeJS (npm, npx) Javascript runtime.";
+      };
+      javascript.bun.enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
-        description = "NodeJS (npm).";
+        description = "bun - a fast JavaScript toolkit.";
       };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
@@ -114,7 +119,9 @@
         golangci-lint
         jetbrains.goland
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
-      [ nodejs_22 ]
+      [ nodejs_24 ]
+      ++ lib.optionals config.curios.desktop.apps.devops.javascript.bun.enable
+      [ bun ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312

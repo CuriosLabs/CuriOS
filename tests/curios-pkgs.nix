@@ -23,6 +23,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("curios-dotfiles")
         check_which("curios-manager")
         check_which("curios-update")
+        check_which("snitch")
 
     with subtest("check-systemd-user-units"):
         # Check if the systemd user unit files exist

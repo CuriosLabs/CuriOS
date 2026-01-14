@@ -32,9 +32,14 @@ detected during installation.
 key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget about
 your mouse, **use Super key combinations for everything!**
 * 📦 Flatpak with **auto-update**. COSMIC and Flathub repos pre-installed.
+* 💻 Curi*OS* TUI manager (shortcut: Super+Return). Manage/update/upgrade/backup
+the whole system from a modern TUI.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
+* ✨AI tools: LM Studio to run local AI on your GPU (Ollama is also easily installable).
+Cursor for an AI-assisted IDE. Desktop shortcuts for AI chat web applications
+(ChatGPT, Claude, Grok and Mistral).
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager,
 Python3, Rust and more...
@@ -43,6 +48,13 @@ Python3, Rust and more...
 * ⬆️ Curi*OS* updater. Check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
 * 🗛 bunch of nerd fonts...
+
+## Quick start / installation guide
+
+See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md)
+on how to install Curi*OS*.
+
+## First steps
 
 Most useful desktop shortcuts:
 
@@ -56,134 +68,18 @@ Most useful desktop shortcuts:
 | Launch web browser          | Super + B                          |
 | Launch File manager         | Super + F                          |
 | Launch a terminal           | Super + T                          |
-| Applications menu           | Super + A                          |
-| Maximize application        | Super + M                          |
-| Close application           | Super + Q                          |
-| Tile mode on/off            | Super + Y                          |
-| Workspaces overview         | Super + W                          |
-| Lock session                | Super + Esc                        |
-| Logout                      | Super + Shift + Esc                |
-| Process management (btop)   | Ctrl + Alt + Del                   |
 
-## Quick start
+See more in our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
 
-> [!WARNING]
-> The installation script will **FORMAT** your disk !!! Backup your data before.
+## System management
 
-1. Get the latest Curi*OS* 25.11 Minimal ISO image:
+If you wan to know more about [system update, installing programs](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
 
-   ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso
-   ```
-
-   Download and check iso signature:
-
-   ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.1/CuriOS_25.11.1_amd64_intel.iso.sha256
-   sha256sum --check CuriOS_*.iso.sha256
-   ```
-
-2. Burn it on a USB stick with [Balena Etcher](https://etcher.balena.io/#download-etcher),
-   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
-
-   ```bash
-   # Good old dd:
-   sudo dd if=CuriOS_25.11.1_amd64_intel.iso of=/dev/sdb bs=10MB oflag=dsync status=progress
-   # or shiny caligula:
-   caligula burn -s $(cat ./CuriOS_25.11.1_amd64_intel.iso.sha256)
-   ```
-
-   Replace `/dev/sdb` with the path of the USB card (see command `sudo fdisk -l`).
-3. Boot your machine on the USB stick (F8 or F12 key on startup, see your
-   motherboard manufacturer's instructions). An internet connection is *REQUIRED*
-   to perform the installation!
-4. The installer should start automatically (otherwise launch it with `sudo curios-install`).
-   ![CuriOS installation step 1](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation Step 1")
-5. Answer the various dialog questions:
-   <details>
-      <summary>Click to see 'choose disk' dialog options</summary>
-
-      ![CuriOS installation choose disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_3.png?raw=true "CuriOS install choose disk")
-   </details>
-   The full disk encryption option is **HIGHLY RECOMMENDED**.
-   <details>
-      <summary>Click to see 'full disk encryption' dialog</summary>
-
-      ![CuriOS full disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS full disk encryption")
-   </details>
-6. If everything went according to plan, reboot (and remember to remove USB
-   media installer).
-   <details>
-      <summary>Click to see reboot dialog</summary>
-
-      ![CuriOS install reboot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_6.png?raw=true "CuriOs installation reboot")
-   </details>
-7. **Enjoy!**
-
-## Curi*OS* management
-
-Curi*OS* come with a TUI `curios-manager` (shortcut: Super+Return).
-![curios-manager screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager.png?raw=true "CuriOS manager")
-With it, you can update/upgrade the whole system, update your hardware firmware
-, check your disk usage, launch the process manager (btop), and much more...
-But most importantly you can edit the Curi*OS* options settings from the menu
-`System > Settings`.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settings.png?raw=true "CuriOS manager settings")
-
-For example, you want to game and install Steam, Heroic launcher, Discord and
-more? Set: `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
-Save the change with `Ctrl+S` and exit with `Ctrl+X`, `curios-manager` will
-then made a system update.
-
-You want a package not in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Find more packages or options configuration at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages)
-and add it to `/etc/nixos/settings.nix`.
-
-### System upgrade
-
-When a new version of Curi*OS* is available, you will see a pop-up appear on
-your desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
-
-To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
-Super+Return) and choose the `👆Upgrade` option.
-
-### Flatpak / desktop apps installation
-
-You can also install Linux applications as flatpak. [Flathub](https://flathub.org/)
-and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
-app as seen below:
-![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
-
-### Dot files
+### Dot files / Theme
 
 [curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-
 installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
-![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Terminal.png?raw=true "Curios dotfiles")
-
-## NixOS management
-
-Curi*OS* is build on top of NixOS, a Linux distribution based on the Nix
-package manager and build system. It supports reproducible and declarative
-system-wide configuration management as well as atomic upgrades and rollbacks,
-although it can additionally support imperative package and user management.
-In NixOS, all components of the distribution — including the kernel, installed
-packages and system configuration files — are built by Nix from pure functions
-called Nix expressions.
-See [NixOS manual](https://nixos.org/manual/nixos/stable/) to learn more.
-
-The default 'configuration.nix' is set to **AUTO UPDATE** every night at 03:40
-or on your first boot of the day, see `systemctl list-timers`.
-
-Generations older than 7 days are automatically garbage collected. You can also
-manually do the equivalent with:
-
-```bash
-sudo nix-collect-garbage --delete-older-than 7d &&
-sudo nixos-rebuild switch --upgrade &&
-sudo nixos-rebuild list-generations
-```
+![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/DesktopTUI2.png?raw=true "Curios dotfiles")
 
 ## Contributing
 
@@ -194,7 +90,7 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [25.11.1](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.1)
+The current version is [25.11.2](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.2)
 based on a Nixos 25.11 build.
 
 ## License

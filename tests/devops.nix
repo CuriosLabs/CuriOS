@@ -79,6 +79,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-javascript"):
         check_which("node")
         check_which("npm")
+        check_which("bun")
 
     with subtest("check-python"):
         check_which("python3.12")

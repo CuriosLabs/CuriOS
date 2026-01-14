@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = false;
         description =
-          "Enable desktop apps for gaming: Steam, gamemoderun, Teamspeak6, input-remapper.";
+          "Gaming desktop apps: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
       };
       steam.bigpicture.autoStart = lib.mkOption {
         type = lib.types.bool;
@@ -41,11 +41,8 @@
     # Various packages
     services.input-remapper = { enable = true; };
     environment.systemPackages = [
-      pkgs.discord
       # Heroic launcher
       pkgs.heroic
-      # TS
-      pkgs.teamspeak6-client
       # In Steam, set game property > launch option to "gamemoderun %command%" for Windows only games.
       # See: https://www.protondb.com/ for more launch options.
       # See: https://github.com/FeralInteractive/gamemode

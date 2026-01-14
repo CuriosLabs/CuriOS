@@ -10,12 +10,14 @@ curios = {
       i18n.locale = "en_US.UTF-8";
       keyboard = "us";
       pkgs = {
-        autoupgrade.enable = true; # Enable automated packages update and cleanup
-        gc.enable = true; # Enable automated packages garbage collect.
+        # Enable automated packages update and cleanup
+        autoupgrade.enable = true;
+        # Enable automated packages update and cleanup
+        gc.enable = true;
       };
       timeZone = "Etc/GMT";
     };
-        ### Activate or deactivate CuriOS modules/ from here:
+    ### Activate or deactivate CuriOS modules/ from here:
     # Hardware platform settings updated by curios-install during ISO install
     platform.amd64.enable = lib.mkDefault true;
     platform.rpi4.enable = lib.mkDefault false;
@@ -46,7 +48,7 @@ curios = {
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
     desktop.apps = {
-      # Brave browser, Alacritty, Bitwarden, Signal, Yubico auth, Gimp3, EasyEffects.
+      # Brave browser, Alacritty, Signal, Yubico auth, Gimp3, EasyEffects.
       basics.enable = lib.mkDefault true;
       # Enabling Linux AppImage
       appImage.enable = lib.mkDefault true;
@@ -58,15 +60,15 @@ curios = {
         vivaldi.enable = false;
       };
       crypto = {
-        # Cryptocurrencies desktop apps. 
+        # Cryptocurrencies desktop apps.
         # Required by desktop.apps.crypto options below.
         enable = false;
-        # btc.enable REQUIRE appImage.enable = true !!! 
+        # btc.enable REQUIRE appImage.enable = true !!!
         # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
         btc.enable = false;
       };
       devops = {
-        # Desktop apps for developers - Neovim+LazyVim, git for github (gh), 
+        # Desktop apps for developers - Neovim+LazyVim, git for github (gh),
         # shellcheck, statix
         enable = true;
         # Cloudflare tunnel client
@@ -81,7 +83,7 @@ curios = {
         };
         # Go, gofmt, JetBrains GoLand
         go.enable = false;
-        # NodeJS (npm)
+        # NodeJS (npm, npx) - bun
         javascript.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
@@ -107,46 +109,30 @@ curios = {
         onlyoffice.desktopeditors.enable = true;
         # Mozilla Thunderbird email client
         thunderbird.enable = false;
+        # CRM web apps
         crm = {
+          # SalesForce web app - edit baseUrl to your company SalesForce URL.
           salesforce = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "Salesforce CRM web app.";
-            };
-            baseUrl = lib.mkOption {
-              type = lib.types.str;
-              default = "your-domain.my.salesforce.com";
-              description = "Your Salesforce 'My Domain' base URL.";
-            };
+            enable = lib.mkDefault false;
+            baseUrl = lib.mkDefault "your-domain.my.salesforce.com";
           };
           hubspot = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "HubSpot CRM web app.";
-            };
-            baseUrl = lib.mkOption {
-              type = lib.types.str;
-              default = "app.hubspot.com";
-              description = "HubSpot web app base URL.";
-            };
+            enable = lib.mkDefault false;
+            baseUrl = "app.hubspot.com";
           };
         };
+        finance = {
+          gnucash.enable = false;
+        };
+        # Projects management apps - edit baseUrl to your company Jira URL.
         projects = {
+          basecamp = {
+            enable = true;
+            baseUrl = "launchpad.37signals.com/signin";
+          };
           jira = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "Atlassian Jira web-based project management.";
-            };
-            baseUrl = lib.mkOption {
-              type = lib.types.nullOr lib.types.str;
-              default = null;
-              description =
-                "Your Jira cloud custom domain like: mycompany.atlassian.net";
-              example = "mycompany.atlassian.net";
-            };
+            enable = false;
+            baseUrl = "example.atlassian.net";
           };
         };
         # conferencing web apps
@@ -170,6 +156,8 @@ curios = {
         chatgpt.enable = true;
         # Claude web app
         claude.enable = true;
+        # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
+        cursor.enable = false;
         # Google Gemini CLI
         gemini.enable = false;
         # Grok web app
@@ -184,6 +172,16 @@ curios = {
         signal.enable = true;
         # WhatsApp web app
         whatsapp.enable = true;
+      };
+      utility = {
+        # Bitwarden password manager
+        bitwarden.enable = true;
+        # Flameshot screenshot app
+        flameshot.enable = false;
+        # KeePassXC password manager
+        keepassxc.enable = false;
+        # LocalSend - Cross-platform file sharing on your local network
+        localsend.enable = true;
       };
     };
     services = {

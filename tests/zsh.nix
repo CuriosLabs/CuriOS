@@ -29,6 +29,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("eza")
         check_which("fd")
         check_which("fzf")
+        check_which("gdu")
         check_which("jq")
         check_which("tte")
         check_which("zoxide")
