@@ -58,26 +58,14 @@ on how to install Curi*OS*.
 
 Visit our [documentation here](https://github.com/CuriosLabs/CuriOS/blob/master/docs/index.md).
 
-## First steps
+## System Management / Applications
 
-Most useful desktop shortcuts:
+How-to:
 
-| **Action**                  | Shortcut (Super=Windows key)       |
-|-----------------------------|------------------------------------|
-| Application launcher/switch | Super                              |
-| Curi*OS* manager            | Super + Return                     |
-| Change application focus    | Super + Up/Down/Left/Right         |
-| Switch desktop              | Super + Ctrl + Up/Down             |
-| Move application (tiles)    | Super + Shift + Up/Down/Left/Right |
-| Launch web browser          | Super + B                          |
-| Launch File manager         | Super + F                          |
-| Launch a terminal           | Super + T                          |
-
-See more in our [first steps guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
-
-## System management
-
-If you wan to know more about [system update, installing programs](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
+- [Do your first steps](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md) on Curi*OS*.
+- [Update/upgrade your system, install programs, and more](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
+- [Backup your Computer](https://github.com/CuriosLabs/CuriOS/blob/master/docs/backups.md)
+- [Work with AI tools](https://github.com/CuriosLabs/CuriOS/blob/master/docs/ai-tools.md)
 
 ### Dot files / Theme
 
