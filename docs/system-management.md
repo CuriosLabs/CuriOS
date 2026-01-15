@@ -19,8 +19,8 @@ For example, do you want to game and install Steam, Heroic Launcher, and more?
 
 Set `gaming.enable` to `true;`, as seen below:
 ![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
-Save the change with `Ctrl+S` and exit with `Ctrl+X`. `curios-manager` will then
-perform a whole system update.
+Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
+whole system update.
 
 Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 ? Find more packages or configuration options at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages)

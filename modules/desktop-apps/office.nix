@@ -84,7 +84,7 @@
             default = null;
             description =
               "Your Jira cloud custom domain like: mycompany.atlassian.net";
-            example = "mycompany.atlassian.net";
+            example = "mycompanynamehere.atlassian.net";
           };
         };
       };
