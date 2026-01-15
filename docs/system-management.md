@@ -19,6 +19,7 @@ For example, do you want to game and install Steam, Heroic Launcher, and more?
 
 Set `gaming.enable` to `true;`, as seen below:
 ![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
+
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
 
