@@ -138,15 +138,16 @@ in {
           };
         };
         finance = { gnucash.enable = false; };
-        # Projects management apps - edit baseUrl to your company Jira URL.
+        # Projects management apps.
         projects = {
           basecamp = {
             enable = true;
             baseUrl = "launchpad.37signals.com/signin";
           };
+          # Jira web app - edit baseUrl to your company Jira URL.
           jira = {
             enable = false;
-            baseUrl = "example.atlassian.net";
+            baseUrl = "mycompanynamehere.atlassian.net";
           };
         };
         # conferencing web apps
@@ -172,7 +173,7 @@ in {
         claude.enable = true;
         # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
         cursor.enable = true;
-        # Google Gemini CLI
+        # Google Gemini CLI - BETTER to install it with npm, see docs/ai-tools.md
         gemini.enable = false;
         # Grok web app
         grok.enable = true;

@@ -1,9 +1,9 @@
 # First Steps
 
 Curi*OS* is based on the COSMIC desktop environment by [System76](https://system76.com/cosmic/).
-It is a tiled window manager by default. You can control everything with a few
-keyboard shortcuts.
-![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop1.png?raw=true "CuriOS desktop")
+It is a tiled window manager by default. You can control windows management with
+a few keyboard shortcuts.
+![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop3.png?raw=true "CuriOS desktop")
 
 ## Desktop Shortcuts
 

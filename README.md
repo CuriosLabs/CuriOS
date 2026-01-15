@@ -54,6 +54,10 @@ Python3, Rust and more...
 See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md)
 on how to install Curi*OS*.
 
+## Documentation
+
+Visit our [documentation here](https://github.com/CuriosLabs/CuriOS/blob/master/docs/index.md).
+
 ## First steps
 
 Most useful desktop shortcuts:
