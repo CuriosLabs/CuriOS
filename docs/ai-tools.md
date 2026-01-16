@@ -30,6 +30,18 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 through the `curios-manager` application in the menu `System > Process
 Management (GPU)`.
 
+> [!IMPORTANT]
+>
+> **Pro Tip**: In **LM Studio**, the default context length is set to 4096 and
+> it is to low. The context length is the maximum of tokens the model can attempt
+> in one prompt. The bigger, the better but the bigger is the context length the
+> more VRAM your model will use on your GPU. A context length of at least 30000 is
+> recommended. Open **LM Studio**, in the "Developer" or the "My Models" window load
+> a model, in the right panel on the "Load" tab change the "Context length" value.
+> Monitor your GPU memory usage with `nvtop` in a terminal. Try to reach around
+> 85% usage of GPU memory.
+> See [LM Studio documentation](https://lmstudio.ai/docs/app/advanced/per-model).
+
 LM Studio can also power the AI features in other programs on your computer. It
 does this by running an AI engine in the background that other apps can connect
 to. Learn more on the [LM Studio documentation](https://lmstudio.ai/docs/app).
