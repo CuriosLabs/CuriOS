@@ -7,6 +7,10 @@ a few keyboard shortcuts.
 
 ## Desktop Shortcuts
 
+> [!NOTE]
+> The **Super** key is the **Windows** key on most keyboard, the **Command** key
+on Apple's keyboard.
+
 | **Action**                  | Shortcut (Super = Windows key)     |
 |-----------------------------|------------------------------------|
 | Application launcher/switch | Super                              |

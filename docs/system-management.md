@@ -2,6 +2,10 @@
 
 Curi*OS* comes with a TUI `curios-manager` (shortcut: Super+Return).
 
+> [!NOTE]
+> The **Super** key is the **Windows** key on most keyboard, the **Command** key
+on Apple's keyboard.
+
 With it, you can update/upgrade the entire system, update your hardware
 firmware, check your disk usage, launch the process manager (btop), and much
 more.
@@ -18,17 +22,14 @@ install/uninstall applications or change some system settings.
 For example, do you want to game and install Steam, Heroic Launcher, and more?
 
 Set `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit.png?raw=true "CuriOS manager settings editor")
+![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit2.png?raw=true "CuriOS manager settings editor")
 
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
 
-Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Find more packages or configuration options at [NixOS packages](https://search.nixos.org/packages?channel=25.11&size=50&sort=relevance&type=packages)
-and add them to `/etc/nixos/settings.nix` under the `environment.systemPackages`
-section.
-
 ### Available Applications
+
+For an up to date list of all pre-configured applications see the [modules README](https://github.com/CuriosLabs/CuriOS/blob/master/modules/README.md).
 
 - **Core Apps** (Enabled by default):
   - Brave browser, Alacritty terminal, Signal, WhatsApp, VLC, Gimp3, EasyEffects.
@@ -74,6 +75,37 @@ Launcher.
   - OBS Studio, Audacity, DaVinci Resolve, Darktable.
   - Nmap/Zenmap, Wireshark, Remmina, Cloudflared.
   - Bitcoin: Electrum/Sparrow wallets, Coingecko, Bisq2, mempool web app.
+
+### Adding more Applications
+
+Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
+? Find more packages at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages)
+and copy the `NixOS Configuration` tab content of the package you want under
+the `package details` section.
+
+For example, you want to install [Inkscape](https://inkscape.org/) and [Blender](https://www.blender.org/):
+
+1. Go to [search.nixos.org](https://search.nixos.org/packages)
+2. Find the packages name details for Blender and Inkscape.
+3. Launch `curios-manager` (shortcut: Super+Return)
+4. Go the `Settings (manual edit)` menu.
+5. Search for the line starting with `environment.systemPackages` and add your
+packages under the `[]` brackets.
+6. Exit (Ctrl+X) and save, `curios-manager` will do the system update.
+
+It should look like this:
+
+```nix
+  ### NixOS packages
+  environment.systemPackages = [
+    # Add your packages here - find package name at https://search.nixos.org/packages
+    pkgs.inkscape-with-extensions
+    pkgs.blender
+  ];
+```
+
+> [!TIP]
+> Use Ctrl+Alt+V to paste in the `curios-manager` default editor (nano).
 
 ### Backup your computer
 

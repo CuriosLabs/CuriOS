@@ -8,7 +8,8 @@ This guide will help you get started with installing and using Curi*OS*.
   with a UEFI boot system should suffice, and any motherboard sold within the
   last 10-15 years should be compatible. A machine with at least 8Gb of RAM and
   an SSD is recommended.
-- Basic understanding of [NixOS](https://wiki.nixos.org/wiki/NixOS_Wiki) concepts is a plus.
+- Basic understanding of [NixOS](https://wiki.nixos.org/wiki/NixOS_Wiki) concepts
+is a plus.
 - A USB stick to burn the Curi*OS* ISO on. You can use the [Balena Etcher](https://etcher.balena.io/#download-etcher)
   program if you are on a Windows machine, or on a Linux machine you can use
   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
