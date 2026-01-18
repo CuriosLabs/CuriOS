@@ -26,7 +26,8 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 
 ![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/testing/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
 
-> **Tip:** You can monitor your graphics card's usage with the command `nvtop` or
+> [!TIP]
+> You can monitor your graphics card's usage with the command `nvtop` or
 through the `curios-manager` application in the menu `System > Process
 Management (GPU)`.
 

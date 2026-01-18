@@ -33,19 +33,20 @@ key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget about
 your mouse, **use Super key combinations for everything!**
 * 📦 Flatpak with **auto-update**. COSMIC and Flathub repos pre-installed.
 * 💻 Curi*OS* TUI manager (shortcut: Super+Return). Manage/update/upgrade/backup
-the whole system from a modern TUI.
+the whole system from a modern sleek Terminal User Interface.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
-* ✨AI tools: LM Studio to run local AI on your GPU (Ollama is also easily installable).
-Cursor for an AI-assisted IDE. Desktop shortcuts for AI chat web applications
-(ChatGPT, Claude, Grok and Mistral).
+* ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
+(Ollama is also easily installable). [Cursor](https://cursor.com/features) for
+an AI-assisted IDE. Desktop shortcut for AI chat web applications (ChatGPT,
+Claude, Grok and Mistral).
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager,
 Python3, Rust and more...
 * Modular hardened systemd services configurations files. -WIP-
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
-* ⬆️ Curi*OS* updater. Check this GitHub repo for a new system version.
+* ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
 * 🗛 bunch of nerd fonts...
 
@@ -62,10 +63,10 @@ Visit our [documentation here](https://github.com/CuriosLabs/CuriOS/blob/master/
 
 How-to:
 
-- [Do your first steps](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md) on Curi*OS*.
-- [Update/upgrade your system, install programs, and more](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
-- [Backup your Computer](https://github.com/CuriosLabs/CuriOS/blob/master/docs/backups.md)
-- [Work with AI tools](https://github.com/CuriosLabs/CuriOS/blob/master/docs/ai-tools.md)
+* [Do your first steps](https://github.com/CuriosLabs/CuriOS/blob/master/docs/first-steps.md).
+* [Update/upgrade your system, install programs, and more](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
+* [Backup your Computer](https://github.com/CuriosLabs/CuriOS/blob/master/docs/backups.md)
+* [Work with AI tools](https://github.com/CuriosLabs/CuriOS/blob/master/docs/ai-tools.md)
 
 ### Dot files / Theme
 

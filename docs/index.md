@@ -34,12 +34,13 @@ about your mouse; use Super key combinations for everything!
 - 📦 More packages with Flatpak! COSMIC and Flathub repositories are pre-installed.
 Packages installed from Flatpak are also auto-updated every day.
 - 💻 Curi*OS* TUI Manager (shortcut: Super+Return). Manage/update/upgrade/backup
-the whole system from a modern TUI.
+the whole system from a modern sleek Terminal User Interface.
 - ⌨️ Alacritty terminal with ZSH and a lot of useful modern commands, including
 ⚡️ Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd, and many more...
-- ✨AI tools: LM Studio to run local AI on your GPU (Ollama is also easily installable).
-Cursor for an AI-assisted IDE. Desktop shortcuts for AI chat web applications
-(ChatGPT, Claude, Grok and Mistral).
+- ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
+(Ollama is also easily installable). [Cursor](https://cursor.com/features) for
+an AI-assisted IDE. Desktop shortcut for AI chat web applications (ChatGPT,
+Claude, Grok and Mistral).
 - 🐧 Uses the latest stable Linux kernel by default.
 - 🗛  A bunch of nerd fonts...
 
