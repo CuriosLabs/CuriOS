@@ -106,6 +106,73 @@ Configuration details like the repository URL and S3 access key are stored in a
 hidden file named `.env` located in your home directory (`~/`).
 S3 secret key and repository password are safely stored with `secret-tool`.
 
+## Protection against Ransomware
+
+The backup tool is able to manage (add/remove) the snapshots even the remotely
+stored snapshots on your S3 server. So, an attacker/ransomware might be able to
+**delete** your backup snapshots.
+To protect your backups against ransomware attacks, you can configure your S3 storage
+(AWS or compatible servers like RustFS) to use **Object Lock** with **Compliance
+Mode**. This ensures that your backup files cannot be deleted or overwritten by
+anyone, including the system administrator or a ransomware script, for a
+specified period (e.g., 7 days).
+
+### Prerequisites
+
+- **Versioning**: Must be enabled (automatically enabled with Object Lock).
+- **Object Lock**: Must be enabled at bucket creation.
+
+### Configuration - AWS CLI
+
+You can use the standard `aws` CLI tool to configure this on AWS or any S3-compatible
+server.
+
+1. **Create a Bucket with Object Lock Enabled**
+
+    *Note: Object Lock must usually be enabled when creating the bucket.*
+
+    ```bash
+    # Replace <bucket-name> and <url> with your details
+    # For AWS, omit --endpoint-url
+    aws s3api create-bucket \
+        --bucket <bucket-name> \
+        --object-lock-enabled-for-bucket \
+        --endpoint-url <your-s3-server-url>
+    ```
+
+2. **Set Default Retention Policy (7 Days Compliance)**
+
+    This ensures every new backup file uploaded gets a 7-day lock including
+    **Compliance Mode**.
+    In Compliance Mode, no one can delete the file until the lock expires.
+
+    ```bash
+    aws s3api put-object-lock-configuration \
+        --bucket <bucket-name> \
+        --object-lock-configuration '{
+            "ObjectLockEnabled": "Enabled",
+            "Rule": {
+                "DefaultRetention": {
+                    "Mode": "COMPLIANCE",
+                    "Days": 7
+                }
+            }
+        }' \
+        --endpoint-url <your-s3-server-url>
+    ```
+
+Once configured, simply use this bucket when setting up your backup repository in
+Curi*OS*.
+
+### Configuration - RustFS
+
+Here is a screenshot of a RustFS bucket configured with **Object Lock** and
+**Compliance Mode**:
+![RustFS in Compliance mode](https://github.com/CuriosLabs/CuriOS/blob/master/img/rustfs_ransomware_protection_mode.png?raw=true "RustFS protection mode")
+
+Once configured, simply use this bucket when setting up your backup repository in
+Curi*OS*.
+
 ---
 **Next**: [Work with AI tools](ai-tools.md).
 
