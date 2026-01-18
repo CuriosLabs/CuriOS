@@ -27,12 +27,11 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 ![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/testing/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
 
 > [!TIP]
-> You can monitor your graphics card's usage with the command `nvtop` or
-through the `curios-manager` application in the menu `System > Process
-Management (GPU)`.
+> You can monitor your graphics card's usage with the command `nvtop` or through
+> the `curios-manager` application in the menu
+> `System > Process Management (GPU)`.
 
 > [!IMPORTANT]
->
 > **Pro Tip**: In **LM Studio**, the default context length is set to 4096 and
 > it is to low. The context length is the maximum of tokens the model can attempt
 > in one prompt. The bigger, the better but the bigger is the context length the
