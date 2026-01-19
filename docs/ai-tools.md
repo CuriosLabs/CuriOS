@@ -69,14 +69,19 @@ User Interface).
 **open-webui**, which provides a chat interface in your web browser.
 
 To install it, open the `curios-manager` TUI, go to the `Settings (manual edit)`
-menu, and set `services.ai.enable = true;`. After you save the file (`Ctrl+O`
-then `Ctrl+X`), `curios-manager` will handle the installation.
+menu, and set `services.ai.enable = true;`. After you save the file (shortcut
+`Ctrl+X`), `curios-manager` will handle the installation.
 
 - **Download a model** (e.g., gemma): `ollama pull gemma`
 - **List installed models**: `ollama ls`
 
 The web chat is available at [http://localhost:11434](http://localhost:11434) in
 your browser. Find more models on the [Ollama website](https://ollama.com/).
+
+> [!NOTE]
+> AMD GPU user should take a look at [NixOS wiki](https://wiki.nixos.org/wiki/Ollama#AMD_GPU_with_open_source_driver).
+> The fix should be write in `/etc/nixos/settings.nix` (See `curios-manager` >
+> `Settings (manual edit)`, search for `services.ollama`).
 
 ### AI-Powered Code Editors
 
