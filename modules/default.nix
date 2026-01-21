@@ -17,6 +17,7 @@
     ./filesystems/filesystems-luks-v2.nix
     ./filesystems/filesystems-mini-v2.nix
     ./networking.nix
+    ./others.nix
     ./platforms/amd64.nix
     ./platforms/rpi4.nix
     ./services.nix

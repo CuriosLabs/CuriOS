@@ -207,6 +207,11 @@ in {
         localsend.enable = true;
       };
     };
+    others = {
+      # REQUIRED - Other program for the system.
+      enable = true;
+      openssl.enable = true;
+    };
     services = {
       # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
       enable = true;
