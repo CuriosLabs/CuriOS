@@ -49,6 +49,11 @@
         default = false;
         description = "bun - a fast JavaScript toolkit.";
       };
+      just.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "just - handy way to save and run project-specific commands.";
+      };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -122,6 +127,8 @@
       [ nodejs_24 ]
       ++ lib.optionals config.curios.desktop.apps.devops.javascript.bun.enable
       [ bun ]
+      ++ lib.optionals config.curios.desktop.apps.devops.just.enable
+      [ just ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312
@@ -129,7 +136,7 @@
         python312Packages.setuptools
         python312Packages.cryptography
         python312Packages.uv
-        jetbrains.pycharm-community-bin
+        jetbrains.pycharm-oss
         ruff
       ] ++ lib.optionals config.curios.desktop.apps.devops.python313.enable [
         # Python 3.13
@@ -138,7 +145,7 @@
         python313Packages.setuptools
         python313Packages.cryptography
         python313Packages.uv
-        jetbrains.pycharm-community-bin
+        jetbrains.pycharm-oss
         ruff
       ] ++ lib.optionals config.curios.desktop.apps.devops.ruby.enable [ ruby ]
       ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [

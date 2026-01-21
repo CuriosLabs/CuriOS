@@ -101,6 +101,8 @@ in {
         javascript.enable = true;
         # bun JavaScript runtime
         javascript.bun.enable = false;
+        # just - handy way to save and run project-specific commands
+        just.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
         python313.enable = false;

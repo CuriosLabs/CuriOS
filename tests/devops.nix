@@ -28,6 +28,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         };
         go.enable = true;
         javascript.enable = true;
+        javascript.bun.enable = true;
+        just.enable = true;
         python312.enable = true;
         python313.enable = true;
         ruby.enable = true;
@@ -58,6 +60,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lazygit")
         check_which("rg") # ripgrep
         check_which("yq")
+        check_which("just")
 
     with subtest("check-cloudflared"):
         check_which("cloudflared")
@@ -85,7 +88,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("python3.12")
         check_which("python3.13")
         check_which("uv")
-        check_which("pycharm-community")
+        check_which("pycharm-oss")
         check_which("ruff")
 
     with subtest("check-ruby"):
