@@ -165,7 +165,7 @@
         # build tools
         clang
         libxkbcommon
-        llvmPackages_20.bintools
+        llvmPackages.bintools
         pkg-config
       ] ++ lib.optionals config.curios.desktop.apps.devops.networks.enable [
         # Networks
