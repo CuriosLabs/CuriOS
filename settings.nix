@@ -97,6 +97,8 @@ in {
         };
         # Go, gofmt, JetBrains GoLand
         go.enable = false;
+        # Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.
+        java.enable = false;
         # NodeJS (npm, npx) JavaScript runtime
         javascript.enable = true;
         # bun JavaScript runtime

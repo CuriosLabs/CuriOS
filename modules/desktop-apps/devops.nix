@@ -39,6 +39,12 @@
         default = false;
         description = "Go, gofmt and JetBrains GoLand.";
       };
+      java.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.";
+      };
       javascript.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -52,7 +58,8 @@
       just.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "just - handy way to save and run project-specific commands.";
+        description =
+          "just - handy way to save and run project-specific commands.";
       };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
@@ -123,12 +130,14 @@
         go
         golangci-lint
         jetbrains.goland
+      ] ++ lib.optionals config.curios.desktop.apps.devops.java.enable [
+        jetbrains.idea-oss
+        jetbrains.jdk
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
       [ nodejs_24 ]
       ++ lib.optionals config.curios.desktop.apps.devops.javascript.bun.enable
       [ bun ]
-      ++ lib.optionals config.curios.desktop.apps.devops.just.enable
-      [ just ]
+      ++ lib.optionals config.curios.desktop.apps.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312

@@ -27,6 +27,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           vscode.enable = true;
         };
         go.enable = true;
+        java.enable = true;
         javascript.enable = true;
         javascript.bun.enable = true;
         just.enable = true;
@@ -78,6 +79,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("go")
         check_which("golangci-lint")
         check_which("goland")
+
+    with subtest("check-java"):
+      check_which("java")
+      check_which("idea-oss")
 
     with subtest("check-javascript"):
         check_which("node")
