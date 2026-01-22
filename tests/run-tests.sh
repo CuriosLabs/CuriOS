@@ -9,6 +9,7 @@ nix-build ./fonts.nix --show-trace
 nix-build ./gaming.nix --show-trace
 nix-build ./networking.nix --show-trace
 nix-build ./office.nix --show-trace
+nix-build ./others.nix --show-trace
 nix-build ./services-ai.nix --show-trace
 nix-build ./services.nix --show-trace
 nix-build ./studio.nix --show-trace

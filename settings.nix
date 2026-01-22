@@ -97,10 +97,14 @@ in {
         };
         # Go, gofmt, JetBrains GoLand
         go.enable = false;
+        # Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.
+        java.enable = false;
         # NodeJS (npm, npx) JavaScript runtime
         javascript.enable = true;
         # bun JavaScript runtime
         javascript.bun.enable = false;
+        # just - handy way to save and run project-specific commands
+        just.enable = false;
         # Python3.12, pip, setuptools, JetBrains PyCharm-Community
         python312.enable = false;
         python313.enable = false;
@@ -204,6 +208,11 @@ in {
         # LocalSend - Cross-platform file sharing on your local network
         localsend.enable = true;
       };
+    };
+    others = {
+      # REQUIRED - Other program for the system.
+      enable = true;
+      openssl.enable = true;
     };
     services = {
       # REQUIRED - Flatpak + flathub/cosmic repos, pipewire

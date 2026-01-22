@@ -39,6 +39,12 @@
         default = false;
         description = "Go, gofmt and JetBrains GoLand.";
       };
+      java.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.";
+      };
       javascript.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -48,6 +54,12 @@
         type = lib.types.bool;
         default = false;
         description = "bun - a fast JavaScript toolkit.";
+      };
+      just.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "just - handy way to save and run project-specific commands.";
       };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
@@ -118,10 +130,14 @@
         go
         golangci-lint
         jetbrains.goland
+      ] ++ lib.optionals config.curios.desktop.apps.devops.java.enable [
+        jetbrains.idea-oss
+        jetbrains.jdk
       ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
       [ nodejs_24 ]
       ++ lib.optionals config.curios.desktop.apps.devops.javascript.bun.enable
       [ bun ]
+      ++ lib.optionals config.curios.desktop.apps.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
         # Python 3.12
         python312
@@ -129,7 +145,7 @@
         python312Packages.setuptools
         python312Packages.cryptography
         python312Packages.uv
-        jetbrains.pycharm-community-bin
+        jetbrains.pycharm-oss
         ruff
       ] ++ lib.optionals config.curios.desktop.apps.devops.python313.enable [
         # Python 3.13
@@ -138,7 +154,7 @@
         python313Packages.setuptools
         python313Packages.cryptography
         python313Packages.uv
-        jetbrains.pycharm-community-bin
+        jetbrains.pycharm-oss
         ruff
       ] ++ lib.optionals config.curios.desktop.apps.devops.ruby.enable [ ruby ]
       ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
@@ -149,7 +165,7 @@
         # build tools
         clang
         libxkbcommon
-        llvmPackages_20.bintools
+        llvmPackages.bintools
         pkg-config
       ] ++ lib.optionals config.curios.desktop.apps.devops.networks.enable [
         # Networks
