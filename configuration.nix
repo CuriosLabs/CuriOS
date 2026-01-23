@@ -89,6 +89,13 @@
     ] ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
       && !config.curios.hardware.amdGpu.enable) [ btop ];
 
+  # Set environment variables here:
+  environment.sessionVariables = rec {
+    # For rust cargo
+    PKG_CONFIG_PATH =
+      "/run/current-system/sw/lib/pkgconfig:${pkgs.openssl}/lib/pkgconfig";
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   #programs.mtr.enable = true;
