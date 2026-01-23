@@ -93,7 +93,7 @@
   environment.sessionVariables = rec {
     # For rust cargo
     PKG_CONFIG_PATH =
-      "/run/current-system/sw/lib/pkgconfig:${pkgs.openssl}/lib/pkgconfig";
+      "/run/current-system/sw/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
