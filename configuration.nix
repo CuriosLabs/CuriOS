@@ -90,7 +90,7 @@
       && !config.curios.hardware.amdGpu.enable) [ btop ];
 
   # Set environment variables here:
-  environment.sessionVariables = rec {
+  environment.sessionVariables = {
     # For rust cargo
     PKG_CONFIG_PATH =
       "/run/current-system/sw/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.libxkbcommon.dev}/lib/pkgconfig";
