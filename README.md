@@ -88,7 +88,7 @@ based on a Nixos 25.11 build.
 
 ## License
 
-Copyright (C) 2025  David BASTIEN
+Copyright (C) 2025-2026  David BASTIEN
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
