@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.6"
+readonly SCRIPT_VERSION="0.7"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -971,6 +971,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/platforms/ "$CURIOS_SRC_PATH"/modules/platforms/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-dotfiles/ "$CURIOS_SRC_PATH"/pkgs/curios-dotfiles/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager/ "$CURIOS_SRC_PATH"/pkgs/curios-manager/default.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager-applet/ "$CURIOS_SRC_PATH"/pkgs/curios-manager-applet/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/snitch/ "$CURIOS_SRC_PATH"/pkgs/snitch/default.nix
 
   # Update user language:
