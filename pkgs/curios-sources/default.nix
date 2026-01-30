@@ -8,7 +8,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation {
   pname = "curios-sources";
-  version = "unstable-20260130.1101";
+  version = "25.11.4";
 
   src = lib.fileset.toSource {
     root = ../../.;
