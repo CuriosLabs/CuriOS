@@ -241,4 +241,4 @@ When working with CuriOS modules, here are common configuration patterns:
   - Release branches follow the pattern `release/<version>` (e.g., `release/25.11.1`)
   - Testing branches use the name `testing`
 - **AI Assistance**: If using AI assistance for contributions, it must be
-disclosed in pull requests (see CONTRIBUTING.md for details).
+disclosed in pull requests (see @CONTRIBUTING.md for details).
