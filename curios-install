@@ -9,7 +9,7 @@
 #
 # Dependencies: dialog, parted, git, mkpasswd.
 # Test it with:
-# nix-shell -p dialog parted git
+# nix-shell shell.nix
 
 #------------- Colors -------------#
 readonly RED="\033[31;1m"      # Red and bold
@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.6"
+readonly SCRIPT_VERSION="0.8"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -738,6 +738,8 @@ hardware_detection_gpu() {
     GPU=$(lspci -nn | grep -i "vga")
     if echo "$GPU" | grep -qi "amd"; then
       GPU_VENDOR_DETECTED="AMD"
+    elif echo "$GPU" | grep -qi "intel"; then
+      GPU_VENDOR_DETECTED="Intel"
     elif echo "$GPU" | grep -qi "nvidia"; then
       GPU_VENDOR_DETECTED="Nvidia"
     fi
@@ -794,7 +796,7 @@ confirm_install() {
     ;;
   "$DIALOG_CANCEL")
     clear
-    echo "Program terminated without install." >&2
+    echo "Program terminated without any installation." >&2
     #exit 1
     ;;
   "$DIALOG_ESC")
@@ -927,6 +929,7 @@ dotfiles_install() {
 }
 
 if [ $CONFIRM_INSTALL -eq 1 ]; then
+  clear
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -pdn -o NAME
   fi
@@ -971,6 +974,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/platforms/ "$CURIOS_SRC_PATH"/modules/platforms/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-dotfiles/ "$CURIOS_SRC_PATH"/pkgs/curios-dotfiles/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager/ "$CURIOS_SRC_PATH"/pkgs/curios-manager/default.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager-applet/ "$CURIOS_SRC_PATH"/pkgs/curios-manager-applet/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/snitch/ "$CURIOS_SRC_PATH"/pkgs/snitch/default.nix
 
   # Update user language:
@@ -1003,6 +1007,9 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   if [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "AMD" ]]; then
     echo "Enabling AMD GPU..."
     sed 's/amdGpu\.enable = .*/amdGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+  elif [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "Intel" ]]; then
+    echo "Enabling Intel GPU..."
+    sed 's/intelGpu\.enable = .*/intelGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
   elif [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "Nvidia" ]]; then
     echo "Enabling Nvidia GPU..."
     sed 's/nvidiaGpu\.enable = .*/nvidiaGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
@@ -1011,6 +1018,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   else
     echo "Disabling GPU..."
     sed 's/amdGpu\.enable = .*/amdGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/intelGpu\.enable = .*/intelGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
     sed 's/nvidiaGpu\.enable = .*/nvidiaGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
   fi
 

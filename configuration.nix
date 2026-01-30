@@ -89,6 +89,13 @@
     ] ++ lib.optionals (!config.curios.hardware.nvidiaGpu.enable
       && !config.curios.hardware.amdGpu.enable) [ btop ];
 
+  # Set environment variables here:
+  environment.sessionVariables = {
+    # For rust cargo
+    PKG_CONFIG_PATH =
+      "/run/current-system/sw/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.libxkbcommon.dev}/lib/pkgconfig";
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   #programs.mtr.enable = true;
@@ -137,7 +144,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.3";
+    nixos.variant_id = "25.11.4";
   };
 
   # Collect garbage

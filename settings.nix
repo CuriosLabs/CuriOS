@@ -10,13 +10,8 @@
 # Use `sudo nixos-rebuild switch` command in a terminal after an update in this file.
 
 { config, lib, pkgs, ... }:
-let
-  # Following variables can be edited.
-  # Default user password. Change it later, after your first boot with COSMIC Parameters > System & Accounts
-  # OR with the 'passwd' command line.
-  # Do **NOT** set your real password HERE !
-  password = "changeme";
-in {
+
+{
   ### CuriOS options settings goes here:
   curios = {
     system = {
@@ -39,6 +34,8 @@ in {
     hardware = {
       # Modern AMD GPU
       amdGpu.enable = lib.mkDefault false;
+      # Modern Intel GPU
+      intelGpu.enable = lib.mkDefault false;
       # Modern Nvidia GPU
       nvidiaGpu.enable = lib.mkDefault false;
       # EXPERIMENTAL - laptop battery saver
@@ -276,7 +273,6 @@ in {
     # <user> name and description will be updated by curios-install during ISO install
     users.nixos = {
       isNormalUser = true;
-      #initialPassword = password;
       initialHashedPassword = "";
       description = "My Name";
       extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]

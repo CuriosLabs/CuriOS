@@ -12,6 +12,7 @@
     ./fonts.nix
     ./hardened/default.nix
     ./hardware/amd-gpu.nix
+    ./hardware/intel-gpu.nix
     ./hardware/laptop.nix
     ./hardware/nvidia-gpu.nix
     ./filesystems/filesystems-luks-v2.nix

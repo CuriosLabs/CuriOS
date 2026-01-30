@@ -25,6 +25,8 @@ curios = {
     hardware = {
       # Modern AMD GPU
       amdGpu.enable = lib.mkDefault false;
+      # Modern Intel GPU
+      intelGpu.enable = lib.mkDefault false;
       # Modern Nvidia GPU
       nvidiaGpu.enable = lib.mkDefault false;
       # EXPERIMENTAL - laptop battery saver

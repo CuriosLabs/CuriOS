@@ -83,12 +83,12 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [25.11.3](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.3)
+The current version is [25.11.4](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.4)
 based on a Nixos 25.11 build.
 
 ## License
 
-Copyright (C) 2025  David BASTIEN
+Copyright (C) 2025-2026  David BASTIEN
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

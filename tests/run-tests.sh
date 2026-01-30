@@ -19,6 +19,7 @@ nix-build ./zsh.nix --show-trace
 
 nix-build ./pkgs-curios-dotfiles.nix --show-trace
 nix-build ./pkgs-curios-manager.nix --show-trace
+nix-build ./pkgs-curios-manager-applet.nix --show-trace
 nix-build ./pkgs-curios-sources.nix --show-trace
 
 rm -rf result/
