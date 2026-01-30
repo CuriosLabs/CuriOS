@@ -2,19 +2,18 @@
 
 { lib, stdenv, fetchFromGitHub, pkg-config, rustPlatform, just, libcosmicAppHook
 , nix-update-script }:
-
-rustPlatform.buildRustPackage (finalAttrs: {
+rustPlatform.buildRustPackage rec {
   pname = "curios-manager-applet";
-  version = "0.1.1";
+  version = "0.1.2";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager-applet";
-    tag = "${finalAttrs.version}";
-    hash = "sha256-XfQROcsbuSjS0HTA9N9SHWSO1Xio5xaV0/nVms6WbMY=";
+    tag = "${version}";
+    hash = "sha256-mLYM5PE9403MPaUnIMHfc9neLOrSPVEDFfcg8u0Ybw8=";
   };
 
-  cargoHash = "sha256-u1So+XOx/Urm08v7mBlaC4LQk1ckAzN8uXI2f4g6sQo=";
+  cargoHash = "sha256-yX2NHr7yahTQ1ZzIVKtw8yO9IreBOVZBoBiURWjHbvE=";
 
   nativeBuildInputs = [ pkg-config just libcosmicAppHook ];
 
@@ -27,7 +26,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     (placeholder "out")
     "--set"
     "bin-src"
-    "target/${stdenv.hostPlatform.rust.cargoShortTarget}/release/${finalAttrs.pname}"
+    "target/${stdenv.hostPlatform.rust.cargoShortTarget}/release/${pname}"
   ];
 
   passthru.updateScript = nix-update-script { };
@@ -39,4 +38,4 @@ rustPlatform.buildRustPackage (finalAttrs: {
     platforms = lib.platforms.linux;
     mainProgram = "curios-manager-applet";
   };
-})
+}
