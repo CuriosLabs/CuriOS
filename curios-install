@@ -929,6 +929,7 @@ dotfiles_install() {
 }
 
 if [ $CONFIRM_INSTALL -eq 1 ]; then
+  clear
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -pdn -o NAME
   fi
