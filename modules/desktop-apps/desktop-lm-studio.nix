@@ -28,7 +28,7 @@ let
 in pkgs.appimageTools.wrapType2 {
   inherit pname version pkgs src;
 
-  nativeBuildInputs = [ pkgs.imagemagick ];
+  nativeBuildInputs = [ pkgs.imagemagick pkgs.patchelf ];
 
   extraInstallCommands = ''
     mkdir -p $out/share
@@ -36,8 +36,14 @@ in pkgs.appimageTools.wrapType2 {
     # copy and resize icon in correct folders
     for size in 48 64 128 256; do
       mkdir -p $out/share/icons/hicolor/"$size"x"$size"/apps
-      convert -background none -resize "$size"x"$size" ${appimageContents}/lm-studio.png $out/share/icons/hicolor/"$size"x"$size"/apps/lmstudio.png
+      magick ${appimageContents}/lm-studio.png -background none -resize "$size"x"$size" $out/share/icons/hicolor/"$size"x"$size"/apps/lmstudio.png
     done
+
+    # lms CLI
+    mkdir -p $out/bin
+    install -D -m 755 -t $out/bin/ ${appimageContents}/resources/app/.webpack/lms
+
+    patchelf --set-interpreter "${pkgs.stdenv.cc.bintools.dynamicLinker}" $out/bin/lms
   '';
 
   meta = {
