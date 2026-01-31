@@ -76,6 +76,9 @@ the `modules/` directory.
 options under `config.curios.*`.
 - `curios-install`: A script for installing CuriOS to a target system.
 - `tests/run-tests.sh`: Script to run all integration tests sequentially.
+- `shell.nix`: A Nix configuration file for the `nix-shell` command. It will setup
+a temporary environment with the specified dependencies, tools and configurations
+for the bash script `curios-install` used during ISO installation.
 
 ## Coding Style and Best Practices
 
@@ -131,6 +134,15 @@ defined in `configuration.nix` as `nixos.variant_id` (e.g., "25.11.1").
 
   The script handles versioning, linting, and can optionally upload to GitHub
   releases. ISO files are named: `CuriOS_<version>_<platform>.iso`
+
+- **Test ISO installer**:
+
+  ```bash
+  nix-shell shell.nix
+  ./curios-install
+  ```
+
+  This script is launched during an ISO installation.
 
 - **Test Custom Packages**: Test custom Nix packages with:
 
