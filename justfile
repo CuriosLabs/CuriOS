@@ -32,6 +32,7 @@ build:
     printf "\e[33m ISO file %s already exist.\e[0m\n" "${isoFilePath}"
     exit 1
   fi
+  echo "Keep going..."
 
 # Cleaning build result folder.
 clean:
