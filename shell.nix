@@ -13,5 +13,6 @@ pkgs.mkShell {
     fd
     just
     git
+    gh
   ];
 }
