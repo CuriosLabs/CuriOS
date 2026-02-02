@@ -7,6 +7,11 @@ pkgs.mkShell {
     git
     mkpasswd
     parted
+    # For justfile
+    statix
+    shellcheck
+    fd
+    just
+    git
   ];
 }
-
