@@ -324,12 +324,15 @@
   };
   # Ollama
   services.ollama = {
-    # For AMD Ryzen 7 PRO hardware, uncomment lines below.
-    # To adjust value, see command result of: nix-shell -p "rocmPackages.rocminfo" --run "rocminfo" | grep "gfx"
-    #environmentVariables = {
-    # used to be necessary, but doesn't seem to anymore
-    #  HCC_AMDGPU_TARGET = "gfx1103";
-    #};
+    environmentVariables = {
+      # Set Ollama service model context length
+      # Adjust to the model VRAM usage, the bigger the better
+      OLLAMA_CONTEXT_LENGTH = "16384";
+      # For AMD Ryzen 7 PRO hardware, uncomment parameter below.
+      # To adjust value, see command result of: nix-shell -p "rocmPackages.rocminfo" --run "rocminfo" | grep "gfx"
+      # used to be necessary, but doesn't seem to anymore
+      #HCC_AMDGPU_TARGET = "gfx1103";
+    };
     #rocmOverrideGfx = "11.0.2";
   };
 

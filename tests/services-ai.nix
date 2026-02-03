@@ -20,8 +20,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       curios = {
         services.ai.enable = true;
         # Disable GPU options to ensure CPU mode is used for Ollama
-        hardware.amdGpu.enable = false;
-        hardware.nvidiaGpu.enable = false;
+        hardware = {
+          amdGpu.enable = false;
+          intelGpu.enable = false;
+          nvidiaGpu.enable = false;
+        };
       };
     };
   };

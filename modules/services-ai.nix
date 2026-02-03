@@ -29,8 +29,12 @@
         "cuda"
       else if config.curios.hardware.amdGpu.enable then
         "rocm"
+      else if config.curios.hardware.intelGpu.enable then
+        "vulkan"
       else
         false;
+      # Ollama server port
+      port = 11434;
     };
     # Open WebUI, see: https://docs.openwebui.com/
     services.open-webui = {
