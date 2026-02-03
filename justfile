@@ -54,6 +54,10 @@ clean:
   rm -rf ./result
   nix-store --gc
 
+# Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
+install:
+  ./curios-install
+
 # Linting Bash scripts and Nix files.
 lint:
   @echo 'Linting Nix files...'

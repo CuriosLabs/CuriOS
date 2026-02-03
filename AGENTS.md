@@ -29,6 +29,8 @@ environment, designed for modern advanced users to be productive quickly.
 management.
 - **Shell:** The project uses shell scripts for some automation tasks, such as
 the ISO build script.
+- **Just:** The project uses `just` as a command runner for various development
+tasks like building, testing, and linting.
 
 ## Directory Structure
 
@@ -68,14 +70,13 @@ main configuration. This is where users enable/disable modules and configure
 CuriOS options.
 - `iso/iso-minimal.nix`: The Nix expression that defines the contents and
 configuration of the bootable ISO image.
-- `iso/build.sh`: Script for building the CuriOS ISO image. Handles versioning,
-linting, and GitHub release uploads.
+- `justfile`: The project's command runner configuration, containing recipes
+for building, testing, and linting.
 - `modules/default.nix`: The top-level module that imports all other modules in
 the `modules/` directory.
 - `modules/curios-options.nix`: Defines all CuriOS-specific configuration
 options under `config.curios.*`.
 - `curios-install`: A script for installing CuriOS to a target system.
-- `tests/run-tests.sh`: Script to run all integration tests sequentially.
 - `shell.nix`: A Nix configuration file for the `nix-shell` command. It will setup
 a temporary environment with the specified dependencies, tools and configurations
 for the bash script `curios-install` used during ISO installation.
@@ -103,92 +104,80 @@ options using `lib.mkIf` or similar conditional logic.
 
 ## Build, Test, and Development Commands
 
-- **Lint Nix Files**: Lint Nix files using `statix`. You can use `fd` to find
-all `.nix` files:
+CuriOS uses `just` as its primary command runner. All common development tasks
+are defined in the `justfile`.
+
+- **List All Commands**:
 
   ```bash
-  fd ".nix" . | xargs -n 1 statix check
+  nix-shell shell.nix
+  just
   ```
 
-  If you don't have `fd` installed, you can use `find`:
+- **Lint Files**: Lints both Nix files (using `statix`) and shell scripts
+(using `shellcheck`):
 
   ```bash
-  find . -name "*.nix" -print0 | xargs -0 -n 1 statix check
-  ```
-
-- **Lint Shell Scripts**: Shell scripts must be checked with `shellcheck`:
-
-  ```bash
-  shellcheck --color=always -f tty -x ./curios-install ./iso/build.sh
+  nix-shell shell.nix
+  just lint
   ```
 
 - **Supported Version**: NixOS 25.11 or later. CuriOS variant version is
 defined in `configuration.nix` as `nixos.variant_id` (e.g., "25.11.1").
 
-- **Build ISO Image**: Build the CuriOS ISO using the build script:
-
-  ```bash
-  cd iso/
-  ./build.sh
-  ```
-
-  The script handles versioning, linting, and can optionally upload to GitHub
-  releases. ISO files are named: `CuriOS_<version>_<platform>.iso`
-
-- **Test ISO installer**:
+- **Build ISO Image**: Builds the CuriOS ISO image for the current branch:
 
   ```bash
   nix-shell shell.nix
-  ./curios-install
+  just build
   ```
 
-  This script is launched during an ISO installation.
+  ISO files are named: `CuriOS_<version>_<platform>.iso` and are saved in the
+  `iso/` directory.
+
+- **Test ISO image**:
+
+  ```bash
+  qemu-system-x86_64 -enable-kvm -m 8192 -cdrom ./iso/CuriOS_*.iso
+  ```
+
+- **Test ISO installation script**:
+
+  ```bash
+  nix-shell shell.nix
+  just install
+  ```
+
+  This script is launched during an ISO installation. **WARNING** Do **NOT** complete
+  it! It will really erase your selected disk!
 
 - **Test Custom Packages**: Test custom Nix packages with:
 
   ```bash
-  cd pkgs/<package-name>/
-  nix-build && nix-env -i -f default.nix
+  nix-shell shell.nix
+  just test-unit curios-pkgs
   ```
 
-- **Test NixOS Modules**: CuriOS uses the built-in NixOS test driver (`make-test-python.nix`)
-to run integration tests in a virtual machine. Test files are located in the
-`tests/` directory.
+- **Run Integration Tests**: CuriOS uses the built-in NixOS test driver
+(`make-test-python.nix`) to run integration tests in a virtual machine.
 
   To run a specific test (e.g., the office desktop apps):
   
   ```bash
-  nix-build ./tests/office.nix --show-trace
+  nix-shell shell.nix
+  just test-unit office
   ```
 
   To run all tests sequentially:
   
   ```bash
-  ./tests/run-tests.sh
+  nix-shell shell.nix
+  just test-all
   ```
-
-  Test files use Python syntax with helper functions and `subtest()` context
-  managers for organizing test cases. Example pattern:
-
-  ```python
-  testScript = ''
-    start_all()
-    machine.wait_for_unit("multi-user.target")
-    
-    def check_which(pkg_name: str):
-        machine.succeed(f"which {pkg_name}")
-    
-    with subtest("check-packages"):
-        check_which("package-name")
-  '';
-  ```
-
-  This command will build a minimal NixOS system in a QEMU virtual machine,
-  boot it, and execute the test script defined in the file.
 
   **Important**: Running tests will create many files in `/nix/store`. After
-  you are finished with testing, run `nix-collect-garbage -d` to clean up the
-  build artifacts and reclaim disk space.
+  you are finished with testing, run `just clean` to clean up the build
+  artifacts and reclaim disk space.
 
 - **Development Workflow**: Common development tasks:
 
@@ -202,8 +191,8 @@ to run integration tests in a virtual machine. Test files are located in the
   # Format Nix code (if nixfmt is installed)
   nixfmt <file.nix>
   
-  # Clean up Nix store after testing
-  nix-collect-garbage -d
+  # Clean up Nix store and artifacts
+  just clean
   ```
 
 ## Configuration Examples
