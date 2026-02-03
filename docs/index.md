@@ -68,4 +68,4 @@ Learn more about the internal structure and design principles of Curi*OS* in the
 ## Contributing
 
 We welcome contributions! Please refer to our [Contributing Guide](https://github.com/CuriosLabs/CuriOS/tree/master?tab=contributing-ov-file)
-for details.
+and our technical [Development Guide](development.md) for details.

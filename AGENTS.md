@@ -1,5 +1,10 @@
 # CuriOS Development Guide
 
+> [!IMPORTANT]
+> This file is specifically designed to provide context and instructions for AI
+> assistants (such as Gemini CLI, Claude Code, etc.) interacting with this
+> repository. Human developers should also refer to [docs/development.md](docs/development.md).
+
 This guide provides instructions and best practices for developers contributing
 to the CuriOS project.
 
