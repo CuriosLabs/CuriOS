@@ -333,6 +333,7 @@
       # used to be necessary, but doesn't seem to anymore
       #HCC_AMDGPU_TARGET = "gfx1103";
     };
+    # May require overriding if rocm does not detect your AMD GPU. 
     #rocmOverrideGfx = "11.0.2";
   };
 

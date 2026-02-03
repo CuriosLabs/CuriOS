@@ -74,11 +74,13 @@ To install it, open the `curios-manager` TUI, go to the `Settings (manual edit)`
 menu, and set `services.ai.enable = true;`. After you save the file (shortcut
 `Ctrl+X`), `curios-manager` will handle the installation.
 
-- **Download a model** (e.g., gemma): `ollama pull gemma`
+- **Download a model** (e.g., Qwen2.5 Coder): `ollama pull qwen2.5-coder:3b`
+- **Run a model**: `ollama run qwen2.5-coder:3b`
 - **List installed models**: `ollama ls`
+- **List running models**: `ollama ps`
 
-The web chat is available at [http://localhost:11434](http://localhost:11434) in
-your browser. Find more models on the [Ollama website](https://ollama.com/).
+The web chat (open-webui) is available at [http://localhost:8080](http://localhost:8080)
+in your browser. Find more models on the [Ollama website](https://ollama.com/).
 
 > [!NOTE]
 > AMD GPU user should take a look at [NixOS wiki](https://wiki.nixos.org/wiki/Ollama#AMD_GPU_with_open_source_driver).
@@ -129,7 +131,7 @@ Then, add your provider and model details, for example:
   // Theme configuration
   "theme": "opencode",
   "autoupdate": false,
-  // LLMs Providers - Adjust to your LM Studio configuration
+  // LLMs Providers - Adjust to your current configuration
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -143,6 +145,18 @@ Then, add your provider and model details, for example:
         },
         "mistralai/ministral-3-3b": {
           "name": "Ministral3"
+        }
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder:3b": {
+          "name": "Qwen2.5 Coder 3b"
         }
       }
     }

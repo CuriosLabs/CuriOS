@@ -40,11 +40,13 @@
     services.open-webui = {
       enable = true;
       environment = {
+        # See https://docs.openwebui.com/getting-started/env-configuration/
         HOME = "/var/lib/open-webui";
         OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
         # Disable authentication
         WEBUI_AUTH = "False";
       };
+      port = 8080;
     };
     # AI webapp desktop shortcuts
     environment.systemPackages = [ (import ./desktop-apps/webapp-ollama.nix) ];
