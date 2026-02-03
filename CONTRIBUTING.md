@@ -22,7 +22,8 @@ Include the relevant issue number if applicable.
 
 ## **Do you intend to add a new feature or change an existing one?**
 
-1. Suggest your change in the [Discussions](https://github.com/CuriosLabs/CuriOS/discussions/new?category=ideas-features) and start writing code.
+1. Suggest your change in the [Discussions](https://github.com/CuriosLabs/CuriOS/discussions/new?category=ideas-features)
+and start writing code.
 2. Fork the Project
 3. Create your "feature" branch (`git checkout -b feature/AmazingFeature`) -
 the branch name MUST start with "feature/".
