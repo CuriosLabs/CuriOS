@@ -49,13 +49,10 @@ build:
   chmod 0444 "${isoFilePath}".sha256
   printf "\e[32m Build done...\e[0m\n"
 
-# Cleaning build result folder.
+# Cleaning build and test artifacts.
 clean:
   rm -rf ./result
-
-# debug recipes
-debug:
-  echo "Git branch: {{branch}}"
+  nix-store --gc
 
 # Linting Bash scripts and Nix files.
 lint:
@@ -86,4 +83,14 @@ publish:
     gh release upload "$releaseNumber" "$isoFilePath"
     gh release upload "$releaseNumber" "$isoFilePath".sha256
   fi
+
+# Run all integrations tests sequentially
+test-all:
+  for file in `fd --type f ".nix" ./tests/`; do statix check $file; done
+  for file in `fd --type f ".nix" ./tests/`; do nix-build $file --show-trace; done
+
+# Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
+test-unit target:
+  statix check "./tests/{{target}}.nix"
+  nix-build "./tests/{{target}}.nix" --show-trace
 
