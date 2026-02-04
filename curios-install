@@ -41,6 +41,7 @@ DISK_LUKS_KEY=""
 GPU_VENDOR_DETECTED=""
 GPU_INSTALL=0
 CONFIRM_INSTALL=0
+RPI4_INSTALL=0
 NIXOS_CONFIG_DIR="/mnt/etc/nixos"
 DO_DOTFILES_INSTALL=1
 VERBOSE=0
@@ -92,13 +93,14 @@ ${GREY}USAGE:${NC}
 
 ${GREY}OPTIONS:${NC}
   ${GREY}-h, --help${NC}         Print this message.
+  ${GREY}--rpi4${NC}             Raspberry PI 4 installation.
   ${GREY}-v, --verbose${NC}      Print more information.
   ${GREY}--version${NC}          Print version number and exit."
   exit 0
 }
 
 #------------- Scripts arguments parse options
-ARGS=$(getopt --longoptions="verbose,version,help" --options ":hv" --name "$0" -- "$@")
+ARGS=$(getopt --longoptions="verbose,version,rpi4,help" --options ":hv" --name "$0" -- "$@")
 eval set -- "$ARGS"
 
 while true; do
@@ -113,6 +115,11 @@ while true; do
   --version)
     echo "$SCRIPT_VERSION"
     exit 0
+    ;;
+  --rpi4)
+    VERBOSE=1
+    RPI4_INSTALL=1
+    shift
     ;;
   --)
     shift
@@ -129,8 +136,14 @@ if [ $VERBOSE -eq 1 ]; then
 fi
 
 #------------- Check curios-sources files
-CURIOS_INSTALL_PATH=$(dirname "$(realpath "$(which curios-install)")")
-CURIOS_SRC_PATH=$(realpath "$CURIOS_INSTALL_PATH"/../share/curios)
+if [ $RPI4_INSTALL -eq 1 ]; then
+  CURIOS_INSTALL_PATH="."
+  CURIOS_SRC_PATH="."
+  NIXOS_CONFIG_DIR="/etc/nixos/"
+else
+  CURIOS_INSTALL_PATH=$(dirname "$(realpath "$(which curios-install)")")
+  CURIOS_SRC_PATH=$(realpath "$CURIOS_INSTALL_PATH"/../share/curios)
+fi
 if [ $VERBOSE -eq 1 ]; then
   echo -e "Package store path: ${CURIOS_SRC_PATH}"
 fi
@@ -158,18 +171,6 @@ if ! available git; then
   echo -e "${RED}git command not found!${NC}"
   exit 2
 fi
-if ! available parted; then
-  echo -e "${RED}parted command not found!${NC}"
-  exit 2
-fi
-if ! available cryptsetup; then
-  echo -e "${RED}cryptsetup command not found!${NC}"
-  exit 2
-fi
-if ! available mkfs; then
-  echo -e "${RED}mkfs command not found!${NC}"
-  exit 2
-fi
 if ! available mkpasswd; then
   echo -e "${RED}mkpasswd command not found!${NC}"
   exit 2
@@ -177,6 +178,25 @@ fi
 if ! available dialog; then
   echo -e "${RED}dialog command not found!${NC}"
   exit 2
+fi
+if [ $RPI4_INSTALL -eq 0 ]; then
+  if ! available parted; then
+    echo -e "${RED}parted command not found!${NC}"
+    exit 2
+  fi
+  if ! available cryptsetup; then
+    echo -e "${RED}cryptsetup command not found!${NC}"
+    exit 2
+  fi
+  if ! available mkfs; then
+    echo -e "${RED}mkfs command not found!${NC}"
+    exit 2
+  fi
+else
+  if ! available rpi-eeprom-update; then
+    echo -e "${RED}rpi-eeprom-update command not found!${NC}"
+    exit 2
+  fi
 fi
 
 #------------- Check internet connectivity
@@ -606,7 +626,11 @@ set_user_passwd() {
       set_user_passwd
     else
       HASHED_USER_PASSWD=$(mkpasswd -m yescrypt "$password")
-      choose_disk
+      if [ $RPI4_INSTALL -eq 1 ]; then
+        confirm_install
+      else
+        choose_disk
+      fi
     fi
     ;;
   "$DIALOG_CANCEL")
@@ -824,6 +848,8 @@ if [ $VERBOSE -eq 1 ]; then
   echo "disk LUKS key: $DISK_LUKS_KEY"
   echo "GPU hardware vendor: $GPU_VENDOR_DETECTED"
   echo "install GPU driver: $GPU_INSTALL"
+  echo "RPI4 install: $RPI4_INSTALL"
+  echo "NixOS config dir: $NIXOS_CONFIG_DIR"
   echo -e "${YELLOW}End of options.${NC}"
 fi
 
@@ -933,31 +959,42 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -pdn -o NAME
   fi
-  format_disk
-  echo -e "${GREEN}================================${NC}"
-  echo -e "${GREEN}================================${NC}"
-  echo -e "${BLUE}Mounting system...${NC}"
-  sleep 2s
-  if ! mountpoint -q /mnt; then
-    mount /dev/disk/by-label/nixos /mnt
+  if [ $RPI4_INSTALL -eq 0 ]; then
+    format_disk
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${BLUE}Mounting system...${NC}"
+    sleep 2s
+    if ! mountpoint -q /mnt; then
+      mount /dev/disk/by-label/nixos /mnt
+    fi
+    mkdir -p /mnt/boot
+    if ! mountpoint -q /mnt/boot; then
+      mount -o umask=077 /dev/disk/by-partlabel/ESP /mnt/boot
+    fi
+    if [[ $(swapon -s | wc -l) -eq 1 ]]; then
+      swapon /dev/disk/by-label/swap
+    fi
+    mkdir -p /mnt/home
+  else
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${BLUE}Mounting RPI system...${NC}"
+    mount /dev/disk/by-label/FIRMWARE /mnt
+    # Updating RPI firmware
+    BOOTFS=/mnt rpi-eeprom-update -d -a
   fi
-  mkdir -p /mnt/boot
-  if ! mountpoint -q /mnt/boot; then
-    mount -o umask=077 /dev/disk/by-partlabel/ESP /mnt/boot
-  fi
-  if [[ $(swapon -s | wc -l) -eq 1 ]]; then
-    swapon /dev/disk/by-label/swap
-  fi
-  mkdir -p /mnt/home
 
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -lo NAME,SIZE,TYPE,MOUNTPOINTS,PARTLABEL,UUID
   fi
 
-  echo -e "${GREEN}================================${NC}"
-  echo -e "${GREEN}================================${NC}"
-  echo -e "${BLUE}Create basic configuration...${NC}"
-  nixos-generate-config --root /mnt --no-filesystems
+  if [ $RPI4_INSTALL -eq 0 ]; then
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${GREEN}================================${NC}"
+    echo -e "${BLUE}Create basic configuration...${NC}"
+    nixos-generate-config --root /mnt --no-filesystems
+  fi
 
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
@@ -990,18 +1027,26 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   # Update hostname
   sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # platform settings:
-  sed 's/platform\.rpi4\.enable = .*/platform.rpi4.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-  sed 's/platform\.amd64\.enable = .*/platform.amd64.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-  sed 's/bootefi\.enable = .*/bootefi.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-  # filesystems settings:
-  if [ $ENCRYPT_DISK -eq 1 ]; then
-    # Update settings.nix
-    sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+  if [ $RPI4_INSTALL -eq 0 ]; then
+    sed 's/platform\.rpi4\.enable = .*/platform.rpi4.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/platform\.amd64\.enable = .*/platform.amd64.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/bootefi\.enable = .*/bootefi.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    # filesystems settings:
+    if [ $ENCRYPT_DISK -eq 1 ]; then
+      # Update settings.nix
+      sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+      sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    else
+      # Also update settings.nix
+      sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+      sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    fi
   else
-    # Also update settings.nix
+    sed 's/platform\.rpi4\.enable = .*/platform.rpi4.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/platform\.amd64\.enable = .*/platform.amd64.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/bootefi\.enable = .*/bootefi.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
     sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
   fi
   # GPU settings:
   if [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "AMD" ]]; then
@@ -1034,7 +1079,12 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo "Adding channel: $NIX_CHANNEL_URL"
   nix-channel --add "$NIX_CHANNEL_URL" nixos
   nix-channel --update
-  nixos-install --cores 0 --no-root-passwd
+  if [ $RPI4_INSTALL -eq 0 ]; then
+    nixos-install --cores 0 --no-root-passwd
+  else
+    nixos-rebuild boot
+  fi
+
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
     dotfiles_install
   fi
