@@ -57,10 +57,17 @@ in {
             example = false;
           };
         };
-        tailscale.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "TailScale VPN";
+        tailscale = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "TailScale VPN";
+          };
+          useRoutingFeatures = lib.mkOption {
+            type = lib.types.enum [ "none" "client" "server" "both" ];
+            default = "none";
+            example = "server";
+          };
         };
         mullvad.enable = lib.mkOption {
           type = lib.types.bool;
@@ -234,10 +241,13 @@ in {
       pcscd.enable = true;
 
       # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
+      # Configure it it with `sudo tailscale up`
+      # To add more options, see: https://search.nixos.org/options?show=services.tailscale
       tailscale = {
         enable = lib.mkDefault config.curios.desktop.apps.vpn.tailscale.enable;
         permitCertUid = null;
-        useRoutingFeatures = "none";
+        useRoutingFeatures = lib.mkDefault
+          config.curios.desktop.apps.vpn.tailscale.useRoutingFeatures;
       };
       # Mullvad VPN
       mullvad-vpn = {

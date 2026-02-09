@@ -163,7 +163,10 @@
         proton.enable = false;
         proton.autoStart = false;
         # tailscale.com VPN
-        tailscale.enable = false;
+        tailscale = {
+          enable = false;
+          useRoutingFeatures = "none";
+        };
         # mullvad VPN GUI
         mullvad.enable = false;
       };
