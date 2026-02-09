@@ -246,6 +246,8 @@ in {
       # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
       # Configure it it with `sudo tailscale up`
       # To add more options, see: https://search.nixos.org/options?show=services.tailscale
+      # To allow current user to manage tailscale daemon: `sudo tailscale set --operator=$USER`
+      # To launch the systray app on startup: `tailscale configure systray --enable-startup=systemd`
       tailscale = {
         enable = lib.mkDefault config.curios.desktop.apps.vpn.tailscale.enable;
         permitCertUid = null;
