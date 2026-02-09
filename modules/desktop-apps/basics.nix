@@ -2,7 +2,9 @@
 
 { config, lib, pkgs, ... }:
 
-let lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+let
+  lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+  curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
 in {
   # Declare options
   options = {
@@ -169,6 +171,7 @@ in {
   config = lib.mkIf config.curios.desktop.apps.basics.enable {
     environment.systemPackages = [
       pkgs.caligula
+      curiosDocsWebapp
 
       # Alacritty terminal
       pkgs.alacritty
