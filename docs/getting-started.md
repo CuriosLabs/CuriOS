@@ -50,9 +50,13 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    OR with `dd`:
 
    ```bash
-   # Find your USB disk path with `fdisk`; it will probably be `/dev/sda` or `/dev/sdb`
-   fdisk -l
-   # Copy the ISO to the USB (/dev/sda in our case)
+   # First step is to find your USB disk path with `fdisk`; it will probably be `/dev/sda` or `/dev/sdb`
+   # Be sure that the model and size descritption match your USB key.
+   sudo fdisk -l
+   ```
+
+   ```bash
+   # And then to copy the ISO to the USB, `/dev/sda` in below case, adjust accordingly.
    sudo dd if=CuriOS_25.11.4_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
    ```
 
