@@ -20,6 +20,20 @@ is a plus.
 - Curi*OS* does not support Secure Boot/TPM for the moment. You may have to turn
   it off in the UEFI menu of your PC.
 
+## Dual Booting with Windows
+
+If you intend to use Curi*OS* alongside Windows, it is strongly recommended to
+install each operating system on a **separate disk (SSD/NVMe)**. Dual-booting on
+a single disk is not recommended and can lead to bootloader complications.
+
+To switch between operating systems, you should use your motherboard's UEFI boot
+menu at startup. This is typically accessed by pressing a shortcut key like **F8**,
+**F11**, or **F12** (or sometimes **F2**) depending on your manufacturer.
+
+During the Curi*OS* installation, the installer will list all detected disks and
+ask you to choose the target for the installation. Ensure you select the empty or
+dedicated disk and not the one containing your Windows installation.
+
 ## Installation
 
 The primary method for installing Curi*OS* is by using a bootable ISO image.
