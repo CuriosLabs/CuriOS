@@ -59,6 +59,7 @@ How-to:
 - [Update/upgrade your system, install programs, and more](system-management.md).
 - [Backup your Computer/Protect it against ransomware](backups.md)
 - [Work with AI tools](ai-tools.md)
+- [Work with Audio/Video applications](audio-video.md)
 
 ## Architecture
 
