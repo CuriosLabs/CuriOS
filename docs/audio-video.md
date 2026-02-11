@@ -65,6 +65,9 @@ This process flattens the frequency response of your headphones, providing a
 more neutral and high-fidelity sound, which you can then further tweak to your
 preference.
 
+If you are satisfied with your EasyEffects setup, do not forget to set up the
+auto start option on user connexion in the application preferences menu.
+
 ---
 **Previous**: [Working with AI tools](ai-tools.md)
 
