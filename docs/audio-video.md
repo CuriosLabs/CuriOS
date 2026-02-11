@@ -55,7 +55,7 @@ matched to your specific headphone model.
 3. **Import an AutoEQ Profile**:
    - Visit [AutoEQ.app](https://autoeq.app/).
    - Search for your specific headphone model.
-   - Select your headphone and choose the **GraphicEQ** application type.
+   - Select your headphone and choose the **EasyEffects** application type.
    - Download the generated configuration file (usually a `.txt` file).
    - In EasyEffects, inside the Equalizer effect settings, click on **Import APO**
    (or "Load APO Preset").
