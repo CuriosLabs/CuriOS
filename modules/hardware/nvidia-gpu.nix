@@ -19,6 +19,8 @@
     boot = {
       # Ban CPU integrated GPU
       blacklistedKernelModules = [ "i915" "nouveau" ];
+      # Add kernel params
+      kernelParams = [ "nvidia-drm.modeset=1" ];
     };
 
     # Nvidia GPU
