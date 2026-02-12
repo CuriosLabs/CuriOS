@@ -79,33 +79,18 @@ Launcher.
 ### Adding more Applications
 
 Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Find more packages at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages)
-and copy the `NixOS Configuration` tab content of the package you want under
-the `package details` section.
+? Add a package found at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages) ?
 
-For example, you want to install [Inkscape](https://inkscape.org/) and [Blender](https://www.blender.org/):
+For example, you want to install [Blender](https://www.blender.org/):
 
-1. Go to [search.nixos.org](https://search.nixos.org/packages)
-2. Find the packages name details for Blender and Inkscape.
-3. Launch `curios-manager` (shortcut: Super+Return)
-4. Go the `Settings (manual edit)` menu.
-5. Search for the line starting with `environment.systemPackages` and add your
-packages under the `[]` brackets.
-6. Exit (Ctrl+X) and save, `curios-manager` will do the system update.
-
-It should look like this:
-
-```nix
-  ### NixOS packages
-  environment.systemPackages = [
-    # Add your packages here - find package name at https://search.nixos.org/packages
-    pkgs.inkscape-with-extensions
-    pkgs.blender
-  ];
-```
-
-> [!TIP]
-> Use Ctrl+Alt+V to paste in the `curios-manager` default editor (nano).
+1. Launch `curios-manager` (shortcut: Super+Return)
+2. Go the `Applications` menu, then `Add a new package` menu.
+   ![curios-manager add package screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_addpackage1.png?raw=true "CuriOS manager add package")
+3. Type an application name, the script will search for the most pertinent results.
+4. Choose an application from the result list:
+   ![curios-manager add package screenshot 4](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_addpackage4.png?raw=true "CuriOS manager add package 4")
+5. `curios-manager` will now download and install the package.
+6. Enjoy!
 
 ### Backup your computer
 
