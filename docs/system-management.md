@@ -78,8 +78,9 @@ Launcher.
 
 ### Adding more Applications
 
-Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Add a package found at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages) ?
+Do you want a package not already included in one of the already pre-configured
+[modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Add a
+package found at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages)?
 
 For example, you want to install [Blender](https://www.blender.org/):
 
