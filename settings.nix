@@ -11,6 +11,9 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  curios-settings = builtins.fromJSON (builtins.readFile ./settings.json);
+in
 {
   ### CuriOS options settings goes here:
   curios = {
@@ -58,182 +61,8 @@
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs:
-    desktop.apps = {
-      # Brave browser, Alacritty, Signal, Yubico auth, Gimp3, EasyEffects.
-      basics.enable = lib.mkDefault true;
-      # Enabling Linux AppImage
-      appImage.enable = lib.mkDefault true;
-      # Various web browser
-      browser = {
-        chromium.enable = false;
-        firefox.enable = false;
-        librewolf.enable = false;
-        vivaldi.enable = false;
-      };
-      crypto = {
-        # Cryptocurrencies desktop apps.
-        # Required by desktop.apps.crypto options below.
-        enable = false;
-        # btc.enable REQUIRE appImage.enable = true !!!
-        # Bitcoin - Electrum wallet - Bisq2 decentralized exchange.
-        btc.enable = false;
-      };
-      devops = {
-        # Desktop apps for developers - Neovim+LazyVim, git for github (gh),
-        # shellcheck, statix
-        enable = true;
-        # Cloudflare tunnel client
-        cloudflared.enable = false;
-        editor = {
-          # Set Neovim as the default editor instead of nano.
-          default.nvim.enable = false;
-          # Zed.dev code editor
-          zed.enable = true;
-          # MS code editor
-          vscode.enable = false;
-        };
-        # Go, gofmt, JetBrains GoLand
-        go.enable = false;
-        # Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.
-        java.enable = false;
-        # NodeJS (npm, npx) JavaScript runtime
-        javascript.enable = true;
-        # bun JavaScript runtime
-        javascript.bun.enable = false;
-        # just - handy way to save and run project-specific commands
-        just.enable = false;
-        # Python3.12, pip, setuptools, JetBrains PyCharm-Community
-        python312.enable = false;
-        python313.enable = false;
-        # Rustc, cargo, rust-analyzer, clippy + more, JetBrains RustRover
-        rust.enable = false;
-        # Nmap, Zenmap, Wireshark, Remmina
-        networks.enable = false;
-      };
-      gaming = {
-        # Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.
-        enable = false;
-        steam.bigpicture.autoStart = false;
-      };
-      # OBS, Audacity, DaVinci Resolve, Darktable
-      studio.enable = false;
-      office = {
-        # Default office desktop apps - Obsidian (notes/ideas).
-        enable = true;
-        # LibreOffice suite
-        libreoffice.enable = false;
-        # ONLYOFFICE suite
-        onlyoffice.desktopeditors.enable = true;
-        # Mozilla Thunderbird email client
-        thunderbird.enable = false;
-        # CRM web apps
-        crm = {
-          # SalesForce web app - edit baseUrl to your company SalesForce URL.
-          salesforce = {
-            enable = lib.mkDefault false;
-            baseUrl = lib.mkDefault "your-domain.my.salesforce.com";
-          };
-          hubspot = {
-            enable = lib.mkDefault false;
-            baseUrl = "app.hubspot.com";
-          };
-        };
-        finance = { gnucash.enable = false; };
-        # Projects management apps.
-        projects = {
-          basecamp = {
-            enable = true;
-            baseUrl = "launchpad.37signals.com/signin";
-          };
-          # Jira web app - edit baseUrl to your company Jira URL.
-          jira = {
-            enable = false;
-            baseUrl = "mycompanynamehere.atlassian.net";
-          };
-        };
-        # conferencing web apps
-        conferencing = {
-          slack.enable = false;
-          teams.enable = false;
-          zoom.enable = false;
-        };
-      };
-      vpn = {
-        # ProtonVPN with GUI
-        proton.enable = false;
-        proton.autoStart = false;
-        # tailscale.com VPN
-        tailscale = {
-          enable = false;
-          useRoutingFeatures = "none";
-        };
-        # mullvad VPN GUI
-        mullvad.enable = false;
-      };
-      ai = {
-        # ChatGPT web app
-        chatgpt.enable = true;
-        # Claude web app
-        claude.enable = true;
-        # Cursor AI-assisted IDE desktop app, cursor-agent CLI.
-        cursor.enable = true;
-        # Google Gemini CLI - BETTER to install it with npm, see docs/ai-tools.md
-        gemini.enable = false;
-        # Grok web app
-        grok.enable = true;
-        # lmstudio.ai local AI model
-        lmstudio.enable = true;
-        # Mistral LeChat web app
-        mistral.enable = true;
-        # Windsurf AI-assisted IDE desktop app.
-        windsurf.enable = false;
-      };
-      chat = {
-        # Discord desktop app
-        discord.enable = false;
-        # Signal.org desktop app
-        signal.enable = true;
-        # TeamSpeak6 desktop app
-        teamspeak.enable = false;
-        # WhatsApp web app
-        whatsapp.enable = true;
-      };
-      utility = {
-        # Bitwarden password manager
-        bitwarden.enable = true;
-        # Flameshot screenshot app
-        flameshot.enable = false;
-        # KeePassXC password manager
-        keepassxc.enable = false;
-        # LocalSend - Cross-platform file sharing on your local network
-        localsend.enable = true;
-      };
-    };
-    others = {
-      # REQUIRED - Other program for the system.
-      enable = true;
-      openssl.enable = true;
-    };
-    services = {
-      # REQUIRED - Flatpak + flathub/cosmic repos, pipewire
-      enable = true;
-      # CUPS printing
-      printing.enable = false;
-      # SSH daemon
-      sshd.enable = false;
-      # Ollama local AI with open-webui
-      ai.enable = false;
-    };
-    virtualisation = {
-      # QEMU/KVM, libvirt, virt-manager
-      enable = false;
-      # Docker containers + docker-compose, docker-buildx, lazydocker
-      docker.enable = false;
-      # Podman containers, replacement for Docker.
-      podman.enable = false;
-      # Wine 32 and 64 bits with Wayland support.
-      wine.enable = false;
-    };
+    desktop.apps = curios-settings."desktop.apps";
+    inherit (curios-settings) others services virtualisation;
     hardened = {
       # Hardened configurations -WIP-
       # Activate and test one by one - may break some programs
@@ -308,7 +137,7 @@
     #firewall.allowedTCPPorts = [ ... ];
     #firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
-    #firewall.enable = false;
+    firewall.enable = lib.mkDefault true;
 
     # Configure network proxy if necessary
     #proxy = {

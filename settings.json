@@ -1,0 +1,234 @@
+{
+  "desktop": {
+    "ai": {
+      "chatgpt": {
+        "enable": true
+      },
+      "claude": {
+        "enable": true
+      },
+      "cursor": {
+        "enable": true
+      },
+      "gemini": {
+        "enable": false
+      },
+      "grok": {
+        "enable": true
+      },
+      "lmstudio": {
+        "enable": true
+      },
+      "mistral": {
+        "enable": true
+      },
+      "windsurf": {
+        "enable": false
+      }
+    },
+    "appImage": {
+      "enable": true
+    },
+    "basics": {
+      "enable": true
+    },
+    "browser": {
+      "chromium": {
+        "enable": false
+      },
+      "firefox": {
+        "enable": false
+      },
+      "librewolf": {
+        "enable": false
+      },
+      "vivaldi": {
+        "enable": false
+      }
+    },
+    "chat": {
+      "discord": {
+        "enable": false
+      },
+      "signal": {
+        "enable": true
+      },
+      "teamspeak": {
+        "enable": false
+      },
+      "whatsapp": {
+        "enable": true
+      }
+    },
+    "crypto": {
+      "btc": {
+        "enable": false
+      },
+      "enable": false
+    },
+    "devops": {
+      "cloudflared": {
+        "enable": false
+      },
+      "editor": {
+        "default": {
+          "nvim": {
+            "enable": false
+          }
+        },
+        "vscode": {
+          "enable": false
+        },
+        "zed": {
+          "enable": true
+        }
+      },
+      "enable": true,
+      "go": {
+        "enable": false
+      },
+      "java": {
+        "enable": false
+      },
+      "javascript": {
+        "bun": {
+          "enable": false
+        },
+        "enable": true
+      },
+      "just": {
+        "enable": false
+      },
+      "networks": {
+        "enable": false
+      },
+      "python312": {
+        "enable": false
+      },
+      "python313": {
+        "enable": false
+      },
+      "rust": {
+        "enable": false
+      }
+    },
+    "gaming": {
+      "enable": false,
+      "steam": {
+        "bigpicture": {
+          "autoStart": false
+        }
+      }
+    },
+    "office": {
+      "conferencing": {
+        "slack": {
+          "enable": false
+        },
+        "teams": {
+          "enable": false
+        },
+        "zoom": {
+          "enable": false
+        }
+      },
+      "crm": {
+        "hubspot": {
+          "baseUrl": "app.hubspot.com",
+          "enable": false
+        },
+        "salesforce": {
+          "baseUrl": "your-domain.my.salesforce.com",
+          "enable": false
+        }
+      },
+      "enable": true,
+      "finance": {
+        "gnucash": {
+          "enable": false
+        }
+      },
+      "libreoffice": {
+        "enable": false
+      },
+      "onlyoffice": {
+        "desktopeditors": {
+          "enable": true
+        }
+      },
+      "projects": {
+        "basecamp": {
+          "baseUrl": "launchpad.37signals.com/signin",
+          "enable": true
+        },
+        "jira": {
+          "baseUrl": "mycompanynamehere.atlassian.net",
+          "enable": false
+        }
+      },
+      "thunderbird": {
+        "enable": false
+      }
+    },
+    "studio": {
+      "enable": false
+    },
+    "utility": {
+      "bitwarden": {
+        "enable": true
+      },
+      "flameshot": {
+        "enable": false
+      },
+      "keepassxc": {
+        "enable": false
+      },
+      "localsend": {
+        "enable": true
+      }
+    },
+    "vpn": {
+      "mullvad": {
+        "enable": false
+      },
+      "proton": {
+        "autoStart": false,
+        "enable": false
+      },
+      "tailscale": {
+        "enable": false,
+        "useRoutingFeatures": "none"
+      }
+    }
+  },
+  "services": {
+    "ai": {
+      "enable": false
+    },
+    "enable": true,
+    "printing": {
+      "enable": false
+    },
+    "sshd": {
+      "enable": false
+    }
+  },
+  "others": {
+    "enable": true,
+    "openssl": {
+      "enable": true
+    }
+  },
+  "virtualisation": {
+    "docker": {
+      "enable": false
+    },
+    "enable": false,
+    "podman": {
+      "enable": false
+    },
+    "wine": {
+      "enable": false
+    }
+  }
+}
