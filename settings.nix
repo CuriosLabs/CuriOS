@@ -11,10 +11,8 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  curios-settings = builtins.fromJSON (builtins.readFile ./settings.json);
-in
-{
+let curios-settings = builtins.fromJSON (builtins.readFile ./settings.json);
+in {
   ### CuriOS options settings goes here:
   curios = {
     system = {
@@ -44,7 +42,7 @@ in
       # EXPERIMENTAL - laptop battery saver
       laptop.enable = false;
     };
-    # REQUIRED modules:
+    # REQUIRED modules - Do NOT edit:
     # Enable Restic backup
     backup.enable = lib.mkDefault true;
     bootefi.enable = lib.mkDefault true;
@@ -60,12 +58,12 @@ in
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
-    ### Modules below SHOULD be activated on user needs:
+    ### Modules below SHOULD be activated on user needs - EDIT ./settings.json:
     desktop.apps = curios-settings."desktop.apps";
     inherit (curios-settings) others services virtualisation;
+    ### Hardened configurations -WIP-
     hardened = {
-      # Hardened configurations -WIP-
-      # Activate and test one by one - may break some programs
+      # Activate and test one by one - MAY break some programs
       # Check results with: `systemd-analyze security`
       accountsDaemon.enable = false;
       acpid.enable = false;
