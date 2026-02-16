@@ -11,7 +11,9 @@
 
 { config, lib, pkgs, ... }:
 
-let curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
+let
+  curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
+  curiosHardened = builtins.fromJSON (builtins.readFile ./hardened.json);
 in {
   ### CuriOS options settings goes here:
   curios = {
@@ -62,30 +64,7 @@ in {
     #desktop.apps = curios-settings."desktop.apps";
     inherit (curiosModules) desktopApps others services virtualisation;
     ### Hardened configurations -WIP-
-    hardened = {
-      # Activate and test one by one - MAY break some programs
-      # Check results with: `systemd-analyze security`
-      accountsDaemon.enable = false;
-      acpid.enable = false;
-      cups.enable = false;
-      dbus.enable = false;
-      display-manager.enable = false;
-      docker.enable = false;
-      # WARNING: will prevent TTY console login if true:
-      getty.enable = false;
-      # TODO: proton-vpn bug if set to true:
-      networkManager.enable = false;
-      # TODO: proton-vpn bug if set to true:
-      networkManager-dispatcher.enable = false;
-      nix-daemon.enable = false;
-      nscd.enable = false;
-      rescue.enable = false;
-      rtkit-daemon.enable = false;
-      sshd.enable = false;
-      # TODO: 'Flatpak run' bug if set to true:
-      user.enable = false;
-      wpa_supplicant.enable = false;
-    };
+    hardened = curiosHardened;
   };
 
   ### NixOS packages

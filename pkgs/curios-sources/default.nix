@@ -16,8 +16,10 @@ stdenvNoCC.mkDerivation {
       ../../configuration.nix
       ../../settings.nix
       ../../modules
+      ../../modules.json
       ../../pkgs
       ../../curios-install
+      ../../hardened.json
       ../../logo.txt
     ];
   };
@@ -28,6 +30,7 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
     install -D -m 555 -t $out/bin/ curios-install
     install -D -m 644 -t $out/share/curios/ *.nix
+    install -D -m 644 -t $out/share/curios/ *.json
     install -D -m 644 -t $out/share/curios/ logo.txt
 
     install -D -m 644 -t $out/share/curios/modules/ modules/*.nix
