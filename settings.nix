@@ -11,7 +11,7 @@
 
 { config, lib, pkgs, ... }:
 
-let curios-settings = builtins.fromJSON (builtins.readFile ./settings.json);
+let curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
 in {
   ### CuriOS options settings goes here:
   curios = {
@@ -58,9 +58,9 @@ in {
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
-    ### Modules below SHOULD be activated on user needs - EDIT ./settings.json:
-    desktop.apps = curios-settings."desktop.apps";
-    inherit (curios-settings) others services virtualisation;
+    ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
+    #desktop.apps = curios-settings."desktop.apps";
+    inherit (curiosModules) desktopApps others services virtualisation;
     ### Hardened configurations -WIP-
     hardened = {
       # Activate and test one by one - MAY break some programs

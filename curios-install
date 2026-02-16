@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.8"
+readonly SCRIPT_VERSION="0.9"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -1000,6 +1000,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Preparing configurations files...${NC}"
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/*.json
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/ "$CURIOS_SRC_PATH"/logo.txt
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/ "$CURIOS_SRC_PATH"/modules/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.nix

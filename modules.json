@@ -1,5 +1,5 @@
 {
-  "desktop": {
+  "desktopApps": {
     "ai": {
       "chatgpt": {
         "description": "ChatGPT web application",
