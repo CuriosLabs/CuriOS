@@ -39,7 +39,7 @@
       "enable": true
     },
     "basics": {
-      "description": "REQUIRED - CuriOS minimum desktop apps - Brave, Alacritty, Gimp3...",
+      "description": "REQUIRED - CuriOS minimum desktop applications - Brave, Alacritty, Gimp3...",
       "enable": true
     },
     "browser": {

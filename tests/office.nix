@@ -16,7 +16,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps.office = {
+      curios.desktopApps.office = {
         enable = true;
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;
@@ -25,9 +25,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           salesforce.enable = true;
           hubspot.enable = true;
         };
-        finance = {
-          gnucash.enable = true;
-        };
+        finance = { gnucash.enable = true; };
         projects = {
           basecamp.enable = true;
           basecamp.baseUrl = "launchpad.37signals.com/signin";

@@ -1,16 +1,16 @@
-# Various developer desktop apps.
+# Various developer desktop applications.
 
 { config, lib, pkgs, ... }:
 
 {
   # Declare options
   options = {
-    curios.desktop.apps.devops = {
+    curios.desktopApps.devops = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
         description =
-          "Desktop apps for developers - Neovim, git for github (gh), shellcheck, statix.";
+          "Desktop applications for developers - Neovim, git for github (gh), shellcheck, statix.";
       };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;
@@ -90,13 +90,13 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktop.apps.devops.enable {
+  config = lib.mkIf config.curios.desktopApps.devops.enable {
     # basic Neovim
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-unwrapped;
       defaultEditor =
-        config.curios.desktop.apps.devops.editor.default.nvim.enable;
+        config.curios.desktopApps.devops.editor.default.nvim.enable;
       viAlias = true;
       vimAlias = true;
     };
@@ -124,21 +124,21 @@
         ripgrep
         # YQ - yaml/xml/toml parser
         yq
-      ] ++ lib.optionals config.curios.desktop.apps.devops.cloudflared.enable
+      ] ++ lib.optionals config.curios.desktopApps.devops.cloudflared.enable
       [ cloudflared ]
-      ++ lib.optionals config.curios.desktop.apps.devops.go.enable [
+      ++ lib.optionals config.curios.desktopApps.devops.go.enable [
         go
         golangci-lint
         jetbrains.goland
-      ] ++ lib.optionals config.curios.desktop.apps.devops.java.enable [
+      ] ++ lib.optionals config.curios.desktopApps.devops.java.enable [
         jetbrains.idea-oss
         jetbrains.jdk
-      ] ++ lib.optionals config.curios.desktop.apps.devops.javascript.enable
+      ] ++ lib.optionals config.curios.desktopApps.devops.javascript.enable
       [ nodejs_24 ]
-      ++ lib.optionals config.curios.desktop.apps.devops.javascript.bun.enable
+      ++ lib.optionals config.curios.desktopApps.devops.javascript.bun.enable
       [ bun ]
-      ++ lib.optionals config.curios.desktop.apps.devops.just.enable [ just ]
-      ++ lib.optionals config.curios.desktop.apps.devops.python312.enable [
+      ++ lib.optionals config.curios.desktopApps.devops.just.enable [ just ]
+      ++ lib.optionals config.curios.desktopApps.devops.python312.enable [
         # Python 3.12
         python312
         python312Packages.pip
@@ -147,7 +147,7 @@
         python312Packages.uv
         jetbrains.pycharm-oss
         ruff
-      ] ++ lib.optionals config.curios.desktop.apps.devops.python313.enable [
+      ] ++ lib.optionals config.curios.desktopApps.devops.python313.enable [
         # Python 3.13
         python313
         python313Packages.pip
@@ -156,8 +156,8 @@
         python313Packages.uv
         jetbrains.pycharm-oss
         ruff
-      ] ++ lib.optionals config.curios.desktop.apps.devops.ruby.enable [ ruby ]
-      ++ lib.optionals config.curios.desktop.apps.devops.rust.enable [
+      ] ++ lib.optionals config.curios.desktopApps.devops.ruby.enable [ ruby ]
+      ++ lib.optionals config.curios.desktopApps.devops.rust.enable [
         # Rust provide cargo, rustc, rust-analyzer and more
         rustup
         cargo-c
@@ -167,7 +167,7 @@
         libxkbcommon
         llvmPackages.bintools
         pkg-config
-      ] ++ lib.optionals config.curios.desktop.apps.devops.networks.enable [
+      ] ++ lib.optionals config.curios.desktopApps.devops.networks.enable [
         # Networks
         nmap
         zenmap
@@ -175,11 +175,11 @@
         wireshark
         # VNC
         remmina
-      ] ++ lib.optionals config.curios.desktop.apps.devops.editor.zed.enable [
+      ] ++ lib.optionals config.curios.desktopApps.devops.editor.zed.enable [
         nil
         nixd
         zed-editor
-      ] ++ lib.optionals config.curios.desktop.apps.devops.editor.vscode.enable
+      ] ++ lib.optionals config.curios.desktopApps.devops.editor.vscode.enable
       [ vscode-fhs ];
   };
 }

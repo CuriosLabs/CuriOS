@@ -17,7 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       time.timeZone = "UTC";
 
       # Enable the gaming module and all its sub-options
-      curios.desktop.apps.gaming = {
+      curios.desktopApps.gaming = {
         enable = true;
         #steam.bigpicture.autoStart = true;
       };

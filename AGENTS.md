@@ -22,7 +22,7 @@ architecture.
 - **Purpose**: A Linux distribution based on NixOS and the COSMIC desktop
 environment, designed for modern advanced users to be productive quickly.
 - **Target OS**: NixOS
-- **Main Configuration Areas**: Desktop apps, networking, services.
+- **Main Configuration Areas**: Desktop applications, networking, services.
 
 ## Core Technologies
 
@@ -94,7 +94,7 @@ organized manner.
 - **Descriptive Naming:** File and module names are descriptive and follow a
 consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
-(e.g., `config.curios.desktop.apps.browser.chromium.enable`). All custom options
+(e.g., `config.curios.desktopApps.browser.chromium.enable`). All custom options
 are defined in `modules/curios-options.nix`.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
@@ -166,7 +166,7 @@ defined in `configuration.nix` as `nixos.variant_id` (e.g., "25.11.1").
 - **Run Integration Tests**: CuriOS uses the built-in NixOS test driver
 (`make-test-python.nix`) to run integration tests in a virtual machine.
 
-  To run a specific test (e.g., the office desktop apps):
+  To run a specific test (e.g., the office desktop applications):
   
   ```bash
   nix-shell shell.nix
@@ -207,13 +207,13 @@ When working with CuriOS modules, here are common configuration patterns:
 - **Enable a desktop app category**:
 
   ```nix
-  config.curios.desktop.apps.office.enable = true;
+  config.curios.desktopApps.office.enable = true;
   ```
 
 - **Enable specific apps within a category**:
 
   ```nix
-  config.curios.desktop.apps.browser = {
+  config.curios.desktopApps.browser = {
     chromium.enable = true;
     firefox.enable = true;
   };

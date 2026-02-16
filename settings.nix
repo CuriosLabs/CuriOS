@@ -61,7 +61,6 @@ in {
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
     ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
-    #desktop.apps = curios-settings."desktop.apps";
     inherit (curiosModules) desktopApps others services virtualisation;
     ### Hardened configurations -WIP-
     hardened = curiosHardened;
@@ -85,7 +84,7 @@ in {
       initialHashedPassword = "";
       description = "My Name";
       extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
-        ++ lib.optionals config.curios.desktop.apps.crypto.enable [ "tty" ]
+        ++ lib.optionals config.curios.desktopApps.crypto.enable [ "tty" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
         ++ lib.optionals config.curios.virtualisation.enable [
           "libvirtd"

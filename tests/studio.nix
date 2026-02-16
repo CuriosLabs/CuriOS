@@ -15,7 +15,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps.studio.enable = true;
+      curios.desktopApps.studio.enable = true;
     };
   };
 

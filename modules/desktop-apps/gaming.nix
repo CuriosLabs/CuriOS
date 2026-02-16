@@ -5,12 +5,12 @@
 {
   # Declare options
   options = {
-    curios.desktop.apps.gaming = {
+    curios.desktopApps.gaming = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description =
-          "Gaming desktop apps: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
+          "Gaming desktop applications: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
       };
       steam.bigpicture.autoStart = lib.mkOption {
         type = lib.types.bool;
@@ -23,7 +23,7 @@
   # TODO: add RetroArch
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktop.apps.gaming.enable {
+  config = lib.mkIf config.curios.desktopApps.gaming.enable {
     # Steam
     # unfree packages required for Steam and Lutris
     nixpkgs.config.allowUnfree = lib.mkForce true;
@@ -48,7 +48,7 @@
       # See: https://github.com/FeralInteractive/gamemode
       pkgs.gamemode
       pkgs.steam-run
-      (lib.mkIf config.curios.desktop.apps.gaming.steam.bigpicture.autoStart
+      (lib.mkIf config.curios.desktopApps.gaming.steam.bigpicture.autoStart
         (pkgs.makeAutostartItem {
           name = "steam";
           package = pkgs.steam;

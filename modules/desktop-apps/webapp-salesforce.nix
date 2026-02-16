@@ -19,7 +19,7 @@ pkgs.stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.salesforce";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.apps.office.crm.salesforce.baseUrl}";
+      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktopApps.office.crm.salesforce.baseUrl}";
     desktopName = "Salesforce";
     icon = "webapp-salesforce";
     categories = [ "Office" ];
