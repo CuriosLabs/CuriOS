@@ -114,7 +114,14 @@
     },
     "gaming": {
       "enable": false,
+      "heroic": {
+        "enable": false
+      },
+      "retroarchFree": {
+        "enable": false
+      },
       "steam": {
+        "enable": false,
         "bigpicture": {
           "autoStart": false
         }

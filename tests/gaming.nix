@@ -19,7 +19,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       # Enable the gaming module and all its sub-options
       curios.desktopApps.gaming = {
         enable = true;
-        #steam.bigpicture.autoStart = true;
+        heroic.enable = true;
+        retroarchFree.enable = true;
+        steam = {
+          enable = true;
+          bigpicture.autoStart = true;
+        };
       };
     };
   };
@@ -37,15 +42,15 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-gaming-executables"):
         check_which("steam")
         check_which("heroic")
+        check_which("retroarch")
         check_which("gamemoderun")
         check_which("steam-run")
         check_which("input-remapper-gtk")
 
-    #with subtest("check-steam-bigpicture-autostart"):
-        # The makeAutostartItem creates a desktop file in the user's autostart directory.
-        # In NixOS tests, the default user is 'root'.
-        #machine.succeed("test -f /root/.config/autostart/steam.desktop")
+    with subtest("check-steam-bigpicture-autostart"):
+        # The makeAutostartItem creates a desktop file in /etc/xdg/autostart
+        machine.succeed("test -f /run/current-system/sw/etc/xdg/autostart/steam.desktop")
         # Verify the content of the autostart file to ensure --bigpicture is present
-        #machine.succeed("grep -q 'Exec=steam --bigpicture' /root/.config/autostart/steam.desktop")
+        machine.succeed("grep -q 'steam.*--bigpicture' /run/current-system/sw/etc/xdg/autostart/steam.desktop")
   '';
 }
