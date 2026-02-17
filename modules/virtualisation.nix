@@ -9,23 +9,23 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enabling virtualisation app: QEMU/KVM, virt-manager.";
+        description = "Enabling virtualisation app: QEMU/KVM - virt-manager.";
       };
       docker.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description =
-          "Enabling Docker containers + docker-compose, docker-buildx, lazydocker.";
+          "Docker containers + docker-compose, docker-buildx, lazydocker.";
       };
       podman.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enabling Podman.";
+        description = "Podman containers tool.";
       };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enabling Wine 32 and 64 bits with Wayland support.";
+        description = "Wine 32 and 64 bits with Wayland support.";
       };
     };
   };

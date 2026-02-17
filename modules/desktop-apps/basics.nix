@@ -12,12 +12,13 @@ in {
       basics.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED - CuriOS minimum desktop applications.";
+        description =
+          "REQUIRED CuriOS desktop applications: Alacritty, Brave, Bitwarden, VLC, Yubikey...";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enabling Linux AppImage.";
+        description = "Enabling Linux AppImage support.";
       };
       browser = {
         chromium.enable = lib.mkOption {

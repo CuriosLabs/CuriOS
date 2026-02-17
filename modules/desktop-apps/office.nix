@@ -9,7 +9,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Default office desktop applications - Obsidian.";
+        description = "Enabling office applications - Obsidian, Joplin.";
       };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;

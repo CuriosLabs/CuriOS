@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Other system's category programs.";
+        description = "Other system category programs.";
       };
       openssl.enable = lib.mkOption {
         type = lib.types.bool;

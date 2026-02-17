@@ -9,7 +9,7 @@
     curios.filesystems.minimal.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Minimal LVM filesystems as defined by 'curios-install'.";
+      description = "Minimal LVM filesystems as defined by curios-install.";
     };
   };
 

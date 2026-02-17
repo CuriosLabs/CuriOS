@@ -8,7 +8,7 @@
     curios.shell.zsh.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "CuriOS ZSH config.";
+      description = "REQUIRED CuriOS ZSH config.";
     };
   };
 

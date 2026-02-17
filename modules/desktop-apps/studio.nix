@@ -9,7 +9,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Enable desktop applications related to video/photo edition: obs-studio, audacity, DaVinci Resolve, Darktable.";
+        "Applications related to video/photo edition: OBS, Audacity, DaVinci Resolve, Darktable.";
     };
   };
 

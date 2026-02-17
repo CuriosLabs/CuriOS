@@ -6,7 +6,7 @@
     curios.networking.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable CuriOS networking options.";
+      description = "REQUIRED CuriOS networking options.";
     };
   };
 

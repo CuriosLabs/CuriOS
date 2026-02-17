@@ -10,7 +10,7 @@
       type = lib.types.bool;
       default = true;
       description =
-        "Filesystems with LUKS + LVM as defined by 'curios-install' full disk encryption option.";
+        "Filesystems with LUKS+LVM as defined by curios-install full disk encryption option.";
     };
   };
 

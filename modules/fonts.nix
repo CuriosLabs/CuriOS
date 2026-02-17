@@ -6,7 +6,7 @@
     curios.fonts.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Add essentials fonts.";
+      description = "REQUIRED essentials fonts.";
     };
   };
 

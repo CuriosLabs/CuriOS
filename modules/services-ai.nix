@@ -9,7 +9,7 @@
     curios.services.ai.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable Ollama(local AI) and open-webui services.";
+      description = "Ollama(local AI) and open-webui services.";
     };
   };
 

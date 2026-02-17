@@ -55,7 +55,7 @@ in {
     fonts.enable = lib.mkDefault true;
     # NetworkManager (required by COSMIC).
     networking.enable = lib.mkDefault true;
-    # ZSH shell, REQUIRED
+    # ZSH shell
     shell.zsh.enable = lib.mkDefault true;
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;

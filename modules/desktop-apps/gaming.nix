@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = false;
         description =
-          "Gaming desktop applications: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
+          "Gaming applications: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper.";
       };
       steam.bigpicture.autoStart = lib.mkOption {
         type = lib.types.bool;

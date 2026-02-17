@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable CuriOS services.";
+        description = "REQUIRED CuriOS services - Flatpak, pipewire, fwupd...";
       };
       printing.enable = lib.mkOption {
         type = lib.types.bool;
@@ -17,7 +17,7 @@
       sshd.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enable SSH daemon services.";
+        description = "Enable SSH daemon service.";
       };
     };
   };

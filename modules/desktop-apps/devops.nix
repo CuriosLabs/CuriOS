@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = true;
         description =
-          "Desktop applications for developers - Neovim, git for github (gh), shellcheck, statix.";
+          "REQUIRED desktop applications for developers - Neovim, git for github (gh), shellcheck, statix.";
       };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;
