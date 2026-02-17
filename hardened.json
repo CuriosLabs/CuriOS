@@ -18,15 +18,12 @@
     "enable": false
   },
   "getty": {
-    "description": "WARNING: will prevent TTY console login if true",
     "enable": false
   },
   "networkManager": {
-    "description": "TODO: proton-vpn bug if set to true",
     "enable": false
   },
   "networkManager-dispatcher": {
-    "description": "TODO: proton-vpn bug if set to true",
     "enable": false
   },
   "nix-daemon": {
@@ -45,7 +42,6 @@
     "enable": false
   },
   "user": {
-    "description": "TODO: 'Flatpak run' bug if set to true",
     "enable": false
   },
   "wpa_supplicant": {

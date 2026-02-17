@@ -2,256 +2,200 @@
   "desktopApps": {
     "ai": {
       "chatgpt": {
-        "description": "ChatGPT web application",
         "enable": true
       },
       "claude": {
-        "description": "Claude web application",
         "enable": true
       },
       "cursor": {
-        "description": "Cursor AI-assisted IDE",
         "enable": true
       },
       "gemini": {
-        "description": "Google Gemini CLI",
         "enable": false
       },
       "grok": {
-        "description": "Grok web application",
         "enable": true
       },
       "lmstudio": {
-        "description": "LM Studio - Local AI",
         "enable": true
       },
       "mistral": {
-        "description": "Mistral LeChat web application",
         "enable": true
       },
       "windsurf": {
-        "description": "Windsurf AI-assisted IDE",
         "enable": false
       }
     },
     "appImage": {
-      "description": "Linux AppImage support",
       "enable": true
     },
     "basics": {
-      "description": "REQUIRED - CuriOS minimum desktop applications - Brave, Alacritty, Gimp3...",
       "enable": true
     },
     "browser": {
       "chromium": {
-        "description": "Ungoogled Chromium Web Browser",
         "enable": false
       },
       "firefox": {
-        "description": "Mozilla Firefox Web Browser",
         "enable": false
       },
       "librewolf": {
-        "description": "Fork of Firefox Web Browser",
         "enable": false
       },
       "vivaldi": {
-        "description": "Vivaldi Web Browser",
         "enable": false
       }
     },
     "chat": {
       "discord": {
-        "description": "Discord desktop application",
         "enable": false
       },
       "signal": {
-        "description": "Signal desktop application",
         "enable": true
       },
       "teamspeak": {
-        "description": "TeamSpeak6 desktop application",
         "enable": false
       },
       "whatsapp": {
-        "description": "WhatsApp web application",
         "enable": true
       }
     },
     "crypto": {
       "btc": {
-        "description": "Bitcoin Electrum and Sparrow wallets and tools (Bisq2, Coingecko, Mempool)",
         "enable": false
       },
-      "description": "Cryptocurrency desktop applications - REQUIRED by btc",
       "enable": false
     },
     "devops": {
       "cloudflared": {
-        "description": "Cloudflare tunnel client",
         "enable": false
       },
-      "description": "Desktop applications for developers",
       "editor": {
         "default": {
           "nvim": {
-            "description": "Set Neovim as default editor",
             "enable": false
           }
         },
         "vscode": {
-          "description": "Visual Studio Code editor",
           "enable": false
         },
         "zed": {
-          "description": "Zed high-performance editor",
           "enable": true
         }
       },
       "enable": true,
       "go": {
-        "description": "Go development tools",
         "enable": false
       },
       "java": {
-        "description": "Java development tools",
         "enable": false
       },
       "javascript": {
         "bun": {
-          "description": "Bun JavaScript toolkit",
           "enable": false
         },
-        "description": "NodeJS (npm,npx) Javascript runtime",
         "enable": true
       },
       "just": {
-        "description": "Just command runner",
         "enable": false
       },
       "networks": {
-        "description": "Network analysis tools",
         "enable": false
       },
       "python312": {
-        "description": "Python 3.12 development tools",
         "enable": false
       },
       "python313": {
-        "description": "Python 3.13 development tools",
         "enable": false
       },
       "rust": {
-        "description": "Rust development tools",
         "enable": false
       }
     },
     "gaming": {
-      "description": "Gaming applications: Steam, ProtonGE for Steam, Heroic Launcher, gamemoderun, Input-Remapper",
       "enable": false,
       "steam": {
         "bigpicture": {
-          "autoStart": false,
-          "description": "Auto-start Steam in Big Picture mode"
+          "autoStart": false
         }
       }
     },
     "office": {
       "conferencing": {
         "slack": {
-          "description": "Slack web application",
           "enable": false
         },
         "teams": {
-          "description": "MS Teams web application",
           "enable": false
         },
         "zoom": {
-          "description": "Zoom video conference app",
           "enable": false
         }
       },
       "crm": {
         "hubspot": {
           "baseUrl": "app.hubspot.com",
-          "description": "HubSpot CRM web application",
           "enable": false
         },
         "salesforce": {
           "baseUrl": "your-domain.my.salesforce.com",
-          "description": "Salesforce CRM web application",
           "enable": false
         }
       },
-      "description": "Office and productivity applications",
       "enable": true,
       "finance": {
         "gnucash": {
-          "description": "GnuCash accounting software",
           "enable": false
         }
       },
       "libreoffice": {
-        "description": "LibreOffice suite",
         "enable": false
       },
       "onlyoffice": {
         "desktopeditors": {
-          "description": "OnlyOffice Desktop Editors",
           "enable": true
         }
       },
       "projects": {
         "basecamp": {
           "baseUrl": "launchpad.37signals.com/signin",
-          "description": "Basecamp project management",
           "enable": true
         },
         "jira": {
           "baseUrl": "mycompanynamehere.atlassian.net",
-          "description": "Atlassian Jira project management",
           "enable": false
         }
       },
       "thunderbird": {
-        "description": "Mozilla Thunderbird email client",
         "enable": false
       }
     },
     "studio": {
-      "description": "Video and photo editing applications: OBS studio, audacity, DaVinci Resolve, Darktable",
       "enable": false
     },
     "utility": {
       "bitwarden": {
-        "description": "Bitwarden password manager",
         "enable": true
       },
       "flameshot": {
-        "description": "Flameshot screenshot tool",
         "enable": false
       },
       "keepassxc": {
-        "description": "KeePassXC password manager",
         "enable": false
       },
       "localsend": {
-        "description": "LocalSend file sharing on your local network",
         "enable": true
       }
     },
     "vpn": {
       "mullvad": {
-        "description": "Mullvad VPN GUI",
         "enable": false
       },
       "proton": {
         "autoStart": false,
-        "description": "ProtonVPN GUI",
         "enable": false
       },
       "tailscale": {
-        "description": "TailScale VPN",
         "enable": false,
         "useRoutingFeatures": "none"
       }
@@ -259,41 +203,31 @@
   },
   "services": {
     "ai": {
-      "description": "Local AI services (Ollama, openwebui)",
       "enable": false
     },
-    "description": "REQUIRED - System services configuration: Flatpak, pipewire",
     "enable": true,
     "printing": {
-      "description": "CUPS printing services",
       "enable": false
     },
     "sshd": {
-      "description": "SSH daemon services",
       "enable": false
     }
   },
   "others": {
-    "description": "REQUIRED - Other system programs",
     "enable": true,
     "openssl": {
-      "description": "OpenSSL cryptographic library",
       "enable": true
     }
   },
   "virtualisation": {
-    "description": "Virtualisation and container tools - Required by docker, podman or wine",
     "docker": {
-      "description": "Docker container engine",
       "enable": false
     },
     "enable": false,
     "podman": {
-      "description": "Podman container engine",
       "enable": false
     },
     "wine": {
-      "description": "Wine compatibility layer",
       "enable": false
     }
   }
