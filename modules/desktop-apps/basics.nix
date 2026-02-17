@@ -12,7 +12,7 @@ in {
       basics.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "CuriOS minimum desktop applications.";
+        description = "REQUIRED - CuriOS minimum desktop applications.";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;
