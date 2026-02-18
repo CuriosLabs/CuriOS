@@ -3,7 +3,10 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let
+  curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
+  curiosHardened = builtins.fromJSON (builtins.readFile ./hardened.json);
+in {
   # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
   imports = [
     ##################### Step 1: Hardware #####################
@@ -20,6 +23,14 @@
     ./settings.nix
   ] ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
   # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
+
+  # Importing curios modules settings from JSON files
+  curios = {
+    ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
+    inherit (curiosModules) desktopApps others services virtualisation;
+    ### Hardened configurations -WIP-
+    hardened = curiosHardened;
+  };
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -144,7 +155,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260216.1729";
+    nixos.variant_id = "unstable-20260218.0953";
   };
 
   # Collect garbage

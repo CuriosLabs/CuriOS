@@ -11,10 +11,7 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
-  curiosHardened = builtins.fromJSON (builtins.readFile ./hardened.json);
-in {
+{
   ### CuriOS options settings goes here:
   curios = {
     system = {
@@ -60,10 +57,6 @@ in {
     # File system - updated by curios-install during ISO install
     filesystems.luks.enable = lib.mkDefault true;
     filesystems.minimal.enable = lib.mkDefault false;
-    ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
-    inherit (curiosModules) desktopApps others services virtualisation;
-    ### Hardened configurations -WIP-
-    hardened = curiosHardened;
   };
 
   ### NixOS packages
