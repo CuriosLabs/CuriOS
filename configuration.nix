@@ -4,8 +4,14 @@
 { config, lib, pkgs, ... }:
 
 let
-  curiosModules = builtins.fromJSON (builtins.readFile ./modules.json);
-  curiosHardened = builtins.fromJSON (builtins.readFile ./hardened.json);
+  curiosModules = if builtins.pathExists ./modules.json then
+    builtins.fromJSON (builtins.readFile ./modules.json)
+  else
+    { };
+  curiosHardened = if builtins.pathExists ./hardened.json then
+    builtins.fromJSON (builtins.readFile ./hardened.json)
+  else
+    { };
 in {
   # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
   imports = [
@@ -27,7 +33,10 @@ in {
   # Importing curios modules settings from JSON files
   curios = {
     ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
-    inherit (curiosModules) desktopApps others services virtualisation;
+    desktopApps = curiosModules.desktopApps or { };
+    others = curiosModules.others or { };
+    services = curiosModules.services or { };
+    virtualisation = curiosModules.virtualisation or { };
     ### Hardened configurations -WIP-
     hardened = curiosHardened;
   };
