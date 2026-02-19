@@ -1056,11 +1056,11 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     OPTION_FS_LUKS=false
     OPTION_FS_MINI=false
   fi
-  jq --arg rpi4 "$OPTION_PLATFORM_RPI4" \
-    --arg amd64 "$OPTION_PLATFORM_AMD64" \
-    --arg efi "$OPTION_BOOTEFI" \
-    --arg luks "$OPTION_FS_LUKS" \
-    --arg mini "$OPTION_FS_MINI" \
+  jq --argjson rpi4 "$OPTION_PLATFORM_RPI4" \
+    --argjson amd64 "$OPTION_PLATFORM_AMD64" \
+    --argjson efi "$OPTION_BOOTEFI" \
+    --argjson luks "$OPTION_FS_LUKS" \
+    --argjson mini "$OPTION_FS_MINI" \
     '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # GPU settings:
@@ -1080,10 +1080,10 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     # Switch to LTS kernel by default for Nvidia GPU
     OPTION_KERNEL_LATEST=false
   fi
-  jq --arg gpuAmd "$OPTION_GPU_AMD" \
-    --arg gpuIntel "$OPTION_GPU_INTEL" \
-    --arg gpuNvidia "$OPTION_GPU_NVIDIA" \
-    --arg kernelLatest "$OPTION_KERNEL_LATEST" \
+  jq --argjson gpuAmd "$OPTION_GPU_AMD" \
+    --argjson gpuIntel "$OPTION_GPU_INTEL" \
+    --argjson gpuNvidia "$OPTION_GPU_NVIDIA" \
+    --argjson kernelLatest "$OPTION_KERNEL_LATEST" \
     '.curios.hardware.amdGpu.enable = $gpuAmd | .curios.hardware.intelGpu.enable = $gpuIntel | .curios.hardware.nvidiaGpu.enable = $gpuNvidia | .curios.bootefi.kernel.latest = $kernelLatest' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
 

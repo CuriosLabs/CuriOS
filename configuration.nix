@@ -27,7 +27,7 @@ in {
   # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
 
   # Importing curios modules settings from JSON files
-  curios = curiosModules;
+  curios = curiosModules.curios or { };
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -152,7 +152,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260219.1445";
+    nixos.variant_id = "unstable-20260219.1610";
   };
 
   # Collect garbage

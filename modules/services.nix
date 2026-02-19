@@ -123,7 +123,7 @@
         requires = [ "network-online.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [ pkgs.flatpak ];
-        script = if config.curios.desktop.cosmic.enable then ''
+        script = if config.curios.cosmic.enable then ''
           /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
         '' else ''

@@ -22,7 +22,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           sshd.enable = true;
         };
 
-        desktop.cosmic.enable = true;
+        cosmic.enable = true;
 
         # Set a keyboard layout to satisfy the xserver dependency
         system.keyboard = "us";

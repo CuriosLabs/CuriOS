@@ -11,7 +11,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the COSMIC module.
     config = {
-      curios.desktop.cosmic.enable = true;
+      curios.cosmic.enable = true;
       time.timeZone = "UTC";
     };
   };
