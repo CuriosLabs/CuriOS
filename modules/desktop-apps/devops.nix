@@ -5,7 +5,7 @@
 {
   # Declare options
   options = {
-    curios.desktopApps.devops = {
+    curios.desktop.devops = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -90,13 +90,13 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktopApps.devops.enable {
+  config = lib.mkIf config.curios.desktop.devops.enable {
     # basic Neovim
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-unwrapped;
       defaultEditor =
-        config.curios.desktopApps.devops.editor.default.nvim.enable;
+        config.curios.desktop.devops.editor.default.nvim.enable;
       viAlias = true;
       vimAlias = true;
     };
@@ -124,21 +124,21 @@
         ripgrep
         # YQ - yaml/xml/toml parser
         yq
-      ] ++ lib.optionals config.curios.desktopApps.devops.cloudflared.enable
+      ] ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
       [ cloudflared ]
-      ++ lib.optionals config.curios.desktopApps.devops.go.enable [
+      ++ lib.optionals config.curios.desktop.devops.go.enable [
         go
         golangci-lint
         jetbrains.goland
-      ] ++ lib.optionals config.curios.desktopApps.devops.java.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.java.enable [
         jetbrains.idea-oss
         jetbrains.jdk
-      ] ++ lib.optionals config.curios.desktopApps.devops.javascript.enable
+      ] ++ lib.optionals config.curios.desktop.devops.javascript.enable
       [ nodejs_24 ]
-      ++ lib.optionals config.curios.desktopApps.devops.javascript.bun.enable
+      ++ lib.optionals config.curios.desktop.devops.javascript.bun.enable
       [ bun ]
-      ++ lib.optionals config.curios.desktopApps.devops.just.enable [ just ]
-      ++ lib.optionals config.curios.desktopApps.devops.python312.enable [
+      ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
+      ++ lib.optionals config.curios.desktop.devops.python312.enable [
         # Python 3.12
         python312
         python312Packages.pip
@@ -147,7 +147,7 @@
         python312Packages.uv
         jetbrains.pycharm-oss
         ruff
-      ] ++ lib.optionals config.curios.desktopApps.devops.python313.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.python313.enable [
         # Python 3.13
         python313
         python313Packages.pip
@@ -156,8 +156,8 @@
         python313Packages.uv
         jetbrains.pycharm-oss
         ruff
-      ] ++ lib.optionals config.curios.desktopApps.devops.ruby.enable [ ruby ]
-      ++ lib.optionals config.curios.desktopApps.devops.rust.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.ruby.enable [ ruby ]
+      ++ lib.optionals config.curios.desktop.devops.rust.enable [
         # Rust provide cargo, rustc, rust-analyzer and more
         rustup
         cargo-c
@@ -167,7 +167,7 @@
         libxkbcommon
         llvmPackages.bintools
         pkg-config
-      ] ++ lib.optionals config.curios.desktopApps.devops.networks.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.networks.enable [
         # Networks
         nmap
         zenmap
@@ -175,11 +175,11 @@
         wireshark
         # VNC
         remmina
-      ] ++ lib.optionals config.curios.desktopApps.devops.editor.zed.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.editor.zed.enable [
         nil
         nixd
         zed-editor
-      ] ++ lib.optionals config.curios.desktopApps.devops.editor.vscode.enable
+      ] ++ lib.optionals config.curios.desktop.devops.editor.vscode.enable
       [ vscode-fhs ];
   };
 }

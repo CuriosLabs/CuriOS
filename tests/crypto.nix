@@ -17,7 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       time.timeZone = "UTC";
 
       # Enable the crypto module and all its sub-options
-      curios.desktopApps.crypto = {
+      curios.desktop.crypto = {
         enable = true;
         btc.enable = true;
       };

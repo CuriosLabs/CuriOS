@@ -17,7 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       time.timeZone = "UTC";
 
       # Enable the gaming module and all its sub-options
-      curios.desktopApps.gaming = {
+      curios.desktop.gaming = {
         enable = true;
         heroic.enable = true;
         retroarchFree.enable = true;

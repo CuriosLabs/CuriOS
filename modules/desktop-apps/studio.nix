@@ -5,7 +5,7 @@
 {
   # Declare options
   options = {
-    curios.desktopApps.studio.enable = lib.mkOption {
+    curios.desktop.studio.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description =
@@ -14,7 +14,7 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktopApps.studio.enable {
+  config = lib.mkIf config.curios.desktop.studio.enable {
     # OBS
     programs.obs-studio = { enable = true; };
     environment.systemPackages = with pkgs; [

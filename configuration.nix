@@ -27,23 +27,7 @@ in {
   # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
 
   # Importing curios modules settings from JSON files
-  curios = {
-    ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
-    backup = curiosModules.backup or { };
-    bootefi = curiosModules.bootefi or { };
-    desktopApps = curiosModules.desktopApps or { };
-    filesystems = curiosModules.filesystems or { };
-    fonts = curiosModules.fonts or { };
-    hardened = curiosModules.hardened or { };
-    hardware = curiosModules.hardware or { };
-    networking = curiosModules.networking or { };
-    others = curiosModules.others or { };
-    platform = curiosModules.platform or { };
-    services = curiosModules.services or { };
-    shell = curiosModules.shell or { };
-    system = curiosModules.system or { };
-    virtualisation = curiosModules.virtualisation or { };
-  };
+  curios = curiosModules;
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -132,21 +116,21 @@ in {
   # Allow unfree packages, could be overridden by some modules.
   nixpkgs.config.allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
     true
-  else if config.curios.desktopApps.ai.cursor.enable then
+  else if config.curios.desktop.ai.cursor.enable then
     true
-  else if config.curios.desktopApps.ai.windsurf.enable then
+  else if config.curios.desktop.ai.windsurf.enable then
     true
-  else if config.curios.desktopApps.office.enable then
+  else if config.curios.desktop.office.enable then
     true
-  else if config.curios.desktopApps.chat.teamspeak.enable then
+  else if config.curios.desktop.chat.teamspeak.enable then
     true
-  else if config.curios.desktopApps.gaming.enable then
+  else if config.curios.desktop.gaming.enable then
     true
-  else if config.curios.desktopApps.studio.enable then
+  else if config.curios.desktop.studio.enable then
     true
-  else if config.curios.desktopApps.devops.rust.enable then
+  else if config.curios.desktop.devops.rust.enable then
     true
-  else if config.curios.desktopApps.devops.go.enable then
+  else if config.curios.desktop.devops.go.enable then
     true
   else
     false;
@@ -168,7 +152,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260218.0953";
+    nixos.variant_id = "unstable-20260219.0910";
   };
 
   # Collect garbage

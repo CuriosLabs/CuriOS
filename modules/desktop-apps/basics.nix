@@ -8,7 +8,7 @@ let
 in {
   # Declare options
   options = {
-    curios.desktopApps = {
+    curios.desktop = {
       basics.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -169,7 +169,7 @@ in {
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktopApps.basics.enable {
+  config = lib.mkIf config.curios.desktop.basics.enable {
     environment.systemPackages = [
       pkgs.caligula
       curiosDocsWebapp
@@ -191,53 +191,53 @@ in {
       pkgs.tldr
       pkgs.vlc
       pkgs.yubioath-flutter
-    ] ++ lib.optionals config.curios.desktopApps.vpn.proton.enable [
+    ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
       pkgs.protonvpn-gui
-      (lib.mkIf config.curios.desktopApps.vpn.proton.autoStart
+      (lib.mkIf config.curios.desktop.vpn.proton.autoStart
         (pkgs.makeAutostartItem {
           name = "proton.vpn.app.gtk";
           package = pkgs.protonvpn-gui;
           appendExtraArgs = [ "--start-minimized" ];
         }))
-    ] ++ lib.optionals config.curios.desktopApps.ai.chatgpt.enable
+    ] ++ lib.optionals config.curios.desktop.ai.chatgpt.enable
       [ (import ./webapp-chatgpt.nix) ]
-      ++ lib.optionals config.curios.desktopApps.ai.claude.enable
+      ++ lib.optionals config.curios.desktop.ai.claude.enable
       [ (import ./webapp-claude.nix) ]
-      ++ lib.optionals config.curios.desktopApps.ai.cursor.enable [
+      ++ lib.optionals config.curios.desktop.ai.cursor.enable [
         pkgs.cursor-cli
         pkgs.code-cursor
-      ] ++ lib.optionals config.curios.desktopApps.ai.gemini.enable [
+      ] ++ lib.optionals config.curios.desktop.ai.gemini.enable [
         pkgs.gemini-cli
         (import ./desktop-gemini.nix)
-      ] ++ lib.optionals config.curios.desktopApps.ai.grok.enable
+      ] ++ lib.optionals config.curios.desktop.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
-      ++ lib.optionals config.curios.desktopApps.ai.lmstudio.enable
+      ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
       [ lmstudioApp ]
-      ++ lib.optionals config.curios.desktopApps.ai.mistral.enable
+      ++ lib.optionals config.curios.desktop.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
-      ++ lib.optionals config.curios.desktopApps.ai.windsurf.enable
+      ++ lib.optionals config.curios.desktop.ai.windsurf.enable
       [ pkgs.windsurf ]
-      ++ lib.optionals config.curios.desktopApps.browser.chromium.enable
+      ++ lib.optionals config.curios.desktop.browser.chromium.enable
       [ pkgs.ungoogled-chromium ]
-      ++ lib.optionals config.curios.desktopApps.browser.firefox.enable
+      ++ lib.optionals config.curios.desktop.browser.firefox.enable
       [ pkgs.firefox ]
-      ++ lib.optionals config.curios.desktopApps.browser.librewolf.enable
+      ++ lib.optionals config.curios.desktop.browser.librewolf.enable
       [ pkgs.librewolf ]
-      ++ lib.optionals config.curios.desktopApps.browser.vivaldi.enable
+      ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
       [ pkgs.vivaldi ]
-      ++ lib.optionals config.curios.desktopApps.chat.discord.enable
+      ++ lib.optionals config.curios.desktop.chat.discord.enable
       [ pkgs.discord ]
-      ++ lib.optionals config.curios.desktopApps.chat.signal.enable
+      ++ lib.optionals config.curios.desktop.chat.signal.enable
       [ pkgs.signal-desktop ]
-      ++ lib.optionals config.curios.desktopApps.chat.teamspeak.enable
+      ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
       [ pkgs.teamspeak6-client ]
-      ++ lib.optionals config.curios.desktopApps.chat.whatsapp.enable
+      ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
       [ (import ./webapp-whatsapp.nix) ]
-      ++ lib.optionals config.curios.desktopApps.utility.bitwarden.enable
+      ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
       [ pkgs.bitwarden-desktop ]
-      ++ lib.optionals config.curios.desktopApps.utility.keepassxc.enable
+      ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
       [ pkgs.keepassxc ]
-      ++ lib.optionals config.curios.desktopApps.utility.flameshot.enable
+      ++ lib.optionals config.curios.desktop.utility.flameshot.enable
       [ pkgs.flameshot ];
 
     services = {
@@ -250,14 +250,14 @@ in {
       # To allow current user to manage tailscale daemon: `sudo tailscale set --operator=$USER`
       # To launch the systray app on startup: `tailscale configure systray --enable-startup=systemd`
       tailscale = {
-        enable = lib.mkDefault config.curios.desktopApps.vpn.tailscale.enable;
+        enable = lib.mkDefault config.curios.desktop.vpn.tailscale.enable;
         permitCertUid = null;
         useRoutingFeatures = lib.mkDefault
-          config.curios.desktopApps.vpn.tailscale.useRoutingFeatures;
+          config.curios.desktop.vpn.tailscale.useRoutingFeatures;
       };
       # Mullvad VPN
       mullvad-vpn = {
-        enable = lib.mkDefault config.curios.desktopApps.vpn.mullvad.enable;
+        enable = lib.mkDefault config.curios.desktop.vpn.mullvad.enable;
         # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
         package = pkgs.mullvad-vpn;
       };
@@ -286,11 +286,11 @@ in {
 
     programs = {
       # Enabling Linux AppImage
-      appimage.enable = lib.mkDefault config.curios.desktopApps.appImage.enable;
-      appimage.binfmt = lib.mkDefault config.curios.desktopApps.appImage.enable;
+      appimage.enable = lib.mkDefault config.curios.desktop.appImage.enable;
+      appimage.binfmt = lib.mkDefault config.curios.desktop.appImage.enable;
       localsend = {
         enable =
-          lib.mkDefault config.curios.desktopApps.utility.localsend.enable;
+          lib.mkDefault config.curios.desktop.utility.localsend.enable;
       };
     };
   };

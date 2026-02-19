@@ -24,10 +24,11 @@ in {
     curios-sources
     curios-dotfiles
     pkgs.dialog
-    pkgs.nano
-    pkgs.parted
     pkgs.git
     pkgs.gnused
+    pkgs.jq
+    pkgs.nano
+    pkgs.parted
     pkgs.pciutils
   ];
 

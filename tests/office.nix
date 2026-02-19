@@ -16,7 +16,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktopApps.office = {
+      curios.desktop.office = {
         enable = true;
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;

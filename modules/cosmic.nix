@@ -3,7 +3,7 @@
 { config, lib, pkgs, ... }: {
   # Declare options
   options = {
-    curios.desktop.cosmic.enable = lib.mkOption {
+    curios.cosmic.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
       description = "Enable the COSMIC desktop environment.";
@@ -11,7 +11,7 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktop.cosmic.enable {
+  config = lib.mkIf config.curios.cosmic.enable {
     # Cosmic Desktop Env
     services.desktopManager.cosmic = {
       enable = true;

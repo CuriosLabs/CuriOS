@@ -12,53 +12,6 @@
 { config, lib, pkgs, ... }:
 
 {
-  ### CuriOS options settings goes here:
-  curios = {
-    system = {
-      hostname = "CuriOS";
-      i18n.locale = "en_US.UTF-8";
-      keyboard = "us";
-      pkgs = {
-        # Enable automated packages update and cleanup
-        autoupgrade.enable = true;
-        # Enable automated packages update and cleanup
-        gc.enable = true;
-      };
-      timeZone = "Etc/GMT";
-    };
-    ### Activate or deactivate CuriOS modules/ from here:
-    # Hardware platform settings updated by curios-install during ISO install
-    platform.amd64.enable = lib.mkDefault true;
-    platform.rpi4.enable = lib.mkDefault false;
-    # Hardware related modules - updated by curios-install during ISO install
-    hardware = {
-      # Modern AMD GPU
-      amdGpu.enable = lib.mkDefault false;
-      # Modern Intel GPU
-      intelGpu.enable = lib.mkDefault false;
-      # Modern Nvidia GPU
-      nvidiaGpu.enable = lib.mkDefault false;
-      # EXPERIMENTAL - laptop battery saver
-      laptop.enable = false;
-    };
-    # REQUIRED modules - Do NOT edit:
-    # Enable Restic backup
-    backup.enable = lib.mkDefault true;
-    bootefi.enable = lib.mkDefault true;
-    # Use latest stable kernel available if true, otherwise use LTS kernel.
-    bootefi.kernel.latest = lib.mkDefault true;
-    desktop.cosmic.enable = lib.mkDefault true;
-    # Fira, Noto, some Nerds fonts, JetBrains Mono
-    fonts.enable = lib.mkDefault true;
-    # NetworkManager (required by COSMIC).
-    networking.enable = lib.mkDefault true;
-    # ZSH shell
-    shell.zsh.enable = lib.mkDefault true;
-    # File system - updated by curios-install during ISO install
-    filesystems.luks.enable = lib.mkDefault true;
-    filesystems.minimal.enable = lib.mkDefault false;
-  };
-
   ### NixOS packages
   environment.systemPackages = [
     # Add your packages here - find package name at https://search.nixos.org/packages
@@ -77,7 +30,7 @@
       initialHashedPassword = "";
       description = "My Name";
       extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
-        ++ lib.optionals config.curios.desktopApps.crypto.enable [ "tty" ]
+        ++ lib.optionals config.curios.desktop.crypto.enable [ "tty" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
         ++ lib.optionals config.curios.virtualisation.enable [
           "libvirtd"

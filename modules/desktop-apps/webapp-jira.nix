@@ -17,7 +17,7 @@ pkgs.stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "net.atlassian.jira";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktopApps.office.projects.jira.baseUrl}";
+      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.office.projects.jira.baseUrl}";
     desktopName = "Jira";
     icon = "webapp-jira";
     categories = [ "Office" ];

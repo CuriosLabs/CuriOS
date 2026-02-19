@@ -5,7 +5,7 @@
 {
   # Declare options
   options = {
-    curios.desktopApps.gaming = {
+    curios.desktop.gaming = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -45,12 +45,12 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktopApps.gaming.enable {
+  config = lib.mkIf config.curios.desktop.gaming.enable {
     # Steam
     # unfree packages required for Steam and Lutris
     nixpkgs.config.allowUnfree = lib.mkForce true;
     programs.steam = {
-      enable = lib.mkDefault config.curios.desktopApps.gaming.steam.enable;
+      enable = lib.mkDefault config.curios.desktop.gaming.steam.enable;
       #remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       #dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
       #localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
@@ -68,15 +68,15 @@
       # See: https://github.com/FeralInteractive/gamemode
       pkgs.gamemode
       pkgs.steam-run
-      (lib.mkIf config.curios.desktopApps.gaming.steam.bigpicture.autoStart
+      (lib.mkIf config.curios.desktop.gaming.steam.bigpicture.autoStart
         (pkgs.makeAutostartItem {
           name = "steam";
           package = pkgs.steam;
           appendExtraArgs = [ "--bigpicture" ];
         }))
-    ] ++ lib.optionals config.curios.desktopApps.gaming.heroic.enable
+    ] ++ lib.optionals config.curios.desktop.gaming.heroic.enable
       [ pkgs.heroic ]
-      ++ lib.optionals config.curios.desktopApps.gaming.retroarchFree.enable
+      ++ lib.optionals config.curios.desktop.gaming.retroarchFree.enable
       [ pkgs.retroarch-free ];
   };
 }

@@ -6,7 +6,7 @@ let electrumApp = import ./crypto-wallet-electrum.nix { inherit pkgs lib; };
 in {
   # Declare options
   options = {
-    curios.desktopApps.crypto = {
+    curios.desktop.crypto = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -22,19 +22,19 @@ in {
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktopApps.crypto.enable {
+  config = lib.mkIf config.curios.desktop.crypto.enable {
     environment.systemPackages = [
       pkgs.secp256k1
       (import ./webapp-coingecko.nix)
       (import ./webapp-mempool.nix)
-    ] ++ lib.optionals config.curios.desktopApps.crypto.btc.enable [
+    ] ++ lib.optionals config.curios.desktop.crypto.btc.enable [
       pkgs.bisq2
       electrumApp
       pkgs.sparrow
     ];
     # Add sparrow udev rules for hardware wallets
     services.udev.packages =
-      lib.mkIf config.curios.desktopApps.crypto.btc.enable [ pkgs.sparrow ];
+      lib.mkIf config.curios.desktop.crypto.btc.enable [ pkgs.sparrow ];
     # Custom udev rules for hardware wallets
     services.udev.extraRules = ''
       # Blockstream Jade

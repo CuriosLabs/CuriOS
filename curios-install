@@ -179,6 +179,10 @@ if ! available dialog; then
   echo -e "${RED}dialog command not found!${NC}"
   exit 2
 fi
+if ! available jq; then
+  echo -e "${RED}jq command not found!${NC}"
+  exit 2
+fi
 if [ $RPI4_INSTALL -eq 0 ]; then
   if ! available parted; then
     echo -e "${RED}parted command not found!${NC}"
@@ -1015,58 +1019,73 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager-applet/ "$CURIOS_SRC_PATH"/pkgs/curios-manager-applet/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/snitch/ "$CURIOS_SRC_PATH"/pkgs/snitch/default.nix
 
-  # Update user language:
-  sed "s/i18n\.locale = \".*/i18n.locale = \"${SELECTED_LOCALE}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
-  # Update console keyboard map:
-  sed "s/keyboard = \".*/keyboard = \"${SELECTED_LOCALE_CONSOLE}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
-  # Update time zone
-  sed "s/timeZone = \".*/timeZone = \"${SELECTED_TZ//\//\\\/}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   # User settings
   sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s#initialHashedPassword = \".*#initialHashedPassword = \"${HASHED_USER_PASSWD}\";#g" -i "$NIXOS_CONFIG_DIR"/settings.nix
-  # Update hostname
-  sed "s/hostname = \".*/hostname = \"${PC_HOSTNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+
+  # Update modules.json with selected locale, keyboard, time zone and hostname:
+  jq --arg locale "$SELECTED_LOCALE" \
+    --arg kbd "$SELECTED_LOCALE_CONSOLE" \
+    --arg tz "$SELECTED_TZ" \
+    --arg host "$PC_HOSTNAME" \
+    '.curios.system.i18n.locale = $locale | .curios.system.keyboard = $kbd | .curios.system.timeZone = $tz | .curios.system.hostname = $host' \
+    "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # platform settings:
+  OPTION_PLATFORM_RPI4=false
+  OPTION_PLATFORM_AMD64=true
+  OPTION_BOOTEFI=true
+  OPTION_FS_LUKS=true
+  OPTION_FS_MINI=false
   if [ $RPI4_INSTALL -eq 0 ]; then
-    sed 's/platform\.rpi4\.enable = .*/platform.rpi4.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/platform\.amd64\.enable = .*/platform.amd64.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/bootefi\.enable = .*/bootefi.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_PLATFORM_RPI4=false
+    OPTION_PLATFORM_AMD64=true
+    OPTION_BOOTEFI=true
     # filesystems settings:
     if [ $ENCRYPT_DISK -eq 1 ]; then
-      # Update settings.nix
-      sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-      sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+      OPTION_FS_LUKS=true
+      OPTION_FS_MINI=false
     else
-      # Also update settings.nix
-      sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-      sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+      OPTION_FS_LUKS=false
+      OPTION_FS_MINI=true
     fi
   else
-    sed 's/platform\.rpi4\.enable = .*/platform.rpi4.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/platform\.amd64\.enable = .*/platform.amd64.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/bootefi\.enable = .*/bootefi.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/filesystems\.luks\.enable = .*/filesystems.luks.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/filesystems\.minimal\.enable = .*/filesystems.minimal.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_PLATFORM_RPI4=true
+    OPTION_PLATFORM_AMD64=false
+    OPTION_BOOTEFI=false
+    OPTION_FS_LUKS=false
+    OPTION_FS_MINI=false
   fi
+  jq --arg rpi4 "$OPTION_PLATFORM_RPI4" \
+    --arg amd64 "$OPTION_PLATFORM_AMD64" \
+    --arg efi "$OPTION_BOOTEFI" \
+    --arg luks "$OPTION_FS_LUKS" \
+    --arg mini "$OPTION_FS_MINI" \
+    '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
+    "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # GPU settings:
+  OPTION_GPU_AMD=false
+  OPTION_GPU_NVIDIA=false
+  OPTION_GPU_INTEL=false
+  OPTION_KERNEL_LATEST=true
   if [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "AMD" ]]; then
     echo "Enabling AMD GPU..."
-    sed 's/amdGpu\.enable = .*/amdGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_GPU_AMD=true
   elif [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "Intel" ]]; then
     echo "Enabling Intel GPU..."
-    sed 's/intelGpu\.enable = .*/intelGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_GPU_INTEL=true
   elif [[ "$GPU_INSTALL" -eq 1 && "$GPU_VENDOR_DETECTED" == "Nvidia" ]]; then
     echo "Enabling Nvidia GPU..."
-    sed 's/nvidiaGpu\.enable = .*/nvidiaGpu.enable = lib.mkDefault true;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_GPU_NVIDIA=true
     # Switch to LTS kernel by default for Nvidia GPU
-    sed 's/bootefi\.kernel\.latest = .*/bootefi.kernel.latest = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-  else
-    echo "Disabling GPU..."
-    sed 's/amdGpu\.enable = .*/amdGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/intelGpu\.enable = .*/intelGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
-    sed 's/nvidiaGpu\.enable = .*/nvidiaGpu.enable = lib.mkDefault false;/g' -i "$NIXOS_CONFIG_DIR"/settings.nix
+    OPTION_KERNEL_LATEST=false
   fi
+  jq --arg gpuAmd "$OPTION_GPU_AMD" \
+    --arg gpuIntel "$OPTION_GPU_INTEL" \
+    --arg gpuNvidia "$OPTION_GPU_NVIDIA" \
+    --arg kernelLatest "$OPTION_KERNEL_LATEST" \
+    '.curios.hardware.amdGpu.enable = $gpuAmd | .curios.hardware.intelGpu.enable = $gpuIntel | .curios.hardware.nvidiaGpu.enable = $gpuNvidia | .curios.bootefi.kernel.latest = $kernelLatest' \
+    "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
 
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"

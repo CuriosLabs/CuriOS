@@ -5,6 +5,7 @@ pkgs.mkShell {
     # For curios-install
     dialog
     git
+    jq
     mkpasswd
     parted
     # For justfile

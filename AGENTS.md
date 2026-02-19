@@ -94,7 +94,7 @@ organized manner.
 - **Descriptive Naming:** File and module names are descriptive and follow a
 consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
-(e.g., `config.curios.desktopApps.browser.chromium.enable`). All custom options
+(e.g., `config.curios.desktop.browser.chromium.enable`). All custom options
 are defined in `modules/curios-options.nix`.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
@@ -207,13 +207,13 @@ When working with CuriOS modules, here are common configuration patterns:
 - **Enable a desktop app category**:
 
   ```nix
-  config.curios.desktopApps.office.enable = true;
+  config.curios.desktop.office.enable = true;
   ```
 
 - **Enable specific apps within a category**:
 
   ```nix
-  config.curios.desktopApps.browser = {
+  config.curios.desktop.browser = {
     chromium.enable = true;
     firefox.enable = true;
   };
