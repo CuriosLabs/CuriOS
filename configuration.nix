@@ -8,10 +8,6 @@ let
     builtins.fromJSON (builtins.readFile ./modules.json)
   else
     { };
-  curiosHardened = if builtins.pathExists ./hardened.json then
-    builtins.fromJSON (builtins.readFile ./hardened.json)
-  else
-    { };
 in {
   # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
   imports = [
@@ -33,12 +29,20 @@ in {
   # Importing curios modules settings from JSON files
   curios = {
     ### Modules below SHOULD be activated on user needs - EDIT ./modules.json:
+    backup = curiosModules.backup or { };
+    bootefi = curiosModules.bootefi or { };
     desktopApps = curiosModules.desktopApps or { };
+    filesystems = curiosModules.filesystems or { };
+    fonts = curiosModules.fonts or { };
+    hardened = curiosModules.hardened or { };
+    hardware = curiosModules.hardware or { };
+    networking = curiosModules.networking or { };
     others = curiosModules.others or { };
+    platform = curiosModules.platform or { };
     services = curiosModules.services or { };
+    shell = curiosModules.shell or { };
+    system = curiosModules.system or { };
     virtualisation = curiosModules.virtualisation or { };
-    ### Hardened configurations -WIP-
-    hardened = curiosHardened;
   };
 
   # updated by curios-install

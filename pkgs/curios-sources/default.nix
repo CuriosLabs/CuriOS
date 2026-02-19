@@ -19,7 +19,6 @@ stdenvNoCC.mkDerivation {
       ../../modules.json
       ../../pkgs
       ../../curios-install
-      ../../hardened.json
       ../../logo.txt
     ];
   };
