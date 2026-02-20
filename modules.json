@@ -50,7 +50,7 @@
     },
     "services": {
       "ai": {
-        "enable": true
+        "enable": false
       },
       "enable": true,
       "printing": {
@@ -78,9 +78,9 @@
     },
     "virtualisation": {
       "docker": {
-        "enable": true
+        "enable": false
       },
-      "enable": true,
+      "enable": false,
       "podman": {
         "enable": false
       },
