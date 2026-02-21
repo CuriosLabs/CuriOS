@@ -5,12 +5,12 @@
 { pkgs, lib }:
 let
   pname = "lm-studio";
-  version = "0.4.1-1";
+  version = "0.4.3-2";
 
   src = pkgs.fetchurl {
     url =
       "https://installers.lmstudio.ai/linux/x64/${version}/LM-Studio-${version}-x64.AppImage";
-    hash = "sha256-0Y4XjK3vfWeY8Z5tQfM6KX4modKFCRy8MNqCUtGKRvA=";
+    hash = "sha256-kUQca66HIg5yftfQlD7cVqjJTQ3gRNrXopuV6na/mkc=";
   };
 
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
