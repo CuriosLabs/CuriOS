@@ -6,7 +6,7 @@
     curios.hardened.dbus.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for dbus.";
+      description = "Hardened systemd configuration for dbus.";
     };
   };
 
@@ -26,9 +26,7 @@
       PrivateTmp = true;
       RestrictSUIDSGID = true;
       RestrictRealtime = true;
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-      ];
+      RestrictAddressFamilies = [ "AF_UNIX" ];
       RestrictNamespaces = true;
       SystemCallErrorNumber = "EPERM";
       SystemCallArchitectures = "native";
@@ -40,12 +38,13 @@
         "~@reboot"
         "~@swap"
         "~@cpu-emulation"
-     ];
+      ];
       LockPersonality = true;
-      IPAddressDeny = ["0.0.0.0/0" "::/0"];
+      IPAddressDeny = [ "0.0.0.0/0" "::/0" ];
       MemoryDenyWriteExecute = true;
       DevicePolicy = "closed";
-      UMask = 0077;
+      UMask = 77;
     };
   };
 }
+

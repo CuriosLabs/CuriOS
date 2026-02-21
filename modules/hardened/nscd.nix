@@ -6,7 +6,7 @@
     curios.hardened.nscd.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for nscd.";
+      description = "Hardened systemd configuration for nscd.";
     };
   };
 
@@ -24,19 +24,11 @@
       RestrictRealtime = true;
       MemoryDenyWriteExecute = true;
       LockPersonality = true;
-      SystemCallFilter = [
-        "~@mount"
-        "~@swap"
-        "~@clock"
-        "~@obsolete"
-        "~@cpu-emulation"
-      ];
+      SystemCallFilter =
+        [ "~@mount" "~@swap" "~@clock" "~@obsolete" "~@cpu-emulation" ];
       SystemCallArchitectures = "native";
-      CapabilityBoundingSet= [
-        "~CAP_CHOWN"
-        "~CAP_FSETID"
-        "~CAP_SETFCAP"
-      ];
+      CapabilityBoundingSet = [ "~CAP_CHOWN" "~CAP_FSETID" "~CAP_SETFCAP" ];
     };
   };
 }
+

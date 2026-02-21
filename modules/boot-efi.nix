@@ -6,7 +6,8 @@
     curios.bootefi.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable systemd EFI boot loader";
+      description =
+        "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
     };
     curios.bootefi.kernel.latest = lib.mkOption {
       type = lib.types.bool;

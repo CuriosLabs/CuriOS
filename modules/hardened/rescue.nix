@@ -6,7 +6,7 @@
     curios.hardened.rescue.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for rescue.";
+      description = "Hardened systemd configuration for rescue.";
     };
   };
 
@@ -27,26 +27,14 @@
       RestrictNamespaces = true;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
-      RestrictAddressFamilies = [
-        "~AF_INET6"
-        "~AF_INET"
-        "~AF_PACKET"
-      ];
+      RestrictAddressFamilies = [ "~AF_INET6" "~AF_INET" "~AF_PACKET" ];
       MemoryDenyWriteExecute = true;
       LockPersonality = true;
-      SystemCallFilter = [
-        "~@swap"
-        "~@clock"
-        "~@obsolete"
-        "~@cpu-emulation"
-        "~@resources"
-      ];
+      SystemCallFilter =
+        [ "~@swap" "~@clock" "~@obsolete" "~@cpu-emulation" "~@resources" ];
       SystemCallArchitectures = "native";
-      CapabilityBoundingSet= [
-        "~CAP_CHOWN"
-        "~CAP_FSETID"
-        "~CAP_SETFCAP"
-      ];
+      CapabilityBoundingSet = [ "~CAP_CHOWN" "~CAP_FSETID" "~CAP_SETFCAP" ];
     };
   };
 }
+

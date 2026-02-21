@@ -6,7 +6,8 @@
     curios.hardened.user.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for user.";
+      description =
+        "Hardened systemd configuration for user - WARNING: may cause 'flatpak run' bug.";
     };
   };
 
@@ -23,11 +24,7 @@
       PrivateTmp = true;
       PrivateNetwork = true;
       MemoryDenyWriteExecute = true;
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-        "AF_BLUETOOTH"
-      ];
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_BLUETOOTH" ];
       RestrictNamespaces = true;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
@@ -43,3 +40,4 @@
     };
   };
 }
+

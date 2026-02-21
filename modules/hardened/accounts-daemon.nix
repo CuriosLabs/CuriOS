@@ -6,7 +6,7 @@
     curios.hardened.accountsDaemon.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for accounts-daemon.";
+      description = "Hardened systemd configuration for accounts-daemon.";
     };
   };
 
@@ -36,3 +36,4 @@
     };
   };
 }
+

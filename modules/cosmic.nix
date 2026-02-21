@@ -6,7 +6,7 @@
     curios.cosmic.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable the COSMIC desktop environment.";
+      description = "REQUIRED enable the COSMIC desktop environment.";
     };
   };
 

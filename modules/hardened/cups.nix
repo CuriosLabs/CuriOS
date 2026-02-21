@@ -6,7 +6,7 @@
     curios.hardened.cups.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for cups.";
+      description = "Hardened systemd configuration for cups.";
     };
   };
 
@@ -26,13 +26,8 @@
       RestrictRealtime = true;
       RestrictNamespaces = true;
       RestrictSUIDSGID = true;
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-        "AF_INET"
-        "AF_INET6"
-        "AF_PACKET"
-      ];
+      RestrictAddressFamilies =
+        [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" "AF_PACKET" ];
 
       MemoryDenyWriteExecute = true;
       SystemCallFilter = [
@@ -45,7 +40,8 @@
         "~@cpu-emulation"
       ];
       SystemCallArchitectures = "native";
-      LockPersonality= true;
+      LockPersonality = true;
     };
   };
 }
+

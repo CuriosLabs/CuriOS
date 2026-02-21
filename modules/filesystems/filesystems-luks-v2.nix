@@ -9,8 +9,7 @@
     curios.filesystems.luks.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description =
-        "Filesystems with LUKS+LVM as defined by curios-install full disk encryption option.";
+      description = "Filesystems with LUKS+LVM - SET by curios-install";
     };
   };
 

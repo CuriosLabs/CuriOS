@@ -9,7 +9,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enabling office applications - Obsidian, Joplin.";
+        description = "REQUIRED office applications - Obsidian, Joplin.";
       };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;
@@ -127,10 +127,9 @@
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals
-      config.curios.desktop.office.conferencing.slack.enable
-      [ (import ./webapp-slack.nix) ] ++ lib.optionals
-      config.curios.desktop.office.conferencing.teams.enable
+      ++ lib.optionals config.curios.desktop.office.conferencing.slack.enable
+      [ (import ./webapp-slack.nix) ]
+      ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
       [ (import ./webapp-teams.nix) ]
       ++ lib.optionals config.curios.desktop.office.conferencing.zoom.enable
       [ pkgs.zoom-us ];

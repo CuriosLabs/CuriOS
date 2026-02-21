@@ -6,7 +6,7 @@
     curios.hardened.display-manager.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for display-manager.";
+      description = "Hardened systemd configuration for display-manager.";
     };
   };
 
@@ -21,15 +21,8 @@
       PrivateIPC = true;
       RestrictSUIDSGID = true;
       RestrictRealtime = true;
-      RestrictNamespaces = [
-        "~cgroup"
-      ];
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-        "AF_INET"
-        "AF_INET6"
-      ];
+      RestrictNamespaces = [ "~cgroup" ];
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" ];
       SystemCallErrorNumber = "EPERM";
       SystemCallFilter = [
         "~@obsolete"
@@ -43,7 +36,7 @@
       ];
       SystemCallArchitectures = "native";
       LockPersonality = true;
-      IPAddressDeny = ["0.0.0.0/0" "::/0"];
+      IPAddressDeny = [ "0.0.0.0/0" "::/0" ];
       CapabilityBoundingSet = [
         "CAP_SYS_ADMIN"
         "CAP_SETUID"
@@ -61,9 +54,10 @@
       ];
       DeviceAllow = "/dev/tty7 rw";
       DevicePolicy = "closed";
-      UMask = 0077;
+      UMask = 77;
       LogLevelMax = "debug";
       KeyringMode = lib.mkForce "private";
     };
   };
 }
+

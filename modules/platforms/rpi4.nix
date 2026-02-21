@@ -17,7 +17,7 @@
     curios.platform.rpi4.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Raspberry PI 4 configuration";
+      description = "REQUIRED config on Raspberry PI 4 platform.";
     };
   };
 

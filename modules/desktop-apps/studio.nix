@@ -9,7 +9,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Applications related to video/photo edition: OBS, Audacity, DaVinci Resolve, Darktable.";
+        "Video/Photo edition tools: OBS, Audacity, DaVinci Resolve, Darktable.";
     };
   };
 
