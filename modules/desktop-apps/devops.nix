@@ -53,13 +53,12 @@
       javascript.bun.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "bun - a fast JavaScript toolkit.";
+        description = "A fast JavaScript toolkit.";
       };
       just.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description =
-          "just - handy way to save and run project-specific commands.";
+        description = "Handy way to save and run project-specific commands.";
       };
       python312.enable = lib.mkOption {
         type = lib.types.bool;
@@ -95,8 +94,7 @@
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-unwrapped;
-      defaultEditor =
-        config.curios.desktop.devops.editor.default.nvim.enable;
+      defaultEditor = config.curios.desktop.devops.editor.default.nvim.enable;
       viAlias = true;
       vimAlias = true;
     };
@@ -125,8 +123,7 @@
         # YQ - yaml/xml/toml parser
         yq
       ] ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
-      [ cloudflared ]
-      ++ lib.optionals config.curios.desktop.devops.go.enable [
+      [ cloudflared ] ++ lib.optionals config.curios.desktop.devops.go.enable [
         go
         golangci-lint
         jetbrains.goland
@@ -136,8 +133,7 @@
       ] ++ lib.optionals config.curios.desktop.devops.javascript.enable
       [ nodejs_24 ]
       ++ lib.optionals config.curios.desktop.devops.javascript.bun.enable
-      [ bun ]
-      ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
+      [ bun ] ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.devops.python312.enable [
         # Python 3.12
         python312
