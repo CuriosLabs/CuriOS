@@ -67,28 +67,32 @@
     #  noProxy = "127.0.0.1,localhost,internal.domain";
     #};
   };
-  # pipewire sound settings:
-  services.pipewire = {
-    extraConfig.pipewire."92-low-latency" = {
-      # Keep increasing the quantum value until you get no sound crackles
-      "default.clock.quantum" = 512;
-      "default.clock.min-quantum" = 256;
-      "default.clock.max-quantum" = 16384;
+
+  # Services
+  services = {
+    ### pipewire sound settings:
+    pipewire = {
+      extraConfig.pipewire."92-low-latency" = {
+        # Keep increasing the quantum value until you get no sound crackles
+        "default.clock.quantum" = 512;
+        "default.clock.min-quantum" = 256;
+        "default.clock.max-quantum" = 16384;
+      };
     };
-  };
-  # Ollama
-  services.ollama = {
-    environmentVariables = {
-      # Set Ollama service model context length
-      # Adjust to the model VRAM usage, the bigger the better
-      OLLAMA_CONTEXT_LENGTH = "16384";
-      # For AMD Ryzen 7 PRO hardware, uncomment parameter below.
-      # To adjust value, see command result of: nix-shell -p "rocmPackages.rocminfo" --run "rocminfo" | grep "gfx"
-      # used to be necessary, but doesn't seem to anymore
-      #HCC_AMDGPU_TARGET = "gfx1103";
+    ### Ollama
+    ollama = {
+      environmentVariables = {
+        # Set Ollama service model context length
+        # Adjust to the model VRAM usage, the bigger the better
+        OLLAMA_CONTEXT_LENGTH = "16384";
+        # For AMD Ryzen 7 PRO hardware, uncomment parameter below.
+        # To adjust value, see command result of: nix-shell -p "rocmPackages.rocminfo" --run "rocminfo" | grep "gfx"
+        # used to be necessary, but doesn't seem to anymore
+        #HCC_AMDGPU_TARGET = "gfx1103";
+      };
+      # May require overriding if rocm does not detect your AMD GPU. 
+      #rocmOverrideGfx = "11.0.2";
     };
-    # May require overriding if rocm does not detect your AMD GPU. 
-    #rocmOverrideGfx = "11.0.2";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
