@@ -11,6 +11,11 @@
         default = true;
         description = "REQUIRED office applications - Obsidian, Joplin.";
       };
+      calibre.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Calibre e-books manager.";
+      };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -111,6 +116,8 @@
   # Declare configuration
   config = lib.mkIf config.curios.desktop.office.enable {
     environment.systemPackages = [ pkgs.obsidian pkgs.joplin-desktop ]
+      ++ lib.optionals config.curios.desktop.office.calibre.enable
+      [ pkgs.calibre ]
       ++ lib.optionals config.curios.desktop.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
       config.curios.desktop.office.onlyoffice.desktopeditors.enable
