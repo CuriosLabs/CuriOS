@@ -96,8 +96,8 @@ in {
         };
         gemini.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
-          description = "Google Gemini CLI.";
+          default = true;
+          description = "Google Gemini web app.";
         };
         grok.enable = lib.mkOption {
           type = lib.types.bool;
@@ -206,13 +206,11 @@ in {
       ++ lib.optionals config.curios.desktop.ai.cursor.enable [
         pkgs.cursor-cli
         pkgs.code-cursor
-      ] ++ lib.optionals config.curios.desktop.ai.gemini.enable [
-        pkgs.gemini-cli
-        (import ./desktop-gemini.nix)
-      ] ++ lib.optionals config.curios.desktop.ai.grok.enable
+      ] ++ lib.optionals config.curios.desktop.ai.gemini.enable
+      [ (import ./webapp-gemini.nix) ]
+      ++ lib.optionals config.curios.desktop.ai.grok.enable
       [ (import ./webapp-grok.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
-      [ lmstudioApp ]
+      ++ lib.optionals config.curios.desktop.ai.lmstudio.enable [ lmstudioApp ]
       ++ lib.optionals config.curios.desktop.ai.mistral.enable
       [ (import ./webapp-mistral.nix) ]
       ++ lib.optionals config.curios.desktop.ai.windsurf.enable
@@ -226,8 +224,7 @@ in {
       ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
       [ pkgs.vivaldi ]
       ++ lib.optionals config.curios.desktop.chat.discord.enable
-      [ pkgs.discord ]
-      ++ lib.optionals config.curios.desktop.chat.signal.enable
+      [ pkgs.discord ] ++ lib.optionals config.curios.desktop.chat.signal.enable
       [ pkgs.signal-desktop ]
       ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
       [ pkgs.teamspeak6-client ]
@@ -252,8 +249,8 @@ in {
       tailscale = {
         enable = lib.mkDefault config.curios.desktop.vpn.tailscale.enable;
         permitCertUid = null;
-        useRoutingFeatures = lib.mkDefault
-          config.curios.desktop.vpn.tailscale.useRoutingFeatures;
+        useRoutingFeatures =
+          lib.mkDefault config.curios.desktop.vpn.tailscale.useRoutingFeatures;
       };
       # Mullvad VPN
       mullvad-vpn = {
@@ -289,8 +286,7 @@ in {
       appimage.enable = lib.mkDefault config.curios.desktop.appImage.enable;
       appimage.binfmt = lib.mkDefault config.curios.desktop.appImage.enable;
       localsend = {
-        enable =
-          lib.mkDefault config.curios.desktop.utility.localsend.enable;
+        enable = lib.mkDefault config.curios.desktop.utility.localsend.enable;
       };
     };
   };
