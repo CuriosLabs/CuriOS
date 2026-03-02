@@ -65,6 +65,44 @@ lint:
   @echo 'Linting Bash files...'
   shellcheck --color=always -f tty -x ./curios-install
 
+# WARNING! Upgrade a NixOS system current configuration to the current CuriOS git branch.
+nixos-upgrade:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if ! command -v nixos-rebuild >/dev/null; then
+    printf "\e[31m Not a Nixos system.\e[0m\n"
+    exit 1
+  fi
+  read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
+  case $yn in
+    [Yy]*)
+      printf "\e[32m Installing Curios...\e[0m\n"
+      sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
+      if [ ! -f /etc/nixos/settings.nix ]; then
+        sudo install -D -m 644 -t /etc/nixos/ ./settings.nix
+        printf "Default settings.nix file installed! Edit /etc/nixos/settings.nix to match your username."
+      fi
+      sudo install -D -m 644 -t /etc/nixos/ ./logo.txt
+      sudo mkdir -p /etc/nixos/modules/
+      sudo cp -r -f ./modules/ /etc/nixos/
+      sudo mkdir -p /etc/nixos/pkgs/
+      sudo cp -r -f ./pkgs/ /etc/nixos/
+      NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
+      if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
+        printf "\e[32m Nix channel is already up-to-date.\e[0m\n"
+      else
+        printf "Updating Nix channel..."
+        sudo nix-channel --add "$NIX_CHANNEL_URL" nixos
+        sudo nix-channel --update
+      fi
+      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
+      printf "\e[32m Done.\e[0m\n"
+      ;;
+    [Nn]*) echo "No selected"; exit;;
+    [Cc]*) echo "Cancel selected"; exit;;
+    *) echo "Invalid input"; exit 1;;
+  esac
+
 # Push build ISO file to github as a release.
 publish:
   #!/usr/bin/env bash
