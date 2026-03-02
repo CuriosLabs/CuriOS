@@ -38,9 +38,9 @@ the whole system from a modern sleek Terminal User Interface.
 - ⌨️ Alacritty terminal with ZSH and a lot of useful modern commands, including
 ⚡️ Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd, and many more...
 - ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
-(Ollama is also easily installable). [Cursor](https://cursor.com/features) for
-an AI-assisted IDE. Desktop shortcut for AI chat web applications (ChatGPT,
-Claude, Grok and Mistral).
+([Ollama](https://ollama.com/) is also easily installable).
+[Cursor](https://cursor.com/features) for an AI-assisted IDE. Desktop shortcuts
+for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
 - 🐧 Uses the latest stable Linux kernel by default.
 - 🗛  A bunch of nerd fonts...
 

@@ -16,7 +16,7 @@ is a plus.
 - An internet connection will be required during the installation. It is
   recommended to use an Ethernet cable for this operation. If you can only use
   Wi-Fi, please note that the ISO does not include `NetworkManager`; therefore, you
-  will have to manually set up the connection with `nmtui`.
+  will have to manually set up the connection with [nmtui](https://man.archlinux.org/man/nmtui.1).
 - Curi*OS* does not support Secure Boot/TPM for the moment. You may have to turn
   it off in the UEFI menu of your PC.
 
