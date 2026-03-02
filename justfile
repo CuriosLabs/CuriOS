@@ -73,6 +73,7 @@ nixos-upgrade:
     printf "\e[31m Not a Nixos system.\e[0m\n"
     exit 1
   fi
+  printf "\e[31m CAUTION! This will modify your system.\e[0m\n"
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
