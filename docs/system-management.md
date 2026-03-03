@@ -6,9 +6,11 @@ Curi*OS* comes with a TUI `curios-manager` (shortcut: Super+Return).
 > The **Super** key is the **Windows** key on most keyboard, the **Command** key
 on Apple's keyboard.
 
-With it, you can update/upgrade the entire system, update your hardware
-firmware, check your disk usage, launch the process manager (btop), and much
-more.
+With it, you can update/upgrade the entire system, add/remove packages (applications),
+update your hardware firmware, check your disk usage, launch the process manager
+(btop), and much more.
+
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -124,7 +126,7 @@ desktop:
 ![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
 
 To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
-Super+Return) and choose the `👆Upgrade` option.
+Super+Return) and choose the `👆Upgrade` option from the main menu.
 
 ## NixOS Management
 
