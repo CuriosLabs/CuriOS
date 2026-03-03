@@ -17,14 +17,10 @@ Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort
 ## Install/uninstall applications
 
 You can manually edit the Curi*OS* system settings file
-`/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to
-install/uninstall applications or change some system settings.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main_settings.png?raw=true "CuriOS manager settings")
-
-For example, do you want to game and install Steam, Heroic Launcher, and more?
-
-Set `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/CuriOS-manager_settingsedit2.png?raw=true "CuriOS manager settings editor")
+`/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to add
+custom Nix configuration change. It launch the system `$EDITOR` which is `nano`
+by default.
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_settingsedit3.png?raw=true "CuriOS manager settings")
 
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
