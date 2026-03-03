@@ -70,9 +70,10 @@ User Interface).
 **Ollama** is a command-line tool to download and run LLMs locally. It also includes
 **open-webui**, which provides a chat interface in your web browser.
 
-To install it, open the `curios-manager` TUI, go to the `Settings (manual edit)`
-menu, and set `services.ai.enable = true;`. After you save the file (shortcut
-`Ctrl+X`), `curios-manager` will handle the installation.
+To install it, open the `curios-manager` TUI, go the `Applications` menu, then
+`Install/uninstall CuriOS Apps` menu. Search for
+`(curios.services) ai - Ollama(local AI)` and enable it (X Key to toggle).
+Press Enter to submit it and `curios-manager` will handle the installation.
 
 - **Download a model** (e.g., Qwen2.5 Coder): `ollama pull qwen2.5-coder:3b`
 - **Run a model**: `ollama run qwen2.5-coder:3b`

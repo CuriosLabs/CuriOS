@@ -69,6 +69,9 @@ Studio Code.
 
 - **Virtualisation**: Qemu, KVM, virt-manager.
 
+- **Hardware**: Pilots and tools for AMD/Intel/Nvidia GPUs. Your GPU should be
+detected during the installation and enabled accordingly.
+
 - **Gaming**: Steam, Steam auto-start (BigPicture mode), ProtonGE for Steam, Heroic
 Launcher, RetroArch.
 

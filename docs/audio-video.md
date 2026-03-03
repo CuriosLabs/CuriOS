@@ -27,9 +27,9 @@ industry-standard tools for video editing, audio recording, and photography.
 You can enable these applications via the **Curi*OS* Manager**:
 
 1. Open `curios-manager` (Shortcut: `Super+Return`).
-2. Go to `Settings (manual edit)`.
-3. Set `studio.enable = true;`.
-4. Save and exit (`Ctrl+X`).
+2. Go the `Applications` menu, then `Install/uninstall CuriOS Apps` menu.
+3. Toggle `(curios.desktop) studio - Video...` option.
+4. Press Enter to Save and `curios-manager` will handle the installation.
 
 This will install:
 
@@ -43,7 +43,8 @@ and audio post-production.
 
 **EasyEffects** is a powerful tool installed by default that allows you to apply
 system-wide audio effects. It is particularly useful for improving the sound
-quality of headphones or microphones. Visit [EasyEffects wiki](https://github.com/wwmm/easyeffects/wiki) for more informations.
+quality of headphones or microphones. Visit
+[EasyEffects wiki](https://github.com/wwmm/easyeffects/wiki) for more informations.
 
 ### Improving Headphone Experience
 
