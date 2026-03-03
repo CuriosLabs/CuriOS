@@ -72,7 +72,7 @@ User Interface).
 
 To install it, open the `curios-manager` TUI, go the `Applications` menu, then
 `Install/uninstall CuriOS Apps` menu. Search for
-`(curios.services) ai - Ollama(local AI)` and enable it (X Key to toggle).
+`(curios.services) ai - Ollama(local AI)` and enable it (X key to toggle).
 Press Enter to submit it and `curios-manager` will handle the installation.
 
 - **Download a model** (e.g., Qwen2.5 Coder): `ollama pull qwen2.5-coder:3b`
