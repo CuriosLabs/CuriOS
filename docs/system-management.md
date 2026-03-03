@@ -10,7 +10,7 @@ With it, you can update/upgrade the entire system, add/remove packages (applicat
 update your hardware firmware, check your disk usage, launch the process manager
 (btop), and much more.
 
-![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -19,12 +19,12 @@ Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort
 You can manually edit the Curi*OS* system settings file
 `/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to
 install/uninstall applications or change some system settings.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_settings.png?raw=true "CuriOS manager settings")
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main_settings.png?raw=true "CuriOS manager settings")
 
 For example, do you want to game and install Steam, Heroic Launcher, and more?
 
 Set `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit2.png?raw=true "CuriOS manager settings editor")
+![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/CuriOS-manager_settingsedit2.png?raw=true "CuriOS manager settings editor")
 
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
@@ -88,10 +88,10 @@ For example, you want to install [Blender](https://www.blender.org/):
 
 1. Launch `curios-manager` (shortcut: Super+Return)
 2. Go the `Applications` menu, then `Add a new package` menu.
-   ![curios-manager add package screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_addpackage1.png?raw=true "CuriOS manager add package")
+   ![curios-manager add package screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_addpackage1.png?raw=true "CuriOS manager add package")
 3. Type an application name, the script will search for the most pertinent results.
 4. Choose an application from the result list:
-   ![curios-manager add package screenshot 4](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_addpackage4.png?raw=true "CuriOS manager add package 4")
+   ![curios-manager add package screenshot 4](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_addpackage4.png?raw=true "CuriOS manager add package 4")
 5. `curios-manager` will now download and install the package.
 6. Enjoy!
 
@@ -103,27 +103,27 @@ a cloud-based service. See our [Backup your Computer guide](backups.md).
 ### System management
 
 From `curios-manager` system menu:
-![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_menu.png?raw=true "curios-manager system menu")
+![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_system_menu.png?raw=true "curios-manager system menu")
 
 You can shutdown/reboot/lock your computer. Manage running process on your CPU
 and GPU (with `btop` and `nvtop`). See all the current network connection (with
 `snitch`). You can also check your disk usage, and update your firmware (UEFI
 BIOS and more).
-![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_systems_disk.png?raw=true "curios-manager system disk")
-![curios-manager firmware update](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_firmware.png?raw=true "curios-manager firmware update")
+![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_systems_disk.png?raw=true "curios-manager system disk")
+![curios-manager firmware update](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_system_firmware.png?raw=true "curios-manager firmware update")
 
 ## Flatpak / Desktop Apps Installation
 
 You can also install Linux applications as Flatpaks. [Flathub](https://flathub.org/)
 and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
 app as seen below:
-![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
+![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Store.png?raw=true "COSMIC Store")
 
 ## System Upgrade
 
 When a new version of Curi*OS* is available, you will see a pop-up appear on your
 desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
+![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Updater2.png?raw=true "CuriOS updater")
 
 To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option from the main menu.

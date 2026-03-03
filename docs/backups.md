@@ -9,14 +9,14 @@ and secure program that can back up your files to **many different storage types
 including self-hosted and online services. **Securely**, with use of cryptography
 in every parts of the process. **Reliability**, enabling you to make sure that your
 files can be restored when needed.
-![curios-manager backup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_backup.png?raw=true "curios-manager backup")
+![curios-manager backup](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main_backup.png?raw=true "curios-manager backup")
 
 ## Setup a Repository
 
 The `Backup > Setup your backup` menu prepares a "repository". A repository is the
 secure location (for example, a folder on your USB drive) where `restic` will store
 your encrypted backups and the information needed to manage them.
-![curios-manager repository setup](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_repo_config.png?raw=true "curios-manager repository setup")
+![curios-manager repository setup](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_backup_repo_config.png?raw=true "curios-manager repository setup")
 Every repository type setup will require you to define a password.
 
 > [!WARNING]
@@ -76,7 +76,7 @@ be initialized, you can now use the `Backup now` menu.
 
 ## Backing Up
 
-![curios-manager backup menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_now.png?raw=true "curios-manager backup menu")
+![curios-manager backup menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_backup_now.png?raw=true "curios-manager backup menu")
 
 The `Backup > Backup now` menu will back up your HOME directory `/home/<username>`
 content including hidden directories. The root partition `/` and its content
@@ -90,7 +90,7 @@ Content of a backup at a specific point in time is called a "snapshot".
 
 To restore your home directory use the `Backup > Restore from backup` menu. You
 will be presented with a list of available snapshots:
-![curios-manager backup restore menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_restore.png?raw=true "curios-manager backup restore menu")
+![curios-manager backup restore menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_backup_restore.png?raw=true "curios-manager backup restore menu")
 Choose one and let the tool do his work. Already existing files will be overwritten.
 New files in your HOME directory will **not** be deleted.
 
@@ -98,7 +98,7 @@ New files in your HOME directory will **not** be deleted.
 
 To check your repository status and list the available snapshots, go to
 `Backup > Backup stats`.
-![curios-manager backup stats](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_backup_snapshots.png?raw=true "curios-manager backup stats")
+![curios-manager backup stats](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_backup_snapshots.png?raw=true "curios-manager backup stats")
 
 ## Notes
 

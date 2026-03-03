@@ -18,8 +18,8 @@ management. Curi*OS* also take advantage of COSMIC power to customize UX and the
 > and [NixOS Wiki](https://nixos.wiki/wiki/Main_Page), for NixOS related questions
 > go to [NixOS discourse](https://discourse.nixos.org/).
 
-![Curios = NixOS + COSMIC Desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop.png?raw=true "NixOS with COSMIC DE - Curios")
-![Curios desktop tiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Tiles.png?raw=true "Curios desktop tiles")
+![Curios = NixOS + COSMIC Desktop](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Desktop.png?raw=true "NixOS with COSMIC DE - Curios")
+![Curios desktop tiles](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Tiles.png?raw=true "Curios desktop tiles")
 
 ## Features
 
@@ -72,7 +72,7 @@ How-to:
 
 [curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-
 installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
-![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/testing/img/DesktopTUI2.png?raw=true "Curios dotfiles")
+![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/DesktopTUI2.png?raw=true "Curios dotfiles")
 
 ## Contributing
 

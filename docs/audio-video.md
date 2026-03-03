@@ -15,22 +15,24 @@ image editing and graphic design.
 - **EasyEffects**: An advanced audio manipulation tool to apply effects to your input
 (microphone) and output (speakers/headphones) audio devices.
 
-![EasyEffects application](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop6.png?raw=true "EasyEffects application.")
+![EasyEffects application](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Desktop6.png?raw=true "EasyEffects application.")
 
 ## Professional Studio Suite
 
 For creators and professionals, Curi*OS* offers a "Studio" suite containing
 industry-standard tools for video editing, audio recording, and photography.
 
-![Studio applications](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop-studio.png?raw=true "Studio applications.")
+![Studio applications](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Desktop-studio.png?raw=true "Studio applications.")
 
 You can enable these applications via the **Curi*OS* Manager**:
+
 1. Open `curios-manager` (Shortcut: `Super+Return`).
 2. Go to `Settings (manual edit)`.
 3. Set `studio.enable = true;`.
 4. Save and exit (`Ctrl+X`).
 
 This will install:
+
 - **OBS Studio**: Software for video recording and live streaming.
 - **Audacity**: Easy-to-use, multi-track audio editor and recorder.
 - **DaVinci Resolve**: Professional video editing, color correction, visual effects,

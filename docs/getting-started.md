@@ -78,15 +78,15 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 3. **Boot from USB**: Boot your machine from the USB drive. You will probably
    need to hit the F8 or F12 key during your computer's startup; refer to your
    motherboard manufacturer's instructions.
-   ![CuriOS installation boot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_0.png?raw=true "CuriOS installation boot")
+   ![CuriOS installation boot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_0.png?raw=true "CuriOS installation boot")
 4. **Run the installer**: The installer should start automatically, or use the
    `sudo curios-install` script provided in the live environment.
-   ![CuriOS installation auto-start](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_0b.png?raw=true "CuriOS installation start")
+   ![CuriOS installation auto-start](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_0b.png?raw=true "CuriOS installation start")
 5. **Follow on-screen instructions**: Use the Up/Down arrow keys to move the cursor,
    the Space bar to select, Enter to validate your choice, and Tab to move between
    forms and buttons.
-   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_1.png?raw=true "CuriOS installation language selection")
-   ![CuriOS installation - disk encryption](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Install_dialog_4b.png?raw=true "CuriOS installation disk encryption")
+   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_1.png?raw=true "CuriOS installation language selection")
+   ![CuriOS installation - disk encryption](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_4b.png?raw=true "CuriOS installation disk encryption")
    GPU hardware (Nvidia, AMD) will be automatically detected and installed. Once
    the installation is finished, you will be invited to reboot. Do not forget to
    remove the USB stick once your computer has restarted.
