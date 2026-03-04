@@ -18,8 +18,7 @@ in {
       path = with pkgs; [ coreutils curl gnutar jq libnotify util-linux wget ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart =
-          "/run/current-system/sw/bin/curios-update --check --verbose";
+        ExecStart = "/run/current-system/sw/bin/curios-update --check";
       };
       wantedBy = [ ];
     };

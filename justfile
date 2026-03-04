@@ -96,6 +96,9 @@ nixos-upgrade:
         sudo nix-channel --add "$NIX_CHANNEL_URL" nixos
         sudo nix-channel --update
       fi
+      if command -v curios-update >/dev/null; then
+        sudo curios-update --export
+      fi
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
       printf "\e[32m Done.\e[0m\n"
       ;;
