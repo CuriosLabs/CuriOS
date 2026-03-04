@@ -73,6 +73,11 @@ nixos-upgrade:
     printf "\e[31m Not a Nixos system.\e[0m\n"
     exit 1
   fi
+  DOTFILES_VERSION="0.0"
+  CURRENT_KEYBOARD="us"
+  if command -v curios-dotfiles >/dev/null; then
+    DOTFILES_VERSION=$(curios-dotfiles --version)
+  fi
   printf "\e[31m CAUTION! This will modify your system.\e[0m\n"
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
@@ -100,6 +105,18 @@ nixos-upgrade:
         sudo curios-update --export
       fi
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
+      CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
+      if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
+        HOME_DIR="/home/*/"
+        printf "\e[32m Updating CuriOS dotfiles...\e[0m\n"
+        for DIR in $HOME_DIR; do
+          if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
+            OWNER=$(stat -c '%U' "$DIR")
+            sudo -u "$OWNER" curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
+          fi
+        done
+        sudo curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
+      fi
       printf "\e[32m Done.\e[0m\n"
       ;;
     [Nn]*) echo "No selected"; exit;;
