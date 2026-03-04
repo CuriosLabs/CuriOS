@@ -115,7 +115,6 @@ nixos-upgrade:
             sudo -u "$OWNER" curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
           fi
         done
-        sudo curios-dotfiles --lang "$CURRENT_KEYBOARD" "$SKEL_DIR"
       fi
       printf "\e[32m Done.\e[0m\n"
       ;;
