@@ -57,6 +57,20 @@
           };
         };
       };
+      erp = {
+        odoo = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Odoo ERP/CRM web app.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.str;
+            default = "mycompanynamehere.odoo.com";
+            description = "Your Odoo server base URL.";
+          };
+        };
+      };
       finance = {
         gnucash.enable = lib.mkOption {
           type = lib.types.bool;
@@ -128,6 +142,8 @@
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.crm.hubspot.enable
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.erp.odoo.enable
+      [ (import ./webapp-odoo.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.finance.gnucash.enable
       [ pkgs.gnucash ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.enable

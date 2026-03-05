@@ -26,6 +26,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           salesforce.enable = true;
           hubspot.enable = true;
         };
+        erp = { odoo.enable = true; };
         finance = { gnucash.enable = true; };
         projects = {
           basecamp.enable = true;
@@ -68,6 +69,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-crm-webapps"):
         check_webapp("com.salesforce")
         check_webapp("com.hubspot")
+
+    with subtest("check-erp-webapps"):
+        check_webapp("com.odoo")
 
     with subtest("check-finance-apps"):
         check_which("gnucash")
