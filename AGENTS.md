@@ -80,7 +80,7 @@ configuration of the bootable ISO image.
 for building, testing, and linting.
 - `modules/default.nix`: The top-level module that imports all other modules in
 the `modules/` directory.
-- `modules/curios-options.nix`: Defines CuriOS-specific configuration
+- `modules/curios-options.nix`: Defines some of the CuriOS-specific configuration
 options under `config.curios.*`.
 - `curios-install`: A script for installing CuriOS to a target system, launched
 when user boot from the ISO file.
@@ -96,8 +96,9 @@ organized manner.
 - **Descriptive Naming:** File and module names are descriptive and follow a
 consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
-(e.g., `config.curios.desktop.browser.chromium.enable`). All custom options
-are defined in `modules/curios-options.nix`.
+(e.g., `config.curios.desktop.browser.chromium.enable`). Some custom options
+are defined in `modules/curios-options.nix`, the other in the "options" part of
+their respective `modules/*.nix`.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
 - **Comments**: The code is sparsely commented. When adding new code, add
