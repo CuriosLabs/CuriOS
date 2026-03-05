@@ -169,6 +169,12 @@
           }
         },
         "enable": true,
+        "erp": {
+          "odoo": {
+            "baseUrl": "mycompanynamehere.odoo.com",
+            "enable": false
+          }
+        },
         "finance": {
           "gnucash": {
             "enable": false
