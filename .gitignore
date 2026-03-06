@@ -2,11 +2,10 @@
 .gemini/
 .obsidian/
 .opencode/
+.env
 .venv/
 .idea/
 .zed/
-_bmad/
-_bmad-output/
 docs/.obsidian/
 iso/result/
 iso/*.iso
