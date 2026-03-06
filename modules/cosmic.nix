@@ -22,13 +22,26 @@
       package = pkgs.cosmic-greeter;
     };
 
-    environment.systemPackages = with pkgs; [ jq lld lswt isocodes xdg-utils ];
+    environment.systemPackages = with pkgs; [ jq lld lswt isocodes xdg-utils xdg-user-dirs ];
     # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
 
     # Env variables
     environment.sessionVariables = {
       # Hint Electron apps to use Wayland
       NIXOS_OZONE_WL = "1";
+    };
+
+    # systemd user services
+    systemd.user.services.xdg-user-dirs-update = {
+      enable = true;
+      description = "Update XDG user directories";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        # /run/current-system/sw/bin/xdg-user-dirs-update
+        ExecStart = "${pkgs.xdg-user-dirs}/bin/xdg-user-dirs-update";
+      };
     };
 
     xdg = {
