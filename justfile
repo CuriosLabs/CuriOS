@@ -65,6 +65,10 @@ lint:
   @echo 'Linting Bash files...'
   shellcheck --color=always -f tty -x ./curios-install
 
+# List all curios options and their current default values for this project.
+list-options:
+  nixos-option -I nixos-config=./modules/default.nix -r curios
+
 # WARNING! Upgrade a NixOS system current configuration to the current CuriOS git branch.
 nixos-upgrade:
   #!/usr/bin/env bash
