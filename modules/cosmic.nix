@@ -39,8 +39,7 @@
       partOf = [ "graphical-session.target" ];
       serviceConfig = {
         Type = "oneshot";
-        # /run/current-system/sw/bin/xdg-user-dirs-update
-        ExecStart = "${pkgs.xdg-user-dirs}/bin/xdg-user-dirs-update";
+        ExecStart = "/run/current-system/sw/bin/xdg-user-dirs-update";
       };
     };
 
