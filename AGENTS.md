@@ -98,7 +98,7 @@ consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
 (e.g., `config.curios.desktop.browser.chromium.enable`). Some custom options
 are defined in `modules/curios-options.nix`, the other in the "options" part of
-their respective `modules/*.nix`.
+their respective `modules/*.nix`. See `just list-options` output.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
 - **Comments**: The code is sparsely commented. When adding new code, add
