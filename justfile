@@ -106,7 +106,11 @@ nixos-upgrade:
         sudo nix-channel --update
       fi
       if command -v curios-update >/dev/null; then
-        sudo curios-update --export
+        if curios-update --help 2>&1 | grep -q -- "--export"; then
+          sudo curios-update --export
+        else
+          printf "\e[31m curios-update --export is NOT supported!\e[0m\n"
+        fi
       fi
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
       CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
