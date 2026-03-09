@@ -119,6 +119,8 @@ nixos-upgrade:
       if [ "$VARIANT_ID" == "25.11.4" ]; then
         sudo sed -i 's/desktop\.apps/desktop/g' /etc/nixos/settings.nix
         sudo sed -i 's/desktop\.cosmic/cosmic/g' /etc/nixos/settings.nix
+        #sudo curios-update --export
+        #sudo sed -i '15,259d' /etc/nixos/settings.nix
       fi
 
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
