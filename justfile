@@ -86,6 +86,8 @@ nixos-upgrade:
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
+      printf "\e[32m Launching Nix garbage collector...\e[0m\n"
+      sudo nix-store --gc
       printf "\e[32m Installing Curios...\e[0m\n"
       sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
       if [ ! -f /etc/nixos/settings.nix ]; then
@@ -112,6 +114,13 @@ nixos-upgrade:
           printf "\e[31m curios-update --export is NOT supported!\e[0m\n"
         fi
       fi
+
+      source /etc/os-release
+      if [ "$VARIANT_ID" == "25.11.4" ]; then
+        sudo sed -i 's/desktop\.apps/desktop/g' /etc/nixos/settings.nix
+        sudo sed -i 's/desktop\.cosmic/cosmic/g' /etc/nixos/settings.nix
+      fi
+
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
       CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
       if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
