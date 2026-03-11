@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.9"
+readonly SCRIPT_VERSION="0.10"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -327,7 +327,7 @@ choose_lang() {
     "he: עברית Hebrew" \
     "uk: Українська - Ukrainian" \
     "el: Ελληνικά - Greek")
-  
+
   exit_status=$?
   if [ $exit_status -ne 0 ]; then
     echo "Program terminated." >&2
@@ -464,8 +464,7 @@ choose_lang() {
     LANG_CHOICE=24
     ;;
   esac
-  
-  clear
+
   loadkeys $SELECTED_LOCALE_CONSOLE
   set_tz
 }
@@ -477,7 +476,7 @@ set_tz() {
   local DEFAULT_TZ="${LANG_TO_TZ_DEFAULT[$LANG_CHOICE]}"
   SELECTED_TZ=$(gum choose --selected="$DEFAULT_TZ" "${LOCALES_TZ[@]}")
   exit_status=$?
-  
+
   if [ $exit_status -ne 0 ]; then
     choose_lang
     return
@@ -681,6 +680,10 @@ confirm_install() {
   fi
 }
 
+clear
+if [ -f /etc/nixos/logo.txt ]; then
+  tte -i /etc/nixos/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
+fi
 choose_lang
 
 if [ $VERBOSE -eq 1 ]; then
@@ -936,6 +939,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}"
+  INSTALL_START_TIME=$SECONDS
   # Configure Nix channel
   NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' "$NIXOS_CONFIG_DIR"/configuration.nix)
   if [ -z "$NIX_CHANNEL_URL" ]; then
@@ -955,8 +959,14 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     dotfiles_install
   fi
 
+  INSTALL_END_TIME=$SECONDS
+  DURATION=$((INSTALL_END_TIME - INSTALL_START_TIME))
+  MINUTES=$((DURATION / 60))
+  SECONDS_REM=$((DURATION % 60))
+  TIME_RESULT=$(printf "%02d:%02d" $MINUTES $SECONDS_REM)
+
   echo -e "${GREEN}Done...${NC}"
-  gum format "# Success" "CuriOS was successfully installed!" "Remember to remove USB installer!"
+  gum format "# Success" "CuriOS was successfully installed in ${TIME_RESULT}!" "Remember to remove USB installer!"
   if gum confirm "Reboot now?"; then
     reboot now
   fi
