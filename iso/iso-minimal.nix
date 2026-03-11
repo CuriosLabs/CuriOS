@@ -30,6 +30,7 @@ in {
     pkgs.nano
     pkgs.parted
     pkgs.pciutils
+    pkgs.terminaltexteffects
   ];
 
   i18n.extraLocales = "all";

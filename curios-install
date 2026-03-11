@@ -681,8 +681,8 @@ confirm_install() {
 }
 
 clear
-if [ -f /etc/nixos/logo.txt ]; then
-  tte -i /etc/nixos/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
+if [ -f "$CURIOS_SRC_PATH"/logo.txt ]; then
+  tte -i "$CURIOS_SRC_PATH"/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
 fi
 choose_lang
 
@@ -809,6 +809,7 @@ dotfiles_install() {
 
 if [ $CONFIRM_INSTALL -eq 1 ]; then
   clear
+  INSTALL_START_TIME=$SECONDS
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -pdn -o NAME
   fi
@@ -939,7 +940,6 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}"
-  INSTALL_START_TIME=$SECONDS
   # Configure Nix channel
   NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' "$NIXOS_CONFIG_DIR"/configuration.nix)
   if [ -z "$NIX_CHANNEL_URL" ]; then

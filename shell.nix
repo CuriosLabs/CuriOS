@@ -8,6 +8,7 @@ pkgs.mkShell {
     jq
     mkpasswd
     parted
+    terminaltexteffects
     # For justfile
     statix
     shellcheck

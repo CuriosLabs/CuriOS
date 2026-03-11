@@ -56,7 +56,7 @@ clean:
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
 install:
-  ./curios-install
+  ./curios-install --verbose
 
 # Linting Bash scripts and Nix files.
 lint:
