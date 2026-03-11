@@ -7,5 +7,6 @@ pkgs.mkShell {
     gum
     mkpasswd
     raspberrypi-eeprom
+    terminaltexteffects
   ];
 }
