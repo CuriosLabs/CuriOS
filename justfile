@@ -153,12 +153,15 @@ publish:
   else
     printf "\e[32m Github release upload...\e[0m\n"
     releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"{{branch}}")
+    if git rev-parse "$releaseNumber" >/dev/null 2>&1; then echo "Warning: Tag ${releaseNumber} already exists."; exit 1; fi
+
     isoFilename="CuriOS_${releaseNumber}_{{platform}}.iso"
     isoFilePath="./iso/${isoFilename}"
     if [ ! -f "$isoFilePath" ]; then
       printf "\e[33m ISO file %s not found! Launch `just build` first.\e[0m\n" "${isoFilePath}"
       exit 1
     fi
+
     git push --set-upstream origin "{{branch}}"
     gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes
     gh release upload "$releaseNumber" "$isoFilePath"
