@@ -47,31 +47,111 @@ DO_DOTFILES_INSTALL=1
 VERBOSE=0
 # Pre configured timezone based on user language - adjust to choose_lang() list order.
 LOCALES_TZ=(
-  "Etc/GMT+1"
-  "US/Eastern"
-  "Europe/London"
-  "Europe/Paris"
-  "Europe/Madrid"
-  "Europe/Berlin"
-  "Asia/Shanghai"
-  "Asia/Tokyo"
-  "Europe/Lisbon"
-  "Europe/Moscow"
-  "Europe/Rome"
-  "Asia/Seoul"
-  "Asia/Riyadh"
   "Europe/Amsterdam"
-  "Europe/Warsaw"
-  "Europe/Stockholm"
-  "Europe/Istanbul"
-  "Europe/Prague"
-  "Europe/Berlin"
-  "Europe/Budapest"
-  "Europe/Oslo"
-  "Asia/Jerusalem"
-  "Europe/Kyiv"
-  "Asia/Kolkata"
   "Europe/Athens"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Helsinki"
+  "Europe/Istanbul"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Warsaw"
+  "Europe/Zurich"
+  "US/Alaska"
+  "US/Aleutian"
+  "US/Arizona"
+  "US/Central"
+  "US/East-Indiana"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Indiana-Starke"
+  "US/Michigan"
+  "US/Mountain"
+  "US/Pacific"
+  "US/Samoa"
+  "America/Argentina/Buenos_Aires"
+  "America/Bogota"
+  "America/Caracas"
+  "America/Chicago"
+  "America/Denver"
+  "America/Los_Angeles"
+  "America/Mexico_City"
+  "America/New_York"
+  "America/Phoenix"
+  "America/Sao_Paulo"
+  "America/Toronto"
+  "America/Vancouver"
+  "Asia/Bangkok"
+  "Asia/Dubai"
+  "Asia/Hong_Kong"
+  "Asia/Jerusalem"
+  "Asia/Kolkata"
+  "Asia/Riyadh"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Taipei"
+  "Asia/Tokyo"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Darwin"
+  "Australia/Melbourne"
+  "Australia/Perth"
+  "Australia/Sydney"
+  "Pacific/Auckland"
+  "Pacific/Fiji"
+  "Etc/GMT"
+)
+
+# Mapping from language choice index to a default timezone from the LOCALES_TZ list
+# Indices: 0:C, 1:us, 2:gb, 3:fr, 4:es, 5:de, 6:zh, 7:hi, 8:ja, 9:pt, 10:ru, 11:it, 12:ko, 13:ar, 14:nl, 15:pl, 16:sv, 17:tr, 18:cs, 19:da, 20:hu, 21:no, 22:he, 23:uk, 24:el
+# Note: The user provided a list of 25 languages in choose_lang()
+declare -A LANG_TO_TZ_DEFAULT=(
+  [0]="Etc/GMT"
+  [1]="US/Eastern"
+  [2]="Europe/London"
+  [3]="Europe/Paris"
+  [4]="Europe/Madrid"
+  [5]="Europe/Berlin"
+  [6]="Asia/Shanghai"
+  [7]="Asia/Kolkata"
+  [8]="Asia/Tokyo"
+  [9]="Europe/Lisbon"
+  [10]="Europe/Moscow"
+  [11]="Europe/Rome"
+  [12]="Asia/Seoul"
+  [13]="Asia/Riyadh"
+  [14]="Europe/Amsterdam"
+  [15]="Europe/Warsaw"
+  [16]="Europe/Stockholm"
+  [17]="Europe/Istanbul"
+  [18]="Europe/Prague"
+  [19]="Europe/Copenhagen"
+  [20]="Europe/Budapest"
+  [21]="Europe/Oslo"
+  [22]="Asia/Jerusalem"
+  [23]="Europe/Kyiv"
+  [24]="Europe/Athens"
 )
 
 #------------- Print help function
@@ -293,89 +373,89 @@ choose_lang() {
     SELECTED_LOCALE_CONSOLE="zh"
     LANG_CHOICE=6
     ;;
+  hi)
+    SELECTED_LOCALE="hi_IN.UTF-8"
+    SELECTED_LOCALE_CONSOLE="hi"
+    LANG_CHOICE=7
+    ;;
   ja)
     SELECTED_LOCALE="ja_JP.UTF-8"
     SELECTED_LOCALE_CONSOLE="ja"
-    LANG_CHOICE=7
+    LANG_CHOICE=8
     ;;
   pt)
     SELECTED_LOCALE="pt_PT.UTF-8"
     SELECTED_LOCALE_CONSOLE="pt"
-    LANG_CHOICE=8
+    LANG_CHOICE=9
     ;;
   ru)
     SELECTED_LOCALE="ru_RU.UTF-8"
     SELECTED_LOCALE_CONSOLE="ru"
-    LANG_CHOICE=9
+    LANG_CHOICE=10
     ;;
   it)
     SELECTED_LOCALE="it_IT.UTF-8"
     SELECTED_LOCALE_CONSOLE="it"
-    LANG_CHOICE=10
+    LANG_CHOICE=11
     ;;
   ko)
     SELECTED_LOCALE="ko_KR.UTF-8"
     SELECTED_LOCALE_CONSOLE="ko"
-    LANG_CHOICE=11
+    LANG_CHOICE=12
     ;;
   ar)
     SELECTED_LOCALE="ar_SA.UTF-8"
     SELECTED_LOCALE_CONSOLE="ar"
-    LANG_CHOICE=12
+    LANG_CHOICE=13
     ;;
   nl)
     SELECTED_LOCALE="nl_NL.UTF-8"
     SELECTED_LOCALE_CONSOLE="nl"
-    LANG_CHOICE=13
+    LANG_CHOICE=14
     ;;
   pl)
     SELECTED_LOCALE="pl_PL.UTF-8"
     SELECTED_LOCALE_CONSOLE="pl"
-    LANG_CHOICE=14
+    LANG_CHOICE=15
     ;;
   sv)
     SELECTED_LOCALE="sv_SE.UTF-8"
     SELECTED_LOCALE_CONSOLE="sv"
-    LANG_CHOICE=15
+    LANG_CHOICE=16
     ;;
   tr)
     SELECTED_LOCALE="tr_TR.UTF-8"
     SELECTED_LOCALE_CONSOLE="tr"
-    LANG_CHOICE=16
+    LANG_CHOICE=17
     ;;
   cs)
     SELECTED_LOCALE="cs_CZ.UTF-8"
     SELECTED_LOCALE_CONSOLE="cs"
-    LANG_CHOICE=17
+    LANG_CHOICE=18
     ;;
   da)
     SELECTED_LOCALE="da_DK.UTF-8"
     SELECTED_LOCALE_CONSOLE="da"
-    LANG_CHOICE=18
+    LANG_CHOICE=19
     ;;
   hu)
     SELECTED_LOCALE="hu_HU.UTF-8"
     SELECTED_LOCALE_CONSOLE="hu"
-    LANG_CHOICE=19
+    LANG_CHOICE=20
     ;;
   no)
     SELECTED_LOCALE="no_NO.UTF-8"
     SELECTED_LOCALE_CONSOLE="no"
-    LANG_CHOICE=20
+    LANG_CHOICE=21
     ;;
   he)
     SELECTED_LOCALE="he_IL.UTF-8"
     SELECTED_LOCALE_CONSOLE="he"
-    LANG_CHOICE=21
+    LANG_CHOICE=22
     ;;
   uk)
     SELECTED_LOCALE="uk_UA.UTF-8"
     SELECTED_LOCALE_CONSOLE="uk"
-    LANG_CHOICE=22
-    ;;
-  hi)
-    SELECTED_LOCALE="hi_IN.UTF-8"
-    SELECTED_LOCALE_CONSOLE="hi"
     LANG_CHOICE=23
     ;;
   el)
@@ -393,8 +473,9 @@ choose_lang() {
 #------------- Choose timezone
 # See: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 set_tz() {
-  echo "Enter your timezone:"
-  result=$(gum input --placeholder "Time Zone" --value "${LOCALES_TZ[$((LANG_CHOICE))]}")
+  echo "Choose your timezone:"
+  local DEFAULT_TZ="${LANG_TO_TZ_DEFAULT[$LANG_CHOICE]}"
+  SELECTED_TZ=$(gum choose --selected="$DEFAULT_TZ" "${LOCALES_TZ[@]}")
   exit_status=$?
   
   if [ $exit_status -ne 0 ]; then
@@ -402,13 +483,12 @@ set_tz() {
     return
   fi
 
-  SELECTED_TZ=$result
-  if ! [[ $SELECTED_TZ =~ ^[a-zA-Z0-9/_+\-]+$ ]]; then
-    display_error "Invalid time zone! It could only contain alphanumerical, '/', '-', '+' or '_' characters like 'America/New_York' or 'Etc/GMT+2'."
-    set_tz
-  else
-    set_hostname
+  if [ -z "$SELECTED_TZ" ]; then
+    choose_lang
+    return
   fi
+
+  set_hostname
 }
 
 #------------- Choose machine name
