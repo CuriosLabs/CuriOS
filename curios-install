@@ -120,6 +120,17 @@ LOCALES_TZ=(
   "Australia/Sydney"
   "Pacific/Auckland"
   "Pacific/Fiji"
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Dakar"
+  "Africa/Johannesburg"
+  "Africa/Lagos"
+  "Africa/Nairobi"
+  "Africa/Tunis"
   "Etc/GMT"
 )
 
