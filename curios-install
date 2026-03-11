@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# Dialog driven CuriOS install script as NixOS package.
+# Gum driven CuriOS install script as NixOS package.
 # Meant to be run during an NixOS ISO installation.
 # !IMPORTANT! Run this script as sudo
 # It will create 3 partitions for '/boot', '/' and a 8Go swap
 # If disk encryption is choosed, the encrypted LUKS partition will contain LVM
 # partitions for '/' and a 8Go swap.
 #
-# Dependencies: dialog, parted, git, mkpasswd.
+# Dependencies: gum, parted, git, mkpasswd.
 # Test it with:
 # nix-shell shell.nix
 
@@ -45,15 +45,6 @@ RPI4_INSTALL=0
 NIXOS_CONFIG_DIR="/mnt/etc/nixos"
 DO_DOTFILES_INSTALL=1
 VERBOSE=0
-readonly DIALOG_OK=0
-readonly DIALOG_CANCEL=1
-#readonly DIALOG_HELP=2
-#readonly DIALOG_EXTRA=3
-#readonly DIALOG_ITEM_HELP=4
-readonly DIALOG_ESC=255
-readonly DIALOG_HEIGHT=0
-readonly DIALOG_WIDTH=0
-DIALOG_HELP_TITLE="<↕> Move cursor <Space> Select <Enter> Button activation 2*<Esc> Abort"
 # Pre configured timezone based on user language - adjust to choose_lang() list order.
 LOCALES_TZ=(
   "Etc/GMT+1"
@@ -86,7 +77,7 @@ LOCALES_TZ=(
 #------------- Print help function
 usage() {
   echo -e "CuriOS installer version ${SCRIPT_VERSION}
-* Dialog interface for CuriOS install script *
+* Gum interface for CuriOS install script *
 
 ${GREY}USAGE:${NC}
   curios-install [options]
@@ -175,8 +166,8 @@ if ! available mkpasswd; then
   echo -e "${RED}mkpasswd command not found!${NC}"
   exit 2
 fi
-if ! available dialog; then
-  echo -e "${RED}dialog command not found!${NC}"
+if ! available gum; then
+  echo -e "${RED}gum command not found!${NC}"
   exit 2
 fi
 if ! available jq; then
@@ -220,60 +211,53 @@ fi
 
 setterm -blink on
 
-# A standard dialog message box, for printing error message
+# A standard gum message box, for printing error message
 display_error() {
-  dialog --title "\Zb\Z1!! Error\Zn" \
-    --no-collapse \
-    --clear \
-    --colors \
-    --msgbox "$1" $DIALOG_HEIGHT $DIALOG_WIDTH
+  gum format "# !! Error" "$1"
+  read -r -p "Press Enter to continue..."
 }
 
 #------------- Choose language
 # See: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
 choose_lang() {
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  selection=$(dialog \
-    --backtitle "System Information -- $DIALOG_HELP_TITLE" \
-    --title "Locale" \
-    --cancel-label "Exit" \
-    --ok-label "Next" \
-    --clear \
-    --default-item "$SELECTED_LOCALE_CONSOLE" \
-    --menu "Choose your language:" $DIALOG_HEIGHT $DIALOG_WIDTH 8 \
-    "C" "No localization" \
-    "us" "US English" \
-    "gb" "British English" \
-    "fr" "Français" \
-    "es" "Español" \
-    "de" "Deutsch" \
-    "zh" "中文 (汉语) - Chinese (simplified)" \
-    "hi" "हिन्दी - Hindi" \
-    "ja" "日本語 - Japanese" \
-    "pt" "Português" \
-    "ru" "Русский язык - Russian" \
-    "it" "Italiano" \
-    "ko" "한국어 - Korean" \
-    "ar" "اَلْعَرَبِيَّةُ Arabic" \
-    "nl" "Nederlands" \
-    "pl" "Polski" \
-    "sv" "Svenska" \
-    "tr" "Türkçe" \
-    "cs" "Čeština" \
-    "da" "Dansk" \
-    "hu" "Magyar nyelv" \
-    "no" "Norsk" \
-    "he" "עברית Hebrew" \
-    "uk" "Українська - Ukrainian" \
-    "el" "Ελληνικά - Greek" \
-    2>&1 1>&3)
+  echo "Choose your language:"
+  selection=$(gum choose \
+    "C: No localization" \
+    "us: US English" \
+    "gb: British English" \
+    "fr: Français" \
+    "es: Español" \
+    "de: Deutsch" \
+    "zh: 中文 (汉语) - Chinese (simplified)" \
+    "hi: हिन्दी - Hindi" \
+    "ja: 日本語 - Japanese" \
+    "pt: Português" \
+    "ru: Русский язык - Russian" \
+    "it: Italiano" \
+    "ko: 한국어 - Korean" \
+    "ar: اَلْعَرَبِيَّةُ Arabic" \
+    "nl: Nederlands" \
+    "pl: Polski" \
+    "sv: Svenska" \
+    "tr: Türkçe" \
+    "cs: Čeština" \
+    "da: Dansk" \
+    "hu: Magyar nyelv" \
+    "no: Norsk" \
+    "he: עברית Hebrew" \
+    "uk: Українська - Ukrainian" \
+    "el: Ελληνικά - Greek")
+  
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  case $selection in
+  if [ $exit_status -ne 0 ]; then
+    echo "Program terminated." >&2
+    exit 1
+  fi
+
+  # Extract the code (part before the colon)
+  selection_code=$(echo "$selection" | cut -d':' -f1)
+
+  case $selection_code in
   C)
     SELECTED_LOCALE="C.UTF-8"
     SELECTED_LOCALE_CONSOLE="us"
@@ -400,361 +384,188 @@ choose_lang() {
     LANG_CHOICE=24
     ;;
   esac
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    loadkeys $SELECTED_LOCALE_CONSOLE
-    set_tz
-    ;;
-  "$DIALOG_CANCEL")
-    clear
-    echo "Program terminated." >&2
-    exit 1
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+  
+  clear
+  loadkeys $SELECTED_LOCALE_CONSOLE
+  set_tz
 }
 
 #------------- Choose timezone
 # See: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 set_tz() {
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  result=$(dialog \
-    --backtitle "System Information -- $DIALOG_HELP_TITLE" \
-    --title "Time Zone" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --clear \
-    --no-collapse \
-    --inputbox "Enter your timezone:" $DIALOG_HEIGHT $DIALOG_WIDTH "${LOCALES_TZ[$((LANG_CHOICE))]}" \
-    2>&1 1>&3)
+  echo "Enter your timezone:"
+  result=$(gum input --placeholder "Time Zone" --value "${LOCALES_TZ[$((LANG_CHOICE))]}")
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    SELECTED_TZ=$result
-    if ! [[ $SELECTED_TZ =~ ^[a-zA-Z0-9/_+\-]+$ ]]; then
-      display_error "\Zb\Z1Invalid time zone!\Zn It could only contain alphanumerical, '/', '-', '+' or '_' characters like 'America/New_York' or 'Etc/GMT+2'."
-      set_tz
-    else
-      set_hostname
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+  
+  if [ $exit_status -ne 0 ]; then
     choose_lang
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
+
+  SELECTED_TZ=$result
+  if ! [[ $SELECTED_TZ =~ ^[a-zA-Z0-9/_+\-]+$ ]]; then
+    display_error "Invalid time zone! It could only contain alphanumerical, '/', '-', '+' or '_' characters like 'America/New_York' or 'Etc/GMT+2'."
+    set_tz
+  else
+    set_hostname
+  fi
 }
 
 #------------- Choose machine name
 set_hostname() {
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  result=$(dialog \
-    --backtitle "System Information -- $DIALOG_HELP_TITLE" \
-    --title "Network configuration" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --clear \
-    --no-collapse \
-    --inputbox "Enter this machine hostname:\n" $DIALOG_HEIGHT $DIALOG_WIDTH "$PC_HOSTNAME" \
-    2>&1 1>&3)
+  echo "Enter this machine hostname:"
+  result=$(gum input --placeholder "Hostname" --value "$PC_HOSTNAME")
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    PC_HOSTNAME=$result
-    if ! [[ $PC_HOSTNAME =~ ^[[:alnum:].]+$ ]]; then
-      display_error "\Zb\Z1Invalid hostname!\Zn It could only contain alphanumerical or '.' characters."
-      set_hostname
-    else
-      set_username
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+
+  if [ $exit_status -ne 0 ]; then
     set_tz
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
+
+  PC_HOSTNAME=$result
+  if ! [[ $PC_HOSTNAME =~ ^[[:alnum:].]+$ ]]; then
+    display_error "Invalid hostname! It could only contain alphanumerical or '.' characters."
+    set_hostname
+  else
+    set_username
+  fi
 }
 
 #------------- Choose username
 set_username() {
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  result=$(dialog \
-    --backtitle "User Information -- $DIALOG_HELP_TITLE" \
-    --title "Create user" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --clear \
-    --no-collapse \
-    --inputbox "Enter your username (id):" $DIALOG_HEIGHT $DIALOG_WIDTH "$USERNAME" \
-    2>&1 1>&3)
+  echo "Enter your username (id):"
+  result=$(gum input --placeholder "Username" --value "$USERNAME")
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    USERNAME=$result
-    if [ -z "$USERNAME" ]; then
-      display_error "\Zb\Z1username cannot be empty.\Zn"
-      set_username
-    elif ! [[ $USERNAME =~ ^[[:alnum:]]+$ ]]; then
-      display_error "\Zb\Z1Invalid username!\Zn It could only contain alphanumerical characters."
-      set_username
-    else
-      set_fullname
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+
+  if [ $exit_status -ne 0 ]; then
     set_hostname
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
+
+  USERNAME=$result
+  if [ -z "$USERNAME" ]; then
+    display_error "username cannot be empty."
+    set_username
+  elif ! [[ $USERNAME =~ ^[[:alnum:]]+$ ]]; then
+    display_error "Invalid username! It could only contain alphanumerical characters."
+    set_username
+  else
+    set_fullname
+  fi
 }
 
 #------------- Choose user full name
 set_fullname() {
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  result=$(dialog \
-    --backtitle "User Information -- $DIALOG_HELP_TITLE" \
-    --title "Create user" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --clear \
-    --no-collapse \
-    --inputbox "Enter your full name:" $DIALOG_HEIGHT $DIALOG_WIDTH "$FULLNAME" \
-    2>&1 1>&3)
+  echo "Enter your full name:"
+  result=$(gum input --placeholder "Full Name" --value "$FULLNAME")
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    FULLNAME=$result
-    if [ -z "$FULLNAME" ]; then
-      FULLNAME="Dwight K. Schrute"
-    fi
-    if ! [[ $FULLNAME =~ ^[[:alnum:][:space:].]+$ ]]; then
-      display_error "\Zb\Z1Invalid full name!\Zn it could only contain alphanumerical, '.' or space characters."
-      set_fullname
-    else
-      set_user_passwd
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+
+  if [ $exit_status -ne 0 ]; then
     set_username
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
+
+  FULLNAME=$result
+  if [ -z "$FULLNAME" ]; then
+    FULLNAME="Dwight K. Schrute"
+  fi
+  if ! [[ $FULLNAME =~ ^[[:alnum:][:space:].]+$ ]]; then
+    display_error "Invalid full name! it could only contain alphanumerical, '.' or space characters."
+    set_fullname
+  else
+    set_user_passwd
+  fi
 }
 
 #------------- Set user password
 set_user_passwd() {
-  exec 3>&1
-  result=$(dialog --backtitle "User Password -- $DIALOG_HELP_TITLE" \
-    --title "User Password" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --no-collapse \
-    --clear \
-    --colors \
-    --insecure \
-    --passwordform "Please enter and confirm your password. 6 characters length minimum." $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
-    "Password:" 1 1 "" 1 10 25 45 \
-    "Confirm:" 2 1 "" 2 10 25 45 \
-    2>&1 1>&3)
-  exit_status=$?
-  exec 3>&-
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    password=$(echo "$result" | head -n 1)
-    confirm=$(echo "$result" | tail -n 1)
-    line_count=$(echo -n "$result" | wc -l)
-    # Compare and check password length
-    if [ "${#password}" -le 5 ]; then
-      display_error "\Zb\Z1Password is too short!\Zn It should be at least 6 characters long."
-      set_user_passwd
-    elif [[ "$password" != "$confirm" ]]; then
-      display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
-      set_user_passwd
-    elif [ "$line_count" -ne 1 ]; then
-      display_error "\Zb\Z1Password mismatch!\Zn Password and confirmation are different."
-      set_user_passwd
-    else
-      HASHED_USER_PASSWD=$(mkpasswd -m yescrypt "$password")
-      if [ $RPI4_INSTALL -eq 1 ]; then
-        confirm_install
-      else
-        choose_disk
-      fi
-    fi
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+  echo "Enter your password (6 characters minimum):"
+  password=$(gum input --password --placeholder "Password")
+  if [ $? -ne 0 ]; then
     set_fullname
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
 
+  echo "Confirm your password:"
+  confirm=$(gum input --password --placeholder "Confirm Password")
+  if [ $? -ne 0 ]; then
+    set_user_passwd
+    return
+  fi
+
+  # Compare and check password length
+  if [ "${#password}" -le 5 ]; then
+    display_error "Password is too short! It should be at least 6 characters long."
+    set_user_passwd
+  elif [[ "$password" != "$confirm" ]]; then
+    display_error "Password mismatch! Password and confirmation are different."
+    set_user_passwd
+  else
+    HASHED_USER_PASSWD=$(mkpasswd -m yescrypt "$password")
+    if [ $RPI4_INSTALL -eq 1 ]; then
+      confirm_install
+    else
+      choose_disk
+    fi
+  fi
 }
 
 #------------- Choose install disk
 choose_disk() {
-  DIALOG_DEVICES_LIST=()
-  DISK_NB=$(lsblk -A -pdn -o NAME | wc -l)
-  i=1
+  DEVICES_LIST=()
   for device in $(lsblk -A -pdn -o NAME); do
     DISK_SIZE=$(lsblk -dn -o SIZE "$device")
     DISK_MODEL=$(lsblk -dn -o MODEL "$device")
-    DIALOG_DEVICES_LIST+=("$device")
-    DIALOG_DEVICES_LIST+=("$DISK_SIZE - $DISK_MODEL")
-    # Select last disk by default
-    if [ "$DISK_NB" -eq $i ]; then
-      DIALOG_DEVICES_LIST+=("on")
-    else
-      DIALOG_DEVICES_LIST+=("off")
-    fi
-    ((i++))
+    DEVICES_LIST+=("$device ($DISK_SIZE - $DISK_MODEL)")
   done
-  # Duplicate (make a backup copy of) file descriptor 1
-  # on descriptor 3
-  exec 3>&1
-  # Generate dialog box in a subshell
-  selection=$(dialog \
-    --backtitle "Disk Partition -- $DIALOG_HELP_TITLE" \
-    --title "Installation on disk" \
-    --cancel-label "Previous" \
-    --ok-label "Next" \
-    --clear \
-    --radiolist "Choose which disk to install CuriOS on:" $DIALOG_HEIGHT $DIALOG_WIDTH 0 "${DIALOG_DEVICES_LIST[@]}" \
-    2>&1 1>&3)
+
+  echo "Choose which disk to install CuriOS on:"
+  selection=$(gum choose "${DEVICES_LIST[@]}")
   exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    SELECTED_DISK=$selection
-    choose_disk_encryption
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+
+  if [ $exit_status -ne 0 ]; then
     set_user_passwd
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+    return
+  fi
+
+  SELECTED_DISK=$(echo "$selection" | cut -d' ' -f1)
+  choose_disk_encryption
 }
 
 choose_disk_encryption() {
-  # on descriptor 3
-  exec 3>&1
-  result=$(dialog --backtitle "Disk Partition -- $DIALOG_HELP_TITLE" \
-    --title "Full disk encryption (recommended)" \
-    --no-collapse \
-    --cancel-label "No" \
-    --ok-label "Yes" \
-    --clear \
-    --colors \
-    --insecure \
-    --passwordform "Should your disk be fully encrypted ?\n\Zb\Z4HIGHLY\Zn recommended.\nA passphrase will be needed during your computer's boot sequence.\nEnter your passphrase for the full disk encryption:" $DIALOG_HEIGHT $DIALOG_WIDTH 0 \
-    "Passphrase:" 1 1 "" 1 12 25 45 \
-    "Confirm:" 2 1 "" 2 12 25 45 \
-    2>&1 1>&3)
-  exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
-    passphrase=$(echo "$result" | head -n 1)
-    confirm=$(echo "$result" | tail -n 1)
-    line_count=$(echo -n "$result" | wc -l)
+  if gum confirm "Should your disk be fully encrypted (highly recommended)?"; then
+    echo "Enter your passphrase for the full disk encryption (8 characters minimum):"
+    passphrase=$(gum input --password --placeholder "Passphrase")
+    if [ $? -ne 0 ]; then
+      choose_disk
+      return
+    fi
+
+    echo "Confirm your passphrase:"
+    confirm=$(gum input --password --placeholder "Confirm Passphrase")
+    if [ $? -ne 0 ]; then
+      choose_disk_encryption
+      return
+    fi
+
     if [ ${#passphrase} -le 7 ]; then
-      display_error "\Zb\Z1Passphrase is too short!\Zn It should be at least 8 characters long."
+      display_error "Passphrase is too short! It should be at least 8 characters long."
       choose_disk_encryption
     elif ! [[ $passphrase =~ ^[[:alnum:]]+$ ]]; then
-      display_error "\Zb\Z1Invalid passphrase!\Zn it could only contain alphanumerical characters."
+      display_error "Invalid passphrase! it could only contain alphanumerical characters."
       choose_disk_encryption
     elif [[ "$passphrase" != "$confirm" ]]; then
-      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
+      display_error "Passphrase mismatch! Passphrase and confirmation are different."
       choose_disk_encryption
-    elif [ "$line_count" -ne 1 ]; then
-      display_error "\Zb\Z1Passphrase mismatch!\Zn Passphrase and confirmation are different."
-      choose_disk_encryption
+    else
+      ENCRYPT_DISK=1
+      DISK_LUKS_KEY=$passphrase
+      hardware_detection_gpu
     fi
-    ENCRYPT_DISK=1
-    DISK_LUKS_KEY=$passphrase
-    hardware_detection_gpu
-    ;;
-  "$DIALOG_CANCEL")
+  else
     ENCRYPT_DISK=0
-    clear
     hardware_detection_gpu
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+  fi
 }
 
 hardware_detection_gpu() {
@@ -772,67 +583,22 @@ hardware_detection_gpu() {
       GPU_VENDOR_DETECTED="Nvidia"
     fi
     if [[ -n $GPU_VENDOR_DETECTED ]]; then
-      # on descriptor 3
-      exec 3>&1
-      result=$(dialog --backtitle "Hardware detection -- $DIALOG_HELP_TITLE" \
-        --title "GPU detected" \
-        --no-collapse \
-        --clear \
-        --colors \
-        --yesno "GPU detected: $GPU_VENDOR_DETECTED \nWould you like to install the hardware pilot (recommended) ?\nIt may imply the installation of unfree packages." $DIALOG_HEIGHT $DIALOG_WIDTH \
-        2>&1 1>&3)
-      exit_status=$?
-      # Close file descriptor 3
-      exec 3>&-
-      case $exit_status in
-      "$DIALOG_OK")
+      if gum confirm "GPU detected: $GPU_VENDOR_DETECTED. Would you like to install the hardware pilot (recommended)? It may imply the installation of unfree packages."; then
         GPU_INSTALL=1
-        clear
-        ;;
-      "$DIALOG_CANCEL")
+      else
         GPU_INSTALL=0
-        clear
-        ;;
-      "$DIALOG_ESC")
-        clear
-        echo "Program aborted." >&2
-        exit 1
-        ;;
-      esac
+      fi
     fi
   fi
   confirm_install
 }
 
 confirm_install() {
-  # on descriptor 3
-  exec 3>&1
-  result=$(dialog --backtitle "Final step" \
-    --title "Final step: Installation" \
-    --no-collapse \
-    --clear \
-    --colors \
-    --yesno "Proceed with installation ?\nYour hard drive disk will be formatted and all data erased." $DIALOG_HEIGHT $DIALOG_WIDTH \
-    2>&1 1>&3)
-  exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  case $exit_status in
-  "$DIALOG_OK")
+  if gum confirm "Proceed with installation? Your hard drive disk will be formatted and all data erased."; then
     CONFIRM_INSTALL=1
-    clear
-    ;;
-  "$DIALOG_CANCEL")
-    clear
+  else
     echo "Program terminated without any installation." >&2
-    #exit 1
-    ;;
-  "$DIALOG_ESC")
-    clear
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+  fi
 }
 
 choose_lang
@@ -1110,27 +876,8 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   fi
 
   echo -e "${GREEN}Done...${NC}"
-  # on descriptor 3
-  exec 3>&1
-  result=$(dialog --backtitle "Success" \
-    --ok-label "Reboot" \
-    --no-collapse \
-    --clear \
-    --colors \
-    --msgbox "\Zb\Z2CuriOS was successfully installed! \Zn\nRemember to remove USB installer!" $DIALOG_HEIGHT $DIALOG_WIDTH \
-    2>&1 1>&3)
-  exit_status=$?
-  # Close file descriptor 3
-  exec 3>&-
-  # Act on exit status
-  case $exit_status in
-  "$DIALOG_OK")
-    clear
+  gum format "# Success" "CuriOS was successfully installed!" "Remember to remove USB installer!"
+  if gum confirm "Reboot now?"; then
     reboot now
-    ;;
-  "$DIALOG_ESC")
-    echo "Program aborted." >&2
-    exit 1
-    ;;
-  esac
+  fi
 fi

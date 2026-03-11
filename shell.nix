@@ -3,8 +3,8 @@
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     # For curios-install
-    dialog
     git
+    gum
     jq
     mkpasswd
     parted

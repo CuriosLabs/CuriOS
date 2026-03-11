@@ -3,8 +3,8 @@
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     # For Raspberry PI curios-install
-    dialog
     git
+    gum
     mkpasswd
     raspberrypi-eeprom
   ];
