@@ -3,13 +3,13 @@
 Curi*OS* is a Linux distribution based on the [NixOS](https://nixos.org/) operating
 system and the [COSMIC](https://system76.com/cosmic) desktop environment. It is
 built to be modular, configurable, and securable, with a focus on providing a
-tailored desktop experience. It is designed for modern, advanced users who want to
-quickly achieve productivity.
+tailored desktop experience. It is designed for modern, advanced users who want
+to quickly achieve productivity.
 
 Curi*OS*'s goal is to take advantage of NixOS mechanisms like declarative builds
 and deployments and its unique approach to system configuration and package
-management. Curi*OS* also leverages the power of the COSMIC desktop environment to
-customize UX and themes.
+management. Curi*OS* also leverages the power of the COSMIC desktop environment
+to customize UX and themes.
 ![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Desktop1.png?raw=true "CuriOS desktop")
 
 ## Main Goals
