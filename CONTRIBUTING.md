@@ -14,20 +14,22 @@ informations as possible so we can reproduce the bug.
 
 ## **Did you write a patch that fixes a bug?**
 
-* Make sure your code pass the lints tests. Use `statix check "$file"` for *.nix
-files, or `shellcheck -f tty -x "$file"` for bash scripts.
+* Make sure your code pass the lints tests. Use `just lint` for *.nix or bash
+files.
 * Open a new GitHub pull request with the patch.
 * Ensure the PR description clearly describes the problem and solution.
 Include the relevant issue number if applicable.
 
 ## **Do you intend to add a new feature or change an existing one?**
 
-1. Suggest your change in the [Discussions](https://github.com/CuriosLabs/CuriOS/discussions/new?category=ideas-features) and start writing code.
+1. Suggest your change in the [Discussions](https://github.com/CuriosLabs/CuriOS/discussions/new?category=ideas-features)
+and start writing code.
 2. Fork the Project
 3. Create your "feature" branch (`git checkout -b feature/AmazingFeature`) -
 the branch name MUST start with "feature/".
-4. Make sure your code pass the lints tests. Use `statix check "$file"` for
-*.nix files, or `shellcheck -f tty -x "$file"` for bash scripts.
+4. Make sure your code pass the lints tests. Use `just lint` for
+*.nix or bash files. If possible, an integration test should be added in `./tests/`
+an validated with `just test-unit *target*`.
 5. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 6. Push to the branch (`git push origin feature/AmazingFeature`).
 7. Open a Pull Request.

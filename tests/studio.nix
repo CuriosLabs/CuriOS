@@ -15,7 +15,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps.studio.enable = true;
+      curios.desktop.studio = {
+        enable = true;
+        davinci-resolve.enable = true;
+        davinci-resolve-studio.enable = true;
+      };
     };
   };
 
@@ -31,6 +35,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("obs")
         check_which("audacity")
         check_which("davinci-resolve")
+        check_which("davinci-resolve-studio")
         check_which("darktable")
   '';
 }

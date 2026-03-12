@@ -6,7 +6,7 @@
     curios.hardened.sshd.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for sshd.";
+      description = "Hardened systemd configuration for sshd.";
     };
   };
 
@@ -44,3 +44,4 @@
     };
   };
 }
+

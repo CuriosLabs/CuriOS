@@ -6,30 +6,31 @@ Curi*OS* comes with a TUI `curios-manager` (shortcut: Super+Return).
 > The **Super** key is the **Windows** key on most keyboard, the **Command** key
 on Apple's keyboard.
 
-With it, you can update/upgrade the entire system, update your hardware
-firmware, check your disk usage, launch the process manager (btop), and much
-more.
+With it, you can update/upgrade the entire system, add/remove packages (applications),
+update your hardware firmware, check your disk usage, launch the process manager
+(btop), and much more.
+
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
 ## Install/uninstall applications
 
-You can manually edit the Curi*OS* system settings file
-`/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to
-install/uninstall applications or change some system settings.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_main_settings.png?raw=true "CuriOS manager settings")
+### Available Applications as CuriOS modules
 
-For example, do you want to game and install Steam, Heroic Launcher, and more?
+CuriOS come with pre-configured and pre-installed applications known as "modules".
+To install or uninstall one of this modules:
 
-Set `gaming.enable` to `true;`, as seen below:
-![curios-manager settings editor screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/CuriOS-manager_settingsedit2.png?raw=true "CuriOS manager settings editor")
+1. Launch `curios-manager` (shortcut: Super+Return)
+2. Go the `Applications` menu, then `Install/uninstall CuriOS Apps` menu.
+3. Search for an application/modules. Enabled applications appears in green.
+4. Use the space bar or the X key to toggle an application, Enter key to submit
+   or Esc to abort.
+   ![curios-manager modules menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_modulesmenu.png?raw=true "CuriOS manager modules menu")
+5. If you made any change `curios-manager` will update your system.
 
-Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
-whole system update.
-
-### Available Applications
-
-For an up to date list of all pre-configured applications see the [modules README](https://github.com/CuriosLabs/CuriOS/blob/master/modules/README.md).
+For an up to date list of all the CuriOS modules see the [modules.json](https://github.com/CuriosLabs/CuriOS/blob/master/modules.json)
+file.
 
 - **Core Apps** (Enabled by default):
   - Brave browser, Alacritty terminal, Signal, WhatsApp, VLC, Gimp3, EasyEffects.
@@ -45,8 +46,8 @@ For an up to date list of all pre-configured applications see the [modules READM
 
 - **System Tools**: CuriOS Manager, Flatpak/Flathub apps, COSMIC store
 
-The followings applications (packages) are available in `/etc/nixos/settings.nix`
-but not installed by default, see previous chapter on how to install them.
+The followings applications (packages) are available but not installed by default,
+see previous chapter on how to install them.
 
 - **Browsers**: Chromium, Firefox, LibreWolf, Vivaldi.
 
@@ -60,7 +61,7 @@ but not installed by default, see previous chapter on how to install them.
 
 - **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
 
-- **AI Tools**: Ollama local AI, Gemini CLI, Windsurf AI-assisted IDE.
+- **AI Tools**: Ollama local AI, Windsurf AI-assisted IDE.
 
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
 npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual
@@ -68,8 +69,11 @@ Studio Code.
 
 - **Virtualisation**: Qemu, KVM, virt-manager.
 
+- **Hardware**: Pilots and tools for AMD/Intel/Nvidia GPUs. Your GPU should be
+detected during the installation and enabled accordingly.
+
 - **Gaming**: Steam, Steam auto-start (BigPicture mode), ProtonGE for Steam, Heroic
-Launcher.
+Launcher, RetroArch.
 
 - **Specialized Apps**:
   - OBS Studio, Audacity, DaVinci Resolve, Darktable.
@@ -78,67 +82,51 @@ Launcher.
 
 ### Adding more Applications
 
-Do you want a package not included in one of the already pre-configured [modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
-? Find more packages at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages)
-and copy the `NixOS Configuration` tab content of the package you want under
-the `package details` section.
+Do you want a package not already included in one of the already pre-configured
+[modules](https://github.com/CuriosLabs/CuriOS/tree/master/modules)? Add any
+package found at [NixOS search packages](https://search.nixos.org/packages?sort=relevance&type=packages)?
 
-For example, you want to install [Inkscape](https://inkscape.org/) and [Blender](https://www.blender.org/):
+For example, you want to install [Blender](https://www.blender.org/):
 
-1. Go to [search.nixos.org](https://search.nixos.org/packages)
-2. Find the packages name details for Blender and Inkscape.
-3. Launch `curios-manager` (shortcut: Super+Return)
-4. Go the `Settings (manual edit)` menu.
-5. Search for the line starting with `environment.systemPackages` and add your
-packages under the `[]` brackets.
-6. Exit (Ctrl+X) and save, `curios-manager` will do the system update.
+1. Launch `curios-manager` (shortcut: Super+Return)
+2. Go the `Applications` menu, then `Find/Add a NixOS package` menu.
+3. Type an application name, the script will search for the most pertinent results.
+4. Choose an application from the result list:
+   ![curios-manager add package screenshot 5](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_addpackage5.png?raw=true "CuriOS manager add package 5")
+5. `curios-manager` will now download and install the package.
+6. Enjoy!
 
-It should look like this:
+### Flatpak / Desktop Apps Installation
 
-```nix
-  ### NixOS packages
-  environment.systemPackages = [
-    # Add your packages here - find package name at https://search.nixos.org/packages
-    pkgs.inkscape-with-extensions
-    pkgs.blender
-  ];
-```
+You can also install Linux applications as Flatpaks. [Flathub](https://flathub.org/)
+and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
+app as seen below:
+![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Store.png?raw=true "COSMIC Store")
 
-> [!TIP]
-> Use Ctrl+Alt+V to paste in the `curios-manager` default editor (nano).
-
-### Backup your computer
+## Backup your computer
 
 With `curios-manager` you can also backup your computer on a local USB drive or
 a cloud-based service. See our [Backup your Computer guide](backups.md).
 
-### System management
+## System management
 
 From `curios-manager` system menu:
-![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_menu.png?raw=true "curios-manager system menu")
+![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_system_menu2.png?raw=true "curios-manager system menu")
 
 You can shutdown/reboot/lock your computer. Manage running process on your CPU
 and GPU (with `btop` and `nvtop`). See all the current network connection (with
 `snitch`). You can also check your disk usage, and update your firmware (UEFI
 BIOS and more).
-![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_systems_disk.png?raw=true "curios-manager system disk")
-![curios-manager firmware update](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_system_firmware.png?raw=true "curios-manager firmware update")
-
-## Flatpak / Desktop Apps Installation
-
-You can also install Linux applications as Flatpaks. [Flathub](https://flathub.org/)
-and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
-app as seen below:
-![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Store.png?raw=true "COSMIC Store")
+![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_systems_disk2.png?raw=true "curios-manager system disk")
 
 ## System Upgrade
 
 When a new version of Curi*OS* is available, you will see a pop-up appear on your
 desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Updater2.png?raw=true "CuriOS updater")
+![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Updater2.png?raw=true "CuriOS updater")
 
 To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
-Super+Return) and choose the `👆Upgrade` option.
+Super+Return) and choose the `👆Upgrade` option from the main menu.
 
 ## NixOS Management
 
@@ -162,6 +150,15 @@ sudo nix-collect-garbage --delete-older-than 7d &&
 sudo nixos-rebuild switch --upgrade &&
 sudo nixos-rebuild list-generations
 ```
+
+Most advanced users can manually edit the Curi*OS* system settings file
+`/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to add
+custom Nix configuration change. It launch the system `$EDITOR` which is `nano`
+by default.
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_settingsedit3.png?raw=true "CuriOS manager settings")
+
+Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
+whole system update.
 
 ---
 **Next**: [Backup your computer](backups.md).

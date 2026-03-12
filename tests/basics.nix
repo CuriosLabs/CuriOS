@@ -16,7 +16,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps = {
+      curios.desktop = {
         basics.enable = true;
         appImage.enable = true;
 
@@ -97,10 +97,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.claude.chats")
         check_which("cursor")
         check_which("cursor-agent")
-        check_which("gemini") # Executable for gemini-cli
+        check_webapp("com.google.gemini")
         check_webapp("ai.x.grok")
         check_which("lm-studio")
-        #check_which("lms") # LM Studio CLI
+        check_which("lms") # LM Studio CLI
         check_webapp("ai.mistral.chat")
         check_which("windsurf")
 
@@ -122,5 +122,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("gimp")
         check_which("tldr")
         check_which("procs")
+        check_webapp("dev.curioslabs.docs")
   '';
 }

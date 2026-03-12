@@ -1,6 +1,13 @@
 # For Raspberry PI 4 platform
 # All other platforms and file-system configurations should be disabled.
-# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-25.05/nixos.sd_image.aarch64-linux
+# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-25.11/nixos.sd_image.aarch64-linux
+# Burn the zst image with caligula: caligula burn -z zst nixos-image-sd-card-25.11.5198.e576e3c9cf9b-aarch64-linux.img.zst
+# boot from the SD card, then as root:
+# nix-shell ./shell-rpi.nix
+# cd /tmp
+# git clone https://github.com/CuriosLabs/CuriOS.git
+# cd CuriOS/
+# ./curios-install --rpi4
 
 { config, pkgs, lib, ... }:
 
@@ -10,7 +17,7 @@
     curios.platform.rpi4.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Raspberry PI 4 configuration";
+      description = "REQUIRED config on Raspberry PI 4 platform.";
     };
   };
 

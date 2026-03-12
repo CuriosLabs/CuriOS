@@ -1,20 +1,25 @@
-# Office suite desktop apps.
+# Office suite desktop applications.
 
 { config, lib, pkgs, ... }:
 
 {
   # Declare options
   options = {
-    curios.desktop.apps.office = {
+    curios.desktop.office = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Default office desktop apps - Obsidian.";
+        description = "REQUIRED office applications - Obsidian, Joplin.";
+      };
+      calibre.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Calibre e-books manager.";
       };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "LibreOffice suite desktop apps.";
+        description = "LibreOffice suite desktop applications.";
       };
       onlyoffice.desktopeditors.enable = lib.mkOption {
         type = lib.types.bool;
@@ -49,6 +54,20 @@
             type = lib.types.str;
             default = "app.hubspot.com";
             description = "HubSpot web app base URL.";
+          };
+        };
+      };
+      erp = {
+        odoo = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Odoo ERP/CRM web app.";
+          };
+          baseUrl = lib.mkOption {
+            type = lib.types.str;
+            default = "mycompanynamehere.odoo.com";
+            description = "Your Odoo server base URL.";
           };
         };
       };
@@ -109,31 +128,33 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.desktop.apps.office.enable {
+  config = lib.mkIf config.curios.desktop.office.enable {
     environment.systemPackages = [ pkgs.obsidian pkgs.joplin-desktop ]
-      ++ lib.optionals config.curios.desktop.apps.office.libreoffice.enable
+      ++ lib.optionals config.curios.desktop.office.calibre.enable
+      [ pkgs.calibre ]
+      ++ lib.optionals config.curios.desktop.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
-      config.curios.desktop.apps.office.onlyoffice.desktopeditors.enable
+      config.curios.desktop.office.onlyoffice.desktopeditors.enable
       [ pkgs.onlyoffice-desktopeditors ]
-      ++ lib.optionals config.curios.desktop.apps.office.thunderbird.enable
+      ++ lib.optionals config.curios.desktop.office.thunderbird.enable
       [ pkgs.thunderbird ]
-      ++ lib.optionals config.curios.desktop.apps.office.crm.salesforce.enable
+      ++ lib.optionals config.curios.desktop.office.crm.salesforce.enable
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals config.curios.desktop.apps.office.crm.hubspot.enable
+      ++ lib.optionals config.curios.desktop.office.crm.hubspot.enable
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals config.curios.desktop.apps.office.finance.gnucash.enable
+      ++ lib.optionals config.curios.desktop.office.erp.odoo.enable
+      [ (import ./webapp-odoo.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.finance.gnucash.enable
       [ pkgs.gnucash ]
-      ++ lib.optionals
-      config.curios.desktop.apps.office.projects.basecamp.enable
+      ++ lib.optionals config.curios.desktop.office.projects.basecamp.enable
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals config.curios.desktop.apps.office.projects.jira.enable
+      ++ lib.optionals config.curios.desktop.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals
-      config.curios.desktop.apps.office.conferencing.slack.enable
-      [ (import ./webapp-slack.nix) ] ++ lib.optionals
-      config.curios.desktop.apps.office.conferencing.teams.enable
-      [ (import ./webapp-teams.nix) ] ++ lib.optionals
-      config.curios.desktop.apps.office.conferencing.zoom.enable
+      ++ lib.optionals config.curios.desktop.office.conferencing.slack.enable
+      [ (import ./webapp-slack.nix) ]
+      ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
+      [ (import ./webapp-teams.nix) ]
+      ++ lib.optionals config.curios.desktop.office.conferencing.zoom.enable
       [ pkgs.zoom-us ];
   };
 }

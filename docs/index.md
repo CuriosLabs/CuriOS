@@ -10,7 +10,7 @@ Curi*OS*'s goal is to take advantage of NixOS mechanisms like declarative builds
 and deployments and its unique approach to system configuration and package
 management. Curi*OS* also leverages the power of the COSMIC desktop environment to
 customize UX and themes.
-![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/testing/img/Desktop1.png?raw=true "CuriOS desktop")
+![CuriOS desktop](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Desktop1.png?raw=true "CuriOS desktop")
 
 ## Main Goals
 
@@ -38,9 +38,9 @@ the whole system from a modern sleek Terminal User Interface.
 - ⌨️ Alacritty terminal with ZSH and a lot of useful modern commands, including
 ⚡️ Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd, and many more...
 - ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
-(Ollama is also easily installable). [Cursor](https://cursor.com/features) for
-an AI-assisted IDE. Desktop shortcut for AI chat web applications (ChatGPT,
-Claude, Grok and Mistral).
+([Ollama](https://ollama.com/) is also easily installable).
+[Cursor](https://cursor.com/features) for an AI-assisted IDE. Desktop shortcuts
+for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
 - 🐧 Uses the latest stable Linux kernel by default.
 - 🗛  A bunch of nerd fonts...
 
@@ -59,6 +59,7 @@ How-to:
 - [Update/upgrade your system, install programs, and more](system-management.md).
 - [Backup your Computer/Protect it against ransomware](backups.md)
 - [Work with AI tools](ai-tools.md)
+- [Work with Audio/Video applications](audio-video.md)
 
 ## Architecture
 
@@ -68,4 +69,4 @@ Learn more about the internal structure and design principles of Curi*OS* in the
 ## Contributing
 
 We welcome contributions! Please refer to our [Contributing Guide](https://github.com/CuriosLabs/CuriOS/tree/master?tab=contributing-ov-file)
-for details.
+and our technical [Development Guide](development.md) for details.

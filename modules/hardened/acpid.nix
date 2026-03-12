@@ -6,7 +6,7 @@
     curios.hardened.acpid.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for acpid.";
+      description = "Hardened systemd configuration for acpid.";
     };
   };
 
@@ -28,25 +28,13 @@
       RestrictNamespaces = true;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
-      RestrictAddressFamilies = [
-        "~AF_INET6"
-        "~AF_INET"
-        "~AF_PACKET"
-      ];
+      RestrictAddressFamilies = [ "~AF_INET6" "~AF_INET" "~AF_PACKET" ];
       MemoryDenyWriteExecute = true;
       LockPersonality = true;
-      SystemCallFilter = [
-        "~@mount"
-        "~@swap"
-        "~@obsolete"
-        "~@cpu-emulation"
-      ];
+      SystemCallFilter = [ "~@mount" "~@swap" "~@obsolete" "~@cpu-emulation" ];
       SystemCallArchitectures = "native";
-      CapabilityBoundingSet= [
-        "~CAP_CHOWN"
-        "~CAP_FSETID"
-        "~CAP_SETFCAP"
-      ];
+      CapabilityBoundingSet = [ "~CAP_CHOWN" "~CAP_FSETID" "~CAP_SETFCAP" ];
     };
   };
 }
+

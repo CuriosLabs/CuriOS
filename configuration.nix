@@ -3,7 +3,12 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let
+  curiosModules = if builtins.pathExists ./modules.json then
+    builtins.fromJSON (builtins.readFile ./modules.json)
+  else
+    { };
+in {
   # Split configurations files, see: https://nixos.wiki/wiki/NixOS_modules
   imports = [
     ##################### Step 1: Hardware #####################
@@ -20,6 +25,9 @@
     ./settings.nix
   ] ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
   # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
+
+  # Importing curios modules settings from JSON files
+  curios = curiosModules.curios or { };
 
   # updated by curios-install
   networking.hostName = config.curios.system.hostname;
@@ -108,21 +116,21 @@
   # Allow unfree packages, could be overridden by some modules.
   nixpkgs.config.allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
     true
-  else if config.curios.desktop.apps.ai.cursor.enable then
+  else if config.curios.desktop.ai.cursor.enable then
     true
-  else if config.curios.desktop.apps.ai.windsurf.enable then
+  else if config.curios.desktop.ai.windsurf.enable then
     true
-  else if config.curios.desktop.apps.office.enable then
+  else if config.curios.desktop.office.enable then
     true
-  else if config.curios.desktop.apps.chat.teamspeak.enable then
+  else if config.curios.desktop.chat.teamspeak.enable then
     true
-  else if config.curios.desktop.apps.gaming.enable then
+  else if config.curios.desktop.gaming.enable then
     true
-  else if config.curios.desktop.apps.studio.enable then
+  else if config.curios.desktop.studio.enable then
     true
-  else if config.curios.desktop.apps.devops.rust.enable then
+  else if config.curios.desktop.devops.rust.enable then
     true
-  else if config.curios.desktop.apps.devops.go.enable then
+  else if config.curios.desktop.devops.go.enable then
     true
   else
     false;
@@ -144,7 +152,7 @@
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.4";
+    nixos.variant_id = "25.11.5";
   };
 
   # Collect garbage

@@ -11,7 +11,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the COSMIC module.
     config = {
-      curios.desktop.cosmic.enable = true;
+      curios.cosmic.enable = true;
       time.timeZone = "UTC";
     };
   };
@@ -33,6 +33,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lld")
         check_which("lswt")
         check_which("xdg-settings")
+        check_which("xdg-user-dirs-update")
         check_which("cosmic-applets")
         check_which("cosmic-comp")
         check_which("cosmic-greeter")
@@ -44,5 +45,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         # 'cosmic-desktop' itself doesn't run as a systemd service in the same way,
         # but the greeter is a good indicator that the session would start correctly.
         check_service("cosmic-greeter-daemon")
+
+        # Check if our new XDG user dirs update service is present in the systemd user config
+        machine.succeed("systemctl --user --global list-unit-files | grep xdg-user-dirs-update.service")
   '';
 }

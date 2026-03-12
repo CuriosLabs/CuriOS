@@ -6,7 +6,7 @@
     curios.hardened.nix-daemon.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for nix-daemon.";
+      description = "Hardened systemd configuration for nix-daemon.";
     };
   };
 
@@ -22,13 +22,8 @@
       RestrictSUIDSGID = true;
       RestrictRealtime = true;
       RestrictNamespaces = [ "~cgroup" ];
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-        "AF_INET6"
-        "AF_INET"
-      ];
-      CapabilityBoundingSet= [
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_INET6" "AF_INET" ];
+      CapabilityBoundingSet = [
         "~CAP_SYS_CHROOT"
         "~CAP_BPF"
         "~CAP_AUDIT_WRITE"
@@ -66,7 +61,8 @@
       LockPersonality = true;
       MemoryDenyWriteExecute = true;
       DevicePolicy = "closed";
-      UMask = 0077;
+      UMask = 77;
     };
   };
 }
+

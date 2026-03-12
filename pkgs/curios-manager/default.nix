@@ -4,24 +4,18 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.20";
+  version = "0.30.10";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-4YY7zDMzHGzYLMGCMDRZcOBo6hLGKl/bFTSxUJRrG0k=";
+    hash = "sha256-fS3K7RnxU9+nHb3I+orN9f7LzlD+MIyP419geZK22N0=";
   };
 
   buildInputs = [
     pkgs.btop
-    #pkgs.cosmic-applibrary
-    #pkgs.cosmic-launcher
-    #pkgs.cosmic-osd
-    #pkgs.cosmic-settings
-    #pkgs.cosmic-store
     pkgs.curl
-    #pkgs.curios-dotfiles
     pkgs.duf
     pkgs.fastfetch
     pkgs.fd
@@ -31,8 +25,13 @@ stdenvNoCC.mkDerivation rec {
     pkgs.gum
     pkgs.jq
     pkgs.libnotify
+    pkgs.libsecret
+    pkgs.ncdu
+    pkgs.nix-search-cli
+    pkgs.nixos-option
+    #pkgs.nvtopPackages.full
+    pkgs.restic
     pkgs.smartmontools
-    #pkgs.systemd
     pkgs.terminaltexteffects
     pkgs.wget
   ];

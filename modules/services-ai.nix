@@ -9,8 +9,7 @@
     curios.services.ai.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description =
-        "Enable Ollama and open-webui services - ChatGPT, Grok, Mistral, Ollama(local) webapps.";
+      description = "Ollama(local AI) and open-webui services.";
     };
   };
 
@@ -29,18 +28,24 @@
         "cuda"
       else if config.curios.hardware.amdGpu.enable then
         "rocm"
+      else if config.curios.hardware.intelGpu.enable then
+        "vulkan"
       else
         false;
+      # Ollama server port
+      port = 11434;
     };
     # Open WebUI, see: https://docs.openwebui.com/
     services.open-webui = {
       enable = true;
       environment = {
+        # See https://docs.openwebui.com/getting-started/env-configuration/
         HOME = "/var/lib/open-webui";
         OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
         # Disable authentication
         WEBUI_AUTH = "False";
       };
+      port = 8080;
     };
     # AI webapp desktop shortcuts
     environment.systemPackages = [ (import ./desktop-apps/webapp-ollama.nix) ];

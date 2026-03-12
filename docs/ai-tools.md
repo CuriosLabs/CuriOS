@@ -30,7 +30,7 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 > the `curios-manager` application in the menu `System -> Process Management(GPU)`
 > as seen below:
 
-![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/testing/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
+![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
 
 > [!IMPORTANT]
 >
@@ -70,15 +70,18 @@ User Interface).
 **Ollama** is a command-line tool to download and run LLMs locally. It also includes
 **open-webui**, which provides a chat interface in your web browser.
 
-To install it, open the `curios-manager` TUI, go to the `Settings (manual edit)`
-menu, and set `services.ai.enable = true;`. After you save the file (shortcut
-`Ctrl+X`), `curios-manager` will handle the installation.
+To install it, open the `curios-manager` TUI, go the `Applications` menu, then
+`Install/uninstall CuriOS Apps` menu. Search for
+`(curios.services) ai - Ollama(local AI)` and enable it (X key to toggle).
+Press Enter to submit it and `curios-manager` will handle the installation.
 
-- **Download a model** (e.g., gemma): `ollama pull gemma`
+- **Download a model** (e.g., Qwen2.5 Coder): `ollama pull qwen2.5-coder:3b`
+- **Run a model**: `ollama run qwen2.5-coder:3b`
 - **List installed models**: `ollama ls`
+- **List running models**: `ollama ps`
 
-The web chat is available at [http://localhost:11434](http://localhost:11434) in
-your browser. Find more models on the [Ollama website](https://ollama.com/).
+The web chat (open-webui) is available at [http://localhost:8080](http://localhost:8080)
+in your browser. Find more models on the [Ollama website](https://ollama.com/).
 
 > [!NOTE]
 > AMD GPU user should take a look at [NixOS wiki](https://wiki.nixos.org/wiki/Ollama#AMD_GPU_with_open_source_driver).
@@ -129,7 +132,7 @@ Then, add your provider and model details, for example:
   // Theme configuration
   "theme": "opencode",
   "autoupdate": false,
-  // LLMs Providers - Adjust to your LM Studio configuration
+  // LLMs Providers - Adjust to your current configuration
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -145,6 +148,18 @@ Then, add your provider and model details, for example:
           "name": "Ministral3"
         }
       }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder:3b": {
+          "name": "Qwen2.5 Coder 3b"
+        }
+      }
     }
   }
 }
@@ -153,6 +168,7 @@ Then, add your provider and model details, for example:
 Learn more on the [opencode documentation](https://opencode.ai/docs/).
 
 ---
+**Next**: [Audio/Video applications](audio-video.md).
 
 **Previous**: [Backup your Computer](backups.md)
 

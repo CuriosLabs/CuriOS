@@ -6,7 +6,7 @@
     curios.backup.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable Restic backup.";
+      description = "REQUIRED Restic backup CLI.";
     };
   };
 

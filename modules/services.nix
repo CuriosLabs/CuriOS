@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable CuriOS services.";
+        description = "REQUIRED CuriOS services - Flatpak, pipewire, fwupd...";
       };
       printing.enable = lib.mkOption {
         type = lib.types.bool;
@@ -17,7 +17,7 @@
       sshd.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Enable SSH daemon services.";
+        description = "Enable SSH daemon service.";
       };
     };
   };
@@ -123,7 +123,7 @@
         requires = [ "network-online.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [ pkgs.flatpak ];
-        script = if config.curios.desktop.cosmic.enable then ''
+        script = if config.curios.cosmic.enable then ''
           /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
         '' else ''

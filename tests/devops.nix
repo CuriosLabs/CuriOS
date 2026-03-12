@@ -18,7 +18,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps.devops = {
+      curios.desktop.devops = {
         enable = true;
         cloudflared.enable = true;
         editor = {

@@ -6,7 +6,8 @@
     curios.hardened.networkManager.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for NetworkManager.";
+      description =
+        "Hardened systemd configuration for NetworkManager - WARNING: proton-vpn bug.";
     };
   };
 
@@ -23,13 +24,8 @@
       ProtectProc = "invisible";
       PrivateTmp = true;
       RestrictRealtime = true;
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-        "AF_INET"
-        "AF_INET6"
-        "AF_PACKET"
-      ];
+      RestrictAddressFamilies =
+        [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" "AF_PACKET" ];
       RestrictNamespaces = true;
       RestrictSUIDSGID = true;
       MemoryDenyWriteExecute = true;
@@ -42,7 +38,8 @@
         "ptrace"
       ];
       SystemCallArchitectures = "native";
-      LockPersonality= true;
+      LockPersonality = true;
     };
   };
 }
+

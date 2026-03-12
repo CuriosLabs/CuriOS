@@ -16,7 +16,7 @@ pkgs.stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.hubspot";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.apps.office.crm.hubspot.baseUrl}";
+      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.office.crm.hubspot.baseUrl}";
     desktopName = "HubSpot";
     icon = "webapp-hubspot";
     categories = [ "Office" ];

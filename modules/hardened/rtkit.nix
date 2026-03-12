@@ -6,7 +6,7 @@
     curios.hardened.rtkit-daemon.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for rtkit-daemon.";
+      description = "Hardened systemd configuration for rtkit-daemon.";
     };
   };
 
@@ -27,11 +27,7 @@
       PrivateDevices = true;
       RestrictNamespaces = true;
       RestrictSUIDSGID = true;
-      RestrictAddressFamilies = [
-        "~AF_INET6"
-        "~AF_INET"
-        "~AF_PACKET"
-      ];
+      RestrictAddressFamilies = [ "~AF_INET6" "~AF_INET" "~AF_PACKET" ];
       MemoryDenyWriteExecute = true;
       DevicePolicy = "closed";
       LockPersonality = true;
@@ -46,3 +42,4 @@
     };
   };
 }
+

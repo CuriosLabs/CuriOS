@@ -10,7 +10,7 @@
     curios.filesystems.minimal.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Minimal LVM filesystems as defined by 'curios-install'.";
+      description = "Minimal LVM filesystems as defined by curios-install.";
     };
   };
 
@@ -35,6 +35,6 @@
       };
     };
 
-    swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
+    swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
   };
 }

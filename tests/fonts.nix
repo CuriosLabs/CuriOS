@@ -15,7 +15,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     config = {
       curios.fonts.enable = true;
       # Enable cosmic to include conditional fonts
-      curios.desktop.cosmic.enable = true;
+      curios.cosmic.enable = true;
       time.timeZone = "UTC"; # Required for many NixOS tests
     };
   };

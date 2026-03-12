@@ -6,7 +6,8 @@
     curios.hardened.getty.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "CuriOS hardened systemd configuration for getty.";
+      description =
+        "Hardened systemd configuration for getty - WARNING: may prevent tty login.";
     };
   };
 
@@ -26,10 +27,7 @@
       PrivateTmp = true;
       RestrictSUIDSGID = true;
       RestrictRealtime = true;
-      RestrictAddressFamilies = [
-        "AF_UNIX"
-        "AF_NETLINK"
-      ];
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" ];
       RestrictNamespaces = true;
       SystemCallErrorNumber = "EPERM";
       SystemCallArchitectures = "native";
@@ -42,9 +40,10 @@
         "~@cpu-emulation"
       ];
       LockPersonality = true;
-      IPAddressDeny = ["0.0.0.0/0" "::/0"];
+      IPAddressDeny = [ "0.0.0.0/0" "::/0" ];
       MemoryDenyWriteExecute = true;
-      UMask = 0077;
+      UMask = 77;
     };
   };
 }
+

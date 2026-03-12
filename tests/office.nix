@@ -16,8 +16,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
-      curios.desktop.apps.office = {
+      curios.desktop.office = {
         enable = true;
+        calibre.enable = true;
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;
         thunderbird.enable = true;
@@ -25,9 +26,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           salesforce.enable = true;
           hubspot.enable = true;
         };
-        finance = {
-          gnucash.enable = true;
-        };
+        erp = { odoo.enable = true; };
+        finance = { gnucash.enable = true; };
         projects = {
           basecamp.enable = true;
           basecamp.baseUrl = "launchpad.37signals.com/signin";
@@ -57,6 +57,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-default-office-apps"):
         check_which("obsidian")
         check_which("joplin-desktop")
+        check_which("calibre")
 
     with subtest("check-office-suites"):
         check_which("libreoffice")
@@ -68,6 +69,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-crm-webapps"):
         check_webapp("com.salesforce")
         check_webapp("com.hubspot")
+
+    with subtest("check-erp-webapps"):
+        check_webapp("com.odoo")
 
     with subtest("check-finance-apps"):
         check_which("gnucash")

@@ -21,7 +21,7 @@ pkgs.stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.basecamp";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.apps.office.projects.basecamp.baseUrl}";
+      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.office.projects.basecamp.baseUrl}";
     desktopName = "Basecamp";
     icon = "webapp-basecamp";
     categories = [ "Office" ];

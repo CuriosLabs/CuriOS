@@ -6,7 +6,7 @@
     curios.platform.amd64.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "x86_64 AMD/Intel CPUs configurations";
+      description = "REQUIRED config on x86_64 AMD/Intel CPUs platforms.";
     };
   };
 
