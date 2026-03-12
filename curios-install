@@ -976,6 +976,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   SECONDS_REM=$((DURATION % 60))
   TIME_RESULT=$(printf "%02d:%02d" $MINUTES $SECONDS_REM)
 
+  clear
   echo -e "${GREEN}Done...${NC}"
   gum format "# Success" "CuriOS was successfully installed in ${TIME_RESULT}!" "Remember to remove USB installer!"
   if gum confirm "Reboot now?"; then
