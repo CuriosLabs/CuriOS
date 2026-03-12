@@ -10,7 +10,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build:
+build: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -56,6 +56,7 @@ clean:
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
 install:
+  nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/curios-sources/default.nix {}' && nix profile add ./result
   ./curios-install --verbose
 
 # Linting Bash scripts and Nix files.
@@ -143,7 +144,7 @@ nixos-upgrade:
   esac
 
 # Push build ISO file to github as a release.
-publish:
+publish: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   gh auth status

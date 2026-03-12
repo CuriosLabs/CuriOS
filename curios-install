@@ -570,15 +570,13 @@ set_fullname() {
 #------------- Set user password
 set_user_passwd() {
   echo "Enter your password (6 characters minimum):"
-  password=$(gum input --password --placeholder "Password")
-  if [ $? -ne 0 ]; then
+  if ! password=$(gum input --password --placeholder "Password"); then
     set_fullname
     return
   fi
 
   echo "Confirm your password:"
-  confirm=$(gum input --password --placeholder "Confirm Password")
-  if [ $? -ne 0 ]; then
+  if ! confirm=$(gum input --password --placeholder "Confirm Password"); then
     set_user_passwd
     return
   fi
@@ -625,15 +623,13 @@ choose_disk() {
 choose_disk_encryption() {
   if gum confirm "Should your disk be fully encrypted (highly recommended)?"; then
     echo "Enter your passphrase for the full disk encryption (8 characters minimum):"
-    passphrase=$(gum input --password --placeholder "Passphrase")
-    if [ $? -ne 0 ]; then
+    if ! passphrase=$(gum input --password --placeholder "Passphrase"); then
       choose_disk
       return
     fi
 
     echo "Confirm your passphrase:"
-    confirm=$(gum input --password --placeholder "Confirm Passphrase")
-    if [ $? -ne 0 ]; then
+    if ! confirm=$(gum input --password --placeholder "Confirm Passphrase"); then
       choose_disk_encryption
       return
     fi
