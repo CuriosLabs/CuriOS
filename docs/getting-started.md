@@ -15,8 +15,8 @@ is a plus.
   [caligula](https://github.com/ifd3f/caligula) or the command `dd`.
 - An internet connection will be required during the installation. It is
   recommended to use an Ethernet cable for this operation. If you can only use
-  Wi-Fi, please note that the ISO does not include `NetworkManager`; therefore, you
-  will have to manually set up the connection with [nmtui](https://man.archlinux.org/man/nmtui.1).
+  Wi-Fi, please note that the ISO does not include `NetworkManager`; therefore,
+  you will have to manually set up the connection with [nmtui](https://man.archlinux.org/man/nmtui.1).
 - Curi*OS* does not support Secure Boot/TPM for the moment. You may have to turn
   it off in the UEFI menu of your PC.
 
@@ -85,8 +85,8 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 5. **Follow on-screen instructions**: Use the Up/Down arrow keys to move the cursor,
    the Space bar to select, Enter to validate your choice, and Tab to move between
    forms and buttons.
-   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_1.png?raw=true "CuriOS installation language selection")
-   ![CuriOS installation - disk encryption](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_4b.png?raw=true "CuriOS installation disk encryption")
+   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install2_0.png?raw=true "CuriOS installation language selection")
+   ![CuriOS installation - user password](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install2_1.png?raw=true "CuriOS installation user password")
    GPU hardware (Nvidia, AMD) will be automatically detected and installed. Once
    the installation is finished, you will be invited to reboot. Do not forget to
    remove the USB stick once your computer has restarted.
