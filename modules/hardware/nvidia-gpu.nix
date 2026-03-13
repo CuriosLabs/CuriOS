@@ -21,6 +21,11 @@
       blacklistedKernelModules = [ "i915" "nouveau" ];
       # Add kernel params
       kernelParams = [ "nvidia-drm.modeset=1" ];
+      # Fixing black screen after system sleep/hibernate
+      extraModprobeConfig = ''
+        options nvidia NVreg_PreserveVideoMemoryAllocations=0
+        options nvidia_modeset vblank_sem_control=0
+      '';
     };
 
     # Nvidia GPU
