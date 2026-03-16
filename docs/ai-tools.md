@@ -37,9 +37,10 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 > **Pro Tip**: In **LM Studio**, the default context length is set to 4096 and
 > it is too low. The context length is the maximum of tokens the model can attempt
 > in one prompt. The bigger, the better but the bigger is the context length the
-> more VRAM your model will use on your GPU. A context length of at least 30000 is
-> recommended. Open **LM Studio**, in the "Developer" or the "My Models" window load
-> a model, in the right panel on the "Load" tab change the "Context length" value.
+> more VRAM your model will use on your GPU. A context length of at least 30000
+> is recommended. Open **LM Studio**, in the "Developer" or the "My Models" window
+> load a model, in the right panel on the "Load" tab change the "Context length"
+> value.
 > Monitor your GPU memory usage with `nvtop` in a terminal. Try to reach around
 > 85% usage of GPU memory.
 > See [LM Studio documentation](https://lmstudio.ai/docs/app/advanced/per-model).
@@ -54,6 +55,7 @@ Curi*OS* comes with pre-installed desktop shortcuts for popular AI chat web appl
 
 - ChatGPT
 - Claude
+- Gemini
 - Grok
 - Mistral LeChat
 
@@ -129,10 +131,8 @@ Then, add your provider and model details, for example:
     "list": "allow",
     "webfetch": "allow"
   },
-  // Theme configuration
-  "theme": "opencode",
   "autoupdate": false,
-  // LLMs Providers - Adjust to your current configuration
+  // LLMs Providers - Adjust to your LM Studio configuration
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -141,11 +141,8 @@ Then, add your provider and model details, for example:
         "baseURL": "http://127.0.0.1:1234/v1"
       },
       "models": {
-        "qwen/qwen3-4b-2507": {
-          "name": "Qwen3 4b 2507"
-        },
-        "mistralai/ministral-3-3b": {
-          "name": "Ministral3"
+        "qwen/qwen3.5-9b": {
+          "name": "Qwen3.5 9b (local)"
         }
       }
     },
