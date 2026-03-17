@@ -203,7 +203,13 @@
         }
       },
       "studio": {
-        "enable": false
+        "enable": false,
+        "davinci-resolve": {
+          "enable": false
+        },
+        "davinci-resolve-studio": {
+          "enable": false
+        }
       },
       "utility": {
         "bitwarden": {
