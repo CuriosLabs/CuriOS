@@ -1,5 +1,6 @@
 # Must be imported by configuration.nix
 # AI tools packages.
+# DEPRECATED - moved to services.nix:
 
 { config, lib, ... }:
 

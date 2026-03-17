@@ -22,7 +22,6 @@
     ./platforms/amd64.nix
     ./platforms/rpi4.nix
     ./services.nix
-    ./services-ai.nix
     ./virtualisation.nix
     ./zsh.nix
   ];

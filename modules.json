@@ -326,10 +326,10 @@
       }
     },
     "services": {
-      "ai": {
+      "enable": true,
+      "ollama": {
         "enable": false
       },
-      "enable": true,
       "printing": {
         "enable": false
       },
