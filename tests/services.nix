@@ -29,12 +29,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         cosmic.enable = true;
 
-# Disable GPU options to ensure CPU mode is used for Ollama
-         hardware = {
-           amdGpu.enable = false;
-           intelGpu.enable = false;
-           nvidiaGpu.enable = false;
-         };
+        # Disable GPU options to ensure CPU mode is used for Ollama
+        hardware = {
+          amdGpu.enable = false;
+          intelGpu.enable = false;
+          nvidiaGpu.enable = false;
+        };
 
         # Set a keyboard layout to satisfy the xserver dependency
         system.keyboard = "us";
