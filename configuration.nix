@@ -145,6 +145,7 @@ in {
       # See: https://channels.nixos.org/
       # The URI of the NixOS channel to use for automatic upgrades.
       channel = "https://channels.nixos.org/nixos-25.11";
+      # unstable channel: "https://channels.nixos.org/nixos-unstable" MAY be risky
     };
     # Copy the NixOS configuration file and link it from the resulting system
     # (/run/current-system/configuration.nix). This is useful in case you
