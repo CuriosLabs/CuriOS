@@ -237,6 +237,16 @@ in {
       ++ lib.optionals config.curios.desktop.utility.flameshot.enable
       [ pkgs.flameshot ];
 
+    # Brave group policy example
+    # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
+    # https://chromeenterprise.google/policies/
+    environment.etc."brave/policies/managed/settings.json".text = ''
+      {
+        "BraveRewardsDisabled": 1,
+        "BraveWalletDisabled": 1
+      }
+    '';
+
     services = {
       # Enabling PCSC-lite for Yubikey
       pcscd.enable = true;
