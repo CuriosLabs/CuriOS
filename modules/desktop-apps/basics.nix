@@ -242,8 +242,8 @@ in {
     # https://chromeenterprise.google/policies/
     environment.etc."brave/policies/managed/settings.json".text = ''
       {
-        "BraveRewardsDisabled": 1,
-        "BraveWalletDisabled": 1
+        "BraveRewardsDisabled": true,
+        "BraveWalletDisabled": true
       }
     '';
 
