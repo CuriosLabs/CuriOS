@@ -4,6 +4,11 @@
   # Declare options
   options = {
     curios.services = {
+      ai.enable = lib.mkOption {
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
+      };
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
