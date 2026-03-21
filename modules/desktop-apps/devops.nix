@@ -63,12 +63,12 @@
       python312.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Python3.12, pip3, UV and JetBrains PyCharm Community.";
+        description = "Python3.12, pip3, UV, pyright and JetBrains PyCharm Community.";
       };
       python313.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Python3.13, pip3, UV and JetBrains PyCharm Community.";
+        description = "Python3.13, pip3, UV, pyright and JetBrains PyCharm Community.";
       };
       ruby.enable = lib.mkOption {
         type = lib.types.bool;
@@ -142,6 +142,7 @@
         python312Packages.cryptography
         python312Packages.uv
         jetbrains.pycharm-oss
+        pyright
         ruff
       ] ++ lib.optionals config.curios.desktop.devops.python313.enable [
         # Python 3.13
@@ -151,6 +152,7 @@
         python313Packages.cryptography
         python313Packages.uv
         jetbrains.pycharm-oss
+        pyright
         ruff
       ] ++ lib.optionals config.curios.desktop.devops.ruby.enable [ ruby ]
       ++ lib.optionals config.curios.desktop.devops.rust.enable [
