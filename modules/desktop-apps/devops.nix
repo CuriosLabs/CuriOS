@@ -48,7 +48,7 @@
       javascript.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "NodeJS (npm, npx) Javascript runtime.";
+        description = "NodeJS (npm, npx) Javascript runtime and eslint.";
       };
       javascript.bun.enable = lib.mkOption {
         type = lib.types.bool;
@@ -131,8 +131,10 @@
         jetbrains.idea-oss
         jetbrains.jdk
       ] ++ lib.optionals config.curios.desktop.devops.javascript.enable
-      [ nodejs_24 ]
-      ++ lib.optionals config.curios.desktop.devops.javascript.bun.enable
+      [
+        eslint
+        nodejs_24
+      ] ++ lib.optionals config.curios.desktop.devops.javascript.bun.enable
       [ bun ] ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.devops.python312.enable [
         # Python 3.12

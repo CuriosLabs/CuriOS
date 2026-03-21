@@ -88,12 +88,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("node")
         check_which("npm")
         check_which("bun")
+        check_which("eslint")
 
     with subtest("check-python"):
         check_which("python3.12")
         check_which("python3.13")
         check_which("uv")
         check_which("pycharm-oss")
+        check_which("pyright")
         check_which("ruff")
 
     with subtest("check-ruby"):
