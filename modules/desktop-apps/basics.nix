@@ -142,6 +142,18 @@ in {
           description = "WhatsApp web app.";
         };
       };
+      music = {
+        strawberry.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Music player and music collection organizer.";
+        };
+        spotify.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Play music from the Spotify music service.";
+        };
+      };
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
@@ -230,6 +242,10 @@ in {
       [ pkgs.teamspeak6-client ]
       ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
       [ (import ./webapp-whatsapp.nix) ]
+      ++ lib.optionals config.curios.desktop.music.strawberry.enable
+      [ pkgs.strawberry ]
+      ++ lib.optionals config.curios.desktop.music.spotify.enable
+      [ pkgs.spotify ]
       ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
       [ pkgs.bitwarden-desktop ]
       ++ lib.optionals config.curios.desktop.utility.keepassxc.enable

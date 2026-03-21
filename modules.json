@@ -143,6 +143,14 @@
           "enable": false
         }
       },
+      "music": {
+        "spotify": {
+          "enable": false
+        },
+        "strawberry": {
+          "enable": false
+        }
+      },
       "office": {
         "calibre": {
           "enable": false

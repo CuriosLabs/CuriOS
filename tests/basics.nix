@@ -55,6 +55,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           whatsapp.enable = true;
         };
 
+        # Music Players
+        music = {
+          strawberry.enable = true;
+          spotify.enable = true;
+        };
+
         # Utilities
         utility = {
           bitwarden.enable = true;
@@ -109,6 +115,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("signal-desktop")
         check_which("TeamSpeak")
         check_webapp("com.whatsapp.web")
+
+    with subtest("check-music-players"):
+        check_which("strawberry")
+        check_which("spotify")
 
     with subtest("check-utilities"):
         check_which("bitwarden")
