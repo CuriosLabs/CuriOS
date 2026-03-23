@@ -803,6 +803,9 @@ dotfiles_install() {
   echo -e "${BLUE}Custom dotfiles installation...${NC}"
   local SKEL_DIR="/mnt/etc/skel/"
   local HOME_DIR="/mnt/home/*/"
+  local BRAVE_THEMES_FILE="/mnt/etc/brave/policies/managed/themes.json"
+  mkdir -p "$(dirname "$BRAVE_THEMES_FILE")"
+  touch "$BRAVE_THEMES_FILE"
   mkdir -p "$SKEL_DIR"
   curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$SKEL_DIR"
   for DIR in $HOME_DIR; do
@@ -810,6 +813,7 @@ dotfiles_install() {
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
       # TODO: Any way to predict OWNER at this stage ?
       chown -R 1000:100 "$DIR"
+      chown 1000:100 "$BRAVE_THEMES_FILE"
     fi
   done
 }
