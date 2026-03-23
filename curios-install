@@ -813,9 +813,10 @@ dotfiles_install() {
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
       # TODO: Any way to predict OWNER at this stage ?
       chown -R 1000:100 "$DIR"
-      chown 1000:100 "$BRAVE_THEMES_FILE"
     fi
   done
+  jq -n '{ "BrowserThemeColor": "#20252c" }' >"$BRAVE_THEMES_FILE"
+  chown 1000:100 "$BRAVE_THEMES_FILE"
 }
 
 if [ $CONFIRM_INSTALL -eq 1 ]; then
