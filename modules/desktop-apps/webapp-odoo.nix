@@ -16,7 +16,7 @@ pkgs.stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.odoo";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://${config.curios.desktop.office.erp.odoo.baseUrl}";
+      "/run/current-system/sw/bin/xdg-open https://${config.curios.desktop.office.erp.odoo.baseUrl}";
     desktopName = "Odoo";
     icon = "webapp-odoo";
     categories = [ "Office" ];

@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.whatsapp.web";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://web.whatsapp.com/";
+    exec = "/run/current-system/sw/bin/xdg-open https://web.whatsapp.com/";
     desktopName = "WhatsApp";
     icon = "webapp-whatsapp";
     categories = [ "Chat" "Network" ];

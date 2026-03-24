@@ -46,6 +46,9 @@
         "enable": true
       },
       "browser": {
+        "brave": {
+          "enable": true
+        },
         "chromium": {
           "enable": false
         },

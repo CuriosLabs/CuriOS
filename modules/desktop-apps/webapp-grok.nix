@@ -19,8 +19,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.x.grok";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://x.ai/grok";
+    exec = "/run/current-system/sw/bin/xdg-open https://x.ai/grok";
     desktopName = "Grok";
     icon = "webapp-grok";
     categories = [ "Science" "ArtificialIntelligence" ];
