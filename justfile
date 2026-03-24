@@ -87,8 +87,24 @@ nixos-upgrade:
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
+      releaseNumber=""
+      if [[ "{{branch}}" == testing || "{{branch}}" == feature* ]]; then
+        releaseNumber=$(date --utc "+%Y%m%d.%H%M")
+        releaseNumber="unstable-${releaseNumber}"
+      else
+        if [[ "{{branch}}" != release* ]]; then
+          printf "\e[31m Wrong git branch - not a release!\e[0m\n"
+          exit 1
+        fi
+      releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"{{branch}}")
+      fi
+      # Change some version number in nix file to match $releaseNumber
+      sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
+      sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
+      
       printf "\e[32m Launching Nix garbage collector...\e[0m\n"
       sudo nix-store --gc
+      
       printf "\e[32m Installing Curios...\e[0m\n"
       sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
       if [ ! -f /etc/nixos/settings.nix ]; then
