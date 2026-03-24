@@ -44,13 +44,13 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.5/CuriOS_25.11.5_amd64_intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.6/CuriOS_25.11.6_amd64_intel.iso
    ```
 
    Download and check ISO signature:
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.5/CuriOS_25.11.5_amd64_intel.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.6/CuriOS_25.11.6_amd64_intel.iso.sha256
    sha256sum --check CuriOS_*.iso.sha256
    ```
 
@@ -58,7 +58,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    OR on Linux you can try with `caligula`:
 
    ```bash
-   caligula burn -s $(cat ./CuriOS_25.11.5_amd64_intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_25.11.6_amd64_intel.iso.sha256)
    ```
 
    OR with `dd`:
@@ -72,21 +72,21 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 
    ```bash
    # And then to copy the ISO to the USB, `/dev/sda` in below case, adjust accordingly.
-   sudo dd if=CuriOS_25.11.5_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_25.11.6_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
    ```
 
 3. **Boot from USB**: Boot your machine from the USB drive. You will probably
    need to hit the F8 or F12 key during your computer's startup; refer to your
    motherboard manufacturer's instructions.
-   ![CuriOS installation boot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_0.png?raw=true "CuriOS installation boot")
+   ![CuriOS installation boot](https://github.com/CuriosLabs/CuriOS/blob/master/img/Install_dialog_0.png?raw=true "CuriOS installation boot")
 4. **Run the installer**: The installer should start automatically, or use the
    `sudo curios-install` script provided in the live environment.
-   ![CuriOS installation auto-start](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install_dialog_0b.png?raw=true "CuriOS installation start")
+   ![CuriOS installation auto-start](https://github.com/CuriosLabs/CuriOS/blob/master/img/Install_dialog_0b.png?raw=true "CuriOS installation start")
 5. **Follow on-screen instructions**: Use the Up/Down arrow keys to move the cursor,
    the Space bar to select, Enter to validate your choice, and Tab to move between
    forms and buttons.
-   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install2_0.png?raw=true "CuriOS installation language selection")
-   ![CuriOS installation - user password](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Install2_1.png?raw=true "CuriOS installation user password")
+   ![CuriOS installation - language selection ](https://github.com/CuriosLabs/CuriOS/blob/master/img/Install2_0.png?raw=true "CuriOS installation language selection")
+   ![CuriOS installation - user password](https://github.com/CuriosLabs/CuriOS/blob/master/img/Install2_1.png?raw=true "CuriOS installation user password")
    GPU hardware (Nvidia, AMD) will be automatically detected and installed. Once
    the installation is finished, you will be invited to reboot. Do not forget to
    remove the USB stick once your computer has restarted.
