@@ -22,6 +22,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         # Browsers
         browser = {
+          brave.enable = true;
           chromium.enable = true;
           firefox.enable = true;
           librewolf.enable = true;
@@ -91,7 +92,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("firefox")
         check_which("librewolf")
         check_which("vivaldi")
-        check_which("brave") # This one is installed unconditionally by basics.enable
+        check_which("brave")
 
     with subtest("check-vpn-clients"):
         check_which("protonvpn-app")

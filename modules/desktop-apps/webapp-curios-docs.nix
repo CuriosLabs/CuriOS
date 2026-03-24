@@ -8,16 +8,15 @@ pkgs.stdenv.mkDerivation rec {
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.unions [
-      ./webapp-curios-docs-icon.svg
-    ];
+    fileset = lib.fileset.unions [ ./webapp-curios-docs-icon.svg ];
   };
 
   dontBuild = true;
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "dev.curioslabs.docs";
-    exec = "xdg-open https://github.com/CuriosLabs/CuriOS/blob/master/docs/index.md";
+    exec =
+      "/run/current-system/sw/bin/xdg-open https://github.com/CuriosLabs/CuriOS/blob/master/docs/index.md";
     desktopName = "CuriOS Documentation";
     icon = "desktop-curios-docs";
     categories = [ "System" ];

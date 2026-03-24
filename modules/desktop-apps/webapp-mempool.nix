@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "space.mempool";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://mempool.space/mempool-block/0";
+      "/run/current-system/sw/bin/xdg-open https://mempool.space/mempool-block/0";
     desktopName = "Bitcoin blockchain mempool";
     icon = "webapp-mempool";
     categories = [ "Finance" ];

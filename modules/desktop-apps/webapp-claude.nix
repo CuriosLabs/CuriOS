@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.claude.chats";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://claude.ai/chats";
+    exec = "/run/current-system/sw/bin/xdg-open https://claude.ai/chats";
     desktopName = "Claude";
     icon = "webapp-claude";
     categories = [ "Science" "ArtificialIntelligence" ];

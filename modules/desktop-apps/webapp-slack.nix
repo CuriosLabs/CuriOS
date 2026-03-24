@@ -15,8 +15,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.slack.app";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://app.slack.com/client";
+    exec = "/run/current-system/sw/bin/xdg-open https://app.slack.com/client";
     desktopName = "Slack App";
     icon = "webapp-slack";
     categories = [ "Chat" "Network" "Office" ];

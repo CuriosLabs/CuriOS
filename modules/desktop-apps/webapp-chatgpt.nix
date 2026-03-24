@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.chatgpt";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://chatgpt.com/";
+    exec = "/run/current-system/sw/bin/xdg-open https://chatgpt.com/";
     desktopName = "ChatGPT";
     icon = "webapp-chatgpt";
     categories = [ "Science" "ArtificialIntelligence" ];

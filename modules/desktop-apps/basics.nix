@@ -21,6 +21,11 @@ in {
         description = "Enabling Linux AppImage support.";
       };
       browser = {
+        brave.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Brave privacy-oriented Web Browser";
+        };
         chromium.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -192,7 +197,6 @@ in {
         # alacritty-theme
 
         # 3rd party apps
-        pkgs.brave
         pkgs.easyeffects
         pkgs.ffmpeg_6-full
         pkgs.gimp3-with-plugins
@@ -228,6 +232,8 @@ in {
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.ai.windsurf.enable
         [ pkgs.windsurf ]
+        ++ lib.optionals config.curios.desktop.browser.brave.enable
+        [ pkgs.brave ]
         ++ lib.optionals config.curios.desktop.browser.chromium.enable
         [ pkgs.ungoogled-chromium ]
         ++ lib.optionals config.curios.desktop.browser.firefox.enable
@@ -255,7 +261,7 @@ in {
         ++ lib.optionals config.curios.desktop.utility.flameshot.enable
         [ pkgs.flameshot ];
 
-      # Brave group policy example
+      # Brave group policy examples
       # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
       # https://chromeenterprise.google/policies/
       etc."brave/policies/managed/settings.json".text = ''
@@ -266,17 +272,19 @@ in {
       '';
       # Add Bitwarden browser extension to Brave
       # See: https://chromeenterprise.google/policies/#ExtensionSettings
-      etc."brave/policies/managed/managed_preferences.json".text = ''
-        {
-          "ExtensionSettings": {
-            "nngceckbapebfimnlniiiahkandclblb": {
-              "installation_mode": "force_installed",
-              "update_url": "https://clients2.google.com/service/update2/crx"
-            }
-          },
-          "PasswordManagerEnabled": false
-        }
-      '';
+      #etc."brave/policies/managed/settings.json".text = ''
+      #  {
+      #    "BraveRewardsDisabled": true,
+      #    "BraveWalletDisabled": true,
+      #    "ExtensionSettings": {
+      #      "nngceckbapebfimnlniiiahkandclblb": {
+      #        "installation_mode": "force_installed",
+      #        "update_url": "https://clients2.google.com/service/update2/crx"
+      #      }
+      #    },
+      #    "PasswordManagerEnabled": false
+      #  }
+      #'';
     };
 
     services = {

@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.ollama.openwebui";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=http://localhost:8080/";
+    exec = "/run/current-system/sw/bin/xdg-open http://localhost:8080/";
     desktopName = "Ollama (local)";
     icon = "webapp-ollama-ui";
     categories = [ "Science" "ArtificialIntelligence" ];
