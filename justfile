@@ -101,10 +101,10 @@ nixos-upgrade:
       # Change some version number in nix file to match $releaseNumber
       sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
       sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
-      
+
       printf "\e[32m Launching Nix garbage collector...\e[0m\n"
       sudo nix-store --gc
-      
+
       printf "\e[32m Installing Curios...\e[0m\n"
       sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
       if [ ! -f /etc/nixos/settings.nix ]; then
