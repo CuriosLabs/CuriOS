@@ -120,9 +120,9 @@ in {
     true
   else if config.curios.desktop.studio.enable then
     true
-  else if config.curios.desktop.devops.rust.enable then
+  else if config.curios.desktop.devops.editor.go.enable then
     true
-  else if config.curios.desktop.devops.go.enable then
+  else if config.curios.desktop.devops.editor.rust.enable then
     true
   else
     false;

@@ -19,6 +19,16 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         i18n.locale = "en_US.UTF-8";
         keyboard = "us";
         timeZone = "UTC";
+        languages = {
+          go.enable = true;
+          java.enable = true;
+          javascript.enable = true;
+          javascript.bun.enable = true;
+          python312.enable = true;
+          python313.enable = true;
+          ruby.enable = true;
+          rust.enable = true;
+        };
       };
     };
   };
@@ -34,6 +44,24 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-ansible-installed"):
         check_which("ansible")
         check_which("ansible-playbook")
+
+    with subtest("check-languages-installed"):
+        check_which("go")
+        check_which("java")
+        check_which("node")
+        check_which("npm")
+        check_which("bun")
+        check_which("eslint")
+        check_which("golangci-lint")
+        check_which("python3.12")
+        check_which("python3.13")
+        check_which("pyright")
+        check_which("uv")
+        check_which("ruff")
+        check_which("ruby")
+        check_which("gem")
+        check_which("rustup")
+        check_which("cargo-cbuild")
 
     with subtest("check-system-settings"):
         # Check if the hostname was set

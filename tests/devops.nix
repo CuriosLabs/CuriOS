@@ -12,7 +12,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   nodes.machine = { config, pkgs, ... }: {
     imports = [ ../modules/desktop-apps/devops.nix ];
 
-    # Enable all options from the 'devops.nix' module.
+    # Enable all options from the 'devops.nix' and 'system.nix' (languages) modules.
     config = {
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
@@ -23,18 +23,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         cloudflared.enable = true;
         editor = {
           default.nvim.enable = true;
+          go.enable = true;
+          java.enable = true;
+          python.enable = true;
+          rust.enable = true;
           zed.enable = true;
           vscode.enable = true;
         };
-        go.enable = true;
-        java.enable = true;
-        javascript.enable = true;
-        javascript.bun.enable = true;
         just.enable = true;
-        python312.enable = true;
-        python313.enable = true;
-        ruby.enable = true;
-        rust.enable = true;
         networks.enable = true;
       };
     };
@@ -67,6 +63,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("cloudflared")
 
     with subtest("check-editors"):
+        check_which("goland")
+        check_which("idea-oss")
+        check_which("pycharm-oss")
+        check_which("rust-rover")
         check_which("zeditor")
         check_which("nil")
         check_which("nixd")
@@ -74,39 +74,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         # Check that nvim is the default editor
         machine.succeed("readlink -f $(which vi) | grep -q 'nvim'")
         machine.succeed("readlink -f $(which vim) | grep -q 'nvim'")
-
-    with subtest("check-go"):
-        check_which("go")
-        check_which("golangci-lint")
-        check_which("goland")
-
-    with subtest("check-java"):
-      check_which("java")
-      check_which("idea-oss")
-
-    with subtest("check-javascript"):
-        check_which("node")
-        check_which("npm")
-        check_which("bun")
-        check_which("eslint")
-
-    with subtest("check-python"):
-        check_which("python3.12")
-        check_which("python3.13")
-        check_which("uv")
-        check_which("pycharm-oss")
-        check_which("pyright")
-        check_which("ruff")
-
-    with subtest("check-ruby"):
-        check_which("ruby")
-        check_which("gem")
-
-    with subtest("check-rust"):
-        check_which("rustup")
-        check_which("cargo-cbuild")
-        check_which("rust-rover")
-        check_which("pkg-config")
 
     with subtest("check-networks"):
         check_which("nmap")
