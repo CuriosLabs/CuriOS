@@ -29,18 +29,11 @@ in {
   # Importing curios modules settings from JSON files
   curios = curiosModules.curios or { };
 
-  # updated by curios-install
-  networking.hostName = config.curios.system.hostname;
-
   ############# Settings belows this line should not be changed! #############
-
-  # Set time zone.
-  time.timeZone = config.curios.system.timeZone;
 
   # Select internationalisation properties. See 'locale' and 'locale -a'
   i18n = {
     defaultCharset = "UTF-8";
-    defaultLocale = config.curios.system.i18n.locale;
     extraLocales = "all"; # Support all glibc locales
     extraLocaleSettings = {
       LC_ADDRESS = config.curios.system.i18n.locale;
@@ -69,7 +62,6 @@ in {
     earlySetup = true; # initrd setup
     font = "LatArCyrHeb-16";
     useXkbConfig = false; # use xkb.options in tty.
-    keyMap = config.curios.system.keyboard;
   };
 
   # List packages installed in system profile.
@@ -138,11 +130,6 @@ in {
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
-      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
-      dates = "03:40";
-      randomizedDelaySec = "3min";
-      allowReboot = false; # Reboot on new kernel, initrd or kernel module.
-      # See: https://channels.nixos.org/
       # The URI of the NixOS channel to use for automatic upgrades.
       channel = "https://channels.nixos.org/nixos-25.11";
       # unstable channel: "https://channels.nixos.org/nixos-unstable" MAY be risky
@@ -153,16 +140,10 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260317.1036";
+    nixos.variant_id = "25.11.6";
   };
 
-  # Collect garbage
   nix = {
-    gc = {
-      automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
-      dates = "daily";
-      options = "--delete-older-than 7d";
-    };
     settings = {
       auto-optimise-store = true;
       # Allowing Flakes

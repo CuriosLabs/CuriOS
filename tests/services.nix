@@ -8,7 +8,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
   nodes.machine = { config, pkgs, ... }: {
     imports = [
-      ../modules/curios-options.nix
+      ../modules/system.nix
       ../modules/hardware/amd-gpu.nix
       ../modules/hardware/intel-gpu.nix
       ../modules/hardware/nvidia-gpu.nix

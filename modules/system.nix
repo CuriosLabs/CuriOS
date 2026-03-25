@@ -1,12 +1,19 @@
-# Must be imported by configuration.nix
-# CuriOS various custom options.
+# system options
 
-{ lib, ... }:
-
-{
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.system = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "REQUIRED - Enable CuriOS system options.";
+      };
+      ansible.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable Ansible automation tool.";
+      };
       hostname = lib.mkOption {
         type = lib.types.str;
         default = "CuriOS";
@@ -45,5 +52,30 @@
   };
 
   # Declare configuration
-  config = { };
+  config = lib.mkIf config.curios.system.enable {
+    networking.hostName = lib.mkDefault config.curios.system.hostname;
+    time.timeZone = lib.mkDefault config.curios.system.timeZone;
+    i18n.defaultLocale = lib.mkDefault config.curios.system.i18n.locale;
+
+    # Keyboard settings
+    console.keyMap = lib.mkDefault config.curios.system.keyboard;
+
+    system.autoUpgrade = {
+      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
+      dates = "03:40";
+      randomizedDelaySec = "3min";
+      # Reboot on new kernel, initrd or kernel module.
+      allowReboot = false;
+    };
+
+    # Automatic collect garbage
+    nix.gc = {
+      automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
+      dates = "daily";
+      options = "--delete-older-than 7d";
+    };
+
+    environment.systemPackages =
+      lib.optionals config.curios.system.ansible.enable [ pkgs.ansible ];
+  };
 }

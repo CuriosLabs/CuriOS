@@ -71,7 +71,7 @@ list-options:
   nixos-option -I nixos-config=./modules/default.nix -r curios
 
 # WARNING! Upgrade a NixOS system current configuration to the current CuriOS git branch.
-nixos-upgrade:
+nixos-upgrade: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   if ! command -v nixos-rebuild >/dev/null; then

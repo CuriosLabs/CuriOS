@@ -360,6 +360,10 @@
       }
     },
     "system": {
+      "ansible": {
+        "enable": false
+      },
+      "enable": true,
       "hostname": "CuriOS",
       "i18n": {
         "locale": "en_US.UTF-8"
