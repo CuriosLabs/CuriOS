@@ -46,6 +46,9 @@
         "enable": true
       },
       "browser": {
+        "brave": {
+          "enable": true
+        },
         "chromium": {
           "enable": false
         },
@@ -89,6 +92,18 @@
               "enable": false
             }
           },
+          "go": {
+            "enable": false
+          },
+          "java": {
+            "enable": false
+          },
+          "python": {
+            "enable": false
+          },
+          "rust": {
+            "enable": false
+          },
           "vscode": {
             "enable": false
           },
@@ -97,34 +112,10 @@
           }
         },
         "enable": true,
-        "go": {
-          "enable": false
-        },
-        "java": {
-          "enable": false
-        },
-        "javascript": {
-          "bun": {
-            "enable": false
-          },
-          "enable": true
-        },
         "just": {
           "enable": false
         },
         "networks": {
-          "enable": false
-        },
-        "python312": {
-          "enable": false
-        },
-        "python313": {
-          "enable": false
-        },
-        "ruby": {
-          "enable": false
-        },
-        "rust": {
           "enable": false
         }
       },
@@ -140,6 +131,14 @@
           "bigpicture": {
             "autoStart": false
           },
+          "enable": false
+        }
+      },
+      "music": {
+        "spotify": {
+          "enable": false
+        },
+        "strawberry": {
           "enable": false
         }
       },
@@ -203,7 +202,13 @@
         }
       },
       "studio": {
-        "enable": false
+        "enable": false,
+        "davinci-resolve": {
+          "enable": false
+        },
+        "davinci-resolve-studio": {
+          "enable": false
+        }
       },
       "utility": {
         "bitwarden": {
@@ -326,10 +331,10 @@
       }
     },
     "services": {
-      "ai": {
+      "enable": true,
+      "ollama": {
         "enable": false
       },
-      "enable": true,
       "printing": {
         "enable": false
       },
@@ -343,11 +348,41 @@
       }
     },
     "system": {
+      "ansible": {
+        "enable": false
+      },
+      "enable": true,
       "hostname": "CuriOS",
       "i18n": {
         "locale": "en_US.UTF-8"
       },
       "keyboard": "us",
+      "languages": {
+        "go": {
+          "enable": false
+        },
+        "java": {
+          "enable": false
+        },
+        "javascript": {
+          "bun": {
+            "enable": false
+          },
+          "enable": true
+        },
+        "python312": {
+          "enable": false
+        },
+        "python313": {
+          "enable": false
+        },
+        "ruby": {
+          "enable": false
+        },
+        "rust": {
+          "enable": false
+        }
+      },
       "pkgs": {
         "autoupgrade": {
           "enable": true

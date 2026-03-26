@@ -6,7 +6,6 @@
     ./backup.nix
     ./boot-efi.nix
     ./cosmic.nix
-    ./curios-options.nix
     ./curios-pkgs.nix
     ./desktop-apps/default.nix
     ./fonts.nix
@@ -22,7 +21,7 @@
     ./platforms/amd64.nix
     ./platforms/rpi4.nix
     ./services.nix
-    ./services-ai.nix
+    ./system.nix
     ./virtualisation.nix
     ./zsh.nix
   ];

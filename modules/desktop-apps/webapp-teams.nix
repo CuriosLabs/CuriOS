@@ -15,8 +15,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.microsoft.teams";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://teams.microsoft.com/";
+    exec = "/run/current-system/sw/bin/xdg-open https://teams.microsoft.com/";
     desktopName = "MS Teams webapp";
     icon = "webapp-teams";
     categories = [ "Chat" "Network" "Office" ];

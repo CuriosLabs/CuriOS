@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.coingecko.btc";
     exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://www.coingecko.com/en/coins/bitcoin";
+      "/run/current-system/sw/bin/xdg-open https://www.coingecko.com/en/coins/bitcoin";
     desktopName = "Coingecko Bitcoin Price";
     icon = "webapp-coingecko";
     categories = [ "Finance" ];

@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "com.google.gemini";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://gemini.google.com/app";
+    exec = "/run/current-system/sw/bin/xdg-open https://gemini.google.com/app";
     desktopName = "Gemini";
     icon = "webapp-gemini";
     categories = [ "Science" "ArtificialIntelligence" ];

@@ -10,7 +10,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build:
+build: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -56,6 +56,7 @@ clean:
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
 install:
+  nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/curios-sources/default.nix {}' && nix profile add ./result
   ./curios-install --verbose
 
 # Linting Bash scripts and Nix files.
@@ -70,7 +71,7 @@ list-options:
   nixos-option -I nixos-config=./modules/default.nix -r curios
 
 # WARNING! Upgrade a NixOS system current configuration to the current CuriOS git branch.
-nixos-upgrade:
+nixos-upgrade: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   if ! command -v nixos-rebuild >/dev/null; then
@@ -86,8 +87,24 @@ nixos-upgrade:
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
+      releaseNumber=""
+      if [[ "{{branch}}" == testing || "{{branch}}" == feature* ]]; then
+        releaseNumber=$(date --utc "+%Y%m%d.%H%M")
+        releaseNumber="unstable-${releaseNumber}"
+      else
+        if [[ "{{branch}}" != release* ]]; then
+          printf "\e[31m Wrong git branch - not a release!\e[0m\n"
+          exit 1
+        fi
+      releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"{{branch}}")
+      fi
+      # Change some version number in nix file to match $releaseNumber
+      sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
+      sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
+
       printf "\e[32m Launching Nix garbage collector...\e[0m\n"
       sudo nix-store --gc
+
       printf "\e[32m Installing Curios...\e[0m\n"
       sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
       if [ ! -f /etc/nixos/settings.nix ]; then
@@ -143,7 +160,7 @@ nixos-upgrade:
   esac
 
 # Push build ISO file to github as a release.
-publish:
+publish: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   gh auth status

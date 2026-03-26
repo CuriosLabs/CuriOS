@@ -22,13 +22,22 @@
       package = pkgs.cosmic-greeter;
     };
 
-    environment.systemPackages = with pkgs; [ jq lld lswt isocodes xdg-utils xdg-user-dirs ];
-    # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
+    environment = {
+      systemPackages = with pkgs; [
+        jq
+        lld
+        lswt
+        isocodes
+        xdg-utils
+        xdg-user-dirs
+      ];
+      # TODO: link "${pkgs.isocodes}/share/iso-codes/" to /usr/share/iso-codes/ - XDG_DATA_DIRS ??
 
-    # Env variables
-    environment.sessionVariables = {
-      # Hint Electron apps to use Wayland
-      NIXOS_OZONE_WL = "1";
+      # Env variables
+      sessionVariables = {
+        # Hint Electron apps to use Wayland
+        NIXOS_OZONE_WL = "1";
+      };
     };
 
     # systemd user services

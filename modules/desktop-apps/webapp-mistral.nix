@@ -17,8 +17,7 @@ stdenv.mkDerivation rec {
   dontConfigure = true;
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.mistral.chat";
-    exec =
-      "/run/current-system/sw/bin/brave --new-window --app=https://chat.mistral.ai/chat";
+    exec = "/run/current-system/sw/bin/xdg-open https://chat.mistral.ai/chat";
     desktopName = "Mistral LeChat";
     icon = "webapp-mistral";
     categories = [ "Science" "ArtificialIntelligence" ];

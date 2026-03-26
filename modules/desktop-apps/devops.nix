@@ -23,6 +23,26 @@
           default = false;
           description = "Set Neovim as the default editor instead of nano.";
         };
+        go.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "JetBrains GoLand";
+        };
+        java.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "JetBrains IDEA oss - Kotlin";
+        };
+        python.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "JetBrains PyCharm Community";
+        };
+        rust.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "JetBrains RustRover";
+        };
         zed.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -35,25 +55,24 @@
         };
       };
       go.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Go, gofmt and JetBrains GoLand.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       java.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description =
-          "Java openJDK, JetBrains IDEA oss, Kotlin, groovy and scala.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       javascript.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "NodeJS (npm, npx) Javascript runtime.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       javascript.bun.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "A fast JavaScript toolkit.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       just.enable = lib.mkOption {
         type = lib.types.bool;
@@ -61,24 +80,24 @@
         description = "Handy way to save and run project-specific commands.";
       };
       python312.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Python3.12, pip3, UV and JetBrains PyCharm Community.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       python313.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Python3.13, pip3, UV and JetBrains PyCharm Community.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       ruby.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Ruby, gem, bundle, erb, irb and more.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       rust.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Rust with cargo and JetBrains RustRover.";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
       networks.enable = lib.mkOption {
         type = lib.types.bool;
@@ -123,47 +142,9 @@
         # YQ - yaml/xml/toml parser
         yq
       ] ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
-      [ cloudflared ] ++ lib.optionals config.curios.desktop.devops.go.enable [
-        go
-        golangci-lint
-        jetbrains.goland
-      ] ++ lib.optionals config.curios.desktop.devops.java.enable [
-        jetbrains.idea-oss
-        jetbrains.jdk
-      ] ++ lib.optionals config.curios.desktop.devops.javascript.enable
-      [ nodejs_24 ]
-      ++ lib.optionals config.curios.desktop.devops.javascript.bun.enable
-      [ bun ] ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
-      ++ lib.optionals config.curios.desktop.devops.python312.enable [
-        # Python 3.12
-        python312
-        python312Packages.pip
-        python312Packages.setuptools
-        python312Packages.cryptography
-        python312Packages.uv
-        jetbrains.pycharm-oss
-        ruff
-      ] ++ lib.optionals config.curios.desktop.devops.python313.enable [
-        # Python 3.13
-        python313
-        python313Packages.pip
-        python313Packages.setuptools
-        python313Packages.cryptography
-        python313Packages.uv
-        jetbrains.pycharm-oss
-        ruff
-      ] ++ lib.optionals config.curios.desktop.devops.ruby.enable [ ruby ]
-      ++ lib.optionals config.curios.desktop.devops.rust.enable [
-        # Rust provide cargo, rustc, rust-analyzer and more
-        rustup
-        cargo-c
-        jetbrains.rust-rover
-        # build tools
-        clang
-        libxkbcommon
-        llvmPackages.bintools
-        pkg-config
-      ] ++ lib.optionals config.curios.desktop.devops.networks.enable [
+      [ cloudflared ]
+      ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
+      ++ lib.optionals config.curios.desktop.devops.networks.enable [
         # Networks
         nmap
         zenmap
@@ -171,7 +152,15 @@
         wireshark
         # VNC
         remmina
-      ] ++ lib.optionals config.curios.desktop.devops.editor.zed.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.editor.go.enable
+      [ jetbrains.goland ]
+      ++ lib.optionals config.curios.desktop.devops.editor.java.enable
+      [ jetbrains.idea-oss ]
+      ++ lib.optionals config.curios.desktop.devops.editor.python.enable
+      [ jetbrains.pycharm-oss ]
+      ++ lib.optionals config.curios.desktop.devops.editor.rust.enable
+      [ jetbrains.rust-rover ]
+      ++ lib.optionals config.curios.desktop.devops.editor.zed.enable [
         nil
         nixd
         zed-editor

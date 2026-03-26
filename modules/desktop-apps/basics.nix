@@ -21,6 +21,11 @@ in {
         description = "Enabling Linux AppImage support.";
       };
       browser = {
+        brave.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Brave privacy-oriented Web Browser";
+        };
         chromium.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -142,6 +147,18 @@ in {
           description = "WhatsApp web app.";
         };
       };
+      music = {
+        strawberry.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Music player and music collection organizer.";
+        };
+        spotify.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Play music from the Spotify music service.";
+        };
+      };
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
@@ -170,72 +187,105 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
-    environment.systemPackages = [
-      pkgs.caligula
-      curiosDocsWebapp
+    environment = {
+      systemPackages = [
+        pkgs.caligula
+        curiosDocsWebapp
 
-      # Alacritty terminal
-      pkgs.alacritty
-      # alacritty-theme
+        # Alacritty terminal
+        pkgs.alacritty
+        # alacritty-theme
 
-      # 3rd party apps
-      pkgs.brave
-      pkgs.easyeffects
-      pkgs.ffmpeg_6-full
-      pkgs.gimp3-with-plugins
-      pkgs.gparted
-      pkgs.imagemagick
-      pkgs.libsecret
-      pkgs.polkit_gnome
-      pkgs.procs
-      pkgs.tldr
-      pkgs.vlc
-      pkgs.yubioath-flutter
-    ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
-      pkgs.protonvpn-gui
-      (lib.mkIf config.curios.desktop.vpn.proton.autoStart
-        (pkgs.makeAutostartItem {
-          name = "proton.vpn.app.gtk";
-          package = pkgs.protonvpn-gui;
-          appendExtraArgs = [ "--start-minimized" ];
-        }))
-    ] ++ lib.optionals config.curios.desktop.ai.chatgpt.enable
-      [ (import ./webapp-chatgpt.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.claude.enable
-      [ (import ./webapp-claude.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.cursor.enable [
-        pkgs.cursor-cli
-        pkgs.code-cursor
-      ] ++ lib.optionals config.curios.desktop.ai.gemini.enable
-      [ (import ./webapp-gemini.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.grok.enable
-      [ (import ./webapp-grok.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.lmstudio.enable [ lmstudioApp ]
-      ++ lib.optionals config.curios.desktop.ai.mistral.enable
-      [ (import ./webapp-mistral.nix) ]
-      ++ lib.optionals config.curios.desktop.ai.windsurf.enable
-      [ pkgs.windsurf ]
-      ++ lib.optionals config.curios.desktop.browser.chromium.enable
-      [ pkgs.ungoogled-chromium ]
-      ++ lib.optionals config.curios.desktop.browser.firefox.enable
-      [ pkgs.firefox ]
-      ++ lib.optionals config.curios.desktop.browser.librewolf.enable
-      [ pkgs.librewolf ]
-      ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
-      [ pkgs.vivaldi ]
-      ++ lib.optionals config.curios.desktop.chat.discord.enable
-      [ pkgs.discord ] ++ lib.optionals config.curios.desktop.chat.signal.enable
-      [ pkgs.signal-desktop ]
-      ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
-      [ pkgs.teamspeak6-client ]
-      ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
-      [ (import ./webapp-whatsapp.nix) ]
-      ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
-      [ pkgs.bitwarden-desktop ]
-      ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
-      [ pkgs.keepassxc ]
-      ++ lib.optionals config.curios.desktop.utility.flameshot.enable
-      [ pkgs.flameshot ];
+        # 3rd party apps
+        pkgs.easyeffects
+        pkgs.ffmpeg_6-full
+        pkgs.gimp3-with-plugins
+        pkgs.gparted
+        pkgs.imagemagick
+        pkgs.libsecret
+        pkgs.polkit_gnome
+        pkgs.procs
+        pkgs.tldr
+        pkgs.vlc
+        pkgs.yubioath-flutter
+      ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
+        pkgs.protonvpn-gui
+        (lib.mkIf config.curios.desktop.vpn.proton.autoStart
+          (pkgs.makeAutostartItem {
+            name = "proton.vpn.app.gtk";
+            package = pkgs.protonvpn-gui;
+            appendExtraArgs = [ "--start-minimized" ];
+          }))
+      ] ++ lib.optionals config.curios.desktop.ai.chatgpt.enable
+        [ (import ./webapp-chatgpt.nix) ]
+        ++ lib.optionals config.curios.desktop.ai.claude.enable
+        [ (import ./webapp-claude.nix) ]
+        ++ lib.optionals config.curios.desktop.ai.cursor.enable [
+          pkgs.cursor-cli
+          pkgs.code-cursor
+        ] ++ lib.optionals config.curios.desktop.ai.gemini.enable
+        [ (import ./webapp-gemini.nix) ]
+        ++ lib.optionals config.curios.desktop.ai.grok.enable
+        [ (import ./webapp-grok.nix) ]
+        ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
+        [ lmstudioApp ] ++ lib.optionals config.curios.desktop.ai.mistral.enable
+        [ (import ./webapp-mistral.nix) ]
+        ++ lib.optionals config.curios.desktop.ai.windsurf.enable
+        [ pkgs.windsurf ]
+        ++ lib.optionals config.curios.desktop.browser.brave.enable
+        [ pkgs.brave ]
+        ++ lib.optionals config.curios.desktop.browser.chromium.enable
+        [ pkgs.ungoogled-chromium ]
+        ++ lib.optionals config.curios.desktop.browser.firefox.enable
+        [ pkgs.firefox ]
+        ++ lib.optionals config.curios.desktop.browser.librewolf.enable
+        [ pkgs.librewolf ]
+        ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
+        [ pkgs.vivaldi ]
+        ++ lib.optionals config.curios.desktop.chat.discord.enable
+        [ pkgs.discord ]
+        ++ lib.optionals config.curios.desktop.chat.signal.enable
+        [ pkgs.signal-desktop ]
+        ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
+        [ pkgs.teamspeak6-client ]
+        ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
+        [ (import ./webapp-whatsapp.nix) ]
+        ++ lib.optionals config.curios.desktop.music.strawberry.enable
+        [ pkgs.strawberry ]
+        ++ lib.optionals config.curios.desktop.music.spotify.enable
+        [ pkgs.spotify ]
+        ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
+        [ pkgs.bitwarden-desktop ]
+        ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
+        [ pkgs.keepassxc ]
+        ++ lib.optionals config.curios.desktop.utility.flameshot.enable
+        [ pkgs.flameshot ];
+
+      # Brave group policy examples
+      # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
+      # https://chromeenterprise.google/policies/
+      etc."brave/policies/managed/settings.json".text = ''
+        {
+          "BraveRewardsDisabled": true,
+          "BraveWalletDisabled": true
+        }
+      '';
+      # Add Bitwarden browser extension to Brave
+      # See: https://chromeenterprise.google/policies/#ExtensionSettings
+      #etc."brave/policies/managed/settings.json".text = ''
+      #  {
+      #    "BraveRewardsDisabled": true,
+      #    "BraveWalletDisabled": true,
+      #    "ExtensionSettings": {
+      #      "nngceckbapebfimnlniiiahkandclblb": {
+      #        "installation_mode": "force_installed",
+      #        "update_url": "https://clients2.google.com/service/update2/crx"
+      #      }
+      #    },
+      #    "PasswordManagerEnabled": false
+      #  }
+      #'';
+    };
 
     services = {
       # Enabling PCSC-lite for Yubikey

@@ -21,6 +21,11 @@
       blacklistedKernelModules = [ "i915" "nouveau" ];
       # Add kernel params
       kernelParams = [ "nvidia-drm.modeset=1" ];
+      # Fixing black screen after system sleep/hibernate
+      extraModprobeConfig = ''
+        options nvidia NVreg_PreserveVideoMemoryAllocations=0
+        options nvidia_modeset vblank_sem_control=0
+      '';
     };
 
     # Nvidia GPU
@@ -36,7 +41,7 @@
     nixpkgs.config.nvidia.acceptLicense = true;
 
     hardware.nvidia = {
-      # Modesetting is required.
+      # Modesetting is REQUIRED.
       modesetting.enable = true;
 
       # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
@@ -48,6 +53,12 @@
       # Fine-grained power management. Turns off GPU when not in use.
       # Experimental and only works on modern Nvidia GPUs (Turing or newer).
       powerManagement.finegrained = false;
+      # Fine-grained power management require offload to be enabled
+      prime.offload.enable = false;
+      # Offload require your Nvidia GPU bus ID, find it with the command:
+      # lspci -nn -D | grep -i "vga"
+      # If lspci shows the Nvidia GPU at "0001:02:03.4" set it to "PCI:2@1:3:4"
+      prime.nvidiaBusId = "PCI:1@0:0:0";
 
       # Use the NVidia open source kernel module (not to be confused with the
       # independent third-party "nouveau" open source driver).

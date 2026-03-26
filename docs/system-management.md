@@ -10,7 +10,7 @@ With it, you can update/upgrade the entire system, add/remove packages (applicat
 update your hardware firmware, check your disk usage, launch the process manager
 (btop), and much more.
 
-![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -26,7 +26,7 @@ To install or uninstall one of this modules:
 3. Search for an application/modules. Enabled applications appears in green.
 4. Use the space bar or the X key to toggle an application, Enter key to submit
    or Esc to abort.
-   ![curios-manager modules menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_modulesmenu.png?raw=true "CuriOS manager modules menu")
+   ![curios-manager modules menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_modulesmenu.png?raw=true "CuriOS manager modules menu")
 5. If you made any change `curios-manager` will update your system.
 
 For an up to date list of all the CuriOS modules see the [modules.json](https://github.com/CuriosLabs/CuriOS/blob/master/modules.json)
@@ -92,7 +92,7 @@ For example, you want to install [Blender](https://www.blender.org/):
 2. Go the `Applications` menu, then `Find/Add a NixOS package` menu.
 3. Type an application name, the script will search for the most pertinent results.
 4. Choose an application from the result list:
-   ![curios-manager add package screenshot 5](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_addpackage5.png?raw=true "CuriOS manager add package 5")
+   ![curios-manager add package screenshot 5](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_addpackage5.png?raw=true "CuriOS manager add package 5")
 5. `curios-manager` will now download and install the package.
 6. Enjoy!
 
@@ -101,7 +101,7 @@ For example, you want to install [Blender](https://www.blender.org/):
 You can also install Linux applications as Flatpaks. [Flathub](https://flathub.org/)
 and COSMIC repositories come pre-installed by default. Use the "COSMIC store"
 app as seen below:
-![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Store.png?raw=true "COSMIC Store")
+![COSMIC Store screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/Store.png?raw=true "COSMIC Store")
 
 ## Backup your computer
 
@@ -111,19 +111,19 @@ a cloud-based service. See our [Backup your Computer guide](backups.md).
 ## System management
 
 From `curios-manager` system menu:
-![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_system_menu2.png?raw=true "curios-manager system menu")
+![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_system_menu2.png?raw=true "curios-manager system menu")
 
 You can shutdown/reboot/lock your computer. Manage running process on your CPU
 and GPU (with `btop` and `nvtop`). See all the current network connection (with
 `snitch`). You can also check your disk usage, and update your firmware (UEFI
 BIOS and more).
-![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_systems_disk2.png?raw=true "curios-manager system disk")
+![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_systems_disk2.png?raw=true "curios-manager system disk")
 
 ## System Upgrade
 
 When a new version of Curi*OS* is available, you will see a pop-up appear on your
 desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/Updater2.png?raw=true "CuriOS updater")
+![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/Updater2.png?raw=true "CuriOS updater")
 
 To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option from the main menu.
@@ -155,7 +155,7 @@ Most advanced users can manually edit the Curi*OS* system settings file
 `/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to add
 custom Nix configuration change. It launch the system `$EDITOR` which is `nano`
 by default.
-![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/curios-manager_settingsedit3.png?raw=true "CuriOS manager settings")
+![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_settingsedit3.png?raw=true "CuriOS manager settings")
 
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
