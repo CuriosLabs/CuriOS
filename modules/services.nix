@@ -95,6 +95,10 @@
       # OpenSSH server.
       openssh = {
         enable = lib.mkDefault config.curios.services.sshd.enable;
+        allowSFTP = true; # Explicitly allow SFTP (required for Ansible)
+        extraConfig = ''
+          Subsystem sftp internal-sftp
+        '';
         settings = {
           PermitRootLogin = "no";
           StrictModes = true;

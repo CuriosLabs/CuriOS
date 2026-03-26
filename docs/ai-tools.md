@@ -30,7 +30,7 @@ You can launch it from its desktop shortcut or by typing `lm-studio` in a termin
 > the `curios-manager` application in the menu `System -> Process Management(GPU)`
 > as seen below:
 
-![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/release/25.11.5/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
+![LM Studio desktop application](https://github.com/CuriosLabs/CuriOS/blob/master/img/ai_lm-studio.png?raw=true "LM Studio and nvtop.")
 
 > [!IMPORTANT]
 >
