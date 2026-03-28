@@ -11,10 +11,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the others module.
     config = {
+      nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
       curios.others = {
         enable = true;
         openssl.enable = true;
+        p7zip.enable = true;
       };
     };
   };
@@ -30,5 +32,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-other-system"):
         check_which("htop")
         check_which("openssl")
+
+    with subtest("check-7zip"):
+        check_which("7z")
+        check_which("7za")
+        check_which("7zr")
   '';
 }

@@ -320,6 +320,9 @@
       "enable": true,
       "openssl": {
         "enable": true
+      },
+      "p7zip": {
+        "enable": false
       }
     },
     "platform": {
