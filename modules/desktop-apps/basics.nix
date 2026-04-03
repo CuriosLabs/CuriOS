@@ -21,10 +21,18 @@ in {
         description = "Enabling Linux AppImage support.";
       };
       browser = {
-        brave.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "Brave privacy-oriented Web Browser";
+        brave = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Brave privacy-oriented Web Browser";
+          };
+          remoteDebuggingAllowed = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "Turning on this setting allows external apps to request full control of this browser. Used by AI agents.";
+          };
         };
         chromium.enable = lib.mkOption {
           type = lib.types.bool;
@@ -270,6 +278,14 @@ in {
           "BraveWalletDisabled": true
         }
       '';
+      etc."brave/policies/managed/inspect.json" =
+        lib.mkIf config.curios.desktop.browser.brave.remoteDebuggingAllowed {
+          text = ''
+            {
+              "RemoteDebuggingAllowed": true
+            }
+          '';
+        };
       # Add Bitwarden browser extension to Brave
       # See: https://chromeenterprise.google/policies/#ExtensionSettings
       #etc."brave/policies/managed/settings.json".text = ''

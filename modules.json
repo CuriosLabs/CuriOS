@@ -47,7 +47,8 @@
       },
       "browser": {
         "brave": {
-          "enable": true
+          "enable": true,
+          "remoteDebuggingAllowed": false
         },
         "chromium": {
           "enable": false
