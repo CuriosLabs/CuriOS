@@ -29,8 +29,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         erp = { odoo.enable = true; };
         finance = { gnucash.enable = true; };
         projects = {
-          basecamp.enable = true;
-          basecamp.baseUrl = "launchpad.37signals.com/signin";
+          basecamp = {
+            enable = true;
+            baseUrl = "launchpad.37signals.com/signin";
+            cli = true;
+          };
           jira.enable = true;
           jira.baseUrl = "my-company.atlassian.net";
         };
@@ -78,6 +81,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-project-management-webapps"):
         check_webapp("com.basecamp")
+        check_which("basecamp")
         check_webapp("net.atlassian.jira")
 
     with subtest("check-conferencing-apps"):

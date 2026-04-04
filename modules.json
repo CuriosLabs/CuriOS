@@ -191,6 +191,7 @@
         "projects": {
           "basecamp": {
             "baseUrl": "launchpad.37signals.com/signin",
+            "cli": false,
             "enable": true
           },
           "jira": {
