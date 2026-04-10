@@ -203,6 +203,7 @@ in {
         # Alacritty terminal
         pkgs.alacritty
         # alacritty-theme
+        pkgs.tmux
 
         # 3rd party apps
         pkgs.easyeffects
