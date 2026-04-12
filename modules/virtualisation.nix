@@ -46,9 +46,7 @@
         dockerCompat = true;
         dockerSocket.enable = false;
         # Required for containers under podman-compose to be able to talk to each other.
-        defaultNetwork.settings = {
-          dns_enabled = true;
-        };
+        defaultNetwork.settings = { dns_enabled = true; };
       };
       # QEMU + KVM + virt-manager
       # See: https://nixos.wiki/wiki/Libvirt
@@ -98,6 +96,9 @@
         docker-buildx
         docker-compose
         lazydocker
+        # YAML linters and parser
+        yamllint
+        yq
         # Store creds with pass (gnupg required)
         # echo '{ "credStore": "pass" }' >> $HOME/.docker/config.json
         # gpg --generate-key
