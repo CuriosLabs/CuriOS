@@ -29,6 +29,12 @@
         default = false;
         description = "R11 - Linux kernel module LSM Yama.";
       };
+      rule13 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "R13 - Deactivate IPv6. Enable this ONLY if you are NOT using IPv6.";
+      };
       rule14 = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -66,6 +72,9 @@
           "kernel.panic_on_oops" = 1;
         }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule11 {
           "kernel.yama.ptrace_scope" = 1; # Restricts ptrace to child processes
+        }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule13 {
+          "net.ipv6.conf.default.disable_ipv6" = 1;
+          "net.ipv6.conf.all.disable_ipv6" = 1;
         }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule14 {
           "fs.suid_dumpable" = 0;
           "fs.protected_fifos" = 2;
