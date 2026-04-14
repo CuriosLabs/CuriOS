@@ -1,0 +1,38 @@
+# Linux hardened kernel rules as defined by [ANSSI](https://cyber.gouv.fr/).
+# Reinforced level rules - should only be set on system with need of stronger security.
+# See: https://messervices.cyber.gouv.fr/documents-guides/fr_np_linux_configuration-v2.0.pdf
+
+{ config, lib, ... }: {
+  # Declare options
+  options = {
+    curios.anssi.reinforced = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Reinforced hardening rules for a system with need of stronger security - MAY brake things.";
+      };
+      rule7 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "R7 - Activating the IOMMU";
+      };
+      rule10 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "R10 - Disabling kernel modules loading";
+      };
+    };
+  };
+
+  config = lib.mkIf config.curios.anssi.reinforced.enable {
+    boot = {
+      kernelParams =
+        lib.optionals config.curios.anssi.reinforced.rule7 [ "iommu=force" ];
+
+      kernel.sysctl = lib.optionalAttrs config.curios.anssi.reinforced.rule10 {
+        "kernel.modules_disabled" = 1;
+      };
+    };
+  };
+}

@@ -270,6 +270,11 @@
           "rule11": false,
           "rule13": false,
           "rule14": false
+        },
+        "reinforced": {
+          "enable": false,
+          "rule7": false,
+          "rule10": false
         }
       },
       "cups": {
