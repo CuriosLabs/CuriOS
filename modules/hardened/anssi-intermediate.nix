@@ -29,6 +29,11 @@
         default = true;
         description = "R11 - Linux kernel module LSM Yama.";
       };
+      rule12 = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "R12 - BPF JIT and IPv4 network hardening.";
+      };
       rule13 = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -74,8 +79,15 @@
           "kernel.sysrq" = 0;
           "kernel.unprivileged_bpf_disabled" = 1;
           "kernel.panic_on_oops" = 1;
-        }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule11 {
-          "kernel.yama.ptrace_scope" = 1; # Restricts ptrace to child processes
+        }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule12 {
+          "net.core.bpf_jit_harden" = 2; # Enables BPF JIT constant blinding
+          "net.ipv4.conf.all.rp_filter" = 1; # Strict Reverse Path Filtering
+          "net.ipv4.conf.default.rp_filter" = 1;
+          "net.ipv4.icmp_echo_ignore_broadcasts" = 1; # Ignore ICMP broadcasts
+          "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+          "net.ipv4.conf.all.accept_source_route" = 0; # Disables source routing
+          "net.ipv4.conf.default.accept_source_route" = 0;
+          "net.ipv4.tcp_syncookies" = 1; # Prevent SYN flood attack
         }) // (lib.optionalAttrs config.curios.anssi.intermediate.rule13 {
           "net.ipv6.conf.default.disable_ipv6" = 1;
           "net.ipv6.conf.all.disable_ipv6" = 1;
