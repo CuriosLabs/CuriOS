@@ -269,12 +269,15 @@
           "rule9": false,
           "rule11": false,
           "rule13": false,
-          "rule14": false
+          "rule14": false,
+          "rule39": false
         },
         "reinforced": {
           "enable": false,
           "rule7": false,
-          "rule10": false
+          "rule10": false,
+          "rule39": false,
+          "rule45": false
         }
       },
       "cups": {
