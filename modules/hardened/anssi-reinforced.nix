@@ -5,7 +5,7 @@
 { config, lib, ... }: {
   # Declare options
   options = {
-    curios.anssi.reinforced = {
+    curios.hardened.anssi.reinforced = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -35,24 +35,25 @@
     };
   };
 
-  config = lib.mkIf config.curios.anssi.reinforced.enable {
+  config = lib.mkIf config.curios.hardened.anssi.reinforced.enable {
     boot = {
-      kernelParams =
-        lib.optionals config.curios.anssi.reinforced.rule7 [ "iommu=force" ];
+      kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7
+        [ "iommu=force" ];
 
-      kernel.sysctl = lib.optionalAttrs config.curios.anssi.reinforced.rule10 {
-        "kernel.modules_disabled" = 1;
-      };
+      kernel.sysctl =
+        lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
+          "kernel.modules_disabled" = 1;
+        };
     };
 
     security = {
-      apparmor = lib.mkIf config.curios.anssi.reinforced.rule45 {
+      apparmor = lib.mkIf config.curios.hardened.anssi.reinforced.rule45 {
         enable = true;
         enableCache = true;
         killUnconfinedConfinables = true;
       };
 
-      lsm = lib.optionals config.curios.anssi.reinforced.rule45 [
+      lsm = lib.optionals config.curios.hardened.anssi.reinforced.rule45 [
         "capability"
         "landlock"
         "yama"
@@ -60,7 +61,7 @@
         "apparmor"
       ];
 
-      sudo = lib.mkIf config.curios.anssi.reinforced.rule39 {
+      sudo = lib.mkIf config.curios.hardened.anssi.reinforced.rule39 {
         extraConfig = ''
           Defaults requiretty
         '';

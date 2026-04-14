@@ -5,7 +5,7 @@
 { config, lib, ... }: {
   # Declare options
   options = {
-    curios.anssi.minimal = {
+    curios.hardened.anssi.minimal = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -20,11 +20,12 @@
     };
   };
 
-  config = lib.mkIf config.curios.anssi.minimal.enable {
+  config = lib.mkIf config.curios.hardened.anssi.minimal.enable {
     # systemd-boot EFI boot loader settings.
     boot.loader = {
       systemd-boot = {
-        editor = if config.curios.anssi.minimal.rule5 then false else true;
+        editor =
+          if config.curios.hardened.anssi.minimal.rule5 then false else true;
       };
     };
   };
