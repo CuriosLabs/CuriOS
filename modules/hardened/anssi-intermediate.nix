@@ -60,8 +60,7 @@
         "spec_store_bypass_disable=seccomp"
         "mce=0"
         "rng_core.default_quality=500"
-      ] ++ lib.optionals config.curios.anssi.intermediate.rule11
-        [ "lsm=capability,landlock,yama,bpf" ];
+      ];
 
       kernel.sysctl =
         (lib.optionalAttrs config.curios.anssi.intermediate.rule9 {
@@ -89,11 +88,20 @@
         });
     };
 
-    security.sudo = lib.mkIf config.curios.anssi.intermediate.rule39 {
-      extraConfig = ''
-        Defaults noexec,use_pty,umask=0077
-        Defaults ignore_dot,env_reset
-      '';
+    security = {
+      lsm = lib.optionals config.curios.anssi.intermediate.rule11 [
+        "capability"
+        "landlock"
+        "yama"
+        "bpf"
+      ];
+
+      sudo = lib.mkIf config.curios.anssi.intermediate.rule39 {
+        extraConfig = ''
+          Defaults noexec,use_pty,umask=0077
+          Defaults ignore_dot,env_reset
+        '';
+      };
     };
   };
 }

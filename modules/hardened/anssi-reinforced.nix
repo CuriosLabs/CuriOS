@@ -27,6 +27,11 @@
         default = false;
         description = "R39 - /etc/sudoers extra configuration (requiretty).";
       };
+      rule45 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "R45 - Activating AppArmor.";
+      };
     };
   };
 
@@ -40,10 +45,26 @@
       };
     };
 
-    security.sudo = lib.mkIf config.curios.anssi.reinforced.rule39 {
-      extraConfig = ''
-        Defaults requiretty
-      '';
+    security = {
+      apparmor = lib.mkIf config.curios.anssi.reinforced.rule45 {
+        enable = true;
+        enableCache = true;
+        killUnconfinedConfinables = true;
+      };
+
+      lsm = lib.optionals config.curios.anssi.reinforced.rule45 [
+        "capability"
+        "landlock"
+        "yama"
+        "bpf"
+        "apparmor"
+      ];
+
+      sudo = lib.mkIf config.curios.anssi.reinforced.rule39 {
+        extraConfig = ''
+          Defaults requiretty
+        '';
+      };
     };
   };
 }
