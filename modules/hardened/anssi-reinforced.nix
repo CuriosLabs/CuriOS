@@ -53,13 +53,8 @@
         killUnconfinedConfinables = true;
       };
 
-      lsm = lib.optionals config.curios.hardened.anssi.reinforced.rule45 [
-        "capability"
-        "landlock"
-        "yama"
-        "bpf"
-        "apparmor"
-      ];
+      lsm = lib.optionals config.curios.hardened.anssi.reinforced.rule45
+        [ "apparmor" ];
 
       sudo = lib.mkIf config.curios.hardened.anssi.reinforced.rule39 {
         extraConfig = ''

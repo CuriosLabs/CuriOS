@@ -108,10 +108,7 @@
     security = {
       lsm = lib.optionals config.curios.hardened.anssi.intermediate.rule11 [
         "capability"
-        "landlock"
-        "yama"
-        "bpf"
-      ];
+      ]; # "landlock", "yama", "bpf" are already enable by NixOS 25.11
 
       sudo = lib.mkIf config.curios.hardened.anssi.intermediate.rule39 {
         extraConfig = ''
