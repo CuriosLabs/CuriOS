@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = false;
         description =
-          "Reinforced hardening rules for a system with need of stronger security - MAY brake things.";
+          "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
       };
       rule7 = lib.mkOption {
         type = lib.types.bool;
@@ -21,6 +21,11 @@
         type = lib.types.bool;
         default = false;
         description = "R10 - Disabling kernel modules loading";
+      };
+      rule39 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "R39 - /etc/sudoers extra configuration (requiretty).";
       };
     };
   };
@@ -33,6 +38,12 @@
       kernel.sysctl = lib.optionalAttrs config.curios.anssi.reinforced.rule10 {
         "kernel.modules_disabled" = 1;
       };
+    };
+
+    security.sudo = lib.mkIf config.curios.anssi.reinforced.rule39 {
+      extraConfig = ''
+        Defaults requiretty
+      '';
     };
   };
 }

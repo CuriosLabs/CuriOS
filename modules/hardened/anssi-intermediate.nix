@@ -40,6 +40,11 @@
         default = false;
         description = "R14 - Filesystem sysctl options.";
       };
+      rule39 = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "R39 - /etc/sudoers extra configuration.";
+      };
     };
   };
 
@@ -82,6 +87,13 @@
           "fs.protected_symlinks" = 1;
           "fs.protected_hardlinks" = 1;
         });
+    };
+
+    security.sudo = lib.mkIf config.curios.anssi.intermediate.rule39 {
+      extraConfig = ''
+        Defaults noexec,use_pty,umask=0077
+        Defaults ignore_dot,env_reset
+      '';
     };
   };
 }
