@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = true;
         description =
-          "Intermediate hardening rules for a Linux system as recommended by ANSSI. Enable this after curios.anssi.minimal.enable.";
+          "Intermediate hardening rules for a Linux system as recommended by ANSSI. Enable this after curios.anssi.minimal.enable";
       };
       rule8 = lib.mkOption {
         type = lib.types.bool;
