@@ -8,25 +8,25 @@
     curios.anssi.intermediate = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description =
           "Intermediate hardening rules for a Linux system as recommended by ANSSI. Enable this after curios.anssi.minimal.enable.";
       };
       rule8 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description =
           "R8 - Linux kernel memory options. Note: Replaces legacy 'page_poison' with modern 'init_on_alloc/free' for Linux 6.12+ compatibility.";
       };
       rule9 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description =
           "R9 - Linux kernel sysctl options (updated for ANSSI v2.0 and Kernel 6.12+).";
       };
       rule11 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "R11 - Linux kernel module LSM Yama.";
       };
       rule13 = lib.mkOption {
@@ -37,12 +37,12 @@
       };
       rule14 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "R14 - Filesystem sysctl options.";
       };
       rule39 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "R39 - /etc/sudoers extra configuration.";
       };
     };
