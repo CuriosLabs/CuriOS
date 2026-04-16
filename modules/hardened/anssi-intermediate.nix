@@ -47,9 +47,9 @@
       };
       rule39 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description =
-          "R39 - /etc/sudoers extra configuration. WILL break a lot of SUDO commands.";
+          "R39 - /etc/sudoers extra configuration (use_pty, umask, etc.).";
       };
     };
   };
@@ -112,7 +112,7 @@
 
       sudo = lib.mkIf config.curios.hardened.anssi.intermediate.rule39 {
         extraConfig = ''
-          Defaults noexec,use_pty,umask=0077
+          Defaults use_pty,umask=0077
           Defaults ignore_dot,env_reset
         '';
       };

@@ -25,7 +25,8 @@
       rule39 = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "R39 - /etc/sudoers extra configuration (requiretty).";
+        description =
+          "R39 - /etc/sudoers extra configuration (noexec, requiretty). WILL break a lot of SUDO commands.";
       };
       rule45 = lib.mkOption {
         type = lib.types.bool;
@@ -57,9 +58,7 @@
         [ "apparmor" ];
 
       sudo = lib.mkIf config.curios.hardened.anssi.reinforced.rule39 {
-        extraConfig = ''
-          Defaults requiretty
-        '';
+        extraConfig = "Defaults noexec,requiretty";
       };
     };
   };

@@ -271,7 +271,7 @@
           "rule12": true,
           "rule13": false,
           "rule14": true,
-          "rule39": false
+          "rule39": true
         },
         "reinforced": {
           "enable": false,
