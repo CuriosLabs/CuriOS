@@ -20,7 +20,7 @@
       podman.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Podman containers tool.";
+        description = "Podman containers tool + podman-compose, podman-tui, podman-desktop.";
       };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
@@ -108,6 +108,11 @@
         # cat ~/.docker/config.json
         docker-credential-helpers
         pass
+      ] ++ lib.optionals config.curios.virtualisation.podman.enable [
+        podman-compose
+        podman-desktop
+        podman-tui
+        # TODO: test toolbox
       ] ++ lib.optionals config.curios.virtualisation.wine.enable [
         wineWowPackages.waylandFull
         winetricks

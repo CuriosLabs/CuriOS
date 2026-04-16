@@ -35,6 +35,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-podman-packages"):
         check_which("podman")
+        check_which("podman-compose")
+        check_which("podman-desktop")
+        check_which("podman-tui")
 
     with subtest("check-podman-user-and-group"):
         machine.succeed("getent group podman")
