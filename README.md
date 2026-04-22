@@ -3,6 +3,12 @@
 [![NixOS 25.11](https://img.shields.io/badge/NixOS-25.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
 
+> [!WARNING]
+> This branch tracks the **NixOS unstable channel**, which operates as a rolling
+> release. It provides the latest features and packages but may be less stable
+> than fixed releases. Use it for testing or if you require the most recent
+> software updates.
+
 Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the
 [COSMIC](https://system76.com/cosmic) desktop environment. It ships with
 everything a modern advanced user need to be productive as quickly as possible

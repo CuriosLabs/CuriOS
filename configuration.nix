@@ -133,8 +133,8 @@ in {
     # Automatic OS updates and cleanup
     autoUpgrade = {
       # The URI of the NixOS channel to use for automatic upgrades.
-      channel = "https://channels.nixos.org/nixos-25.11";
-      # unstable channel: "https://channels.nixos.org/nixos-unstable" MAY be risky
+      # Unstable channel - MAY be risky
+      channel = "https://channels.nixos.org/nixos-unstable";
     };
     # Copy the NixOS configuration file and link it from the resulting system
     # (/run/current-system/configuration.nix). This is useful in case you
