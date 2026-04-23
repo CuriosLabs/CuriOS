@@ -129,6 +129,12 @@ in {
   else
     false;
 
+  security = {
+    # Security settings
+    # Show password feedback for sudo command.
+    sudo.extraConfig = "Defaults pwfeedback";
+  };
+
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
