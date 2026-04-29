@@ -7,7 +7,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Hardened systemd configuration for user - WARNING: may cause 'flatpak run' bug.";
+        "Hardened systemd configuration for user.";
     };
   };
 
@@ -25,7 +25,7 @@
       PrivateNetwork = true;
       MemoryDenyWriteExecute = true;
       RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_BLUETOOTH" ];
-      RestrictNamespaces = true;
+      RestrictNamespaces = false;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
       SystemCallFilter = [
