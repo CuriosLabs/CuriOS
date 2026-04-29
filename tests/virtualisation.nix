@@ -43,6 +43,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("docker")
         check_which("docker-compose")
         check_which("lazydocker")
+        check_which("yamllint")
+        check_which("yq")
         # QEMU/KVM
         check_which("virt-manager")
         check_which("qemu-kvm")

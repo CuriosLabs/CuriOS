@@ -64,7 +64,7 @@ lint:
   @echo 'Linting Nix files...'
   for file in `fd --type f ".nix" .`; do statix check $file; done
   @echo 'Linting Bash files...'
-  shellcheck --color=always -f tty -x ./curios-install
+  shellcheck --color=always -f tty -x ./curios-install && echo "shellcheck: SUCCESS"
 
 # List all curios options and their current default values for this project.
 list-options:

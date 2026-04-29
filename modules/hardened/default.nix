@@ -1,10 +1,12 @@
 # Imports every other configurations files from here.
 
-{ ... }:
-{
+{ ... }: {
   imports = [
     ./accounts-daemon.nix
     ./acpid.nix
+    ./anssi-intermediate.nix
+    ./anssi-minimal.nix
+    ./anssi-reinforced.nix
     ./cups.nix
     ./dbus.nix
     ./display-manager.nix

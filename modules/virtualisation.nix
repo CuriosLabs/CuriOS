@@ -20,7 +20,7 @@
       podman.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Podman containers tool.";
+        description = "Podman containers tool + podman-compose, podman-tui, podman-desktop.";
       };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
@@ -46,9 +46,7 @@
         dockerCompat = true;
         dockerSocket.enable = false;
         # Required for containers under podman-compose to be able to talk to each other.
-        defaultNetwork.settings = {
-          dns_enabled = true;
-        };
+        defaultNetwork.settings = { dns_enabled = true; };
       };
       # QEMU + KVM + virt-manager
       # See: https://nixos.wiki/wiki/Libvirt
@@ -98,6 +96,9 @@
         docker-buildx
         docker-compose
         lazydocker
+        # YAML linters and parser
+        yamllint
+        yq
         # Store creds with pass (gnupg required)
         # echo '{ "credStore": "pass" }' >> $HOME/.docker/config.json
         # gpg --generate-key
@@ -107,6 +108,11 @@
         # cat ~/.docker/config.json
         docker-credential-helpers
         pass
+      ] ++ lib.optionals config.curios.virtualisation.podman.enable [
+        podman-compose
+        podman-desktop
+        podman-tui
+        # TODO: test toolbox
       ] ++ lib.optionals config.curios.virtualisation.wine.enable [
         wineWowPackages.waylandFull
         winetricks

@@ -1,8 +1,8 @@
 # Office suite desktop applications.
 
 { config, lib, pkgs, ... }:
-
-{
+let basecamp-cli = pkgs.callPackage ../../pkgs/basecamp-cli { };
+in {
   # Declare options
   options = {
     curios.desktop.office = {
@@ -91,6 +91,11 @@
             description = "Basecamp web app base URL.";
             example = "3.basecamp.com/0123456/";
           };
+          cli = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Basecamp official command-line interface.";
+          };
         };
         jira = {
           enable = lib.mkOption {
@@ -148,6 +153,8 @@
       [ pkgs.gnucash ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.enable
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.projects.basecamp.cli
+      [ basecamp-cli ]
       ++ lib.optionals config.curios.desktop.office.projects.jira.enable
       [ (import ./webapp-jira.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.conferencing.slack.enable

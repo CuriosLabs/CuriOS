@@ -124,8 +124,16 @@ in {
     true
   else if config.curios.desktop.devops.editor.rust.enable then
     true
+  else if config.curios.others.p7zip.enable then
+    true
   else
     false;
+
+  security = {
+    # Security settings
+    # Show password feedback for sudo command.
+    sudo.extraConfig = "Defaults pwfeedback";
+  };
 
   system = {
     # Automatic OS updates and cleanup
@@ -140,7 +148,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.6";
+    nixos.variant_id = "25.11.7";
   };
 
   nix = {
