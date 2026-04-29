@@ -22,9 +22,9 @@
       ProtectKernelLogs = true;
       ProtectProc = "invisible";
       PrivateTmp = true;
-      PrivateNetwork = true;
-      MemoryDenyWriteExecute = true;
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_BLUETOOTH" ];
+      PrivateNetwork = false;
+      MemoryDenyWriteExecute = false;
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" "AF_BLUETOOTH" ];
       RestrictNamespaces = false;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
@@ -34,7 +34,6 @@
         "~@debug"
         "~@module"
         "~@obsolete"
-        "~@cpu-emulation"
       ];
       SystemCallArchitectures = "native";
     };
