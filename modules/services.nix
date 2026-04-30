@@ -35,10 +35,11 @@
   # Declare configuration
   config = lib.mkIf config.curios.services.enable {
     # AI webapp desktop shortcuts
-    environment.systemPackages = lib.optionals config.curios.services.ollama.enable [
-      # AI webapp desktop shortcuts
-      (import ./desktop-apps/webapp-ollama.nix)
-    ];
+    environment.systemPackages =
+      lib.optionals config.curios.services.ollama.enable [
+        # AI webapp desktop shortcuts
+        (import ./desktop-apps/webapp-ollama.nix)
+      ];
 
     # Services:
     services = {
@@ -55,14 +56,14 @@
         #loadModels = [ "mistral-nemo:latest" ]; # get download status with: 'systemctl status ollama-model-loader.service'
         # GPU accel
         # "false": 100% CPU, "cuda": modern Nvidia GPU, "rocm": modern AMD GPU
-        acceleration = if config.curios.hardware.nvidiaGpu.enable then
-          "cuda"
+        package = if config.curios.hardware.nvidiaGpu.enable then
+          pkgs.ollama-cuda
         else if config.curios.hardware.amdGpu.enable then
-          "rocm"
+          pkgs.ollama-rocm
         else if config.curios.hardware.intelGpu.enable then
-          "vulkan"
+          pkgs.ollama-vulkan
         else
-          false;
+          pkgs.ollama;
         # Ollama server port
         port = 11434;
       };
