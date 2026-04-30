@@ -14,9 +14,9 @@
   config = lib.mkIf config.curios.networking.enable {
     networking = {
       # Enables wireless support via wpa_supplicant OR
-      wireless.enable = false;
+      wireless.enable = lib.mkDefault false;
       # via networkmanager: easiest to use and most distros use this by default.
-      networkmanager.enable = true;
+      networkmanager.enable = lib.mkDefault true;
     };
   };
 }
