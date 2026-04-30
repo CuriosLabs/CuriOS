@@ -131,9 +131,11 @@
         #lefthook
         # Neovim plugins / dependencies:
         vimPlugins.LazyVim
-        vimPlugins.nvim-treesitter
+        #vimPlugins.nvim-treesitter # REMOVED for neovim 0.12+
         vimPlugins.fzf-lua
         clang
+        # tree-sitter CLI for neovim 0.12+
+        tree-sitter
         #libclang ??
         fd
         fzf
