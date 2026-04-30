@@ -7,7 +7,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Hardened systemd configuration for user - WARNING: may cause 'flatpak run' bug.";
+        "Hardened systemd configuration for user.";
     };
   };
 
@@ -22,10 +22,10 @@
       ProtectKernelLogs = true;
       ProtectProc = "invisible";
       PrivateTmp = true;
-      PrivateNetwork = true;
-      MemoryDenyWriteExecute = true;
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_BLUETOOTH" ];
-      RestrictNamespaces = true;
+      PrivateNetwork = false;
+      MemoryDenyWriteExecute = false;
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" "AF_BLUETOOTH" ];
+      RestrictNamespaces = false;
       RestrictRealtime = true;
       RestrictSUIDSGID = true;
       SystemCallFilter = [
@@ -34,7 +34,6 @@
         "~@debug"
         "~@module"
         "~@obsolete"
-        "~@cpu-emulation"
       ];
       SystemCallArchitectures = "native";
     };

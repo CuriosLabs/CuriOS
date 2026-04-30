@@ -26,7 +26,6 @@
       SystemCallErrorNumber = "EPERM";
       SystemCallFilter = [
         "~@obsolete"
-        "~@cpu-emulation"
         "~@clock"
         "~@swap"
         "~@module"
@@ -52,10 +51,13 @@
         "CAP_SETFCAP"
         "CAP_CHOWN"
       ];
-      DeviceAllow = "/dev/tty7 rw";
+      DeviceAllow = [
+        "/dev/tty1 rw"
+        "/dev/tty7 rw"
+      ];
       DevicePolicy = "closed";
-      UMask = 77;
-      LogLevelMax = "debug";
+      UMask = 0022;
+      LogLevelMax = "info";
       KeyringMode = lib.mkForce "private";
     };
   };

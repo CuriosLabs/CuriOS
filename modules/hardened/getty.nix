@@ -7,7 +7,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Hardened systemd configuration for getty - WARNING: may prevent tty login.";
+        "Hardened systemd configuration for getty.";
     };
   };
 
@@ -17,7 +17,7 @@
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ProtectControlGroups = true;
-      ProtectHome = true;
+      ProtectHome = "read-only";
       ProtectHostname = true;
       ProtectKernelTunables = true;
       ProtectKernelModules = true;
