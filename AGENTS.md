@@ -128,8 +128,8 @@ are defined in the `justfile`.
   nix-shell shell.nix --run "just lint"
   ```
 
-- **Supported Version**: NixOS 25.11 or later. CuriOS variant version is
-defined in `configuration.nix` as `nixos.variant_id` (e.g., "25.11.1").
+- **Supported Version**: NixOS 26.05 or later. CuriOS variant version is
+defined in `configuration.nix` as `nixos.variant_id` (e.g., "26.05.1").
 
 - **Build ISO Image**: Builds the CuriOS ISO image for the current branch:
 
@@ -234,7 +234,7 @@ When working with CuriOS modules, here are common configuration patterns:
 - **Contributing Policy**: See @CONTRIBUTING.md
 - **Branching Strategy**: For new features, create a branch named
 `feature/<YourFeatureName>` (e.g., `git checkout -b feature/AmazingFeature`).
-  - Release branches follow the pattern `release/<version>` (e.g., `release/25.11.1`)
+  - Release branches follow the pattern `release/<version>` (e.g., `release/26.05.1`)
   - Testing branches use the name `testing`
 - **AI Assistance**: If using AI assistance for contributions, it must be
 disclosed in pull requests (see @CONTRIBUTING.md for details).

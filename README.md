@@ -1,6 +1,6 @@
 # Curi*OS*
 
-[![NixOS 25.11](https://img.shields.io/badge/NixOS-25.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS 26.05](https://img.shields.io/badge/NixOS-26.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
 
 > [!WARNING]
@@ -89,8 +89,8 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [25.11.7](https://github.com/CuriosLabs/CuriOS/tree/release/25.11.7)
-based on a Nixos 25.11 build.
+The current version is [26.05.1](https://github.com/CuriosLabs/CuriOS/tree/release/26.05.1)
+based on a Nixos 26.05 build.
 
 ## License
 
