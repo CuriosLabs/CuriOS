@@ -29,6 +29,10 @@
         # Reduce the frequency of swapping data from RAM to swap space.
         "vm.swappiness" = 10;
       };
+      # Protection against CVE-2026-31431 if kernel < 6.12.85; 6.18.22; 6.19.12 or 7.0
+      kernelParams = lib.optionals (!config.curios.bootefi.kernel.latest)
+        [ "modprobe.blacklist=algif_aead" ];
+      #
       loader = {
         systemd-boot.enable = true;
         efi.canTouchEfiVariables = true;
