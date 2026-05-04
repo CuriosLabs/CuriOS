@@ -78,7 +78,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-networks"):
         check_which("nmap")
         check_which("zenmap")
-        check_which("wireshark")
+        #check_which("wireshark")
         check_which("remmina")
   '';
 }

@@ -151,7 +151,8 @@
         nmap
         zenmap
         # TODO: add user to wireshark group?
-        wireshark
+        # WARNING: hash mismatch in unstable
+        #wireshark
         # VNC
         remmina
       ] ++ lib.optionals config.curios.desktop.devops.editor.go.enable

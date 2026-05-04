@@ -36,8 +36,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           nvidiaGpu.enable = false;
         };
 
-        # Set a keyboard layout to satisfy the xserver dependency
-        system.keyboard = "us";
+        system = {
+          # Use 'machine' to avoid conflict with NixOS test driver node name
+          hostname = "machine";
+          # Set a keyboard layout to satisfy the xserver dependency
+          keyboard = "us";
+        };
       };
 
       # Required for many NixOS tests

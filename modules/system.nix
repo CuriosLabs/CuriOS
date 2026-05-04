@@ -98,7 +98,7 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.system.enable {
-    networking.hostName = lib.mkDefault config.curios.system.hostname;
+    networking.hostName = lib.mkForce config.curios.system.hostname;
     time.timeZone = lib.mkDefault config.curios.system.timeZone;
     i18n.defaultLocale = lib.mkDefault config.curios.system.i18n.locale;
 
