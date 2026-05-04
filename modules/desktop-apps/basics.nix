@@ -218,11 +218,11 @@ in {
         pkgs.vlc
         pkgs.yubioath-flutter
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
-        pkgs.protonvpn-gui
+        pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
           (pkgs.makeAutostartItem {
             name = "proton.vpn.app.gtk";
-            package = pkgs.protonvpn-gui;
+            package = pkgs.proton-vpn;
             appendExtraArgs = [ "--start-minimized" ];
           }))
       ] ++ lib.optionals config.curios.desktop.ai.chatgpt.enable
