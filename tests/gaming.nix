@@ -8,7 +8,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-gaming-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/gaming.nix ];
+    imports = [ ../modules/desktop-apps/gaming.nix ../modules/boot-efi.nix ];
 
     # Enable all options from the 'gaming.nix' module.
     config = {

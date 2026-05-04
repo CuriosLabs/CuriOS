@@ -50,7 +50,7 @@
       };
 
       # Enable "Silent boot"
-      consoleLogLevel = 3;
+      consoleLogLevel = lib.mkDefault 3;
       initrd.verbose = false;
       # Hide the OS choice for bootloaders.
       # It's still possible to open the bootloader list by pressing any key
