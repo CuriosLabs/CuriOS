@@ -278,6 +278,14 @@ if [ $RPI4_INSTALL -eq 0 ]; then
     echo -e "${RED}mkfs command not found!${NC}"
     exit 2
   fi
+  if ! available mkfs.ext4; then
+    echo -e "${RED}mkfs.ext4 command not found!${NC}"
+    exit 2
+  fi
+  if ! available mkfs.fat; then
+    echo -e "${RED}mkfs.fat command not found!${NC}"
+    exit 2
+  fi
 else
   if ! available rpi-eeprom-update; then
     echo -e "${RED}rpi-eeprom-update command not found!${NC}"

@@ -23,6 +23,7 @@ in {
   environment.systemPackages = [
     curios-sources
     curios-dotfiles
+    pkgs.e2fsprogs
     pkgs.git
     pkgs.gum
     pkgs.gnused
@@ -37,6 +38,9 @@ in {
   console.font = "LatArCyrHeb-16";
 
   networking.hostName = "CuriOS";
+
+  # Disable command-not-found to avoid conflict with minimal profile
+  programs.command-not-found.enable = false;
 
   programs.bash.interactiveShellInit = ''
     echo "Launching CuriOS installer..."
