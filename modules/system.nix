@@ -102,8 +102,13 @@
     time.timeZone = lib.mkDefault config.curios.system.timeZone;
     i18n.defaultLocale = lib.mkDefault config.curios.system.i18n.locale;
 
+    # Disable documentation outputs to bypass broken Sphinx build in unstable (known issue)
+    documentation.doc.enable = lib.mkDefault false;
+
     # Keyboard settings
-    console.keyMap = lib.mkDefault config.curios.system.keyboard;
+    # console.keyMap = lib.mkDefault config.curios.system.keyboard;
+    # Use XKB configuration for console (more modern and consistent)
+    console.useXkbConfig = lib.mkDefault true;
 
     system.autoUpgrade = {
       enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
@@ -137,7 +142,7 @@
         pkgs.python312Packages.pip
         pkgs.python312Packages.setuptools
         pkgs.python312Packages.cryptography
-        pkgs.python312Packages.uv
+        pkgs.uv
         pkgs.pyright
         pkgs.ruff
       ] ++ lib.optionals config.curios.system.languages.python313.enable [
@@ -145,7 +150,7 @@
         pkgs.python313Packages.pip
         pkgs.python313Packages.setuptools
         pkgs.python313Packages.cryptography
-        pkgs.python313Packages.uv
+        pkgs.uv
         pkgs.pyright
         pkgs.ruff
       ]

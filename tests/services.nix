@@ -17,6 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     ];
 
     config = {
+      virtualisation.memorySize = 4096;
       nixpkgs.config.allowUnfree = true;
       curios = {
         # Enable all services for comprehensive testing
