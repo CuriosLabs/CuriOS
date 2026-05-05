@@ -58,12 +58,6 @@ in {
     #};
   };
 
-  console = {
-    earlySetup = true; # initrd setup
-    font = "LatArCyrHeb-16";
-    useXkbConfig = false; # use xkb.options in tty.
-  };
-
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs;

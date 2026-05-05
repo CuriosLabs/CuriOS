@@ -105,10 +105,16 @@
     # Disable documentation outputs to bypass broken Sphinx build in unstable (known issue)
     documentation.doc.enable = lib.mkDefault false;
 
-    # Keyboard settings
-    # console.keyMap = lib.mkDefault config.curios.system.keyboard;
-    # Use XKB configuration for console (more modern and consistent)
-    console.useXkbConfig = lib.mkDefault true;
+    # tty console settings
+    console = {
+      # Keyboard settings
+      earlySetup = lib.mkDefault true; # initrd setup
+      enable = lib.mkDefault true;
+      font = "LatArCyrHeb-16";
+      keyMap = lib.mkDefault config.curios.system.keyboard;
+      # Use XKB configuration for console (more modern and consistent)
+      useXkbConfig = lib.mkDefault false; # use xkb.options in tty.
+    };
 
     system.autoUpgrade = {
       enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;

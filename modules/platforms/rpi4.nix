@@ -63,7 +63,7 @@
       #raspberry-pi."4".fkms-3d.enable = true;
     };
 
-    console.enable = false;
+    console.enable = lib.mkForce false;
     environment.systemPackages = with pkgs; [
       libraspberrypi
       raspberrypi-eeprom
