@@ -820,7 +820,7 @@ dotfiles_install() {
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
       # TODO: Any way to predict OWNER at this stage ?
-      chown -R 1000:100 "$DIR"
+      chown -R 1000:1000 "$DIR"
     fi
   done
   jq -n '{ "BrowserThemeColor": "#20252c" }' >"$BRAVE_THEMES_FILE"
@@ -893,6 +893,8 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s#initialHashedPassword = \".*#initialHashedPassword = \"${HASHED_USER_PASSWD}\";#g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/groups = { nixos = {/groups = { ${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/group = \"nixos\";/group = \"${USERNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
 
   # Update modules.json with selected locale, keyboard, time zone and hostname:
   jq --arg locale "$SELECTED_LOCALE" \
