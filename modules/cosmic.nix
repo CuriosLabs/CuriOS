@@ -23,7 +23,7 @@
     };
 
     environment = {
-      cosmic.excludePackages = [ pkgs.cosmic-term ];
+      cosmic.excludePackages = [ ];
       systemPackages = with pkgs; [
         jq
         lld
