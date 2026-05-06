@@ -34,7 +34,8 @@
       # user's primary group name
       group = "nixos";
       # user list of auxiliary groups
-      extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
+      extraGroups =
+        [ "users" "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
         ++ lib.optionals config.curios.desktop.crypto.enable [ "tty" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
         ++ lib.optionals config.curios.virtualisation.enable [
