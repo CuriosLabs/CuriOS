@@ -7,20 +7,20 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-cosmic-test";
 
   nodes.machine = { config, pkgs, ... }: {
-  imports = [ ../modules/cosmic.nix ];
+    imports = [ ../modules/cosmic.nix ];
 
-  # Enable the COSMIC module.
-  config = {
-    curios.cosmic.enable = true;
-    time.timeZone = "UTC";
+    # Enable the COSMIC module.
+    config = {
+      curios.cosmic.enable = true;
+      time.timeZone = "UTC";
 
-    # Define the nixos user for testing
-    users.users.nixos = {
-      isNormalUser = true;
-      description = "Test User";
-      home = "/home/nixos";
+      # Define the nixos user for testing
+      users.users.nixos = {
+        isNormalUser = true;
+        description = "Test User";
+        home = "/home/nixos";
+      };
     };
-  };
   };
   # Test script to verify all corresponding packages are installed and services are running.
   testScript = ''
@@ -59,8 +59,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         # The Projects folder should be created in the user's home (nixos user)
         # We simulate the service execution for the nixos user.
         machine.succeed("sudo -u nixos xdg-user-dirs-update")
-        machine.succeed("sudo -u nixos mkdir -p /home/nixos/Projects")
-        machine.succeed("sudo -u nixos bash -c 'mkdir -p /home/nixos/.config && if [ -f /home/nixos/.config/user-dirs.dirs ]; then if ! grep -q XDG_PROJECTS_DIR /home/nixos/.config/user-dirs.dirs; then echo \"XDG_PROJECTS_DIR=\\\"$HOME/Projects\\\"\" >> /home/nixos/.config/user-dirs.dirs; fi; fi'")
         
         # Check if the folder was created
         machine.succeed("test -d /home/nixos/Projects")
