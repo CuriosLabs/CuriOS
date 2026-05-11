@@ -45,7 +45,13 @@
       # Plymouth boot splash screen
       plymouth = {
         enable = true;
-        theme = "breeze";
+        theme = "pixels";
+        themePackages = with pkgs;
+          [
+            (adi1090x-plymouth-themes.override {
+              selected_themes = [ "colorful_loop" "lone" "pixels" "rings" ];
+            })
+          ];
         #logo = "${pkgs.nixos-icons}/share/icons/hicolor/48x48/apps/nix-snowflake-white.png";
       };
 
