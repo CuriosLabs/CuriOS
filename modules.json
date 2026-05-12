@@ -118,6 +118,14 @@
         },
         "networks": {
           "enable": false
+        },
+        "terminal": {
+          "alacritty": {
+            "enable": true
+          },
+          "ghostty": {
+            "enable": false
+          }
         }
       },
       "gaming": {

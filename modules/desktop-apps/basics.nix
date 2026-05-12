@@ -200,8 +200,6 @@ in {
         pkgs.caligula
         curiosDocsWebapp
 
-        # Alacritty terminal
-        pkgs.alacritty
         # alacritty-theme
         pkgs.tmux
 

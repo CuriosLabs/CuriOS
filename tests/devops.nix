@@ -32,6 +32,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         };
         just.enable = true;
         networks.enable = true;
+        terminal = {
+          alacritty.enable = true;
+          ghostty.enable = true;
+        };
       };
     };
   };
@@ -80,5 +84,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("zenmap")
         #check_which("wireshark")
         check_which("remmina")
+
+    with subtest("check-terminals"):
+        check_which("alacritty")
+        check_which("ghostty")
   '';
 }

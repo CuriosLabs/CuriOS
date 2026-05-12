@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED desktop applications for developers - Neovim, git for github (gh), shellcheck, statix.";
+          "REQUIRED desktop applications for developers - Alacritty termianl, Neovim, git for github (gh), shellcheck, statix.";
       };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;
@@ -52,6 +52,18 @@
           type = lib.types.bool;
           default = false;
           description = "Code editor by Microsoft.";
+        };
+      };
+      terminal = {
+        alacritty.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "GPU-accelerated terminal emulator.";
+        };
+        ghostty.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Fast, native, feature-rich terminal emulator pushing modern features";
         };
       };
       go.enable = lib.mkOption {
@@ -168,6 +180,10 @@
         nixd
         zed-editor
       ] ++ lib.optionals config.curios.desktop.devops.editor.vscode.enable
-      [ vscode-fhs ];
+      [ vscode-fhs ]
+      ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
+      [ alacritty ]
+      ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
+      [ ghostty ];
   };
 }
