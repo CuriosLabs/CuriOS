@@ -10,7 +10,7 @@
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED desktop applications for developers - Alacritty termianl, Neovim, git for github (gh), shellcheck, statix.";
+          "REQUIRED desktop applications for developers - Alacritty terminal, Neovim, git for github (gh), shellcheck, statix.";
       };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;

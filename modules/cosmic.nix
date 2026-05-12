@@ -72,6 +72,13 @@
     xdg = {
       icons.enable = true;
       mime.enable = true;
+      terminal-exec = {
+        enable = true;
+        settings = {
+          COSMIC = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" "com.system76.CosmicTerm.desktop" ];
+          default = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" ];
+        };
+      };
     };
   };
 }
