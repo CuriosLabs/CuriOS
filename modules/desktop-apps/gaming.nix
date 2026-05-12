@@ -47,9 +47,8 @@
   # Declare configuration
   config = lib.mkIf config.curios.desktop.gaming.enable {
     # Activate ntsync Linux kernel module
-    # for proton-ge 10-9+ / Linux kernel 6.14.2+
-    boot.kernelModules =
-      lib.optionals config.curios.bootefi.kernel.latest [ "ntsync" ];
+    # for proton-ge 10-9+ / Linux kernel 6.14.2+ - Note: LTS kernel is now 6.18+
+    boot.kernelModules = [ "ntsync" ];
     # Steam
     # unfree packages required for Steam and Lutris
     nixpkgs.config.allowUnfree = lib.mkForce true;
