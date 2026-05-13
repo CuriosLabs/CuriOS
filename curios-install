@@ -697,7 +697,7 @@ confirm_install() {
 
 clear
 if [ -f "$CURIOS_SRC_PATH"/logo.txt ]; then
-  tte -i "$CURIOS_SRC_PATH"/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
+  tte -i "$CURIOS_SRC_PATH"/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 1E78E4 4FD2FD --final-gradient-steps 12 12 --final-gradient-direction diagonal
 fi
 choose_lang
 
