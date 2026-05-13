@@ -13,7 +13,7 @@ in {
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED CuriOS desktop applications: Alacritty, Brave, Bitwarden, VLC, Yubikey...";
+          "REQUIRED CuriOS desktop applications: Brave, Bitwarden, VLC, Yubikey...";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;

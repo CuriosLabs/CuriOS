@@ -40,6 +40,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lswt")
         check_which("xdg-settings")
         check_which("xdg-user-dirs-update")
+        check_which("xdg-terminal-exec")
         check_which("cosmic-applets")
         check_which("cosmic-comp")
         check_which("cosmic-greeter")
