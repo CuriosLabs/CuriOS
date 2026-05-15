@@ -367,6 +367,9 @@
       }
     },
     "services": {
+      "earlyoom": {
+        "enable": true
+      },
       "enable": true,
       "ollama": {
         "enable": false
@@ -427,7 +430,10 @@
           "enable": true
         }
       },
-      "timeZone": "Etc/GMT"
+      "timeZone": "Etc/GMT",
+      "zram": {
+        "enable": true
+      }
     },
     "virtualisation": {
       "docker": {
