@@ -29,6 +29,11 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
+      earlyoom.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
+      };
     };
   };
 
@@ -43,6 +48,13 @@
 
     # Services:
     services = {
+      # Earlyoom (Out of Memory) daemon
+      earlyoom = {
+        enable = lib.mkDefault config.curios.services.earlyoom.enable;
+        freeMemThreshold = 5; # Kill if less than 5% of RAM free
+        freeSwapThreshold = 5; # Kill if less than 5% of Swap free
+      };
+
       # Firmware update - See: https://wiki.nixos.org/wiki/Fwupd
       # Required by curios-manager
       fwupd.enable = true;

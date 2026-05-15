@@ -93,6 +93,12 @@
             "Enable Rust language with rustup, cargo and build tools.";
         };
       };
+      zram.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable in-memory compressed devices and swap space provided by the zram kernel module.";
+      };
     };
   };
 
@@ -129,6 +135,13 @@
       automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
       dates = "daily";
       options = "--delete-older-than 7d";
+    };
+
+    # ZRAM swap configuration
+    zramSwap = {
+      enable = lib.mkDefault config.curios.system.zram.enable;
+      memoryPercent = 50;
+      priority = 100; # Use ZRAM before disk swap
     };
 
     environment.systemPackages =
