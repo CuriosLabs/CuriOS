@@ -181,7 +181,7 @@
     # systemd config
     systemd = {
       oomd.enable = lib.mkDefault true;
-      # Systemd settings for NixOS channel 25.11
+      # Systemd settings for NixOS channel 25.11+
       settings.Manager = { DefaultTimeoutStopSec = "10s"; };
       # Flatpak system, add repo
       services.flatpak-repo = {
