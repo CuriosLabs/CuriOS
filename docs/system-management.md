@@ -18,12 +18,12 @@ Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort
 
 ### Available Applications as CuriOS modules
 
-CuriOS come with pre-configured and pre-installed applications known as "modules".
-To install or uninstall one of this modules:
+CuriOS comes with pre-configured and pre-installed applications known as "modules".
+To install or uninstall one of these modules:
 
 1. Launch `curios-manager` (shortcut: Super+Return)
-2. Go the `Applications` menu, then `Install/uninstall CuriOS Apps` menu.
-3. Search for an application/modules. Enabled applications appears in green.
+2. Go to the `Applications` menu, then `Install/uninstall CuriOS Apps` menu.
+3. Search for an application or module. Enabled applications appear in green.
 4. Use the space bar or the X key to toggle an application, Enter key to submit
    or Esc to abort.
    ![curios-manager modules menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_modulesmenu.png?raw=true "CuriOS manager modules menu")
@@ -46,8 +46,8 @@ file.
 
 - **System Tools**: CuriOS Manager, Flatpak/Flathub apps, COSMIC store
 
-The followings applications (packages) are available but not installed by default,
-see previous chapter on how to install them.
+The following applications (packages) are available but not installed by default;
+see the previous section on how to install them.
 
 - **Browsers**: Chromium, Firefox, LibreWolf, Vivaldi.
 
@@ -66,6 +66,8 @@ see previous chapter on how to install them.
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
 npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual
 Studio Code.
+
+- **Terminal**: Ghostty.
 
 - **Virtualisation**: Qemu, KVM, virt-manager.
 
@@ -113,8 +115,8 @@ a cloud-based service. See our [Backup your Computer guide](backups.md).
 From `curios-manager` system menu:
 ![curios-manager system menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_system_menu2.png?raw=true "curios-manager system menu")
 
-You can shutdown/reboot/lock your computer. Manage running process on your CPU
-and GPU (with `btop` and `nvtop`). See all the current network connection (with
+You can shutdown/reboot/lock your computer, manage running processes on your CPU
+and GPU (with `btop` and `nvtop`), and see all current network connections (with
 `snitch`). You can also check your disk usage, and update your firmware (UEFI
 BIOS and more).
 ![curios-manager system disk](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_systems_disk2.png?raw=true "curios-manager system disk")
@@ -153,12 +155,54 @@ sudo nixos-rebuild list-generations
 
 Most advanced users can manually edit the Curi*OS* system settings file
 `/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to add
-custom Nix configuration change. It launch the system `$EDITOR` which is `nano`
+custom Nix configuration changes. It launches the system `$EDITOR`, which is `nano`
 by default.
 ![curios-manager settings screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_settingsedit3.png?raw=true "CuriOS manager settings")
 
 Save the change on exit with `Ctrl+X`. `curios-manager` will then perform a
 whole system update.
+
+## Default Terminal
+
+By default, CuriOS uses [Alacritty](https://alacritty.org/) as the terminal emulator.
+The COSMIC Terminal (`cosmic-term`) is also available.
+
+Another option is [Ghostty](https://ghostty.org/). To install it, run:
+
+```bash
+sudo curios-update --update-module curios.desktop.devops.terminal.ghostty.enable true && \
+sudo curios-update --update
+```
+
+To set your preferred terminal emulator, create `~/.config/xdg-terminals.list`:
+
+```bash
+touch ~/.config/xdg-terminals.list
+```
+
+For example, to set Ghostty as the default:
+
+```bash
+echo "com.mitchellh.ghostty.desktop" >> ~/.config/xdg-terminals.list
+```
+
+You can then use the `xdg-terminal-exec` command to launch programs in your
+preferred terminal. For example:
+
+```bash
+xdg-terminal-exec btop
+```
+
+CuriOS desktop icons and COSMIC keyboard shortcuts use `xdg-terminal-exec` to
+launch terminal applications.
+
+The default terminal priority is defined in `/etc/xdg/cosmic-xdg-terminals.list`:
+
+```
+Alacritty.desktop
+com.mitchellh.ghostty.desktop
+com.system76.CosmicTerm.desktop
+```
 
 ---
 **Next**: [Backup your computer](backups.md).
