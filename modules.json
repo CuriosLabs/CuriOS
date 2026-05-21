@@ -126,6 +126,11 @@
           "ghostty": {
             "enable": false
           }
+        },
+        "tui": {
+          "opencode": {
+            "enable": true
+          }
         }
       },
       "gaming": {

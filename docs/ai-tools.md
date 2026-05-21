@@ -103,14 +103,23 @@ the terminal version with `cursor-agent`. See the [Cursor documentation](https:/
 
 ### Terminal (CLI) Tools
 
-These tools require **Node.js** and its package manager, **npm**, which come
+Most of these tools require **Node.js** and its package manager, **npm**, which come
 pre-installed on Curi*OS*. You can install them with the `npm install -g` command.
 
-- **Claude Code**: Run with `claude`. Install with `npm install -g @anthropic-ai/claude-code`.
-- **opencode**: A terminal-based coding assistant. Install with
-`nix profile add nixpkgs#opencode` and run with `opencode`. You can connect it
-to your LM Studio server by editing its configuration file. For example, open
-it with a basic text editor:
+- **Claude Code**: Run with `claude`. Install it with `npm install -g @anthropic-ai/claude-code`.
+- **OpenAI/ChatGPT Codex**: Run with `codex`. Install it with `npm install -g @openai/codex`.
+- **OpenCode**: The open source terminal-based coding assistant. Installed by default,
+if not:
+
+```bash
+sudo curios-update --update-module curios.desktop.devops.tui.opencode.enable true && \
+sudo curios-update --update
+```
+
+Run it with `opencode`.
+(Note for the flake version, install it with: `nix profile add nixpkgs#opencode`).
+You can connect it to your LM Studio server by editing its configuration file.
+For example, open it with a basic text editor:
 
 ```bash
 nano ~/.config/opencode/opencode.json

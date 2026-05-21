@@ -36,6 +36,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           alacritty.enable = true;
           ghostty.enable = true;
         };
+        tui.opencode.enable = true;
       };
     };
   };
@@ -88,5 +89,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-terminals"):
         check_which("alacritty")
         check_which("ghostty")
+
+    with subtest("check-tui"):
+        check_which("opencode")
   '';
 }

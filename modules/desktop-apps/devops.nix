@@ -63,7 +63,8 @@
         ghostty.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Fast, native, feature-rich terminal emulator pushing modern features";
+          description =
+            "Fast, native, feature-rich terminal emulator pushing modern features";
         };
       };
       go.enable = lib.mkOption {
@@ -115,6 +116,13 @@
         type = lib.types.bool;
         default = false;
         description = "Nmap, Zenmap, wireshark, remina.";
+      };
+      tui = {
+        opencode.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Opencode - interactive AI agent in the terminal.";
+        };
       };
     };
   };
@@ -184,6 +192,8 @@
       ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
-      [ ghostty ];
+      [ ghostty ]
+      ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable
+      [ opencode ];
   };
 }
