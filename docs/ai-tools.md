@@ -107,7 +107,6 @@ These tools require **Node.js** and its package manager, **npm**, which come
 pre-installed on Curi*OS*. You can install them with the `npm install -g` command.
 
 - **Claude Code**: Run with `claude`. Install with `npm install -g @anthropic-ai/claude-code`.
-- **Gemini CLI**: Run with `gemini`. Install with `npm install -g @google/gemini-cli`.
 - **opencode**: A terminal-based coding assistant. Install with
 `nix profile add nixpkgs#opencode` and run with `opencode`. You can connect it
 to your LM Studio server by editing its configuration file. For example, open
