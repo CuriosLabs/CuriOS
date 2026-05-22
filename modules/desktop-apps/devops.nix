@@ -193,7 +193,9 @@
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
       [ ghostty ]
-      ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable
-      [ opencode ];
+      ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
+        opencode
+        (import ./desktop-opencode.nix)
+      ];
   };
 }
