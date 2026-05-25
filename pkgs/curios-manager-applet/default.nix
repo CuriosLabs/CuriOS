@@ -4,16 +4,19 @@
 , nix-update-script }:
 rustPlatform.buildRustPackage rec {
   pname = "curios-manager-applet";
-  version = "0.2.2";
+  version = "0.2.4";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager-applet";
     tag = "${version}";
-    hash = "sha256-V3IIuYkC3gjDmqF2UWwHhnnk4L5ztE0YauCbQBTKTQc=";
+    hash = "sha256-BIeSZuMbYL3mFNK39JRDV4q0p+14ZTGCKN4K3fJCdyQ=";
   };
 
-  cargoHash = "sha256-NCkY6OBuz3u/WRbB1z+rllvcYhYVmVvlWtx8J9YKfTc=";
+  cargoLock = {
+    lockFile = ./Cargo.lock;
+    allowBuiltinFetchGit = true;
+  };
 
   nativeBuildInputs = [ pkg-config just libcosmicAppHook ];
 
