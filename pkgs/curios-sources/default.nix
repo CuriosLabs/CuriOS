@@ -8,7 +8,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation {
   pname = "curios-sources";
-  version = "unstable-20260522.1321";
+  version = "unstable-20260525.1452";
 
   src = lib.fileset.toSource {
     root = ../../.;
@@ -44,7 +44,7 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/pkgs/curios-dotfiles/ pkgs/curios-dotfiles/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/default.nix
-    install -D -m 600 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/Cargo.Lock
+    install -D -m 600 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/Cargo.lock
     install -D -m 644 -t $out/share/curios/pkgs/snitch/ pkgs/snitch/default.nix
 
     runHook postInstall
