@@ -14,7 +14,7 @@ build: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
-  if [[ "{{branch}}" == testing || "{{branch}}" == feature* ]]; then
+  if [[ "{{branch}}" == testing || "{{branch}}" == unstable || "{{branch}}" == feature* ]]; then
     releaseNumber=$(date --utc "+%Y%m%d.%H%M")
     releaseNumber="unstable-${releaseNumber}"
   else
@@ -88,7 +88,7 @@ nixos-upgrade: lint
   case $yn in
     [Yy]*)
       releaseNumber=""
-      if [[ "{{branch}}" == testing || "{{branch}}" == feature* ]]; then
+      if [[ "{{branch}}" == testing || "{{branch}}" == unstable || "{{branch}}" == feature* ]]; then
         releaseNumber=$(date --utc "+%Y%m%d.%H%M")
         releaseNumber="unstable-${releaseNumber}"
       else

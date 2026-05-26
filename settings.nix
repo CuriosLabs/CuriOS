@@ -23,13 +23,19 @@
     mutableUsers = true;
     # Create plugdev group to access some USB devices without root privileges
     extraGroups.plugdev = { };
+    # Create primary groups for each users, each with an unique gid.
+    groups = { nixos = { gid = 1000; }; };
     # Define a user account
     # <user> name and description will be updated by curios-install during ISO install
     users.nixos = {
       isNormalUser = true;
       initialHashedPassword = "";
       description = "My Name";
-      extraGroups = [ "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
+      # user's primary group name
+      group = "nixos";
+      # user list of auxiliary groups
+      extraGroups =
+        [ "users" "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
         ++ lib.optionals config.curios.desktop.crypto.enable [ "tty" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
         ++ lib.optionals config.curios.virtualisation.enable [
@@ -42,6 +48,8 @@
         ++ lib.optionals config.curios.virtualisation.docker.enable [ "docker" ]
         ++ lib.optionals config.curios.virtualisation.podman.enable
         [ "podman" ];
+      # account UID
+      uid = 1000;
       useDefaultShell = true;
       # Set your SSH pubkey here:
       #openssh.authorizedKeys.keys = [ "ssh-ed25519 XXXXXXX me@me.com" ];

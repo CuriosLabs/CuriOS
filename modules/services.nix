@@ -29,19 +29,32 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
+      earlyoom.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
+      };
     };
   };
 
   # Declare configuration
   config = lib.mkIf config.curios.services.enable {
     # AI webapp desktop shortcuts
-    environment.systemPackages = lib.optionals config.curios.services.ollama.enable [
-      # AI webapp desktop shortcuts
-      (import ./desktop-apps/webapp-ollama.nix)
-    ];
+    environment.systemPackages =
+      lib.optionals config.curios.services.ollama.enable [
+        # AI webapp desktop shortcuts
+        (import ./desktop-apps/webapp-ollama.nix)
+      ];
 
     # Services:
     services = {
+      # Earlyoom (Out of Memory) daemon
+      earlyoom = {
+        enable = lib.mkDefault config.curios.services.earlyoom.enable;
+        freeMemThreshold = 5; # Kill if less than 5% of RAM free
+        freeSwapThreshold = 5; # Kill if less than 5% of Swap free
+      };
+
       # Firmware update - See: https://wiki.nixos.org/wiki/Fwupd
       # Required by curios-manager
       fwupd.enable = true;
@@ -55,14 +68,14 @@
         #loadModels = [ "mistral-nemo:latest" ]; # get download status with: 'systemctl status ollama-model-loader.service'
         # GPU accel
         # "false": 100% CPU, "cuda": modern Nvidia GPU, "rocm": modern AMD GPU
-        acceleration = if config.curios.hardware.nvidiaGpu.enable then
-          "cuda"
+        package = if config.curios.hardware.nvidiaGpu.enable then
+          pkgs.ollama-cuda
         else if config.curios.hardware.amdGpu.enable then
-          "rocm"
+          pkgs.ollama-rocm
         else if config.curios.hardware.intelGpu.enable then
-          "vulkan"
+          pkgs.ollama-vulkan
         else
-          false;
+          pkgs.ollama;
         # Ollama server port
         port = 11434;
       };
@@ -167,7 +180,8 @@
 
     # systemd config
     systemd = {
-      # Systemd settings for NixOS channel 25.11
+      oomd.enable = lib.mkDefault true;
+      # Systemd settings for NixOS channel 25.11+
       settings.Manager = { DefaultTimeoutStopSec = "10s"; };
       # Flatpak system, add repo
       services.flatpak-repo = {

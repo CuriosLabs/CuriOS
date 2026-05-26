@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.33.2";
+  version = "0.33.4";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-O/9wmVtPqbynp5fNqq8MGfYt8DyovTtjXq0eFX9LeUc=";
+    hash = "sha256-s40p5znAtDoqNs/bN0Qeq7d/rklllKkMYYuCRDoNPs8=";
   };
 
   buildInputs = [
@@ -43,7 +43,7 @@ stdenvNoCC.mkDerivation rec {
   '';
   desktopItem = pkgs.makeDesktopItem {
     name = "dev.curioslabs.curiosmanager";
-    exec = "/run/current-system/sw/bin/alacritty -e curios-manager";
+    exec = "xdg-terminal-exec curios-manager";
     desktopName = "CuriOS Manager TUI";
     icon = "curios";
     categories = [ "System" ];

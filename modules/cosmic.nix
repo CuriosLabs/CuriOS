@@ -23,6 +23,7 @@
     };
 
     environment = {
+      cosmic.excludePackages = [ ];
       systemPackages = with pkgs; [
         jq
         lld
@@ -38,6 +39,19 @@
         # Hint Electron apps to use Wayland
         NIXOS_OZONE_WL = "1";
       };
+
+      # XDG user directories defaults
+      etc."xdg/user-dirs.defaults".text = ''
+        DESKTOP=Desktop
+        DOWNLOAD=Downloads
+        TEMPLATES=Templates
+        PUBLICSHARE=Public
+        DOCUMENTS=Documents
+        MUSIC=Music
+        PICTURES=Pictures
+        VIDEOS=Videos
+        PROJECTS=Projects
+      '';
     };
 
     # systemd user services
@@ -48,13 +62,23 @@
       partOf = [ "graphical-session.target" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "/run/current-system/sw/bin/xdg-user-dirs-update";
+        ExecStart = [ "/run/current-system/sw/bin/xdg-user-dirs-update" ];
+        #  "${pkgs.coreutils}/bin/mkdir -p %h/Projects"
+        #  "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config && if [ -f %h/.config/user-dirs.dirs ]; then if ! grep -q XDG_PROJECTS_DIR %h/.config/user-dirs.dirs; then echo \"XDG_PROJECTS_DIR=\\\"\\$HOME/Projects\\\"\" >> %h/.config/user-dirs.dirs; fi; fi'"
+        #];
       };
     };
 
     xdg = {
       icons.enable = true;
       mime.enable = true;
+      terminal-exec = {
+        enable = true;
+        settings = {
+          COSMIC = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" "com.system76.CosmicTerm.desktop" ];
+          default = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" ];
+        };
+      };
     };
   };
 }

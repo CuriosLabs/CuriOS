@@ -23,8 +23,7 @@ in {
     ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
-  ] ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
-  # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
+  ];
 
   # Importing curios modules settings from JSON files
   curios = curiosModules.curios or { };
@@ -56,12 +55,6 @@ in {
     #    fcitx5-nord            # a color theme
     #  ];
     #};
-  };
-
-  console = {
-    earlySetup = true; # initrd setup
-    font = "LatArCyrHeb-16";
-    useXkbConfig = false; # use xkb.options in tty.
   };
 
   # List packages installed in system profile.
@@ -131,6 +124,11 @@ in {
 
   security = {
     # Security settings
+    # /etc/login.defs additionnal settings
+    loginDefs.settings = {
+      LOGIN_RETRIES = 3;
+      LOGIN_TIMEOUT = 60;
+    };
     # Show password feedback for sudo command.
     sudo.extraConfig = "Defaults pwfeedback";
   };
@@ -139,8 +137,7 @@ in {
     # Automatic OS updates and cleanup
     autoUpgrade = {
       # The URI of the NixOS channel to use for automatic upgrades.
-      channel = "https://channels.nixos.org/nixos-25.11";
-      # unstable channel: "https://channels.nixos.org/nixos-unstable" MAY be risky
+      channel = "https://channels.nixos.org/nixos-26.05";
     };
     # Copy the NixOS configuration file and link it from the resulting system
     # (/run/current-system/configuration.nix). This is useful in case you
@@ -148,7 +145,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "25.11.7";
+    nixos.variant_id = "26.05.1";
   };
 
   nix = {

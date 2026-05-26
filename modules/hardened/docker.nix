@@ -15,7 +15,7 @@
     systemd.services.docker.serviceConfig = {
       NoNewPrivileges = true;
       ProtectSystem = "full";
-      ProtectHome = true;
+      ProtectHome = "read-only";
       ProtectKernelModules = true;
       ProtectKernelLogs = true;
       ProtectControlGroups = true;
@@ -42,7 +42,6 @@
         "~@module"
         "~@swap"
         "~@obsolete"
-        "~@cpu-emulation"
       ];
       SystemCallArchitectures = "native";
       CapabilityBoundingSet= [

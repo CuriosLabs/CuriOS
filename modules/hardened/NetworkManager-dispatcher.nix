@@ -7,7 +7,7 @@
       type = lib.types.bool;
       default = false;
       description =
-        "Hardened systemd config for networkManager-dispatcher - WARNING: proton-vpn bug.";
+        "Hardened systemd config for networkManager-dispatcher.";
     };
   };
 
@@ -16,7 +16,7 @@
     systemd.services.NetworkManager-dispatcher.serviceConfig = {
       NoNewPrivileges = true;
       ProtectSystem = "strict";
-      ProtectHome = true;
+      ProtectHome = "read-only";
       ProtectKernelModules = true;
       ProtectKernelLogs = true;
       ProtectControlGroups = true;
@@ -28,11 +28,10 @@
       RestrictRealtime = true;
       RestrictAddressFamilies =
         [ "AF_UNIX" "AF_NETLINK" "AF_INET" "AF_INET6" "AF_PACKET" ];
-      RestrictNamespaces = true;
+      RestrictNamespaces = false;
       RestrictSUIDSGID = true;
       MemoryDenyWriteExecute = true;
       SystemCallFilter = [
-        "~@mount"
         "~@module"
         "~@swap"
         "~@obsolete"

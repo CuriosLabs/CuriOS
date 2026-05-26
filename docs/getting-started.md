@@ -44,13 +44,13 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 1. **Download the ISO**: from the [official GitHub repository](https://github.com/CuriosLabs/CuriOS/releases).
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.7/CuriOS_25.11.7_amd64_intel.iso
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/26.05.1/CuriOS_26.05.1_amd64_intel.iso
    ```
 
    Download and check ISO signature:
 
    ```bash
-   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/25.11.7/CuriOS_25.11.7_amd64_intel.iso.sha256
+   wget --content-disposition https://github.com/CuriosLabs/CuriOS/releases/download/26.05.1/CuriOS_26.05.1_amd64_intel.iso.sha256
    sha256sum --check CuriOS_*.iso.sha256
    ```
 
@@ -58,7 +58,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    OR on Linux you can try with `caligula`:
 
    ```bash
-   caligula burn -s $(cat ./CuriOS_25.11.7_amd64_intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_26.05.1_amd64_intel.iso.sha256)
    ```
 
    OR with `dd`:
@@ -72,7 +72,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 
    ```bash
    # And then to copy the ISO to the USB, `/dev/sda` in below case, adjust accordingly.
-   sudo dd if=CuriOS_25.11.7_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_26.05.1_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
    ```
 
 3. **Boot from USB**: Boot your machine from the USB drive. You will probably

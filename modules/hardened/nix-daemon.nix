@@ -24,7 +24,6 @@
       RestrictNamespaces = [ "~cgroup" ];
       RestrictAddressFamilies = [ "AF_UNIX" "AF_NETLINK" "AF_INET6" "AF_INET" ];
       CapabilityBoundingSet = [
-        "~CAP_SYS_CHROOT"
         "~CAP_BPF"
         "~CAP_AUDIT_WRITE"
         "~CAP_AUDIT_CONTROL"
@@ -54,14 +53,13 @@
         "~@debug"
         "~@reboot"
         "~@swap"
-        "~@cpu-emulation"
         "~@clock"
         "~@raw-io"
       ];
       LockPersonality = true;
-      MemoryDenyWriteExecute = true;
+      MemoryDenyWriteExecute = false;
       DevicePolicy = "closed";
-      UMask = 77;
+      UMask = 0022;
     };
   };
 }

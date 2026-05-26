@@ -13,7 +13,7 @@ in {
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED CuriOS desktop applications: Alacritty, Brave, Bitwarden, VLC, Yubikey...";
+          "REQUIRED CuriOS desktop applications: Brave, Bitwarden, VLC, Yubikey...";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;
@@ -200,8 +200,6 @@ in {
         pkgs.caligula
         curiosDocsWebapp
 
-        # Alacritty terminal
-        pkgs.alacritty
         # alacritty-theme
         pkgs.tmux
 
@@ -218,11 +216,11 @@ in {
         pkgs.vlc
         pkgs.yubioath-flutter
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
-        pkgs.protonvpn-gui
+        pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
           (pkgs.makeAutostartItem {
             name = "proton.vpn.app.gtk";
-            package = pkgs.protonvpn-gui;
+            package = pkgs.proton-vpn;
             appendExtraArgs = [ "--start-minimized" ];
           }))
       ] ++ lib.optionals config.curios.desktop.ai.chatgpt.enable
