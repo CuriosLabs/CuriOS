@@ -278,6 +278,14 @@ if [ $RPI4_INSTALL -eq 0 ]; then
     echo -e "${RED}mkfs command not found!${NC}"
     exit 2
   fi
+  if ! available mkfs.ext4; then
+    echo -e "${RED}mkfs.ext4 command not found!${NC}"
+    exit 2
+  fi
+  if ! available mkfs.fat; then
+    echo -e "${RED}mkfs.fat command not found!${NC}"
+    exit 2
+  fi
 else
   if ! available rpi-eeprom-update; then
     echo -e "${RED}rpi-eeprom-update command not found!${NC}"
@@ -689,7 +697,7 @@ confirm_install() {
 
 clear
 if [ -f "$CURIOS_SRC_PATH"/logo.txt ]; then
-  tte -i "$CURIOS_SRC_PATH"/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 12488B 2AA1B3 --final-gradient-steps 12 12 --final-gradient-direction diagonal
+  tte -i "$CURIOS_SRC_PATH"/logo.txt --anchor-text c --canvas-width 0 sweep --final-gradient-stops 1E78E4 4FD2FD --final-gradient-steps 12 12 --final-gradient-direction diagonal
 fi
 choose_lang
 
@@ -812,7 +820,7 @@ dotfiles_install() {
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
       # TODO: Any way to predict OWNER at this stage ?
-      chown -R 1000:100 "$DIR"
+      chown -R 1000:1000 "$DIR"
     fi
   done
   jq -n '{ "BrowserThemeColor": "#20252c" }' >"$BRAVE_THEMES_FILE"
@@ -879,12 +887,15 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-dotfiles/ "$CURIOS_SRC_PATH"/pkgs/curios-dotfiles/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager/ "$CURIOS_SRC_PATH"/pkgs/curios-manager/default.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager-applet/ "$CURIOS_SRC_PATH"/pkgs/curios-manager-applet/default.nix
+  install -D -m 600 -t "$NIXOS_CONFIG_DIR"/pkgs/curios-manager-applet/ "$CURIOS_SRC_PATH"/pkgs/curios-manager-applet/Cargo.lock
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/snitch/ "$CURIOS_SRC_PATH"/pkgs/snitch/default.nix
 
   # User settings
   sed "s/users\..*/users.${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s/description = \".*/description = \"${FULLNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
   sed "s#initialHashedPassword = \".*#initialHashedPassword = \"${HASHED_USER_PASSWD}\";#g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/groups = { nixos = {/groups = { ${USERNAME} = {/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
+  sed "s/group = \"nixos\";/group = \"${USERNAME}\";/g" -i "$NIXOS_CONFIG_DIR"/settings.nix
 
   # Update modules.json with selected locale, keyboard, time zone and hostname:
   jq --arg locale "$SELECTED_LOCALE" \

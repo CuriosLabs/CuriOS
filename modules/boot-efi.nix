@@ -28,6 +28,10 @@
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
         "vm.swappiness" = 10;
+        # Restart in case of Out of Memory
+        "vm.panic_on_oom" = 1;
+        # Restart after 10 seconds of panic
+        "kernel.panic" = 10;
       };
       # Protection against CVE-2026-31431 if kernel < 6.12.85; 6.18.22; 6.19.12 or 7.0
       # Obsolete: pkgs.linuxPackages_latest and pkgs.linuxPackages have been updated.
@@ -45,12 +49,18 @@
       # Plymouth boot splash screen
       plymouth = {
         enable = true;
-        theme = "breeze";
+        theme = "pixels";
+        themePackages = with pkgs;
+          [
+            (adi1090x-plymouth-themes.override {
+              selected_themes = [ "colorful_loop" "lone" "pixels" "rings" ];
+            })
+          ];
         #logo = "${pkgs.nixos-icons}/share/icons/hicolor/48x48/apps/nix-snowflake-white.png";
       };
 
       # Enable "Silent boot"
-      consoleLogLevel = 3;
+      consoleLogLevel = lib.mkDefault 3;
       initrd.verbose = false;
       # Hide the OS choice for bootloaders.
       # It's still possible to open the bootloader list by pressing any key

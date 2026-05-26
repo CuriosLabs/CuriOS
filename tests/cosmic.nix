@@ -13,9 +13,15 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     config = {
       curios.cosmic.enable = true;
       time.timeZone = "UTC";
+
+      # Define the nixos user for testing
+      users.users.nixos = {
+        isNormalUser = true;
+        description = "Test User";
+        home = "/home/nixos";
+      };
     };
   };
-
   # Test script to verify all corresponding packages are installed and services are running.
   testScript = ''
     start_all()
@@ -34,6 +40,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lswt")
         check_which("xdg-settings")
         check_which("xdg-user-dirs-update")
+        check_which("xdg-terminal-exec")
         check_which("cosmic-applets")
         check_which("cosmic-comp")
         check_which("cosmic-greeter")
@@ -48,5 +55,19 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         # Check if our new XDG user dirs update service is present in the systemd user config
         machine.succeed("systemctl --user --global list-unit-files | grep xdg-user-dirs-update.service")
+
+    with subtest("check-xdg-user-dirs-projects"):
+        # The Projects folder should be created in the user's home (nixos user)
+        # We simulate the service execution for the nixos user.
+        machine.succeed("sudo -u nixos xdg-user-dirs-update")
+        
+        # Check if the folder was created
+        machine.succeed("test -d /home/nixos/Projects")
+        
+        # Check if the variable was added to user-dirs.dirs
+        machine.succeed("grep 'XDG_PROJECTS_DIR=\"$HOME/Projects\"' /home/nixos/.config/user-dirs.dirs")
+        
+        # Check if the defaults file is correct
+        machine.succeed("grep 'PROJECTS=Projects' /etc/xdg/user-dirs.defaults")
   '';
 }

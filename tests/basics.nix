@@ -128,7 +128,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("localsend_app")
 
     with subtest("check-unconditional-basics"):
-        check_which("alacritty")
         check_which("vlc")
         check_which("gimp")
         check_which("tldr")

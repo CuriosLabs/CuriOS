@@ -20,7 +20,8 @@
       podman.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Podman containers tool + podman-compose, podman-tui, podman-desktop.";
+        description =
+          "Podman containers tool + podman-compose, podman-tui, podman-desktop.";
       };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
@@ -114,9 +115,8 @@
         podman-tui
         # TODO: test toolbox
       ] ++ lib.optionals config.curios.virtualisation.wine.enable [
-        wineWowPackages.waylandFull
+        wineWow64Packages.waylandFull
         winetricks
-        wineWowPackages.fonts
         wineWow64Packages.fonts
       ];
   };

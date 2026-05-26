@@ -93,17 +93,34 @@
             "Enable Rust language with rustup, cargo and build tools.";
         };
       };
+      zram.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable in-memory compressed devices and swap space provided by the zram kernel module.";
+      };
     };
   };
 
   # Declare configuration
   config = lib.mkIf config.curios.system.enable {
-    networking.hostName = lib.mkDefault config.curios.system.hostname;
+    networking.hostName = lib.mkForce config.curios.system.hostname;
     time.timeZone = lib.mkDefault config.curios.system.timeZone;
     i18n.defaultLocale = lib.mkDefault config.curios.system.i18n.locale;
 
-    # Keyboard settings
-    console.keyMap = lib.mkDefault config.curios.system.keyboard;
+    # Disable documentation outputs to bypass broken Sphinx build in unstable (known issue)
+    documentation.doc.enable = lib.mkDefault false;
+
+    # tty console settings
+    console = {
+      # Keyboard settings
+      earlySetup = lib.mkDefault true; # initrd setup
+      enable = lib.mkDefault true;
+      font = "LatArCyrHeb-16";
+      keyMap = lib.mkDefault config.curios.system.keyboard;
+      # Use XKB configuration for console (more modern and consistent)
+      useXkbConfig = lib.mkDefault false; # use xkb.options in tty.
+    };
 
     system.autoUpgrade = {
       enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
@@ -118,6 +135,13 @@
       automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
       dates = "daily";
       options = "--delete-older-than 7d";
+    };
+
+    # ZRAM swap configuration
+    zramSwap = {
+      enable = lib.mkDefault config.curios.system.zram.enable;
+      memoryPercent = 50;
+      priority = 100; # Use ZRAM before disk swap
     };
 
     environment.systemPackages =
@@ -137,7 +161,7 @@
         pkgs.python312Packages.pip
         pkgs.python312Packages.setuptools
         pkgs.python312Packages.cryptography
-        pkgs.python312Packages.uv
+        pkgs.uv
         pkgs.pyright
         pkgs.ruff
       ] ++ lib.optionals config.curios.system.languages.python313.enable [
@@ -145,7 +169,7 @@
         pkgs.python313Packages.pip
         pkgs.python313Packages.setuptools
         pkgs.python313Packages.cryptography
-        pkgs.python313Packages.uv
+        pkgs.uv
         pkgs.pyright
         pkgs.ruff
       ]
