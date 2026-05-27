@@ -34,6 +34,11 @@
         default = true;
         description = "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
       };
+      n8n.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "n8n workflow automation tool (http://localhost:5678).";
+      };
     };
   };
 
@@ -90,6 +95,30 @@
           WEBUI_AUTH = "False";
         };
         port = 8080;
+      };
+
+      # n8n workflow automation - https://n8n.io
+      # Access the editor at http://localhost:5678 once enabled.
+      #
+      # For webhooks that external services need to reach (GitHub, Stripe, etc.),
+      # configure WEBHOOK_URL, N8N_EDITOR_BASE_URL and N8N_PROXY_HOPS in your
+      # settings.nix. See the "n8n webhook configuration" example in settings.nix
+      # (including recommended cloudflared tunnel usage).
+      n8n = {
+        enable = lib.mkDefault config.curios.services.n8n.enable;
+        # Security-first: do not open the port in the firewall by default.
+        # Remote access should go through a reverse proxy (Caddy/Nginx) with TLS.
+        openFirewall = false;
+        # Privacy + resource-friendly defaults
+        environment = {
+          N8N_DIAGNOSTICS_ENABLED = "false";
+
+          # Execution data pruning (strongly recommended for SQLite, n8n's default DB).
+          # Prevents execution history from growing forever, which can make n8n slow
+          # and bloat the database on long-running systems.
+          EXECUTIONS_DATA_PRUNE = "true";
+          EXECUTIONS_DATA_MAX_AGE = "14"; # keep last 14 days of executions
+        };
       };
 
       # X server
