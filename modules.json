@@ -448,6 +448,13 @@
         "enable": false
       },
       "enable": false,
+      "k3s": {
+        "disable": [
+          "traefik"
+        ],
+        "enable": false,
+        "extraFlags": []
+      },
       "podman": {
         "enable": false
       },
