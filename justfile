@@ -112,10 +112,26 @@ nixos-upgrade: lint
         printf "Default settings.nix file installed! Edit /etc/nixos/settings.nix to match your username."
       fi
       sudo install -D -m 644 -t /etc/nixos/ ./logo.txt
-      sudo mkdir -p /etc/nixos/modules/
-      sudo cp -r -f ./modules/ /etc/nixos/
-      sudo mkdir -p /etc/nixos/pkgs/
-      sudo cp -r -f ./pkgs/ /etc/nixos/
+      #sudo mkdir -p /etc/nixos/modules/
+      #sudo cp -r -f --preserve=mode ./modules/ /etc/nixos/
+      #sudo mkdir -p /etc/nixos/pkgs/
+      #sudo cp -r -f --preserve=mode ./pkgs/ /etc/nixos/
+
+      sudo install -D -m 644 -t /etc/nixos/modules/ ./modules/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/./modules/desktop-apps/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.png
+      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.svg
+      sudo install -D -m 644 -t /etc/nixos/modules/filesystems/ ./modules/filesystems/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/hardened/ ./modules/hardened/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/hardware/ ./modules/hardware/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/platforms/ ./modules/platforms/*.nix
+      sudo install -D -m 644 -t /etc/nixos/pkgs/basecamp-cli/ ./pkgs/basecamp-cli/default.nix
+      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-dotfiles/ ./pkgs/curios-dotfiles/default.nix
+      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager/ ./pkgs/curios-manager/default.nix
+      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/default.nix
+      sudo install -D -m 600 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/Cargo.lock
+      sudo install -D -m 644 -t /etc/nixos/pkgs/snitch/ ./pkgs/snitch/default.nix
+
       NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
       if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
         printf "\e[32m Nix channel is already up-to-date.\e[0m\n"
