@@ -389,6 +389,12 @@
         "enable": false
       }
     },
+    "security": {
+      "u2f": {
+        "enable": false,
+        "lockOnRemove": false
+      }
+    },
     "shell": {
       "zsh": {
         "enable": true

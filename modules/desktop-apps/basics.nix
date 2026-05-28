@@ -215,6 +215,7 @@ in {
         pkgs.tldr
         pkgs.vlc
         pkgs.yubioath-flutter
+        pkgs.yubikey-manager
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
         pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
