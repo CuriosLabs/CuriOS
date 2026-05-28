@@ -118,7 +118,7 @@ nixos-upgrade: lint
       #sudo cp -r -f --preserve=mode ./pkgs/ /etc/nixos/
 
       sudo install -D -m 644 -t /etc/nixos/modules/ ./modules/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/./modules/desktop-apps/*.nix
+      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.nix
       sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.png
       sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.svg
       sudo install -D -m 644 -t /etc/nixos/modules/filesystems/ ./modules/filesystems/*.nix
