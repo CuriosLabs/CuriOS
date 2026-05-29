@@ -393,6 +393,9 @@
       "u2f": {
         "enable": false,
         "lockOnRemove": false
+      },
+      "luksFido2": {
+        "enable": false
       }
     },
     "shell": {

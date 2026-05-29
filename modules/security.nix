@@ -24,6 +24,24 @@
           '';
         };
       };
+
+      # LUKS disk encryption with FIDO2 (YubiKey etc.) is configured here
+      # but applied in modules/filesystems/filesystems-luks-v2.nix so that
+      # the core LUKS module stays focused on filesystem layout.
+      luksFido2 = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = ''
+            Enable FIDO2 token support (YubiKey, etc.) for unlocking the LUKS root volume during boot.
+            This uses systemd-cryptenroll + crypttabExtraOpts (modern path with boot.initrd.systemd).
+            Requires a YubiKey that supports FIDO2 and the hmac-secret extension (most YubiKey 5+).
+            A strong recovery passphrase must always be kept — it is the only way to boot if the
+            YubiKey is lost, damaged, or not present.
+            This option is independent from curios.security.u2f.enable (login vs disk encryption).
+          '';
+        };
+      };
     };
   };
 

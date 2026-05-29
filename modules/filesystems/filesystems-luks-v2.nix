@@ -15,8 +15,17 @@
 
   config = lib.mkIf config.curios.filesystems.luks.enable {
     boot.initrd.kernelModules = [ "dm-snapshot" "cryptd" ];
-    boot.initrd.luks.devices."cryptroot".device =
-      "/dev/disk/by-label/curiosystem";
+
+    # Note: curios.security.luksFido2.enable lives in security.nix (thematic grouping
+    # with other YubiKey features), but the actual LUKS configuration must live here.
+    boot.initrd.luks.devices."cryptroot" = lib.mkMerge [
+      {
+        device = "/dev/disk/by-label/curiosystem";
+      }
+      (lib.mkIf config.curios.security.luksFido2.enable {
+        crypttabExtraOpts = [ "fido2-device=auto" ];
+      })
+    ];
 
     fileSystems = {
       "/" = {
