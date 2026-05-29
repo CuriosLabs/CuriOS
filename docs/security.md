@@ -87,15 +87,15 @@ The `curios.security.luksFido2.enable` option allows you to use a FIDO2-compatib
 
 ### Plymouth boot splash prompt
 
-When FIDO2 LUKS decryption is enabled, Curi*OS* automatically switches to a modified Plymouth theme (`pixels-fido2`) that shows the cue **"YubiKey PIN or recovery passphrase"** instead of the generic "Enter a password".
+When `curios.security.luksFido2.enable` is active, the standard Plymouth theme is used. The prompt will usually display a generic message such as **"Enter password"**.
 
-This prevents confusion at the boot splash screen: the prompt is waiting for your hardware key's PIN (if configured) or your LUKS recovery passphrase (if the key is absent or not responding).
+**Warning**: Even though the message says "Enter password", this is the prompt where you must enter your YubiKey PIN (if you configured one) **or** your LUKS recovery passphrase when FIDO2 disk decryption is enabled.
 
-- If your YubiKey is configured to require a client PIN, enter it at this prompt.
-- If the key only requires a touch (no PIN), you may still briefly see the prompt; insert the key and touch it when the LED blinks.
-- The recovery passphrase always works as a fallback at this same prompt.
+- If your YubiKey requires a client PIN, type the PIN at this prompt.
+- If the key only requires a touch (no PIN), insert the key and touch it when the LED blinks.
+- The recovery passphrase always works as a fallback at the same prompt.
 
-Some secondary FIDO2 messages (e.g. "confirm presence on security token") may only be visible in the initrd journal and not on the graphical splash.
+Some FIDO2-related messages (e.g. "confirm presence on security token") may only appear in the initrd journal and not on the graphical splash.
 
 ### Critical requirement: Recovery passphrase
 
