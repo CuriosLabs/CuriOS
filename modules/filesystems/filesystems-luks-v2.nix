@@ -14,7 +14,9 @@
   };
 
   config = lib.mkIf config.curios.filesystems.luks.enable {
-    boot.initrd.kernelModules = [ "dm-snapshot" "cryptd" ];
+    boot.initrd.kernelModules =
+      [ "dm-snapshot" "cryptd" ]
+      ++ lib.optionals config.curios.security.luksFido2.enable [ "hid" "usbhid" "hid_generic" ];
 
     # Note: curios.security.luksFido2.enable lives in security.nix (thematic grouping
     # with other YubiKey features), but the actual LUKS configuration must live here.
