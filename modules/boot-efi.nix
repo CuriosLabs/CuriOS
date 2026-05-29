@@ -6,24 +6,20 @@
     curios.bootefi.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description =
-        "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
+      description = "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
     };
     curios.bootefi.kernel.latest = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description =
-        "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+      description = "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
     };
   };
 
   config = lib.mkIf config.curios.bootefi.enable {
     # Use the systemd-boot EFI boot loader.
     boot = {
-      kernelPackages = if config.curios.bootefi.kernel.latest then
-        pkgs.linuxPackages_latest
-      else
-        pkgs.linuxPackages;
+      kernelPackages =
+        if config.curios.bootefi.kernel.latest then pkgs.linuxPackages_latest else pkgs.linuxPackages;
       initrd.systemd.enable = true;
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
@@ -47,15 +43,44 @@
       tmp.cleanOnBoot = true;
 
       # Plymouth boot splash screen
+      # When LUKS FIDO2 is enabled we provide a variant theme with a more
+      # accurate password prompt cue (instead of the generic "Enter Password").
       plymouth = {
         enable = true;
-        theme = "pixels";
-        themePackages = with pkgs;
-          [
-            (adi1090x-plymouth-themes.override {
-              selected_themes = [ "colorful_loop" "lone" "pixels" "rings" ];
-            })
-          ];
+        theme = if config.curios.security.luksFido2.enable then "pixels-fido2" else "pixels";
+        themePackages =
+          let
+            adiThemes = pkgs.adi1090x-plymouth-themes.override {
+              selected_themes = [
+                "colorful_loop"
+                "lone"
+                "pixels"
+                "rings"
+              ];
+            };
+            fido2PixelsTheme = pkgs.runCommand "curios-plymouth-pixels-fido2" { } ''
+              mkdir -p $out/share/plymouth/themes/pixels-fido2
+              cp -r ${
+                pkgs.adi1090x-plymouth-themes.override { selected_themes = [ "pixels" ]; }
+              }/share/plymouth/themes/pixels/. $out/share/plymouth/themes/pixels-fido2/
+
+              # Adjust metadata and script filename for the new theme name
+              mv $out/share/plymouth/themes/pixels-fido2/pixels.plymouth $out/share/plymouth/themes/pixels-fido2/pixels-fido2.plymouth
+              substituteInPlace $out/share/plymouth/themes/pixels-fido2/pixels-fido2.plymouth \
+                --replace-fail 'Name=pixels' 'Name=pixels-fido2' \
+                --replace-fail 'pixels.script' 'pixels-fido2.script'
+
+              mv $out/share/plymouth/themes/pixels-fido2/pixels.script $out/share/plymouth/themes/pixels-fido2/pixels-fido2.script
+
+              # Use a context-aware prompt when FIDO2 disk unlock is active.
+              # This addresses confusion during boot: users see a YubiKey PIN prompt
+              # but the default theme always said "Enter Password".
+              substituteInPlace $out/share/plymouth/themes/pixels-fido2/pixels-fido2.script \
+                --replace-fail 'Image.Text("Enter Password", 1, 1, 1);' \
+                               'Image.Text("Key PIN or recovery passphrase", 1, 1, 1);'
+            '';
+          in
+          [ adiThemes ] ++ lib.optionals config.curios.security.luksFido2.enable [ fido2PixelsTheme ];
         #logo = "${pkgs.nixos-icons}/share/icons/hicolor/48x48/apps/nix-snowflake-white.png";
       };
 

@@ -392,6 +392,8 @@
     "security": {
       "u2f": {
         "enable": false,
+        "origin": "curios",
+        "appid": "curios",
         "lockOnRemove": false
       },
       "luksFido2": {

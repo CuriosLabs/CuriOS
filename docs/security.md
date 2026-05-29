@@ -44,6 +44,38 @@ U2F authentication is enabled for:
 
 You can optionally enable `curios.security.u2f.lockOnRemove`. When this option is active, removing the YubiKey from the USB port will automatically lock all user sessions. This provides a convenient physical security feature (similar to pulling a smart card).
 
+### Origin and AppID (multi-machine YubiKey support)
+
+By default Curi*OS* configures:
+
+```nix
+curios.security.u2f = {
+  origin = "curios";
+  appid  = "curios";
+};
+```
+
+This is different from the upstream `pam_u2f` default (`pam://$HOSTNAME`).
+
+**The goal** is to make it easy to use the *same* YubiKey enrollment across multiple machines. When `origin` and `appid` are stable values instead of per-hostname, you can share the resulting `~/.config/Yubico/u2f_keys` file between machines and the key will work without re-enrollment.
+
+The **Curi*OS* Manager** automatically reads these two values when performing U2F enrollment (`pamu2fcfg -o ... -i ...`).
+
+If you want different values (for example your own domain), override them in `settings.nix`:
+
+```nix
+curios.security.u2f = {
+  origin = "myname.example.com";
+  appid  = "myname.example.com";
+};
+```
+
+When enrolling manually, use matching flags:
+
+```bash
+pamu2fcfg -u "$USER" -o "curios" -i "curios" >> ~/.config/Yubico/u2f_keys
+```
+
 ## LUKS Disk Encryption with FIDO2
 
 The `curios.security.luksFido2.enable` option allows you to use a FIDO2-compatible security key (such as a YubiKey 5 or newer) to unlock your encrypted root partition at boot time.
@@ -52,6 +84,18 @@ The `curios.security.luksFido2.enable` option allows you to use a FIDO2-compatib
 
 - Curi*OS* uses the modern `systemd-cryptenroll` + `crypttabExtraOpts` approach (the recommended path when `boot.initrd.systemd.enable` is active).
 - The key must support the FIDO2 `hmac-secret` extension (most YubiKey 5 series and later devices do).
+
+### Plymouth boot splash prompt
+
+When FIDO2 LUKS decryption is enabled, Curi*OS* automatically switches to a modified Plymouth theme (`pixels-fido2`) that shows the cue **"YubiKey PIN or recovery passphrase"** instead of the generic "Enter a password".
+
+This prevents confusion at the boot splash screen: the prompt is waiting for your hardware key's PIN (if configured) or your LUKS recovery passphrase (if the key is absent or not responding).
+
+- If your YubiKey is configured to require a client PIN, enter it at this prompt.
+- If the key only requires a touch (no PIN), you may still briefly see the prompt; insert the key and touch it when the LED blinks.
+- The recovery passphrase always works as a fallback at this same prompt.
+
+Some secondary FIDO2 messages (e.g. "confirm presence on security token") may only be visible in the initrd journal and not on the graphical splash.
 
 ### Critical requirement: Recovery passphrase
 
@@ -82,7 +126,7 @@ From this menu you can:
 - Enable or disable FIDO2 support for LUKS disk decryption
 - Enroll (or re-enroll) your security key for the chosen features
 
-The manager guides you through the enrollment steps (`systemd-cryptenroll` for disk encryption, `pamu2fcfg` for PAM, etc.) and applies the necessary configuration changes.
+The manager reads your current `curios.security.u2f.origin` and `curios.security.u2f.appid` settings and passes them to `pamu2fcfg` during U2F enrollment (and uses the equivalent values for `systemd-cryptenroll` when enrolling for LUKS FIDO2). This ensures consistent behavior across machines.
 
 ## Best Practices
 
@@ -90,6 +134,8 @@ The manager guides you through the enrollment steps (`systemd-cryptenroll` for d
 - Consider enrolling **two different YubiKeys** (primary + backup) for important machines.
 - The `lockOnRemove` feature is very convenient but can be surprising if you frequently unplug your key. Test it first.
 - U2F/PAM and LUKS FIDO2 can be enabled independently. Choose the combination that matches your security requirements.
+- `origin` and `appid` default to `"curios"`. This is the recommended value if you want to use one YubiKey across several machines. Only change them if you have a specific reason.
+- At the Plymouth boot prompt with FIDO2 active, remember you can always use the recovery passphrase if your key is not inserted or the PIN step is not what you expect.
 
 ## Related Topics
 
