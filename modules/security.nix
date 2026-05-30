@@ -54,6 +54,26 @@
             Requires curios.security.u2f.enable to take effect.
           '';
         };
+
+        keyringProvider = lib.mkOption {
+          type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
+          default = "gnome-keyring";
+          description = ''
+            Select the Secret Service (freedesktop.org) provider used while U2F is active.
+
+            Use "keepassxc" when using passwordless authentication because
+            gnome-keyring requires the login password to auto-unlock, which defeats
+            the purpose of passwordless U2F login. KeePassXC can act as a Secret
+            Service provider and is unlocked independently via its own database
+            password or hardware key.
+
+            When "keepassxc" is selected, the gnome-keyring daemon is disabled
+            but the package remains installed as a COSMIC dependency.
+
+            You must manually enable Secret Service integration in KeePassXC:
+            Tools → Settings → Secret Service Integration.
+          '';
+        };
       };
 
       # LUKS disk encryption with FIDO2 (YubiKey etc.) is configured here
@@ -106,5 +126,18 @@
         ENV{ID_VENDOR}=="Yubico",\
         RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
     '';
+
+    # Replace gnome-keyring with KeePassXC as Secret Service provider when
+    # passwordless U2F is active, since gnome-keyring cannot auto-unlock
+    # without the login password.
+    services.gnome.gnome-keyring = lib.mkIf
+      (config.curios.security.u2f.keyringProvider == "keepassxc") {
+        enable = lib.mkForce false;
+      };
+
+    environment.systemPackages = lib.optional
+      (config.curios.security.u2f.keyringProvider == "keepassxc"
+        && !config.curios.desktop.utility.keepassxc.enable)
+      pkgs.keepassxc;
   };
 }

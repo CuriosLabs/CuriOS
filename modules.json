@@ -394,7 +394,8 @@
         "enable": false,
         "origin": "curios",
         "appid": "curios",
-        "lockOnRemove": false
+        "lockOnRemove": false,
+        "keyringProvider": "gnome-keyring"
       },
       "luksFido2": {
         "enable": false
