@@ -17,6 +17,7 @@
             Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).
             Password authentication remains available as fallback (sufficient control).
             Works with cosmic-greeter, greetd, login, and sudo.
+            Set it with curios-manager -> Security -> Register primary Yubikey.
           '';
         };
 
@@ -57,7 +58,7 @@
       };
 
       keyringProvider = lib.mkOption {
-        type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
+        type = lib.types.enum [ "gnome-keyring" "keepassxc" "oo7" ];
         default = "gnome-keyring";
         description = ''
           Select the Secret Service (freedesktop.org) provider used while U2F is active.
@@ -73,6 +74,9 @@
 
           You must manually enable Secret Service integration in KeePassXC:
           Tools → Settings → Secret Service Integration.
+
+          Use "oo7" for the oo7 Secret Service provider, which supports
+          passwordless U2F authentication.
         '';
       };
 
@@ -126,17 +130,35 @@
         RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
     '';
 
-    # Replace gnome-keyring with KeePassXC as Secret Service provider when
+    # Replace gnome-keyring with an alternative Secret Service provider when
     # passwordless U2F is active, since gnome-keyring cannot auto-unlock
     # without the login password.
     services.gnome.gnome-keyring = lib.mkIf
-      (config.curios.security.keyringProvider == "keepassxc") {
+      (config.curios.security.keyringProvider != "gnome-keyring") {
         enable = lib.mkForce false;
       };
 
-    environment.systemPackages = lib.optional
+    environment.systemPackages = lib.optionals
       (config.curios.security.keyringProvider == "keepassxc"
         && !config.curios.desktop.utility.keepassxc.enable)
-      pkgs.keepassxc;
+      [ pkgs.keepassxc ]
+      ++ lib.optionals
+      (config.curios.security.keyringProvider == "oo7")
+      [ pkgs.oo7-portal pkgs.oo7-server ];
+
+    # When using an alternative keyring provider, override the COSMIC portal
+    # configuration so sandboxed apps (Flatpak) use the correct Secret backend.
+    # We must include the default fallback or other portals (file chooser, etc.)
+    # will break. The package-provided cosmic-portals.conf is replaced entirely
+    # when xdg.portal.config is set for the "cosmic" desktop.
+    xdg.portal.config = lib.mkIf
+      (config.curios.security.keyringProvider != "gnome-keyring") {
+        cosmic = {
+          default = [ "cosmic" "gtk" ];
+        } // lib.optionalAttrs
+          (config.curios.security.keyringProvider == "oo7") {
+          "org.freedesktop.impl.portal.Secret" = [ "oo7" ];
+        };
+      };
   };
 }
