@@ -1,9 +1,14 @@
-# Security options (U2F/FIDO2, YubiKey, hardening, etc.)
+# Security options (U2F/FIDO2, YubiKey, etc.)
 
 { config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.security = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "REQUIRED CuriOS security options.";
+      };
       u2f = {
         enable = lib.mkOption {
           type = lib.types.bool;
@@ -12,9 +17,25 @@
             Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).
             Password authentication remains available as fallback (sufficient control).
             Works with cosmic-greeter, greetd, login, and sudo.
+          '';
+        };
 
-            Origin and appid default to "curios" so that the same YubiKey enrollment
-            can be reused across multiple machines without extra configuration.
+        appid = lib.mkOption {
+          type = lib.types.str;
+          default = "curios";
+          example = "curios";
+          description = ''
+            AppID used by pam_u2f.
+            Defaults to the same value as `origin` for simplicity.
+            Must match what is passed to `pamu2fcfg -i` during enrollment.
+          '';
+        };
+
+        lockOnRemove = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = ''
+            Automatically lock all user sessions when a YubiKey is physically removed.
           '';
         };
 
@@ -33,47 +54,26 @@
             The value must match what is passed to `pamu2fcfg -o`.
           '';
         };
+      };
 
-        appid = lib.mkOption {
-          type = lib.types.str;
-          default = "curios";
-          example = "curios";
-          description = ''
-            AppID used by pam_u2f.
+      keyringProvider = lib.mkOption {
+        type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
+        default = "gnome-keyring";
+        description = ''
+          Select the Secret Service (freedesktop.org) provider used while U2F is active.
 
-            Defaults to the same value as `origin` for simplicity.
-            Must match what is passed to `pamu2fcfg -i` during enrollment.
-          '';
-        };
+          Use "keepassxc" when using passwordless authentication because
+          gnome-keyring requires the login password to auto-unlock, which defeats
+          the purpose of passwordless U2F login. KeePassXC can act as a Secret
+          Service provider and is unlocked independently via its own database
+          password or hardware key.
 
-        lockOnRemove = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = ''
-            Automatically lock all user sessions when a YubiKey is physically removed.
-            Requires curios.security.u2f.enable to take effect.
-          '';
-        };
+          When "keepassxc" is selected, the gnome-keyring daemon is disabled
+          but the package remains installed as a COSMIC dependency.
 
-        keyringProvider = lib.mkOption {
-          type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
-          default = "gnome-keyring";
-          description = ''
-            Select the Secret Service (freedesktop.org) provider used while U2F is active.
-
-            Use "keepassxc" when using passwordless authentication because
-            gnome-keyring requires the login password to auto-unlock, which defeats
-            the purpose of passwordless U2F login. KeePassXC can act as a Secret
-            Service provider and is unlocked independently via its own database
-            password or hardware key.
-
-            When "keepassxc" is selected, the gnome-keyring daemon is disabled
-            but the package remains installed as a COSMIC dependency.
-
-            You must manually enable Secret Service integration in KeePassXC:
-            Tools → Settings → Secret Service Integration.
-          '';
-        };
+          You must manually enable Secret Service integration in KeePassXC:
+          Tools → Settings → Secret Service Integration.
+        '';
       };
 
       # LUKS disk encryption with FIDO2 (YubiKey etc.) is configured here
@@ -85,11 +85,10 @@
           default = false;
           description = ''
             Enable FIDO2 token support (YubiKey, etc.) for unlocking the LUKS root volume during boot.
-            This uses systemd-cryptenroll + crypttabExtraOpts (modern path with boot.initrd.systemd).
             Requires a YubiKey that supports FIDO2 and the hmac-secret extension (most YubiKey 5+).
             A strong recovery passphrase must always be kept — it is the only way to boot if the
             YubiKey is lost, damaged, or not present.
-            This option is independent from curios.security.u2f.enable (login vs disk encryption).
+            Set it with curios-manager -> Security -> Enroll Yubikey for disk decryption.
           '';
         };
       };
@@ -97,11 +96,11 @@
   };
 
   # Declare configuration
-  config = lib.mkIf config.curios.security.u2f.enable {
+  config = lib.mkIf config.curios.security.enable {
     security.pam.u2f = {
       # U2F are sufficient replacements to passwords.
       control = "sufficient";
-      enable = true;
+      enable = lib.mkDefault config.curios.security.u2f.enable;
       settings = {
         cue = true;
         interactive = true;
@@ -112,10 +111,10 @@
     };
 
     security.pam.services = {
-      cosmic-greeter.u2fAuth = true;
-      greetd.u2fAuth = true;
-      login.u2fAuth = true;
-      sudo.u2fAuth = true;
+      cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
     };
 
     # Lock screen when YubiKey is removed (physical security feature)
@@ -131,12 +130,12 @@
     # passwordless U2F is active, since gnome-keyring cannot auto-unlock
     # without the login password.
     services.gnome.gnome-keyring = lib.mkIf
-      (config.curios.security.u2f.keyringProvider == "keepassxc") {
+      (config.curios.security.keyringProvider == "keepassxc") {
         enable = lib.mkForce false;
       };
 
     environment.systemPackages = lib.optional
-      (config.curios.security.u2f.keyringProvider == "keepassxc"
+      (config.curios.security.keyringProvider == "keepassxc"
         && !config.curios.desktop.utility.keepassxc.enable)
       pkgs.keepassxc;
   };

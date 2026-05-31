@@ -390,13 +390,14 @@
       }
     },
     "security": {
+      "enable": true,
       "u2f": {
         "enable": false,
-        "origin": "curios",
         "appid": "curios",
         "lockOnRemove": false,
-        "keyringProvider": "gnome-keyring"
+        "origin": "curios"
       },
+      "keyringProvider": "gnome-keyring",
       "luksFido2": {
         "enable": false
       }
