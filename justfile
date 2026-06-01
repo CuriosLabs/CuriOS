@@ -130,6 +130,7 @@ nixos-upgrade: lint
       sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager/ ./pkgs/curios-manager/default.nix
       sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/default.nix
       sudo install -D -m 600 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/Cargo.lock
+      sudo install -D -m 644 -t /etc/nixos/pkgs/oo7-pam/ ./pkgs/oo7-pam/default.nix
       sudo install -D -m 644 -t /etc/nixos/pkgs/snitch/ ./pkgs/snitch/default.nix
 
       NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
@@ -156,7 +157,7 @@ nixos-upgrade: lint
         #sudo sed -i '15,259d' /etc/nixos/settings.nix
       fi
 
-      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
+      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto --show-trace
       CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
       if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
         HOME_DIR="/home/*/"

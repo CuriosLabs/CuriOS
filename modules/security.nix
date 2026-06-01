@@ -1,6 +1,48 @@
 # Security options (U2F/FIDO2, YubiKey, etc.)
 
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, ... }:
+let
+  oo7Pam = pkgs.callPackage ../pkgs/oo7-pam { };
+
+  # PAM rules for the oo7 keyring module.  These orders are chosen to sit
+  # safely inside the standard NixOS PAM stacks without colliding with the
+  # automatically-assigned orders from utils.pam.autoOrderRules.
+  oo7PamRules = lib.optionalAttrs (config.curios.security.keyringProvider == "oo7") {
+    rules = {
+      # Early unix: prompt for password and set PAM_AUTHTOK before oo7 runs.
+      # This mirrors NixOS's built-in early-auth block used by gnome-keyring.
+      auth.unix-early = {
+        order = 11400;
+        control = "optional";
+        modulePath = "${pkgs.linux-pam}/lib/security/pam_unix.so";
+        settings = {
+          nullok = true;
+          likeauth = true;
+        };
+      };
+      # Auth: placed just after unix-early so PAM_AUTHTOK is already populated.
+      auth.oo7 = {
+        order = 11550;
+        control = "optional";
+        modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
+      };
+      # Session: placed after systemd (10200) so the user session is ready.
+      session.oo7 = {
+        order = 10250;
+        control = "optional";
+        modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
+        settings = { auto_start = true; };
+      };
+      # Password: placed after unix (10200) so the new password is available.
+      password.oo7 = {
+        order = 10250;
+        control = "optional";
+        modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
+      };
+    };
+  };
+in
+{
   # Declare options
   options = {
     curios.security = {
@@ -59,7 +101,7 @@
 
       keyringProvider = lib.mkOption {
         type = lib.types.enum [ "gnome-keyring" "keepassxc" "oo7" ];
-        default = "gnome-keyring";
+        default = "oo7";
         description = ''
           Select the Secret Service (freedesktop.org) provider used while U2F is active.
 
@@ -75,8 +117,10 @@
           You must manually enable Secret Service integration in KeePassXC:
           Tools → Settings → Secret Service Integration.
 
-          Use "oo7" for the oo7 Secret Service provider, which supports
-          passwordless U2F authentication.
+          Use "oo7" for the oo7 Secret Service provider. Note that oo7 creates
+          an encrypted keyring which requires a password or systemd credential
+          (`oo7.keyring-encryption-password`) to unlock. It does not auto-unlock
+          with U2F passwordless login without additional credential setup.
         '';
       };
 
@@ -115,9 +159,15 @@
     };
 
     security.pam.services = {
-      cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      login = {
+        u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      } // oo7PamRules;
+      greetd = {
+        u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      } // oo7PamRules;
+      cosmic-greeter = {
+        u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+      } // oo7PamRules;
       sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
     };
 
@@ -144,7 +194,14 @@
       [ pkgs.keepassxc ]
       ++ lib.optionals
       (config.curios.security.keyringProvider == "oo7")
-      [ pkgs.oo7-portal pkgs.oo7-server ];
+      [
+        pkgs.oo7
+        pkgs.oo7-portal
+        pkgs.gcr
+        # Ensure oo7's D-Bus service file wins over gnome-keyring's so
+        # org.freedesktop.secrets activation starts oo7-daemon.
+        (lib.hiPrio pkgs.oo7-server)
+      ];
 
     # When using an alternative keyring provider, override the COSMIC portal
     # configuration so sandboxed apps (Flatpak) use the correct Secret backend.
