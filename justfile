@@ -156,7 +156,7 @@ nixos-upgrade: lint
         #sudo sed -i '15,259d' /etc/nixos/settings.nix
       fi
 
-      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto
+      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto --show-trace
       CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
       if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
         HOME_DIR="/home/*/"
