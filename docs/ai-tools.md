@@ -173,7 +173,7 @@ Then, add your provider and model details, for example:
 Learn more on the [opencode documentation](https://opencode.ai/docs/).
 
 ---
-**Next**: [Audio/Video applications](audio-video.md).
+**Next**: [Security and hardware keys](security.md).
 
 **Previous**: [Backup your Computer](backups.md)
 
