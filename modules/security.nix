@@ -9,6 +9,7 @@
         default = true;
         description = "REQUIRED CuriOS security options.";
       };
+
       u2f = {
         enable = lib.mkOption {
           type = lib.types.bool;
@@ -58,9 +59,10 @@
       };
 
       keyringProvider = lib.mkOption {
-        type = lib.types.enum [ "gnome-keyring" "keepassxc" "oo7" ];
+        type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
         default = "gnome-keyring";
         description = ''
+          HIGHLY EXPERIMENTAL
           Select the Secret Service (freedesktop.org) provider used while U2F is active.
 
           Use "keepassxc" when using passwordless authentication because
@@ -74,9 +76,6 @@
 
           You must manually enable Secret Service integration in KeePassXC:
           Tools → Settings → Secret Service Integration.
-
-          Use "oo7" for the oo7 Secret Service provider, which supports
-          passwordless U2F authentication.
         '';
       };
 
@@ -141,24 +140,21 @@
     environment.systemPackages = lib.optionals
       (config.curios.security.keyringProvider == "keepassxc"
         && !config.curios.desktop.utility.keepassxc.enable)
-      [ pkgs.keepassxc ]
-      ++ lib.optionals
-      (config.curios.security.keyringProvider == "oo7")
-      [ pkgs.oo7-portal pkgs.oo7-server ];
+      [ pkgs.keepassxc ];
 
     # When using an alternative keyring provider, override the COSMIC portal
     # configuration so sandboxed apps (Flatpak) use the correct Secret backend.
     # We must include the default fallback or other portals (file chooser, etc.)
     # will break. The package-provided cosmic-portals.conf is replaced entirely
     # when xdg.portal.config is set for the "cosmic" desktop.
-    xdg.portal.config = lib.mkIf
-      (config.curios.security.keyringProvider != "gnome-keyring") {
-        cosmic = {
-          default = [ "cosmic" "gtk" ];
-        } // lib.optionalAttrs
-          (config.curios.security.keyringProvider == "oo7") {
-          "org.freedesktop.impl.portal.Secret" = [ "oo7" ];
-        };
-      };
+    #xdg.portal.config = lib.mkIf
+    #  (config.curios.security.keyringProvider != "gnome-keyring") {
+    #    cosmic = {
+    #      default = [ "cosmic" "gtk" ];
+    #    } // lib.optionalAttrs
+    #      (config.curios.security.keyringProvider == "oo7") {
+    #      "org.freedesktop.impl.portal.Secret" = [ "oo7" ];
+    #    };
+    #  };
   };
 }
