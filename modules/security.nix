@@ -7,76 +7,41 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED CuriOS security options.";
+        description = "REQUIRED - CuriOS security options.";
       };
 
       u2f = {
         enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = ''
-            Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).
-            Password authentication remains available as fallback (sufficient control).
-            Works with cosmic-greeter, greetd, login, and sudo.
-            Set it with curios-manager -> Security -> Register primary Yubikey.
-          '';
+          description = "Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).";
         };
 
         appid = lib.mkOption {
           type = lib.types.str;
           default = "curios";
           example = "curios";
-          description = ''
-            AppID used by pam_u2f.
-            Defaults to the same value as `origin` for simplicity.
-            Must match what is passed to `pamu2fcfg -i` during enrollment.
-          '';
+          description = "AppID used by pam_u2f.";
         };
 
         lockOnRemove = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = ''
-            Automatically lock all user sessions when a YubiKey is physically removed.
-          '';
+          description = "Automatically lock all user sessions when a YubiKey is physically removed.";
         };
 
         origin = lib.mkOption {
           type = lib.types.str;
           default = "curios";
           example = "curios";
-          description = ''
-            Origin used by pam_u2f.
-
-            Default is "curios" (instead of pam-u2f's built-in default of `pam://$HOSTNAME`).
-            Using a stable value makes it trivial to use the same YubiKey enrollment
-            across multiple machines.
-
-            Change this only if you have a good reason (e.g. your own domain name).
-            The value must match what is passed to `pamu2fcfg -o`.
-          '';
+          description = "Origin used by pam_u2f.";
         };
       };
 
       keyringProvider = lib.mkOption {
         type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
         default = "gnome-keyring";
-        description = ''
-          HIGHLY EXPERIMENTAL
-          Select the Secret Service (freedesktop.org) provider used while U2F is active.
-
-          Use "keepassxc" when using passwordless authentication because
-          gnome-keyring requires the login password to auto-unlock, which defeats
-          the purpose of passwordless U2F login. KeePassXC can act as a Secret
-          Service provider and is unlocked independently via its own database
-          password or hardware key.
-
-          When "keepassxc" is selected, the gnome-keyring daemon is disabled
-          but the package remains installed as a COSMIC dependency.
-
-          You must manually enable Secret Service integration in KeePassXC:
-          Tools → Settings → Secret Service Integration.
-        '';
+        description = "EXPERIMENTAL - Select the Secret Service (freedesktop.org) provider used while U2F is active.";
       };
 
       # LUKS disk encryption with FIDO2 (YubiKey etc.) is configured here
@@ -86,13 +51,7 @@
         enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = ''
-            Enable FIDO2 token support (YubiKey, etc.) for unlocking the LUKS root volume during boot.
-            Requires a YubiKey that supports FIDO2 and the hmac-secret extension (most YubiKey 5+).
-            A strong recovery passphrase must always be kept — it is the only way to boot if the
-            YubiKey is lost, damaged, or not present.
-            Set it with curios-manager -> Security -> Enroll Yubikey for disk decryption.
-          '';
+          description = "Enable FIDO2 key support (YubiKey, etc.) for unlocking the LUKS disk volume during boot.";
         };
       };
     };
