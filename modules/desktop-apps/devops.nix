@@ -195,7 +195,7 @@
       [ ghostty ]
       ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
         opencode
-        (import ./desktop-opencode.nix)
+        (import ./desktop-opencode-tui.nix)
       ];
   };
 }
