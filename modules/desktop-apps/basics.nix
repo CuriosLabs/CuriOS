@@ -128,9 +128,9 @@ in {
           description = "Mistral LeChat web app.";
         };
         windsurf.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Windsurf AI-assisted IDE - desktop app.";
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
       };
       chat = {
@@ -238,8 +238,6 @@ in {
         ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
         [ lmstudioApp ] ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
-        ++ lib.optionals config.curios.desktop.ai.windsurf.enable
-        [ pkgs.windsurf ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
         [ pkgs.brave ]
         ++ lib.optionals config.curios.desktop.browser.chromium.enable

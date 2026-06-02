@@ -100,9 +100,6 @@ These applications are advanced code editors (**IDEs**) with built-in AI assista
 - **Zed**: Installed by default. You can connect it to LM Studio. See the [Zed documentation](https://zed.dev/docs/ai/llm-providers).
 - **Cursor**: An AI-first code editor. Launch the graphical app with `cursor` or
 the terminal version with `cursor-agent`. See the [Cursor documentation](https://cursor.com/docs).
-- **Windsurf**: Another AI-assisted editor. To install, set
-`ai.windsurf.enable = true;` in your settings via `curios-manager`. Launch with
-`windsurf`. See the [Windsurf documentation](https://docs.windsurf.com/windsurf/getting-started).
 
 ### Terminal (CLI) Tools
 

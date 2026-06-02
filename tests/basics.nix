@@ -45,7 +45,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           grok.enable = true;
           lmstudio.enable = true;
           mistral.enable = true;
-          windsurf.enable = true;
         };
 
         # Chat Apps
@@ -109,7 +108,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lm-studio")
         check_which("lms") # LM Studio CLI
         check_webapp("ai.mistral.chat")
-        check_which("windsurf")
 
     with subtest("check-chat-apps"):
         check_which("Discord")

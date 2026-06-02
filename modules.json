@@ -34,9 +34,6 @@
         },
         "mistral": {
           "enable": true
-        },
-        "windsurf": {
-          "enable": false
         }
       },
       "appImage": {
