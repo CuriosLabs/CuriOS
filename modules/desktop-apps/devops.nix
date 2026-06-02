@@ -33,6 +33,11 @@
           default = false;
           description = "JetBrains IDEA oss - Kotlin";
         };
+        opencode.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "OpenCode Desktop";
+        };
         python.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -179,6 +184,8 @@
       [ jetbrains.goland ]
       ++ lib.optionals config.curios.desktop.devops.editor.java.enable
       [ jetbrains.idea-oss ]
+      ++ lib.optionals config.curios.desktop.devops.editor.opencode.enable
+      [ opencode-desktop ]
       ++ lib.optionals config.curios.desktop.devops.editor.python.enable
       [ jetbrains.pycharm-oss ]
       ++ lib.optionals config.curios.desktop.devops.editor.rust.enable

@@ -99,6 +99,9 @@
           "java": {
             "enable": false
           },
+          "opencode": {
+            "enable": true
+          },
           "python": {
             "enable": false
           },
