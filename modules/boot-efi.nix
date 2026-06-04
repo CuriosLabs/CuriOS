@@ -73,7 +73,7 @@
       };
 
       # Remove ZFS warning during ISO build.
-      zfs.forceImportRoot = lib.mkDefault false;
+      zfs.forceImportRoot = lib.mkForce false;
     };
   };
 }
