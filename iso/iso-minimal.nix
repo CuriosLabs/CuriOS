@@ -34,6 +34,8 @@ in {
     pkgs.terminaltexteffects
   ];
 
+  boot.zfs.forceImportRoot = false;
+
   i18n.extraLocales = "all";
   console.font = "LatArCyrHeb-16";
 
