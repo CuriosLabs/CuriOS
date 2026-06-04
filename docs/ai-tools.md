@@ -94,12 +94,12 @@ in your browser. Find more models on the [Ollama website](https://ollama.com/).
 
 These applications are advanced code editors (**IDEs**) with built-in AI assistance.
 
+- **OpenCode Desktop**: Installed by default. The open source AI coding agent.
+  Free models included or connect any model from any provider including locally
+  with LM Studio. See [OpenCode website](https://opencode.ai/).
 - **Zed**: Installed by default. You can connect it to LM Studio. See the [Zed documentation](https://zed.dev/docs/ai/llm-providers).
 - **Cursor**: An AI-first code editor. Launch the graphical app with `cursor` or
 the terminal version with `cursor-agent`. See the [Cursor documentation](https://cursor.com/docs).
-- **Windsurf**: Another AI-assisted editor. To install, set
-`ai.windsurf.enable = true;` in your settings via `curios-manager`. Launch with
-`windsurf`. See the [Windsurf documentation](https://docs.windsurf.com/windsurf/getting-started).
 
 ### Terminal (CLI) Tools
 
@@ -108,8 +108,8 @@ pre-installed on Curi*OS*. You can install them with the `npm install -g` comman
 
 - **Claude Code**: Run with `claude`. Install it with `npm install -g @anthropic-ai/claude-code`.
 - **OpenAI/ChatGPT Codex**: Run with `codex`. Install it with `npm install -g @openai/codex`.
-- **OpenCode**: The open source terminal-based coding assistant. Installed by default,
-if not:
+- **OpenCode**: The *recommended* open source terminal-based coding assistant.
+  Installed by default, if not:
 
 ```bash
 sudo curios-update --update-module curios.desktop.devops.tui.opencode.enable true && \
@@ -117,6 +117,7 @@ sudo curios-update --update
 ```
 
 Run it with `opencode`.
+![OpenCode TUI](https://github.com/CuriosLabs/CuriOS/blob/testing/img/OpenCode.png?raw=true "OpenCode")
 (Note for the flake version, install it with: `nix profile add nixpkgs#opencode`).
 You can connect it to your LM Studio server by editing its configuration file.
 For example, open it with a basic text editor:
@@ -173,7 +174,7 @@ Then, add your provider and model details, for example:
 Learn more on the [opencode documentation](https://opencode.ai/docs/).
 
 ---
-**Next**: [Audio/Video applications](audio-video.md).
+**Next**: [Security and hardware keys](security.md).
 
 **Previous**: [Backup your Computer](backups.md)
 

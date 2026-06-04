@@ -32,7 +32,7 @@ the project, such as `just`, `statix`, `shellcheck`, and `nix-build`.
 
 ## Command Runner (Just)
 
-We use `just` to automate common development tasks. Once you are inside the
+We use [just](https://github.com/casey/just) to automate common development tasks. Once you are inside the
 `nix-shell`, you can use the following commands:
 
 - `just`: List all available recipes.

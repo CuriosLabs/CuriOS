@@ -103,8 +103,6 @@ in {
     true
   else if config.curios.desktop.ai.cursor.enable then
     true
-  else if config.curios.desktop.ai.windsurf.enable then
-    true
   else if config.curios.desktop.office.enable then
     true
   else if config.curios.desktop.chat.teamspeak.enable then
@@ -145,7 +143,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "26.05.1";
+    nixos.variant_id = "26.05.3";
   };
 
   nix = {

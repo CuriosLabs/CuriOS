@@ -34,9 +34,6 @@
         },
         "mistral": {
           "enable": true
-        },
-        "windsurf": {
-          "enable": false
         }
       },
       "appImage": {
@@ -98,6 +95,9 @@
           },
           "java": {
             "enable": false
+          },
+          "opencode": {
+            "enable": true
           },
           "python": {
             "enable": false
@@ -227,7 +227,7 @@
       },
       "utility": {
         "bitwarden": {
-          "enable": true
+          "enable": false
         },
         "flameshot": {
           "enable": false
@@ -379,10 +379,26 @@
       "ollama": {
         "enable": false
       },
+      "n8n": {
+        "enable": false
+      },
       "printing": {
         "enable": false
       },
       "sshd": {
+        "enable": false
+      }
+    },
+    "security": {
+      "enable": true,
+      "u2f": {
+        "enable": false,
+        "appid": "curios",
+        "lockOnRemove": false,
+        "origin": "curios"
+      },
+      "keyringProvider": "gnome-keyring",
+      "luksFido2": {
         "enable": false
       }
     },
@@ -445,6 +461,13 @@
         "enable": false
       },
       "enable": false,
+      "k3s": {
+        "disable": [
+          "traefik"
+        ],
+        "enable": false,
+        "extraFlags": []
+      },
       "podman": {
         "enable": false
       },
