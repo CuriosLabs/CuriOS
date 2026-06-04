@@ -371,6 +371,19 @@
         "enable": false
       }
     },
+    "security": {
+      "enable": true,
+      "u2f": {
+        "enable": false,
+        "appid": "curios",
+        "lockOnRemove": false,
+        "origin": "curios"
+      },
+      "keyringProvider": "gnome-keyring",
+      "luksFido2": {
+        "enable": false
+      }
+    },
     "services": {
       "earlyoom": {
         "enable": true
@@ -386,19 +399,6 @@
         "enable": false
       },
       "sshd": {
-        "enable": false
-      }
-    },
-    "security": {
-      "enable": true,
-      "u2f": {
-        "enable": false,
-        "appid": "curios",
-        "lockOnRemove": false,
-        "origin": "curios"
-      },
-      "keyringProvider": "gnome-keyring",
-      "luksFido2": {
         "enable": false
       }
     },
