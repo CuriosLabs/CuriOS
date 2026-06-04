@@ -6,20 +6,24 @@
     curios.bootefi.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
+      description =
+        "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
     };
     curios.bootefi.kernel.latest = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+      description =
+        "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
     };
   };
 
   config = lib.mkIf config.curios.bootefi.enable {
     # Use the systemd-boot EFI boot loader.
     boot = {
-      kernelPackages =
-        if config.curios.bootefi.kernel.latest then pkgs.linuxPackages_latest else pkgs.linuxPackages;
+      kernelPackages = if config.curios.bootefi.kernel.latest then
+        pkgs.linuxPackages_latest
+      else
+        pkgs.linuxPackages;
       initrd.systemd.enable = true;
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
@@ -48,12 +52,7 @@
         theme = "pixels";
         themePackages = [
           (pkgs.adi1090x-plymouth-themes.override {
-            selected_themes = [
-              "colorful_loop"
-              "lone"
-              "pixels"
-              "rings"
-            ];
+            selected_themes = [ "colorful_loop" "lone" "pixels" "rings" ];
           })
         ];
         #logo = "${pkgs.nixos-icons}/share/icons/hicolor/48x48/apps/nix-snowflake-white.png";
@@ -72,6 +71,9 @@
         btrfs = lib.mkForce false;
         zfs = lib.mkForce false;
       };
+
+      # Remove ZFS warning during ISO build.
+      zfs.forceImportRoot = lib.mkDefault false;
     };
   };
 }
