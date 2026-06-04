@@ -21,6 +21,7 @@
     ./platforms/amd64.nix
     ./platforms/rpi4.nix
     ./services.nix
+    ./security.nix
     ./system.nix
     ./virtualisation.nix
     ./zsh.nix

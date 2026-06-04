@@ -23,8 +23,7 @@ in {
     ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
-  ] ++ lib.optional (builtins.pathExists ./user-me.nix) ./user-me.nix;
-  # Marked as DEPRECATED - user-me.nix content should now be copied in /etc/nixos/settings.nix
+  ];
 
   # Importing curios modules settings from JSON files
   curios = curiosModules.curios or { };
@@ -104,8 +103,6 @@ in {
     true
   else if config.curios.desktop.ai.cursor.enable then
     true
-  else if config.curios.desktop.ai.windsurf.enable then
-    true
   else if config.curios.desktop.office.enable then
     true
   else if config.curios.desktop.chat.teamspeak.enable then
@@ -138,7 +135,6 @@ in {
     # Automatic OS updates and cleanup
     autoUpgrade = {
       # The URI of the NixOS channel to use for automatic upgrades.
-      # Unstable channel - MAY be risky
       channel = "https://channels.nixos.org/nixos-unstable";
     };
     # Copy the NixOS configuration file and link it from the resulting system

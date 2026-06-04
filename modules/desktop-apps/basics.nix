@@ -13,7 +13,7 @@ in {
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED CuriOS desktop applications: Brave, Bitwarden, VLC, Yubikey...";
+          "REQUIRED - CuriOS desktop applications: Brave, Bitwarden, VLC, Yubikey...";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;
@@ -128,9 +128,9 @@ in {
           description = "Mistral LeChat web app.";
         };
         windsurf.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Windsurf AI-assisted IDE - desktop app.";
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
       };
       chat = {
@@ -170,7 +170,7 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -215,6 +215,7 @@ in {
         pkgs.tldr
         pkgs.vlc
         pkgs.yubioath-flutter
+        pkgs.yubikey-manager
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
         pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
@@ -237,8 +238,6 @@ in {
         ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
         [ lmstudioApp ] ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
-        ++ lib.optionals config.curios.desktop.ai.windsurf.enable
-        [ pkgs.windsurf ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
         [ pkgs.brave ]
         ++ lib.optionals config.curios.desktop.browser.chromium.enable

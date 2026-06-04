@@ -23,6 +23,30 @@
         description =
           "Podman containers tool + podman-compose, podman-tui, podman-desktop.";
       };
+      k3s = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description =
+            "k3s lightweight Kubernetes + kubectl, helm, k9s, kustomize, cri-tools (crictl).";
+        };
+        disable = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ "traefik" ];
+          example = [ "traefik" "servicelb" "metrics-server" ];
+          description = ''
+            k3s built-in components to disable.
+            Common values: "traefik", "servicelb", "metrics-server", "local-storage".
+            Disabling traefik is recommended if installing ingress-nginx or another controller.
+          '';
+        };
+        extraFlags = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [];
+          example = [ "--disable-network-policy" "--flannel-backend=host-gw" ];
+          description = "Extra flags passed to k3s (e.g. for networking or feature tweaks).";
+        };
+      };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -62,6 +86,21 @@
         };
       };
     };
+
+    # k3s - lightweight Kubernetes for local development
+    # Kubeconfig is written to /etc/rancher/k3s/k3s.yaml
+    # Typical developer usage after enabling:
+    #   mkdir -p ~/.kube
+    #   sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    #   sudo chown $USER ~/.kube/config
+    # Or use: KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl ...
+    services.k3s = lib.mkIf config.curios.virtualisation.k3s.enable {
+      enable = true;
+      role = "server";
+      disable = config.curios.virtualisation.k3s.disable;
+      extraFlags = lib.concatStringsSep " " config.curios.virtualisation.k3s.extraFlags;
+    };
+
     # VMs created by virt-manager can break after a libvirt update and a nix-collect-garbage, See: https://github.com/NixOS/nixpkgs/pull/421549 https://github.com/NixOS/nixpkgs/issues/378894
     # Temp fix: in virt-manager, edit the VM's XML configuration file, suppress lines with <loader></loader> and <nvram></nvram>. Apply, virt-manager will re-create correct one.
 
@@ -114,6 +153,14 @@
         podman-desktop
         podman-tui
         # TODO: test toolbox
+      ] ++ lib.optionals config.curios.virtualisation.k3s.enable [
+        # k3s + essential developer tooling
+        k3s
+        kubectl
+        kubernetes-helm
+        k9s
+        kustomize
+        cri-tools
       ] ++ lib.optionals config.curios.virtualisation.wine.enable [
         wineWow64Packages.waylandFull
         winetricks
