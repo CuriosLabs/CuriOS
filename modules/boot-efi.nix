@@ -75,5 +75,10 @@
       # Remove ZFS warning during ISO build.
       zfs.forceImportRoot = lib.mkForce false;
     };
+
+    environment.systemPackages = [
+      # Provide tools with more details on EFI db and KEK - See `efi-readvar -v KEK`
+      pkgs.efitools
+    ];
   };
 }
