@@ -9,7 +9,10 @@
         "latest": true
       },
       "limine": {
-        "enable": true
+        "enable": true,
+        "secureBoot": {
+          "enable": false
+        }
       }
     },
     "cosmic": {

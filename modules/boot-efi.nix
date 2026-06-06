@@ -23,6 +23,18 @@
           description =
             "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
         };
+        secureBoot = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable Secure Boot with Limine. See curios-manager -> security menu";
+          };
+        };
+        wallpaper = lib.mkOption {
+          type = lib.types.path;
+          default = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
+          description = "Wallpaper for the Limine boot menu.";
+        };
       };
     };
   };
@@ -49,10 +61,21 @@
       #  [ "modprobe.blacklist=algif_aead" ];
       #
       loader = {
-        efi.canTouchEfiVariables = true;
+        efi.canTouchEfiVariables = lib.mkDefault true;
         limine = {
           enable = lib.mkDefault config.curios.bootefi.limine.enable;
           maxGenerations = 5;
+          style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
+          # Secure Boot options
+          secureBoot = {
+            enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+            inherit (pkgs) sbctl;
+            autoEnrollKeys = {
+              enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+              extraArgs = [ "--microsoft" "--firmware-builtin" ];
+            };
+            autoGenerateKeys = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+          };
         };
         systemd-boot = {
           enable = !config.curios.bootefi.limine.enable;
