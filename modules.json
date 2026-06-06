@@ -7,6 +7,9 @@
       "enable": true,
       "kernel": {
         "latest": true
+      },
+      "limine": {
+        "enable": true
       }
     },
     "cosmic": {

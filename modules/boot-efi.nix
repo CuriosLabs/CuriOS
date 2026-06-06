@@ -3,17 +3,27 @@
 { config, lib, pkgs, ... }: {
   # Declare options
   options = {
-    curios.bootefi.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description =
-        "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
-    };
-    curios.bootefi.kernel.latest = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description =
-        "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+    curios.bootefi = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable EFI boot loader - REQUIRED on AMD64 platform.";
+      };
+      kernel.latest = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+      };
+      limine = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description =
+            "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
+        };
+      };
     };
   };
 
@@ -39,10 +49,16 @@
       #  [ "modprobe.blacklist=algif_aead" ];
       #
       loader = {
-        systemd-boot.enable = true;
         efi.canTouchEfiVariables = true;
-        # Limit the number of generations to keep
-        systemd-boot.configurationLimit = 5;
+        limine = {
+          enable = lib.mkDefault config.curios.bootefi.limine.enable;
+          maxGenerations = 5;
+        };
+        systemd-boot = {
+          enable = !config.curios.bootefi.limine.enable;
+          # Limit the number of generations to keep
+          configurationLimit = 5;
+        };
       };
       tmp.cleanOnBoot = true;
 
@@ -79,6 +95,8 @@
     environment.systemPackages = [
       # Provide tools with more details on EFI db and KEK - See `efi-readvar -v KEK`
       pkgs.efitools
+      # Provide secure boot key manager
+      pkgs.sbctl
     ];
   };
 }
