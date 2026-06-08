@@ -29,6 +29,11 @@
             default = false;
             description = "Enable Secure Boot with Limine. See curios-manager -> security menu";
           };
+          firmware = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
+          };
         };
         wallpaper = lib.mkOption {
           type = lib.types.path;
@@ -72,7 +77,7 @@
             inherit (pkgs) sbctl;
             autoEnrollKeys = {
               enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
-              extraArgs = [ "--microsoft" "--firmware-builtin" ];
+              extraArgs = [ "--microsoft" ] ++ lib.optionals config.curios.bootefi.limine.secureBoot.firmware [ "--firmware-builtin" ];
             };
             autoGenerateKeys = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
           };

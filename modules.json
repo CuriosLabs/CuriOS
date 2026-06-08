@@ -11,7 +11,8 @@
       "limine": {
         "enable": true,
         "secureBoot": {
-          "enable": false
+          "enable": false,
+          "firmware": true
         }
       }
     },
