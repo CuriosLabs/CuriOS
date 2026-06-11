@@ -127,11 +127,15 @@
     environment.systemPackages =
       [
         pkgs.opensc # Set of librairies for smart cards
+        #pkgs.yubico-piv-tool # For using a YubiKey as a PIV smart card.
         pkgs.yubikey-manager # ykman
       ] ++ lib.optionals
       (config.curios.security.keyringProvider == "keepassxc"
         && !config.curios.desktop.utility.keepassxc.enable)
       [ pkgs.keepassxc ];
+
+    # NOTE: opensc-pkcs11 library command to test a Yubikey with PKSC#11 (PIV method):
+    # nix-shell -p opensc --run "ssh-keygen -D $(nix-build '<nixpkgs>' -A opensc --no-out-link)/lib/opensc-pkcs11.so"
 
     # When using an alternative keyring provider, override the COSMIC portal
     # configuration so sandboxed apps (Flatpak) use the correct Secret backend.
