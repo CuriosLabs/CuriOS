@@ -131,6 +131,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("tldr")
         check_which("tmux")
         check_which("procs")
+        check_which("yubioath-flutter")
         check_webapp("dev.curioslabs.docs")
   '';
 }

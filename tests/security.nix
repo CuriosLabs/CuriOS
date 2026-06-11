@@ -27,12 +27,19 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     start_all()
     machine.wait_for_unit("multi-user.target")
 
+    # Helper function to check if a command exists in the PATH
+    def check_which(pkg_name: str):
+        machine.succeed(f"which {pkg_name}")
+
     with subtest("check-u2f-pam-config"):
         machine.succeed("grep -q 'pam_u2f.so' /etc/pam.d/login")
         machine.succeed("grep -q 'pam_u2f.so' /etc/pam.d/sudo")
 
     with subtest("check-keepassxc-installed"):
         machine.succeed("which keepassxc")
+
+    with subtest("check-security-pkgs"):
+        check_which("ykman")
 
     with subtest("check-gnome-keyring-disabled"):
         # NixOS builds gnome-keyring with -Dsystemd=disabled, so it has

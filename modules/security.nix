@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED - CuriOS security options.";
+        description = "REQUIRED - CuriOS security keys options.";
       };
 
       u2f = {
@@ -59,44 +59,55 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.security.enable {
-    security.pam.u2f = {
-      # U2F are sufficient replacements to passwords.
-      control = "sufficient";
-      enable = lib.mkDefault config.curios.security.u2f.enable;
-      settings = {
-        cue = true;
-        interactive = true;
-        nouserok = true; # Do not fail if the user has no U2F key configured
-        origin = config.curios.security.u2f.origin;
-        appid = config.curios.security.u2f.appid;
+    security.pam = {
+      u2f = {
+        # U2F are sufficient replacements to passwords.
+        control = "sufficient";
+        enable = lib.mkDefault config.curios.security.u2f.enable;
+        settings = {
+          cue = true;
+          interactive = true;
+          nouserok = true; # Do not fail if the user has no U2F key configured
+          origin = config.curios.security.u2f.origin;
+          appid = config.curios.security.u2f.appid;
+        };
+      };
+
+      services = {
+        cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+        greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+        login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+        sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
       };
     };
 
-    security.pam.services = {
-      cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+    services = {
+      # Enabling PCSC-lite for Yubikey
+      pcscd.enable = true;
+
+      # Lock screen when YubiKey is removed (physical security feature)
+      udev.extraRules = lib.mkIf config.curios.security.u2f.lockOnRemove ''
+        ACTION=="remove",\
+          SUBSYSTEM=="usb",\
+          ENV{ID_VENDOR_ID}=="1050",\
+          ENV{ID_VENDOR}=="Yubico",\
+          RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+      '';
+
+      # Replace gnome-keyring with an alternative Secret Service provider when
+      # passwordless U2F is active, since gnome-keyring cannot auto-unlock
+      # without the login password.
+      gnome.gnome-keyring = lib.mkIf
+        (config.curios.security.keyringProvider != "gnome-keyring") {
+          enable = lib.mkForce false;
+        };
     };
 
-    # Lock screen when YubiKey is removed (physical security feature)
-    services.udev.extraRules = lib.mkIf config.curios.security.u2f.lockOnRemove ''
-      ACTION=="remove",\
-        SUBSYSTEM=="usb",\
-        ENV{ID_VENDOR_ID}=="1050",\
-        ENV{ID_VENDOR}=="Yubico",\
-        RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
-    '';
-
-    # Replace gnome-keyring with an alternative Secret Service provider when
-    # passwordless U2F is active, since gnome-keyring cannot auto-unlock
-    # without the login password.
-    services.gnome.gnome-keyring = lib.mkIf
-      (config.curios.security.keyringProvider != "gnome-keyring") {
-        enable = lib.mkForce false;
-      };
-
-    environment.systemPackages = lib.optionals
+    environment.systemPackages =
+      [
+        pkgs.opensc # Set of librairies for smart cards
+        pkgs.yubikey-manager # ykman
+      ] ++ lib.optionals
       (config.curios.security.keyringProvider == "keepassxc"
         && !config.curios.desktop.utility.keepassxc.enable)
       [ pkgs.keepassxc ];

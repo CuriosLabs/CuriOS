@@ -215,7 +215,6 @@ in {
         pkgs.tldr
         pkgs.vlc
         pkgs.yubioath-flutter
-        pkgs.yubikey-manager
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
         pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
@@ -302,9 +301,6 @@ in {
     };
 
     services = {
-      # Enabling PCSC-lite for Yubikey
-      pcscd.enable = true;
-
       # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
       # Configure it it with `sudo tailscale up`
       # To add more options, see: https://search.nixos.org/options?show=services.tailscale
