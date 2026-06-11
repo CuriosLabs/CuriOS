@@ -59,26 +59,47 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.security.enable {
-    security.pam = {
-      u2f = {
-        # U2F are sufficient replacements to passwords.
-        control = "sufficient";
-        enable = lib.mkDefault config.curios.security.u2f.enable;
-        settings = {
-          cue = true;
-          interactive = true;
-          nouserok = true; # Do not fail if the user has no U2F key configured
-          origin = config.curios.security.u2f.origin;
-          appid = config.curios.security.u2f.appid;
+    programs = {
+      ssh = {
+        agentPKCS11Whitelist = "${pkgs.opensc}/lib/opensc-pkcs11.so";
+        # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
+        startAgent = lib.mkDefault false;
+      };
+    };
+
+    security = {
+      # /etc/login.defs additionnal settings
+      loginDefs.settings = {
+        LOGIN_RETRIES = 3;
+        LOGIN_TIMEOUT = 60;
+      };
+
+      pam = {
+        u2f = {
+          # U2F are sufficient replacements to passwords.
+          control = "sufficient";
+          enable = lib.mkDefault config.curios.security.u2f.enable;
+          settings = {
+            cue = true;
+            interactive = true;
+            nouserok = true; # Do not fail if the user has no U2F key configured
+            origin = config.curios.security.u2f.origin;
+            appid = config.curios.security.u2f.appid;
+          };
+        };
+
+        services = {
+          cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
         };
       };
 
-      services = {
-        cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-        greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-        login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-        sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      };
+      rtkit.enable = lib.mkDefault true; # realtime scheduling priority for pipewire.
+
+      # Show password feedback for sudo command.
+      sudo.extraConfig = "Defaults pwfeedback";
     };
 
     services = {
