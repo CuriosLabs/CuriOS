@@ -12,9 +12,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       time.timeZone = "UTC";
 
       curios.security = {
+        keyringProvider = "keepassxc";
         u2f = {
           enable = true;
-          keyringProvider = "keepassxc";
         };
       };
 
@@ -36,7 +36,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         machine.succeed("grep -q 'pam_u2f.so' /etc/pam.d/sudo")
 
     with subtest("check-keepassxc-installed"):
-        machine.succeed("which keepassxc")
+        check_which("keepassxc")
+        check_which("keepassxc-cli")
 
     with subtest("check-security-pkgs"):
         check_which("ykman")
