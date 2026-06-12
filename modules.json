@@ -230,6 +230,9 @@
         },
         "davinci-resolve-studio": {
           "enable": false
+        },
+        "mpv": {
+          "enable": false
         }
       },
       "utility": {
