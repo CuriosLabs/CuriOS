@@ -70,7 +70,7 @@
         limine = {
           enable = lib.mkDefault config.curios.bootefi.limine.enable;
           maxGenerations = 5;
-          style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
+          #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
           # Secure Boot options
           secureBoot = {
             enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
