@@ -4,6 +4,19 @@
 let
   oo7Pam = pkgs.callPackage ../pkgs/oo7-pam { };
 
+  # Fix the oo7-server D-Bus service file: nixpkgs 26.05 ships it with
+  # Exec=/bin/false instead of the actual daemon path.  This override
+  # patches the file so D-Bus activation works correctly even when PAM
+  # auto_start is not in play (e.g. after daemon crash or session restart).
+  oo7ServerFixed = pkgs.oo7-server.overrideAttrs (oldAttrs: {
+    postInstall = (oldAttrs.postInstall or "") + ''
+      if [ -e "$out/share/dbus-1/services/org.freedesktop.secrets.service" ]; then
+        substituteInPlace $out/share/dbus-1/services/org.freedesktop.secrets.service \
+          --replace-fail "Exec=/bin/false" "Exec=$out/libexec/oo7-daemon"
+      fi
+    '';
+  });
+
   # PAM rules for the oo7 keyring module.  These orders are chosen to sit
   # safely inside the standard NixOS PAM stacks without colliding with the
   # automatically-assigned orders from utils.pam.autoOrderRules.
@@ -189,8 +202,14 @@ in
         pkgs.gcr
         # Ensure oo7's D-Bus service file wins over gnome-keyring's so
         # org.freedesktop.secrets activation starts oo7-daemon.
-        (lib.hiPrio pkgs.oo7-server)
+        oo7ServerFixed
       ];
+
+    # Ensure oo7 is registered first with the D-Bus session bus so its
+    # org.freedesktop.secrets.service file is found before gnome-keyring's.
+    services.dbus.packages = lib.mkIf
+      (config.curios.security.keyringProvider == "oo7")
+      (lib.mkBefore [ oo7ServerFixed ]);
 
     # NOTE: opensc-pkcs11 library command to test a Yubikey with PKSC#11 (PIV method):
     # nix-shell -p opensc --run "ssh-keygen -D $(nix-build '<nixpkgs>' -A opensc --no-out-link)/lib/opensc-pkcs11.so"
