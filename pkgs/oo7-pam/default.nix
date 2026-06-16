@@ -1,10 +1,18 @@
-{ lib, oo7, rustPlatform }:
+{ lib, oo7, oo7-server, rustPlatform }:
 
 rustPlatform.buildRustPackage {
   pname = "oo7-pam";
   inherit (oo7) version src cargoHash;
 
   buildAndTestSubdir = "pam";
+
+  # The upstream PAM module hardcodes /usr/libexec/oo7-daemon as the daemon
+  # path when auto_start is used.  Patch it to the Nix store path so the
+  # daemon can actually be launched on NixOS.
+  postPatch = ''
+    substituteInPlace src/socket.rs \
+      --replace-fail '/usr/libexec/oo7-daemon' '${oo7-server}/libexec/oo7-daemon'
+  '';
 
   postInstall = ''
     mkdir -p $out/lib/security

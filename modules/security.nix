@@ -146,7 +146,7 @@ in
         services = {
           cosmic-greeter = {
             u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-          };
+          } // oo7PamRules;
           greetd = {
             u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
           } // oo7PamRules;
