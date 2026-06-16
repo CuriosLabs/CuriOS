@@ -7,6 +7,13 @@
       "enable": true,
       "kernel": {
         "latest": true
+      },
+      "limine": {
+        "enable": true,
+        "secureBoot": {
+          "enable": false,
+          "firmware": true
+        }
       }
     },
     "cosmic": {
@@ -34,9 +41,6 @@
         },
         "mistral": {
           "enable": true
-        },
-        "windsurf": {
-          "enable": false
         }
       },
       "appImage": {
@@ -98,6 +102,9 @@
           },
           "java": {
             "enable": false
+          },
+          "opencode": {
+            "enable": true
           },
           "python": {
             "enable": false
@@ -223,11 +230,14 @@
         },
         "davinci-resolve-studio": {
           "enable": false
+        },
+        "mpv": {
+          "enable": false
         }
       },
       "utility": {
         "bitwarden": {
-          "enable": true
+          "enable": false
         },
         "flameshot": {
           "enable": false
@@ -371,6 +381,19 @@
         "enable": false
       }
     },
+    "security": {
+      "enable": true,
+      "u2f": {
+        "enable": false,
+        "appid": "curios",
+        "lockOnRemove": false,
+        "origin": "curios"
+      },
+      "keyringProvider": "gnome-keyring",
+      "luksFido2": {
+        "enable": false
+      }
+    },
     "services": {
       "earlyoom": {
         "enable": true
@@ -386,19 +409,6 @@
         "enable": false
       },
       "sshd": {
-        "enable": false
-      }
-    },
-    "security": {
-      "enable": true,
-      "u2f": {
-        "enable": false,
-        "appid": "curios",
-        "lockOnRemove": false,
-        "origin": "curios"
-      },
-      "keyringProvider": "gnome-keyring",
-      "luksFido2": {
         "enable": false
       }
     },

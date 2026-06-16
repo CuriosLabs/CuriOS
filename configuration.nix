@@ -103,8 +103,6 @@ in {
     true
   else if config.curios.desktop.ai.cursor.enable then
     true
-  else if config.curios.desktop.ai.windsurf.enable then
-    true
   else if config.curios.desktop.office.enable then
     true
   else if config.curios.desktop.chat.teamspeak.enable then
@@ -122,17 +120,6 @@ in {
   else
     false;
 
-  security = {
-    # Security settings
-    # /etc/login.defs additionnal settings
-    loginDefs.settings = {
-      LOGIN_RETRIES = 3;
-      LOGIN_TIMEOUT = 60;
-    };
-    # Show password feedback for sudo command.
-    sudo.extraConfig = "Defaults pwfeedback";
-  };
-
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
@@ -145,7 +132,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260531.1705";
+    nixos.variant_id = "unstable-20260609.0754";
   };
 
   nix = {

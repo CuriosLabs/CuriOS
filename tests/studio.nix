@@ -19,6 +19,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         enable = true;
         davinci-resolve.enable = true;
         davinci-resolve-studio.enable = true;
+        mpv.enable = true;
       };
     };
   };
@@ -37,5 +38,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("davinci-resolve")
         check_which("davinci-resolve-studio")
         check_which("darktable")
+        check_which("mpv")
   '';
 }

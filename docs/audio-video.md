@@ -9,11 +9,11 @@ The following applications are installed by default on Curi*OS* to handle your
 daily multimedia needs:
 
 - **VLC Media Player**: A versatile media player that supports almost every audio
-and video format.
+  and video format.
 - **Gimp 3**: The latest version of the GNU Image Manipulation Program for advanced
-image editing and graphic design.
-- **EasyEffects**: An advanced audio manipulation tool to apply effects to your input
-(microphone) and output (speakers/headphones) audio devices.
+  image editing and graphic design.
+- **EasyEffects**: An advanced audio manipulation tool to apply effects to your
+  input (microphone) and output (speakers/headphones) audio devices.
 
 ![EasyEffects application](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop6.png?raw=true "EasyEffects application.")
 
@@ -36,7 +36,7 @@ This will install:
 - **OBS Studio**: Software for video recording and live streaming.
 - **Audacity**: Easy-to-use, multi-track audio editor and recorder.
 - **DaVinci Resolve**: Professional video editing, color correction, visual effects,
-and audio post-production.
+  and audio post-production.
 - **Darktable**: An open-source photography workflow application and raw developer.
 
 ## Audio Enhancement with EasyEffects
@@ -72,6 +72,6 @@ If you are satisfied with your EasyEffects setup, do not forget to set up the
 auto start option on user connexion in the application preferences menu.
 
 ---
-**Previous**: [Working with AI tools](ai-tools.md)
+**Previous**: [Security](security.md)
 
 **Back**: [index](index.md).

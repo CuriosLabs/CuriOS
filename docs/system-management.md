@@ -61,7 +61,7 @@ see the previous section on how to install them.
 
 - **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
 
-- **AI Tools**: Ollama local AI, Windsurf AI-assisted IDE.
+- **AI Tools**: Ollama local AI.
 
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
 npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual

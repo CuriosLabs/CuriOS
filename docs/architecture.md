@@ -41,5 +41,7 @@ organized configuration management.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix Formatting**: `nixfmt` is used for consistent Nix code formatting.
 
+Please refer to our technical [development guide](development.md) for more details.
+
 ---
 **Back**: [index](index.md).
