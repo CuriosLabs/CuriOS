@@ -81,8 +81,8 @@ in
       };
 
       keyringProvider = lib.mkOption {
-        type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
-        default = "gnome-keyring";
+        type = lib.types.enum [ "gnome-keyring" "keepassxc" "oo7" ];
+        default = "oo7";
         description = "EXPERIMENTAL - Select the Secret Service (freedesktop.org) provider used while U2F is active.";
       };
 
@@ -131,9 +131,9 @@ in
         };
 
         services = {
-          cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-          greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-          login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable // oo7PamRules;
+          greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable // oo7PamRules;
+          login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable // oo7PamRules;
           sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
         };
       };
