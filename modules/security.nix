@@ -26,18 +26,18 @@ let
         control = "optional";
         modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
       };
-      # Session: placed after systemd (10200) so the user session is ready.
+      # Password: placed after unix (10200) so the new password is available.
+      password.oo7 = {
+        order = 11100;
+        control = "optional";
+        modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
+      };
+      # Session: placed after systemd (12000) so the user session is ready.
       session.oo7 = {
-        order = 10250;
+        order = 12100;
         control = "optional";
         modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
         settings = { auto_start = true; };
-      };
-      # Password: placed after unix (10200) so the new password is available.
-      password.oo7 = {
-        order = 10250;
-        control = "optional";
-        modulePath = "${oo7Pam}/lib/security/pam_oo7.so";
       };
     };
   };
@@ -133,7 +133,7 @@ in
         services = {
           cosmic-greeter = {
             u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-          } // oo7PamRules;
+          };
           greetd = {
             u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
           } // oo7PamRules;
