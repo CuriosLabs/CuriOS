@@ -10,8 +10,8 @@ rustPlatform.buildRustPackage {
   # path when auto_start is used.  Patch it to the Nix store path so the
   # daemon can actually be launched on NixOS.
   postPatch = ''
-    substituteInPlace src/socket.rs \
-      --replace-fail '/usr/libexec/oo7-daemon' '${oo7-server}/libexec/oo7-daemon'
+    substituteInPlace pam/src/socket.rs \
+      --replace-fail '/usr/bin/oo7-daemon' '${oo7-server}/libexec/oo7-daemon'
   '';
 
   postInstall = ''
