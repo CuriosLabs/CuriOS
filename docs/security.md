@@ -9,6 +9,7 @@ This module currently focuses on two independent but complementary features:
 - **Pre-boot disk decryption** using FIDO2 for LUKS volumes
 
 Both features can be enabled and managed directly from the **Curi*OS* Manager**.
+![CuriOS manager security menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_security1.png?raw=true "curios-manager security")
 
 ## Two Different Security Use Cases
 
@@ -168,4 +169,3 @@ From this menu you can:
 **Previous**: [AI tools](ai-tools.md)
 
 **Back**: [index](index.md).
-
