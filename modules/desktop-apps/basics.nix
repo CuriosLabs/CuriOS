@@ -249,17 +249,23 @@ in {
         [ pkgs.librewolf ]
         ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
         [ pkgs.vivaldi ]
-        ++ lib.optionals config.curios.desktop.chat.discord.enable
+        ++ lib.optionals
+        (config.curios.desktop.chat.discord.enable
+          && !config.curios.platform.rpi4.enable)
         [ pkgs.discord ]
         ++ lib.optionals config.curios.desktop.chat.signal.enable
         [ pkgs.signal-desktop ]
-        ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
+        ++ lib.optionals
+        (config.curios.desktop.chat.teamspeak.enable
+          && !config.curios.platform.rpi4.enable)
         [ pkgs.teamspeak6-client ]
         ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
         [ (import ./webapp-whatsapp.nix) ]
         ++ lib.optionals config.curios.desktop.music.strawberry.enable
         [ pkgs.strawberry ]
-        ++ lib.optionals config.curios.desktop.music.spotify.enable
+        ++ lib.optionals
+        (config.curios.desktop.music.spotify.enable
+          && !config.curios.platform.rpi4.enable)
         [ pkgs.spotify ]
         ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
         [ pkgs.bitwarden-desktop ]

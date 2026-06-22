@@ -162,7 +162,9 @@ in {
       [ (import ./webapp-slack.nix) ]
       ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
       [ (import ./webapp-teams.nix) ]
-      ++ lib.optionals config.curios.desktop.office.conferencing.zoom.enable
+      ++ lib.optionals
+      (config.curios.desktop.office.conferencing.zoom.enable
+        && !config.curios.platform.rpi4.enable)
       [ pkgs.zoom-us ];
   };
 }

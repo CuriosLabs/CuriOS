@@ -34,9 +34,13 @@
     # OBS
     programs.obs-studio = { enable = true; };
     environment.systemPackages = [ pkgs.audacity pkgs.darktable ]
-      ++ lib.optionals config.curios.desktop.studio.davinci-resolve.enable
-      [ pkgs.davinci-resolve ] ++ lib.optionals
-      config.curios.desktop.studio.davinci-resolve-studio.enable
+      ++ lib.optionals
+      (config.curios.desktop.studio.davinci-resolve.enable
+        && !config.curios.platform.rpi4.enable)
+      [ pkgs.davinci-resolve ]
+      ++ lib.optionals
+      (config.curios.desktop.studio.davinci-resolve-studio.enable
+        && !config.curios.platform.rpi4.enable)
       [ pkgs.davinci-resolve-studio ]
       ++ lib.optionals config.curios.desktop.studio.mpv.enable
       [ pkgs.mpv ];
