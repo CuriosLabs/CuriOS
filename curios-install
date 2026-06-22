@@ -867,7 +867,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Create basic configuration...${NC}"
   if [ $RPI4_INSTALL -eq 1 ]; then
-    nixos-generate-config
+    nixos-generate-config --no-filesystems
   else
     nixos-generate-config --root /mnt --no-filesystems
   fi
@@ -976,9 +976,15 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   nix-channel --add "$NIX_CHANNEL_URL" nixos
   nix-channel --update
   if [ $RPI4_INSTALL -eq 0 ]; then
-    nixos-install --cores 0 --no-root-passwd
+    if ! nixos-install --cores 0 --no-root-passwd; then
+      echo -e "${RED}nixos-install failed!${NC}"
+      exit 1
+    fi
   else
-    nixos-rebuild boot
+    if ! nixos-rebuild boot; then
+      echo -e "${RED}nixos-rebuild failed!${NC}"
+      exit 1
+    fi
   fi
 
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
