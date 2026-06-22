@@ -863,10 +863,12 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     lsblk -A -lo NAME,SIZE,TYPE,MOUNTPOINTS,PARTLABEL,UUID
   fi
 
-  if [ $RPI4_INSTALL -eq 0 ]; then
-    echo -e "${GREEN}================================${NC}"
-    echo -e "${GREEN}================================${NC}"
-    echo -e "${BLUE}Create basic configuration...${NC}"
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${BLUE}Create basic configuration...${NC}"
+  if [ $RPI4_INSTALL -eq 1 ]; then
+    nixos-generate-config
+  else
     nixos-generate-config --root /mnt --no-filesystems
   fi
 
@@ -935,7 +937,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     --argjson efi "$OPTION_BOOTEFI" \
     --argjson luks "$OPTION_FS_LUKS" \
     --argjson mini "$OPTION_FS_MINI" \
-    '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
+    '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.bootefi.enable = $efi | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # GPU settings:
   OPTION_GPU_AMD=false

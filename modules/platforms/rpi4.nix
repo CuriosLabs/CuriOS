@@ -1,13 +1,17 @@
 # For Raspberry PI 4 platform
 # All other platforms and file-system configurations should be disabled.
-# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-25.11/nixos.sd_image.aarch64-linux
-# Burn the zst image with caligula: caligula burn -z zst nixos-image-sd-card-25.11.5198.e576e3c9cf9b-aarch64-linux.img.zst
-# boot from the SD card, then as root:
-# nix-shell ./shell-rpi.nix
+# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-26.05/nixos.sd_image.aarch64-linux
+# Burn the zst image with caligula with:
+# caligula burn -z zst nixos-image-sd-card-26.05.2462.e8210c649915-aarch64-linux.img.zst
+# Boot from the SD card.
+# If needed, change keyboard layout with:
+# sudo loadkeys us
+# Then:
 # cd /tmp
+# nix-shell -p git
 # git clone https://github.com/CuriosLabs/CuriOS.git
 # cd CuriOS/
-# ./curios-install --rpi4
+# nix-shell shell-rpi.nix --run "sudo ./curios-install --rpi4"
 
 { config, pkgs, lib, ... }:
 
