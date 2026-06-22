@@ -13,9 +13,19 @@
 # cd CuriOS/
 # nix-shell shell-rpi.nix --run "sudo ./curios-install --rpi4"
 
+let
+  nixos-hardware = builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
+    sha256 = "1nvvwirgly7b5gjj5kdcipm45g36dr1khvag23na7vcjrvhf3cr6";
+  };
+in
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    "${nixos-hardware}/raspberry-pi/4"
+  ];
+
   # Declare options
   options = {
     curios.platform.rpi4.enable = lib.mkOption {
@@ -27,14 +37,14 @@
 
   config = lib.mkIf config.curios.platform.rpi4.enable {
     boot = {
-      kernelPackages = lib.mkDefault pkgs.linuxKernel.packages.linux_rpi4;
       kernelParams = [
         "snd_bcm2835.enable_hdmi=1"
         "snd_bcm2835.enable_headphones=1"
         "usbhid.mousepoll=8"
       ];
-      initrd.availableKernelModules =
-        [ "xhci_pci" "usbhid" "usb_storage" "vc4" ];
+      initrd.availableKernelModules = lib.mkDefault (
+        config.boot.initrd.availableKernelModules ++ [ "xhci_pci" "usbhid" "usb_storage" "vc4" ]
+      );
       loader = {
         grub.enable = lib.mkDefault false;
         generic-extlinux-compatible.enable = lib.mkDefault true;
@@ -60,8 +70,8 @@
     nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
     hardware = {
+      # nixos-hardware already sets deviceTree.filter
       deviceTree.enable = lib.mkDefault true;
-      deviceTree.filter = lib.mkDefault "bcm2711-rpi-*.dtb"; # "*rpi-4-*.dtb";
       # For Wifi module firmware
       enableRedistributableFirmware = true;
       #raspberry-pi."4".fkms-3d.enable = true;
