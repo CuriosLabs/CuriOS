@@ -170,7 +170,8 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
+          default =
+            false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -233,9 +234,10 @@ in {
         ] ++ lib.optionals config.curios.desktop.ai.gemini.enable
         [ (import ./webapp-gemini.nix) ]
         ++ lib.optionals config.curios.desktop.ai.grok.enable
-        [ (import ./webapp-grok.nix) ]
-        ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
-        [ lmstudioApp ] ++ lib.optionals config.curios.desktop.ai.mistral.enable
+        [ (import ./webapp-grok.nix) ] ++ lib.optionals
+        (config.curios.desktop.ai.lmstudio.enable
+          && !config.curios.platform.rpi4.enable) [ lmstudioApp ]
+        ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
         [ pkgs.brave ]
