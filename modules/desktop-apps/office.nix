@@ -139,7 +139,8 @@ in {
       [ pkgs.calibre ]
       ++ lib.optionals config.curios.desktop.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
-      config.curios.desktop.office.onlyoffice.desktopeditors.enable
+      (config.curios.desktop.office.onlyoffice.desktopeditors.enable
+        && !config.curios.platform.rpi4.enable)
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.office.thunderbird.enable
       [ pkgs.thunderbird ]
