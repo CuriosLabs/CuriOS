@@ -9,9 +9,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   nodes.machine = { config, pkgs, ... }: {
     imports = [
       ../modules/system.nix
-      ../modules/hardware/amd-gpu.nix
-      ../modules/hardware/intel-gpu.nix
-      ../modules/hardware/nvidia-gpu.nix
+      ../modules/hardware/default.nix
       ../modules/services.nix
       ../modules/cosmic.nix
     ];

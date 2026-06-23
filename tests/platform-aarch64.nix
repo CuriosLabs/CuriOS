@@ -21,10 +21,7 @@ let
         ../modules/cosmic.nix
         ../modules/curios-pkgs.nix
         ../modules/fonts.nix
-        ../modules/hardware/amd-gpu.nix
-        ../modules/hardware/intel-gpu.nix
-        ../modules/hardware/laptop.nix
-        ../modules/hardware/nvidia-gpu.nix
+        ../modules/hardware/default.nix
         ../modules/networking.nix
         ../modules/others.nix
         ../modules/security.nix
