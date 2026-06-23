@@ -163,6 +163,6 @@ in {
       ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
       [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
-        && config.curios.platform.am64.enable) [ pkgs.zoom-us ];
+        && config.curios.platform.amd64.enable) [ pkgs.zoom-us ];
   };
 }
