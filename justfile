@@ -10,7 +10,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint
+build: lint update-nixos-hardware
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -216,4 +216,31 @@ test-unit target:
 test-aarch64:
   statix check "./tests/platform-aarch64.nix"
   nix-build "./tests/platform-aarch64.nix" --show-trace
+
+# Update the pinned nixos-hardware commit in the Raspberry Pi modules.
+update-nixos-hardware:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Fetching latest nixos-hardware commit..."
+  LATEST_COMMIT=$(curl -s https://api.github.com/repos/NixOS/nixos-hardware/commits/master | grep -oP '"sha": "\K[0-9a-f]{40}' | head -1)
+  if [ -z "$LATEST_COMMIT" ]; then
+    echo "Failed to fetch latest commit."
+    exit 1
+  fi
+  CURRENT_COMMIT=$(grep -oP 'archive/\K[0-9a-f]+' ./modules/platforms/rpi4.nix | head -1)
+  if [ "$CURRENT_COMMIT" = "$LATEST_COMMIT" ]; then
+    echo "nixos-hardware is already up to date ($CURRENT_COMMIT)."
+    exit 0
+  fi
+  echo "Latest commit: $LATEST_COMMIT"
+  echo "Fetching SHA256..."
+  SHA256=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixos-hardware/archive/${LATEST_COMMIT}.tar.gz")
+  echo "SHA256: $SHA256"
+  for file in ./modules/platforms/rpi4.nix ./modules/platforms/rpi5.nix; do
+    sed -i "s|archive/[0-9a-f]*.tar.gz|archive/${LATEST_COMMIT}.tar.gz|g" "$file"
+    sed -i "s|sha256 = \".*\";|sha256 = \"${SHA256}\";|g" "$file"
+  done
+  echo "Updated nixos-hardware to commit ${LATEST_COMMIT} in:"
+  echo "  - ./modules/platforms/rpi4.nix"
+  echo "  - ./modules/platforms/rpi5.nix"
 
