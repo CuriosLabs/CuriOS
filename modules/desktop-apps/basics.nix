@@ -236,7 +236,7 @@ in {
         ++ lib.optionals config.curios.desktop.ai.grok.enable
         [ (import ./webapp-grok.nix) ] ++ lib.optionals
         (config.curios.desktop.ai.lmstudio.enable
-          && !config.curios.platform.rpi4.enable) [ lmstudioApp ]
+          && config.curios.platform.amd64.enable) [ lmstudioApp ]
         ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
@@ -248,25 +248,19 @@ in {
         ++ lib.optionals config.curios.desktop.browser.librewolf.enable
         [ pkgs.librewolf ]
         ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
-        [ pkgs.vivaldi ]
-        ++ lib.optionals
+        [ pkgs.vivaldi ] ++ lib.optionals
         (config.curios.desktop.chat.discord.enable
-          && !config.curios.platform.rpi4.enable)
-        [ pkgs.discord ]
+          && config.curios.platform.amd64.enable) [ pkgs.discord ]
         ++ lib.optionals config.curios.desktop.chat.signal.enable
-        [ pkgs.signal-desktop ]
-        ++ lib.optionals
+        [ pkgs.signal-desktop ] ++ lib.optionals
         (config.curios.desktop.chat.teamspeak.enable
-          && !config.curios.platform.rpi4.enable)
-        [ pkgs.teamspeak6-client ]
+          && config.curios.platform.amd64.enable) [ pkgs.teamspeak6-client ]
         ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
         [ (import ./webapp-whatsapp.nix) ]
         ++ lib.optionals config.curios.desktop.music.strawberry.enable
-        [ pkgs.strawberry ]
-        ++ lib.optionals
+        [ pkgs.strawberry ] ++ lib.optionals
         (config.curios.desktop.music.spotify.enable
-          && !config.curios.platform.rpi4.enable)
-        [ pkgs.spotify ]
+          && config.curios.platform.amd64.enable) [ pkgs.spotify ]
         ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
         [ pkgs.bitwarden-desktop ]
         ++ lib.optionals config.curios.desktop.utility.keepassxc.enable

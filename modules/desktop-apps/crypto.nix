@@ -30,10 +30,8 @@ in {
     ] ++ lib.optionals config.curios.desktop.crypto.btc.enable [
       pkgs.bisq2
       pkgs.sparrow
-    ] ++ lib.optionals
-      (config.curios.desktop.crypto.btc.enable
-        && !config.curios.platform.rpi4.enable)
-      [ electrumApp ];
+    ] ++ lib.optionals (config.curios.desktop.crypto.btc.enable
+      && config.curios.platform.amd64.enable) [ electrumApp ];
     # Add sparrow udev rules for hardware wallets
     services.udev.packages =
       lib.mkIf config.curios.desktop.crypto.btc.enable [ pkgs.sparrow ];

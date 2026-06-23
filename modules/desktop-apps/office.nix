@@ -140,7 +140,7 @@ in {
       ++ lib.optionals config.curios.desktop.office.libreoffice.enable
       [ pkgs.libreoffice ] ++ lib.optionals
       (config.curios.desktop.office.onlyoffice.desktopeditors.enable
-        && !config.curios.platform.rpi4.enable)
+        && config.curios.platform.amd64.enable)
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.office.thunderbird.enable
       [ pkgs.thunderbird ]
@@ -161,10 +161,8 @@ in {
       ++ lib.optionals config.curios.desktop.office.conferencing.slack.enable
       [ (import ./webapp-slack.nix) ]
       ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
-      [ (import ./webapp-teams.nix) ]
-      ++ lib.optionals
+      [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
-        && !config.curios.platform.rpi4.enable)
-      [ pkgs.zoom-us ];
+        && config.curios.platform.am64.enable) [ pkgs.zoom-us ];
   };
 }
