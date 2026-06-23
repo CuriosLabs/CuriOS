@@ -988,6 +988,12 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     '.curios.hardware.amdGpu.enable = $gpuAmd | .curios.hardware.intelGpu.enable = $gpuIntel | .curios.hardware.nvidiaGpu.enable = $gpuNvidia | .curios.bootefi.kernel.latest = $kernelLatest' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
 
+  # Remove some default pkgs on Raspberry PI platforms
+  if [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
+    jq '.curios.desktop.ai.cursor.enable = false | .curios.desktop.ai.lmstudio.enable = false | .curios.desktop.devops.editor.opencode.enable = false | .curios.desktop.devops.editor.zed.enable = false | .curios.desktop.office.onlyoffice.desktopeditors.enable = false' \
+      "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
+  fi
+
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Launching NixOS installer...${NC}"
