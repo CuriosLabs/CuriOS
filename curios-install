@@ -988,6 +988,15 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     '.curios.hardware.amdGpu.enable = $gpuAmd | .curios.hardware.intelGpu.enable = $gpuIntel | .curios.hardware.nvidiaGpu.enable = $gpuNvidia | .curios.bootefi.kernel.latest = $kernelLatest' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
 
+  # Set platform-specific module import
+  if [ $AMD64_INSTALL -eq 1 ]; then
+    sed -i 's|imports = \[.*\]|imports = [ ./amd64.nix ]|' "$NIXOS_CONFIG_DIR"/modules/platforms/default.nix
+  elif [ $RPI4_INSTALL -eq 1 ]; then
+    sed -i 's|imports = \[.*\]|imports = [ ./rpi4.nix ]|' "$NIXOS_CONFIG_DIR"/modules/platforms/default.nix
+  elif [ $RPI5_INSTALL -eq 1 ]; then
+    sed -i 's|imports = \[.*\]|imports = [ ./rpi5.nix ]|' "$NIXOS_CONFIG_DIR"/modules/platforms/default.nix
+  fi
+
   # Remove some default pkgs on Raspberry PI platforms
   if [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
     jq '.curios.desktop.ai.cursor.enable = false | .curios.desktop.ai.lmstudio.enable = false | .curios.desktop.devops.editor.opencode.enable = false | .curios.desktop.devops.editor.zed.enable = false | .curios.desktop.office.onlyoffice.desktopeditors.enable = false' \

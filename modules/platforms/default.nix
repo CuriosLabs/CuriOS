@@ -1,6 +1,6 @@
 # Central platform option definitions to avoid circular imports in platform modules.
 { lib, ... }: {
-  imports = [ ./amd64.nix ./rpi4.nix ];
+  imports = [ ./amd64.nix ];
 
   options.curios.platform = {
     amd64.enable = lib.mkOption {
