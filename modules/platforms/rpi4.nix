@@ -18,20 +18,17 @@ let
     url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
     sha256 = "1nvvwirgly7b5gjj5kdcipm45g36dr1khvag23na7vcjrvhf3cr6";
   };
-in
-{ config, pkgs, lib, ... }:
+in { config, pkgs, lib, ... }:
 
 {
-  imports = [
-    "${nixos-hardware}/raspberry-pi/4"
-  ];
+  imports = [ "${nixos-hardware}/raspberry-pi/4" ];
 
   # Declare options
   options = {
     curios.platform.rpi4.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "REQUIRED config on Raspberry PI 4 platform.";
+      description = "REQUIRED config on Raspberry PI 4 platform ONLY.";
     };
   };
 
@@ -42,9 +39,9 @@ in
         "snd_bcm2835.enable_headphones=1"
         "usbhid.mousepoll=8"
       ];
-      initrd.availableKernelModules = lib.mkDefault (
-        config.boot.initrd.availableKernelModules ++ [ "xhci_pci" "usbhid" "usb_storage" "vc4" ]
-      );
+      initrd.availableKernelModules = lib.mkDefault
+        (config.boot.initrd.availableKernelModules
+          ++ [ "xhci_pci" "usbhid" "usb_storage" "vc4" ]);
       loader = {
         grub.enable = lib.mkDefault false;
         generic-extlinux-compatible.enable = lib.mkDefault true;
