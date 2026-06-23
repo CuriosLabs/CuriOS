@@ -33,8 +33,7 @@ let
         ../modules/system.nix
         ../modules/virtualisation.nix
         ../modules/zsh.nix
-        ../modules/platforms/amd64.nix
-        ../modules/platforms/rpi4.nix
+        ../modules/platforms/default.nix
       ];
 
       # Minimal required NixOS settings

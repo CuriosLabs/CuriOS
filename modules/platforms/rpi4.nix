@@ -15,13 +15,17 @@
 
 let
   nixos-hardware = builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixos-hardware/archive/875776f0252fcb8618bb948640a0d1f7a5b362be.tar.gz";
+    url =
+      "https://github.com/NixOS/nixos-hardware/archive/875776f0252fcb8618bb948640a0d1f7a5b362be.tar.gz";
     sha256 = "0z7mhrdr2pwh6a5srjib3s8x3ccn54bmafb4021ccvha2x06fjzw";
   };
 in { config, pkgs, lib, ... }:
 
 {
   imports = [ "${nixos-hardware}/raspberry-pi/4" ];
+
+  # Declare options
+  options = { };
 
   config = lib.mkIf config.curios.platform.rpi4.enable {
     boot = {
