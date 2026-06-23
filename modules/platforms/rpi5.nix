@@ -21,7 +21,9 @@ let
 in { config, pkgs, lib, ... }:
 
 {
-  imports = [ "${nixos-hardware}/raspberry-pi/5" ];
+  imports = lib.optionals config.curios.platform.rpi5.enable [
+    "${nixos-hardware}/raspberry-pi/5"
+  ];
 
   # Declare options
   options = {
