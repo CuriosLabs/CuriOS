@@ -49,6 +49,56 @@ build: lint update-nixos-hardware
   chmod 0444 "${isoFilePath}".sha256
   printf "\e[32m Build done...\e[0m\n"
 
+# Build a pre-installed RPi4 SD card image (aarch64 via binfmt emulation).
+# Requires aarch64 binfmt on the build host:
+#   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+#   (CuriOS: curios.virtualisation.enable = true in settings.nix)
+build-sd-rpi4: lint update-nixos-hardware
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  # Check aarch64 binfmt emulation is available
+  if [ ! -f /proc/sys/fs/binfmt_misc/aarch64-linux ]; then
+    printf "\e[31m aarch64 binfmt not registered on this host!\e[0m\n"
+    printf "Enable it with:\n"
+    printf "  boot.binfmt.emulatedSystems = [ \"aarch64-linux\" ];\n"
+    printf "(CuriOS: set curios.virtualisation.enable = true in settings.nix)\n"
+    exit 1
+  fi
+  releaseNumber=""
+  if [[ "{{branch}}" == testing || "{{branch}}" == unstable || "{{branch}}" == feature* ]]; then
+    releaseNumber=$(date --utc "+%Y%m%d.%H%M")
+    releaseNumber="unstable-${releaseNumber}"
+  else
+    if [[ "{{branch}}" != release* ]]; then
+      printf "\e[31m Wrong git branch - not a release!\e[0m\n"
+      exit 1
+    fi
+    releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"{{branch}}")
+  fi
+  imgFilename="CuriOS_${releaseNumber}_rpi4.img.zst"
+  imgFilePath="./iso/${imgFilename}"
+  printf "\e[32m Building %s file...\e[0m\n" "${imgFilePath}"
+  if [ -f "$imgFilePath" ]; then
+    printf "\e[33m Image file %s already exist.\e[0m\n" "${imgFilePath}"
+    exit 1
+  fi
+  # Swap platform import to rpi4 only (same as curios-install --rpi4).
+  # Restored automatically on exit, even on build failure.
+  PLATFORM_FILE=./modules/platforms/default.nix
+  cp "$PLATFORM_FILE" /tmp/platforms-default-backup.nix
+  trap 'cp /tmp/platforms-default-backup.nix "$PLATFORM_FILE"' EXIT
+  sed -i 's|imports = \[.*\]|imports = [ ./rpi4.nix ]|' "$PLATFORM_FILE"
+  printf "Launch nix-build (aarch64 via binfmt)...\n"
+  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto \
+    --argstr system aarch64-linux \
+    -A config.system.build.sdImage \
+    -I nixos-config=./iso/sd-rpi4.nix
+  # Save and rename the SD image
+  cp ./result/sd-image/*.img.zst "${imgFilePath}"
+  sha256sum "${imgFilePath}" >>"${imgFilePath}".sha256
+  chmod 0444 "${imgFilePath}".sha256
+  printf "\e[32m Build done...\e[0m\n"
+
 # Cleaning build and test artifacts.
 clean:
   rm -rf ./result
