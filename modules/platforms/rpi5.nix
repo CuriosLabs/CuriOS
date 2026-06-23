@@ -21,18 +21,7 @@ let
 in { config, pkgs, lib, ... }:
 
 {
-  imports = lib.optionals config.curios.platform.rpi5.enable [
-    "${nixos-hardware}/raspberry-pi/5"
-  ];
-
-  # Declare options
-  options = {
-    curios.platform.rpi5.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "REQUIRED config on Raspberry PI 5 platform ONLY.";
-    };
-  };
+  imports = [ "${nixos-hardware}/raspberry-pi/5" ];
 
   config = lib.mkIf config.curios.platform.rpi5.enable {
     boot = {

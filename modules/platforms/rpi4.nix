@@ -21,18 +21,7 @@ let
 in { config, pkgs, lib, ... }:
 
 {
-  imports = lib.optionals config.curios.platform.rpi4.enable [
-    "${nixos-hardware}/raspberry-pi/4"
-  ];
-
-  # Declare options
-  options = {
-    curios.platform.rpi4.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "REQUIRED config on Raspberry PI 4 platform ONLY.";
-    };
-  };
+  imports = [ "${nixos-hardware}/raspberry-pi/4" ];
 
   config = lib.mkIf config.curios.platform.rpi4.enable {
     boot = {

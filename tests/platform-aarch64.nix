@@ -15,6 +15,7 @@ let
     configuration = { config, pkgs, lib, ... }: {
       # Import CuriOS modules (excluding filesystems, hardened)
       imports = [
+        ../modules/curios-platforms.nix
         ../modules/desktop-apps/default.nix
         ../modules/backup.nix
         ../modules/boot-efi.nix
