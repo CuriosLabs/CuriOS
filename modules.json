@@ -379,6 +379,9 @@
       },
       "rpi4": {
         "enable": false
+      },
+      "rpi5": {
+        "enable": false
       }
     },
     "security": {

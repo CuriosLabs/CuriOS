@@ -41,7 +41,9 @@ DISK_LUKS_KEY=""
 GPU_VENDOR_DETECTED=""
 GPU_INSTALL=0
 CONFIRM_INSTALL=0
+AMD64_INSTALL=1
 RPI4_INSTALL=0
+RPI5_INSTALL=0
 NIXOS_CONFIG_DIR="/mnt/etc/nixos"
 DO_DOTFILES_INSTALL=1
 VERBOSE=0
@@ -176,13 +178,14 @@ ${GREY}USAGE:${NC}
 ${GREY}OPTIONS:${NC}
   ${GREY}-h, --help${NC}         Print this message.
   ${GREY}--rpi4${NC}             Raspberry PI 4 installation.
+  ${GREY}--rpi5${NC}             Raspberry PI 5 installation (experimental).
   ${GREY}-v, --verbose${NC}      Print more information.
   ${GREY}--version${NC}          Print version number and exit."
   exit 0
 }
 
 #------------- Scripts arguments parse options
-ARGS=$(getopt --longoptions="verbose,version,rpi4,help" --options ":hv" --name "$0" -- "$@")
+ARGS=$(getopt --longoptions="verbose,version,rpi4,rpi5,help" --options ":hv" --name "$0" -- "$@")
 eval set -- "$ARGS"
 
 while true; do
@@ -200,7 +203,16 @@ while true; do
     ;;
   --rpi4)
     VERBOSE=1
+    AMD64_INSTALL=0
     RPI4_INSTALL=1
+    RPI5_INSTALL=0
+    shift
+    ;;
+  --rpi5)
+    VERBOSE=1
+    AMD64_INSTALL=0
+    RPI4_INSTALL=0
+    RPI5_INSTALL=1
     shift
     ;;
   --)
@@ -218,13 +230,13 @@ if [ $VERBOSE -eq 1 ]; then
 fi
 
 #------------- Check curios-sources files
-if [ $RPI4_INSTALL -eq 1 ]; then
+if [[ $AMD64_INSTALL -eq 1 ]]; then
+  CURIOS_INSTALL_PATH=$(dirname "$(realpath "$(which curios-install)")")
+  CURIOS_SRC_PATH=$(realpath "$CURIOS_INSTALL_PATH"/../share/curios)
+elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
   CURIOS_INSTALL_PATH="."
   CURIOS_SRC_PATH="."
   NIXOS_CONFIG_DIR="/etc/nixos/"
-else
-  CURIOS_INSTALL_PATH=$(dirname "$(realpath "$(which curios-install)")")
-  CURIOS_SRC_PATH=$(realpath "$CURIOS_INSTALL_PATH"/../share/curios)
 fi
 if [ $VERBOSE -eq 1 ]; then
   echo -e "Package store path: ${CURIOS_SRC_PATH}"
@@ -265,7 +277,7 @@ if ! available jq; then
   echo -e "${RED}jq command not found!${NC}"
   exit 2
 fi
-if [ $RPI4_INSTALL -eq 0 ]; then
+if [[ $AMD64_INSTALL -eq 1 ]]; then
   if ! available parted; then
     echo -e "${RED}parted command not found!${NC}"
     exit 2
@@ -286,7 +298,7 @@ if [ $RPI4_INSTALL -eq 0 ]; then
     echo -e "${RED}mkfs.fat command not found!${NC}"
     exit 2
   fi
-else
+elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
   if ! available rpi-eeprom-update; then
     echo -e "${RED}rpi-eeprom-update command not found!${NC}"
     exit 2
@@ -598,10 +610,10 @@ set_user_passwd() {
     set_user_passwd
   else
     HASHED_USER_PASSWD=$(mkpasswd -m yescrypt "$password")
-    if [ $RPI4_INSTALL -eq 1 ]; then
-      confirm_install
-    else
+    if [[ $AMD64_INSTALL -eq 1 ]]; then
       choose_disk
+    elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
+      confirm_install
     fi
   fi
 }
@@ -716,7 +728,9 @@ if [ $VERBOSE -eq 1 ]; then
   echo "disk LUKS key: $DISK_LUKS_KEY"
   echo "GPU hardware vendor: $GPU_VENDOR_DETECTED"
   echo "install GPU driver: $GPU_INSTALL"
+  echo "x86_64 install: $AMD64_INSTALL"
   echo "RPI4 install: $RPI4_INSTALL"
+  echo "RPI5 install: $RPI5_INSTALL"
   echo "NixOS config dir: $NIXOS_CONFIG_DIR"
   echo -e "${YELLOW}End of options.${NC}"
 fi
@@ -833,7 +847,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   if [ $VERBOSE -eq 1 ]; then
     lsblk -A -pdn -o NAME
   fi
-  if [ $RPI4_INSTALL -eq 0 ]; then
+  if [[ $AMD64_INSTALL -eq 1 ]]; then
     format_disk
     echo -e "${GREEN}================================${NC}"
     echo -e "${GREEN}================================${NC}"
@@ -850,7 +864,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
       swapon /dev/disk/by-label/swap
     fi
     mkdir -p /mnt/home
-  else
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
     echo -e "${GREEN}================================${NC}"
     echo -e "${GREEN}================================${NC}"
     echo -e "${BLUE}Mounting RPI system...${NC}"
@@ -866,10 +880,10 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Create basic configuration...${NC}"
-  if [ $RPI4_INSTALL -eq 1 ]; then
-    nixos-generate-config --no-filesystems
-  else
+  if [[ $AMD64_INSTALL -eq 1 ]]; then
     nixos-generate-config --root /mnt --no-filesystems
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
+    nixos-generate-config --no-filesystems
   fi
 
   echo -e "${GREEN}================================${NC}"
@@ -909,12 +923,14 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # platform settings:
   OPTION_PLATFORM_RPI4=false
+  OPTION_PLATFORM_RPI5=false
   OPTION_PLATFORM_AMD64=true
   OPTION_BOOTEFI=true
   OPTION_FS_LUKS=true
   OPTION_FS_MINI=false
-  if [ $RPI4_INSTALL -eq 0 ]; then
+  if [ $AMD64_INSTALL -eq 1 ]; then
     OPTION_PLATFORM_RPI4=false
+    OPTION_PLATFORM_RPI5=false
     OPTION_PLATFORM_AMD64=true
     OPTION_BOOTEFI=true
     # filesystems settings:
@@ -925,19 +941,28 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
       OPTION_FS_LUKS=false
       OPTION_FS_MINI=true
     fi
-  else
+  elif [ $RPI4_INSTALL -eq 1 ]; then
     OPTION_PLATFORM_RPI4=true
+    OPTION_PLATFORM_RPI5=false
+    OPTION_PLATFORM_AMD64=false
+    OPTION_BOOTEFI=false
+    OPTION_FS_LUKS=false
+    OPTION_FS_MINI=false
+  elif [ $RPI5_INSTALL -eq 1 ]; then
+    OPTION_PLATFORM_RPI4=false
+    OPTION_PLATFORM_RPI5=true
     OPTION_PLATFORM_AMD64=false
     OPTION_BOOTEFI=false
     OPTION_FS_LUKS=false
     OPTION_FS_MINI=false
   fi
   jq --argjson rpi4 "$OPTION_PLATFORM_RPI4" \
+    --argjson rpi5 "$OPTION_PLATFORM_RPI5" \
     --argjson amd64 "$OPTION_PLATFORM_AMD64" \
     --argjson efi "$OPTION_BOOTEFI" \
     --argjson luks "$OPTION_FS_LUKS" \
     --argjson mini "$OPTION_FS_MINI" \
-    '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.bootefi.enable = $efi | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
+    '.curios.platform.amd64.enable = $amd64 | .curios.platform.rpi4.enable = $rpi4 | .curios.platform.rpi5.enable = $rpi5 | .curios.bootefi.enable = $efi | .curios.filesystems.luks.enable = $luks | .curios.filesystems.minimal.enable = $mini' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
   # GPU settings:
   OPTION_GPU_AMD=false
@@ -975,12 +1000,12 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo "Adding channel: $NIX_CHANNEL_URL"
   nix-channel --add "$NIX_CHANNEL_URL" nixos
   nix-channel --update
-  if [ $RPI4_INSTALL -eq 0 ]; then
+  if [[ $AMD64_INSTALL -eq 1 ]]; then
     if ! nixos-install --cores 0 --no-root-passwd; then
       echo -e "${RED}nixos-install failed!${NC}"
       exit 1
     fi
-  else
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
     if ! nixos-rebuild boot; then
       echo -e "${RED}nixos-rebuild failed!${NC}"
       exit 1

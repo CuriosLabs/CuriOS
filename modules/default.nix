@@ -20,6 +20,7 @@
     ./others.nix
     ./platforms/amd64.nix
     ./platforms/rpi4.nix
+    ./platforms/rpi5.nix
     ./services.nix
     ./security.nix
     ./system.nix
