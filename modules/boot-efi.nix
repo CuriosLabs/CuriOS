@@ -7,8 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description =
-          "Enable EFI boot loader - REQUIRED on AMD64 platform.";
+        description = "Enable EFI boot loader - REQUIRED on AMD64 platform.";
       };
       kernel.latest = lib.mkOption {
         type = lib.types.bool;
@@ -27,17 +26,20 @@
           enable = lib.mkOption {
             type = lib.types.bool;
             default = false;
-            description = "Enable Secure Boot with Limine. See curios-manager -> security menu";
+            description =
+              "Enable Secure Boot with Limine. See curios-manager -> security menu";
           };
           firmware = lib.mkOption {
             type = lib.types.bool;
             default = true;
-            description = "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
+            description =
+              "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
           };
         };
         wallpaper = lib.mkOption {
           type = lib.types.path;
-          default = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
+          default =
+            pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
           description = "Wallpaper for the Limine boot menu.";
         };
       };
@@ -48,9 +50,9 @@
     # Use the systemd-boot EFI boot loader.
     boot = {
       kernelPackages = if config.curios.bootefi.kernel.latest then
-        pkgs.linuxPackages_latest
+        lib.mkDefault pkgs.linuxPackages_latest
       else
-        pkgs.linuxPackages;
+        lib.mkDefault pkgs.linuxPackages;
       initrd.systemd.enable = true;
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
@@ -73,13 +75,18 @@
           #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
           # Secure Boot options
           secureBoot = {
-            enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+            enable =
+              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
             inherit (pkgs) sbctl;
             autoEnrollKeys = {
-              enable = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
-              extraArgs = [ "--microsoft" ] ++ lib.optionals config.curios.bootefi.limine.secureBoot.firmware [ "--firmware-builtin" ];
+              enable =
+                lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+              extraArgs = [ "--microsoft" ] ++ lib.optionals
+                config.curios.bootefi.limine.secureBoot.firmware
+                [ "--firmware-builtin" ];
             };
-            autoGenerateKeys = lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+            autoGenerateKeys =
+              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
           };
         };
         systemd-boot = {
