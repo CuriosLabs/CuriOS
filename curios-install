@@ -864,7 +864,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
       swapon /dev/disk/by-label/swap
     fi
     mkdir -p /mnt/home
-  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
     echo -e "${GREEN}================================${NC}"
     echo -e "${GREEN}================================${NC}"
     echo -e "${BLUE}Mounting RPI system...${NC}"
@@ -882,7 +882,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   echo -e "${BLUE}Create basic configuration...${NC}"
   if [[ $AMD64_INSTALL -eq 1 ]]; then
     nixos-generate-config --root /mnt --no-filesystems
-  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
     nixos-generate-config --no-filesystems
   fi
 
@@ -1005,7 +1005,7 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
       echo -e "${RED}nixos-install failed!${NC}"
       exit 1
     fi
-  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1]]; then
+  elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
     if ! nixos-rebuild boot; then
       echo -e "${RED}nixos-rebuild failed!${NC}"
       exit 1
