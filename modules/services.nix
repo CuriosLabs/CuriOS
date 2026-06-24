@@ -159,7 +159,10 @@
       # Enable sound.
       pipewire = {
         enable = true;
-        alsa.enable = true;
+        alsa = {
+          enable = true;
+          support32Bit = lib.mkForce false;
+        };
         pulse.enable = true;
         extraConfig.pipewire."92-low-latency" = {
           "context.properties" = { "default.clock.rate" = 48000; };
