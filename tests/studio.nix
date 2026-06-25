@@ -8,7 +8,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-studio-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/studio.nix ];
+    imports =
+      [ ../modules/desktop-apps/studio.nix ../modules/platforms/default.nix ];
 
     config = {
       # DaVinci Resolve is an unfree package

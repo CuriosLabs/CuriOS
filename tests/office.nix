@@ -8,7 +8,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-office-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/office.nix ];
+    imports =
+      [ ../modules/desktop-apps/office.nix ../modules/platforms/default.nix ];
 
     # Enable all options from the 'office.nix' module.
     config = {
@@ -27,7 +28,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           hubspot.enable = true;
         };
         erp = { odoo.enable = true; };
-        finance = { gnucash.enable = true; };
+        # WARNING: GNUcash build seems to fails in Nixos 26.05 due to a Perl dependency build fail - See: https://seclists.org/oss-sec/2026/q2/699
+        finance = { gnucash.enable = false; };
         projects = {
           basecamp = {
             enable = true;

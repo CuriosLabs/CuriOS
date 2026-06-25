@@ -5,7 +5,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-security-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/security.nix ../modules/desktop-apps/basics.nix ];
+    imports = [
+      ../modules/security.nix
+      ../modules/desktop-apps/basics.nix
+      ../modules/platforms/default.nix
+    ];
 
     config = {
       nixpkgs.config.allowUnfree = true;
@@ -13,9 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
       curios.security = {
         keyringProvider = "keepassxc";
-        u2f = {
-          enable = true;
-        };
+        u2f = { enable = true; };
       };
 
       # basics needs to be enabled to reference desktop options
