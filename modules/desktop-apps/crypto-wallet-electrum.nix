@@ -5,12 +5,12 @@
 { pkgs, lib }:
 let
   pname = "electrum";
-  version = "4.7.0";
+  version = "4.7.2";
 
   src = pkgs.fetchurl {
     url =
       "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
-    hash = "sha256-xmbvRPt2gco1nqjbXF7U094ZbgSSJa8HSkipfw8Dq9k=";
+    hash = "sha256-z3dft0oYLKUwQbUTtJtf+0FGEAV8K21DA38cTnflBlo=";
 
     # Verify Appimage signature
     nativeBuildInputs = [ pkgs.gnupg ];
@@ -37,7 +37,7 @@ let
   appSignature = pkgs.fetchurl {
     url =
       "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "sha256-W7GklqHw2dSSVCCS++bOcN9HtK5+4Gi3uhoKYtXDNLA=";
+    hash = "sha256-P4FY4CFzAgzgOXYVF+KM7xp+G4wSYOANL+vIj2kRi08=";
   };
 
   authorPubKey = pkgs.fetchurl {
