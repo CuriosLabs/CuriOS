@@ -24,7 +24,8 @@ your system with Nix modules.
 
 - 🖥️Automatic GPU hardware configuration during installation. AMD and Nvidia
 GPUs are detected and corresponding drivers are installed.
-- 🔐 Full disk encryption with LUKS on an LVM disk partition.
+- 🔐 Full disk encryption with LUKS on an LVM disk partition, with the option to
+enroll a Yubikey for disk decryption.
 - 🌟 COSMIC, a Wayland desktop environment/window manager by System76 with
 excellent window tiling management.
 - 🚀 Pop_launcher: launch or switch to any desktop application with just the
@@ -42,6 +43,8 @@ the whole system from a modern sleek Terminal User Interface.
 [Cursor](https://cursor.com/features) for an AI-assisted IDE. Desktop shortcuts
 for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
 - 🐧 Uses the latest stable Linux kernel by default.
+- 🔗 Enable Secure Boot.
+- 🔑 Register a YubiKey for user login and `sudo` operations.
 - 🗛  A bunch of nerd fonts...
 
 ## Getting Started

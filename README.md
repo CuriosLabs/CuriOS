@@ -48,6 +48,8 @@ Python3, Rust and more...
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
 * ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
+* 🔗 Enable Secure Boot.
+* 🔑 Register a YubiKey for user login and `sudo` operations.
 * 🗛 bunch of nerd fonts...
 
 ## Quick start / installation guide
