@@ -1,4 +1,4 @@
-# Security & Hardware Keys (YubiKey / FIDO2)
+# Security & Hardware Keys
 
 Curi*OS* provides a complete, easy-to-use security experience built around
 hardware security keys such as YubiKey.
