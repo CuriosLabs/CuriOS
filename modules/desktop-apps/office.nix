@@ -72,6 +72,7 @@ in {
         };
       };
       finance = {
+        # WARNING: GNUcash build seems to fails in Nixos 26.05 due to a Perl dependency build fail - See: https://seclists.org/oss-sec/2026/q2/699
         gnucash.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
