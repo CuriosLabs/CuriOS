@@ -88,6 +88,14 @@
         "enable": false
       },
       "devops": {
+        "cli": {
+          "aws": {
+            "enable": false
+          },
+          "gcloud": {
+            "enable": false
+          }
+        },
         "cloudflared": {
           "enable": false
         },

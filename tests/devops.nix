@@ -20,6 +20,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
       curios.desktop.devops = {
         enable = true;
+        cli = {
+          aws.enable = true;
+          gcloud.enable = true;
+        };
         cloudflared.enable = true;
         editor = {
           default.nvim.enable = true;
@@ -89,6 +93,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-terminals"):
         check_which("alacritty")
         check_which("ghostty")
+
+    with subtest("check-cli"):
+        check_which("aws")
+        check_which("gcloud")
 
     with subtest("check-tui"):
         check_which("opencode")
