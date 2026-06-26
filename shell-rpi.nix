@@ -5,6 +5,7 @@ pkgs.mkShell {
     # For Raspberry PI curios-install
     git
     gum
+    jq
     mkpasswd
     raspberrypi-eeprom
     terminaltexteffects

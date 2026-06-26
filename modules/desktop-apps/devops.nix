@@ -12,6 +12,18 @@
         description =
           "REQUIRED desktop applications for developers - Alacritty terminal, Neovim, git for github (gh), shellcheck, statix.";
       };
+      cli = {
+        aws.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Amazon Web Services unified command line interface.";
+        };
+        gcloud.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Google Cloud SDK command line interface.";
+        };
+      };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -168,7 +180,10 @@
         ripgrep
         # YQ - yaml/xml/toml parser
         yq
-      ] ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
+      ] ++ lib.optionals config.curios.desktop.devops.cli.aws.enable [ awscli2 ]
+      ++ lib.optionals config.curios.desktop.devops.cli.gcloud.enable
+      [ google-cloud-sdk ]
+      ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
       [ cloudflared ]
       ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.devops.networks.enable [

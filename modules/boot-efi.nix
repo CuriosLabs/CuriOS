@@ -3,17 +3,46 @@
 { config, lib, pkgs, ... }: {
   # Declare options
   options = {
-    curios.bootefi.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description =
-        "Enable systemd EFI boot loader - REQUIRED on AMD64 platform.";
-    };
-    curios.bootefi.kernel.latest = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description =
-        "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+    curios.bootefi = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable EFI boot loader - REQUIRED on AMD64 platform.";
+      };
+      kernel.latest = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Use latest stable kernel available if true, otherwise use LTS kernel. See: https://nixos.wiki/wiki/Linux_kernel";
+      };
+      limine = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description =
+            "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
+        };
+        secureBoot = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "Enable Secure Boot with Limine. See curios-manager -> security menu";
+          };
+          firmware = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description =
+              "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
+          };
+        };
+        wallpaper = lib.mkOption {
+          type = lib.types.path;
+          default =
+            pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
+          description = "Wallpaper for the Limine boot menu.";
+        };
+      };
     };
   };
 
@@ -21,9 +50,9 @@
     # Use the systemd-boot EFI boot loader.
     boot = {
       kernelPackages = if config.curios.bootefi.kernel.latest then
-        pkgs.linuxPackages_latest
+        lib.mkDefault pkgs.linuxPackages_latest
       else
-        pkgs.linuxPackages;
+        lib.mkDefault pkgs.linuxPackages;
       initrd.systemd.enable = true;
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
@@ -39,10 +68,32 @@
       #  [ "modprobe.blacklist=algif_aead" ];
       #
       loader = {
-        systemd-boot.enable = true;
-        efi.canTouchEfiVariables = true;
-        # Limit the number of generations to keep
-        systemd-boot.configurationLimit = 5;
+        efi.canTouchEfiVariables = lib.mkDefault true;
+        limine = {
+          enable = lib.mkDefault config.curios.bootefi.limine.enable;
+          maxGenerations = 5;
+          #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
+          # Secure Boot options
+          secureBoot = {
+            enable =
+              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+            inherit (pkgs) sbctl;
+            autoEnrollKeys = {
+              enable =
+                lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+              extraArgs = [ "--microsoft" ] ++ lib.optionals
+                config.curios.bootefi.limine.secureBoot.firmware
+                [ "--firmware-builtin" ];
+            };
+            autoGenerateKeys =
+              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+          };
+        };
+        systemd-boot = {
+          enable = !config.curios.bootefi.limine.enable;
+          # Limit the number of generations to keep
+          configurationLimit = 5;
+        };
       };
       tmp.cleanOnBoot = true;
 
@@ -75,5 +126,12 @@
       # Remove ZFS warning during ISO build.
       zfs.forceImportRoot = lib.mkForce false;
     };
+
+    environment.systemPackages = [
+      # Provide tools with more details on EFI db and KEK - See `efi-readvar -v KEK`
+      pkgs.efitools
+      # Provide secure boot key manager
+      pkgs.sbctl
+    ];
   };
 }

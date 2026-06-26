@@ -1,4 +1,4 @@
-# For Raspberry PI 4 platform
+# For Raspberry PI 5 platform
 # All other platforms and file-system configurations should be disabled.
 # Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-26.05/nixos.sd_image.aarch64-linux
 # Burn the zst image with caligula with:
@@ -11,7 +11,7 @@
 # nix-shell -p git
 # git clone https://github.com/CuriosLabs/CuriOS.git
 # cd CuriOS/
-# nix-shell shell-rpi.nix --run "sudo ./curios-install --rpi4"
+# nix-shell shell-rpi.nix --run "sudo ./curios-install --rpi5"
 
 let
   nixos-hardware = builtins.fetchTarball {
@@ -22,12 +22,12 @@ let
 in { config, pkgs, lib, ... }:
 
 {
-  imports = [ "${nixos-hardware}/raspberry-pi/4" ];
+  imports = [ "${nixos-hardware}/raspberry-pi/5" ];
 
   # Declare options
   options = { };
 
-  config = lib.mkIf config.curios.platform.rpi4.enable {
+  config = lib.mkIf config.curios.platform.rpi5.enable {
     boot = {
       kernelParams = [
         "snd_bcm2835.enable_hdmi=1"
@@ -66,7 +66,6 @@ in { config, pkgs, lib, ... }:
       deviceTree.enable = lib.mkDefault true;
       # For Wifi module firmware
       enableRedistributableFirmware = true;
-      #raspberry-pi."4".fkms-3d.enable = true;
     };
 
     console.enable = lib.mkForce false;
@@ -75,10 +74,6 @@ in { config, pkgs, lib, ... }:
       raspberrypi-eeprom
     ];
 
-    services.xserver = {
-      enable = lib.mkDefault true;
-      #displayManager.lightdm.enable = true;
-      #desktopManager.gnome.enable = true;
-    };
+    services.xserver = { enable = lib.mkDefault true; };
   };
 }

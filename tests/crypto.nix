@@ -8,7 +8,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-crypto-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/crypto.nix ];
+    imports =
+      [ ../modules/desktop-apps/crypto.nix ../modules/platforms/default.nix ];
 
     # Enable all options from the 'crypto.nix' module.
     config = {

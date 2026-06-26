@@ -2,13 +2,7 @@
 
 { config, lib, ... }: {
   # Declare options
-  options = {
-    curios.platform.amd64.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "REQUIRED config on x86_64 AMD/Intel CPUs platforms.";
-    };
-  };
+  options = { };
 
   config = lib.mkIf config.curios.platform.amd64.enable {
     boot = {

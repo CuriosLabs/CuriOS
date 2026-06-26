@@ -7,6 +7,13 @@
       "enable": true,
       "kernel": {
         "latest": true
+      },
+      "limine": {
+        "enable": true,
+        "secureBoot": {
+          "enable": false,
+          "firmware": true
+        }
       }
     },
     "cosmic": {
@@ -81,6 +88,14 @@
         "enable": false
       },
       "devops": {
+        "cli": {
+          "aws": {
+            "enable": false
+          },
+          "gcloud": {
+            "enable": false
+          }
+        },
         "cloudflared": {
           "enable": false
         },
@@ -222,6 +237,9 @@
           "enable": false
         },
         "davinci-resolve-studio": {
+          "enable": false
+        },
+        "mpv": {
           "enable": false
         }
       },
@@ -368,6 +386,9 @@
         "enable": true
       },
       "rpi4": {
+        "enable": false
+      },
+      "rpi5": {
         "enable": false
       }
     },

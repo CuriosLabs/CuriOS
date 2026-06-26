@@ -5,14 +5,14 @@
 { pkgs, lib }:
 let
   pname = "lm-studio";
-  version = "0.4.14-4";
+  version = "0.4.16-2";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://installers.lmstudio.ai/linux/x64/0.4.14-4/LM-Studio-0.4.14-4-x64.AppImage)"
   src = pkgs.fetchurl {
     url =
       "https://installers.lmstudio.ai/linux/x64/${version}/LM-Studio-${version}-x64.AppImage";
-    hash = "sha256-oDPL/m1Ghutxmi3iumsy2/Hs6Bp8UDWsJeup1Vlu/i8=";
+    hash = "sha256-faLtj/9M59KRdEMHHgTCPLG4Gl5C7hkdAgmaS/O5rOk=";
   };
 
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };

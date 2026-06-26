@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This file is specifically designed to provide context and instructions for AI
-> assistants (such as Gemini CLI, Claude Code, etc.) interacting with this
+> assistants (such as Opencode, Claude Code, etc.) interacting with this
 > repository. Human developers should also refer to [docs/development.md](docs/development.md).
 
 This guide provides instructions and best practices for developers contributing
@@ -80,8 +80,6 @@ configuration of the bootable ISO image.
 for building, testing, and linting.
 - `modules/default.nix`: The top-level module that imports all other modules in
 the `modules/` directory.
-- `modules/curios-options.nix`: Defines some of the CuriOS-specific configuration
-options under `config.curios.*`.
 - `curios-install`: A script for installing CuriOS to a target system, launched
 when user boot from the ISO file.
 - `shell.nix`: A Nix configuration file for the `nix-shell` command. It will setup
@@ -97,8 +95,8 @@ organized manner.
 consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
 (e.g., `config.curios.desktop.browser.chromium.enable`). Some custom options
-are defined in `modules/curios-options.nix`, the other in the "options" part of
-their respective `modules/*.nix`. See `just list-options` output.
+are defined in the "options" part of their respective `modules/*.nix`.
+See `just list-options` output.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
 - **Comments**: The code is sparsely commented. When adding new code, add

@@ -45,7 +45,7 @@ We use [just](https://github.com/casey/just) to automate common development task
 
 ## AI Assistant Users
 
-If you are using an AI assistant (such as Gemini CLI, Claude Code, or others)
+If you are using an AI assistant (such as Opencode, Claude Code, or others)
 to contribute to this project, please refer to the [AGENTS.md](../AGENTS.md) file
 in the root of the repository. It contains essential context and instructions
 tailored for AI agents to ensure that their contributions align with our

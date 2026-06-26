@@ -170,7 +170,8 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
+          default =
+            false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -215,7 +216,6 @@ in {
         pkgs.tldr
         pkgs.vlc
         pkgs.yubioath-flutter
-        pkgs.yubikey-manager
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
         pkgs.proton-vpn
         (lib.mkIf config.curios.desktop.vpn.proton.autoStart
@@ -234,9 +234,10 @@ in {
         ] ++ lib.optionals config.curios.desktop.ai.gemini.enable
         [ (import ./webapp-gemini.nix) ]
         ++ lib.optionals config.curios.desktop.ai.grok.enable
-        [ (import ./webapp-grok.nix) ]
-        ++ lib.optionals config.curios.desktop.ai.lmstudio.enable
-        [ lmstudioApp ] ++ lib.optionals config.curios.desktop.ai.mistral.enable
+        [ (import ./webapp-grok.nix) ] ++ lib.optionals
+        (config.curios.desktop.ai.lmstudio.enable
+          && config.curios.platform.amd64.enable) [ lmstudioApp ]
+        ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
         [ pkgs.brave ]
@@ -247,19 +248,19 @@ in {
         ++ lib.optionals config.curios.desktop.browser.librewolf.enable
         [ pkgs.librewolf ]
         ++ lib.optionals config.curios.desktop.browser.vivaldi.enable
-        [ pkgs.vivaldi ]
-        ++ lib.optionals config.curios.desktop.chat.discord.enable
-        [ pkgs.discord ]
+        [ pkgs.vivaldi ] ++ lib.optionals
+        (config.curios.desktop.chat.discord.enable
+          && config.curios.platform.amd64.enable) [ pkgs.discord ]
         ++ lib.optionals config.curios.desktop.chat.signal.enable
-        [ pkgs.signal-desktop ]
-        ++ lib.optionals config.curios.desktop.chat.teamspeak.enable
-        [ pkgs.teamspeak6-client ]
+        [ pkgs.signal-desktop ] ++ lib.optionals
+        (config.curios.desktop.chat.teamspeak.enable
+          && config.curios.platform.amd64.enable) [ pkgs.teamspeak6-client ]
         ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
         [ (import ./webapp-whatsapp.nix) ]
         ++ lib.optionals config.curios.desktop.music.strawberry.enable
-        [ pkgs.strawberry ]
-        ++ lib.optionals config.curios.desktop.music.spotify.enable
-        [ pkgs.spotify ]
+        [ pkgs.strawberry ] ++ lib.optionals
+        (config.curios.desktop.music.spotify.enable
+          && config.curios.platform.amd64.enable) [ pkgs.spotify ]
         ++ lib.optionals config.curios.desktop.utility.bitwarden.enable
         [ pkgs.bitwarden-desktop ]
         ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
@@ -302,9 +303,6 @@ in {
     };
 
     services = {
-      # Enabling PCSC-lite for Yubikey
-      pcscd.enable = true;
-
       # Tailscale VPN - See https://wiki.nixos.org/wiki/Tailscale
       # Configure it it with `sudo tailscale up`
       # To add more options, see: https://search.nixos.org/options?show=services.tailscale

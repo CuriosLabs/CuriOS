@@ -20,7 +20,7 @@
       retroarchFree.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "libRetro RetroArch free version.";
+        description = "RetroArch with libRetro cores.";
       };
       #retroarchFull.enable = lib.mkOption {
       #  type = lib.types.bool;
@@ -79,7 +79,9 @@
         }))
     ] ++ lib.optionals config.curios.desktop.gaming.heroic.enable
       [ pkgs.heroic ]
-      ++ lib.optionals config.curios.desktop.gaming.retroarchFree.enable
-      [ pkgs.retroarch-free ];
+      ++ lib.optionals config.curios.desktop.gaming.retroarchFree.enable [
+        pkgs.retroarch
+        pkgs.retroarch-joypad-autoconfig
+      ];
   };
 }

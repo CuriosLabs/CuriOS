@@ -48,7 +48,9 @@ Python3, Rust and more...
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
 * ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
-* 🗛 bunch of nerd fonts...
+* 🔗 Enable Secure Boot.
+* 🔑 Register a YubiKey for user login and `sudo` operations.
+* 🗛  bunch of nerd fonts...
 
 ## Quick start / installation guide
 
@@ -83,7 +85,7 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [26.05.4](https://github.com/CuriosLabs/CuriOS/tree/release/26.05.4)
+The current version is [26.05.5](https://github.com/CuriosLabs/CuriOS/tree/release/26.05.5)
 based on a Nixos 26.05 build.
 
 ## License

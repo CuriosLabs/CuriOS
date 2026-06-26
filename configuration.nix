@@ -120,17 +120,6 @@ in {
   else
     false;
 
-  security = {
-    # Security settings
-    # /etc/login.defs additionnal settings
-    loginDefs.settings = {
-      LOGIN_RETRIES = 3;
-      LOGIN_TIMEOUT = 60;
-    };
-    # Show password feedback for sudo command.
-    sudo.extraConfig = "Defaults pwfeedback";
-  };
-
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
@@ -143,7 +132,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "26.05.4";
+    nixos.variant_id = "26.05.5";
   };
 
   nix = {

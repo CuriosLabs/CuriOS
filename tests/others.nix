@@ -30,6 +30,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         machine.succeed(f"which {pkg_name}")
 
     with subtest("check-other-system"):
+        check_which("drm_info")
+        check_which("edid-decode")
         check_which("htop")
         check_which("openssl")
 

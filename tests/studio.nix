@@ -8,7 +8,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-studio-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/studio.nix ];
+    imports =
+      [ ../modules/desktop-apps/studio.nix ../modules/platforms/default.nix ];
 
     config = {
       # DaVinci Resolve is an unfree package
@@ -19,6 +20,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         enable = true;
         davinci-resolve.enable = true;
         davinci-resolve-studio.enable = true;
+        mpv.enable = true;
       };
     };
   };
@@ -37,5 +39,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("davinci-resolve")
         check_which("davinci-resolve-studio")
         check_which("darktable")
+        check_which("mpv")
   '';
 }

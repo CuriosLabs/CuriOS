@@ -99,7 +99,7 @@ These applications are advanced code editors (**IDEs**) with built-in AI assista
   with LM Studio. See [OpenCode website](https://opencode.ai/).
 - **Zed**: Installed by default. You can connect it to LM Studio. See the [Zed documentation](https://zed.dev/docs/ai/llm-providers).
 - **Cursor**: An AI-first code editor. Launch the graphical app with `cursor` or
-the terminal version with `cursor-agent`. See the [Cursor documentation](https://cursor.com/docs).
+  the terminal version with `cursor-agent`. See the [Cursor documentation](https://cursor.com/docs).
 
 ### Terminal (CLI) Tools
 
