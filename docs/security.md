@@ -89,8 +89,6 @@ sudo curios-update --update-module curios.security.u2f.lockOnRemove true && sudo
 This feature allows you to use a FIDO2-compatible security key (such as a
 YubiKey 5 or newer) to unlock your encrypted root partition at boot time.
 
-### How it works
-
 - Curi*OS* uses the modern `systemd-cryptenroll` approach (the recommended path
   when systemd in the initrd is active).
 - The key must support the FIDO2 `hmac-secret` extension (most YubiKey 5 series
@@ -131,8 +129,6 @@ loss.
 You can create an SSH key that lives **inside** your YubiKey instead of as a
 file on your computer. This means the private key never leaves the hardware,
 making it much more resistant to theft or malware.
-
-### How it works
 
 - The key is generated as a **resident key** stored directly on the YubiKey.
 - The file on your computer is only a reference (a "handle") that tells the
@@ -177,10 +173,8 @@ Secure Boot ensures that only trusted, properly signed software can start your
 computer. It protects against malicious programs that try to modify the boot
 process and quietly take control before the operating system loads.
 
-### How it works
-
-On Curi*OS, Secure Boot is supported through the **Limine** bootloader,
-which is the default bootloader.
+On Curi*OS*, Secure Boot is supported through the **Limine** bootloader,
+which is the default bootloader since Curi*OS* 26.05.5.
 
 The Curi*OS* Manager provides a guided, step-by-step setup:
 
