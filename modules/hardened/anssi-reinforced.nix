@@ -31,11 +31,6 @@
         default = false;
         description = "R45 - Activating AppArmor.";
       };
-      ruleUsernsRestrict = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Custom rule - Restrict unprivileged user namespaces via AppArmor. Requires R45 (AppArmor) to be enabled and kernel >= 7.1.";
-      };
     };
   };
 
@@ -43,21 +38,9 @@
     boot = {
       kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7 [ "iommu=force" ];
 
-      kernel.sysctl = lib.mkMerge [
-        (lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
-          "kernel.modules_disabled" = 1;
-        })
-        (lib.optionalAttrs
-          (
-            config.curios.hardened.anssi.reinforced.rule45
-            && config.curios.hardened.anssi.reinforced.ruleUsernsRestrict
-          )
-          {
-            "kernel.apparmor_restrict_unprivileged_userns" = 1;
-            "kernel.apparmor_restrict_unprivileged_unconfined" = 1;
-          }
-        )
-      ];
+      kernel.sysctl = lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
+        "kernel.modules_disabled" = 1;
+      };
     };
 
     security = {
