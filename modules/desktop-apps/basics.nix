@@ -202,6 +202,7 @@ in {
     # override was attempted but causes a runtime crash because signal-desktop
     # 8.13.0's electron-builder is incompatible with pnpm >=10.29.3
     # (see https://github.com/pnpm/pnpm/issues/10601).
+    # TODO: remove it later when signal-desktop hit >=8.15.0
     nixpkgs.config.permittedInsecurePackages =
       lib.mkIf config.curios.desktop.chat.signal.enable [ "pnpm-10.29.2" ];
 
