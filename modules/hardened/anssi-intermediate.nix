@@ -38,7 +38,7 @@
         type = lib.types.bool;
         default = false;
         description =
-          "R13 - Deactivate IPv6. Enable this ONLY if you are NOT using IPv6.";
+          "R13 - Deactivate IPv6. Do it ONLY if you are NOT using IPv6.";
       };
       rule14 = lib.mkOption {
         type = lib.types.bool;

@@ -196,6 +196,15 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
+    # signal-desktop on nixos-26.05 pins pnpm_10_29_2 (build-time only, marked
+    # insecure due to CVEs that do not ship in the final binary). Drop this
+    # once nixos-26.05 ships signal-desktop built with pnpm_10. A pnpm_10
+    # override was attempted but causes a runtime crash because signal-desktop
+    # 8.13.0's electron-builder is incompatible with pnpm >=10.29.3
+    # (see https://github.com/pnpm/pnpm/issues/10601).
+    nixpkgs.config.permittedInsecurePackages =
+      lib.mkIf config.curios.desktop.chat.signal.enable [ "pnpm-10.29.2" ];
+
     environment = {
       systemPackages = [
         pkgs.caligula
