@@ -2,6 +2,9 @@
 # See pkgs.apparmor-profiles and security.apparmor options.
 # `nixos-option security.lsm`, `aa-enabled`, `sudo aa-status`
 # `eza -l -tree /etc/apparmor.d/`
+# Useful commands:
+# `sudo aa-status` `sudo aa-status --complaining`
+# `sudo ausearch -m AVC -ts today -c brave 2>/dev/null || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
 # References:
 # https://github.com/roddhjav/apparmor.d/tree/main/apparmor.d
 # https://wiki.debian.org/AppArmor/HowToUse
@@ -12,7 +15,7 @@
 { config, lib, ... }:
 
 let
-  inherit (lib) mkIf mkOption mkEnableOption types;
+  inherit (lib) mkIf mkOption types;
   cfg = config.curios.hardened.apparmor-profiles;
   anssi = config.curios.hardened.anssi.reinforced;
 in {
@@ -20,13 +23,13 @@ in {
     enable = mkOption {
       type = types.bool;
       default = true;
-      description = "Ship CuriOS AppArmor profiles. Requires curios.hardened.anssi.reinforced.enable and curios.hardened.anssi.reinforced.rule45 to be enabled.";
+      description =
+        "Ship CuriOS AppArmor profiles. Requires curios.hardened.anssi.reinforced.enable and curios.hardened.anssi.reinforced.rule45 to be enabled.";
     };
 
     desktop = {
       browsers = {
         brave = {
-          enable = mkEnableOption "AppArmor profile for Brave browser";
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
             default = "complain";
@@ -39,27 +42,33 @@ in {
 
   config = mkIf (cfg.enable && anssi.enable && anssi.rule45) {
     security.apparmor.policies = {
-      "brave" = mkIf cfg.desktop.browsers.brave.enable {
-        enable = true;
+      "brave" = {
+        state = cfg.desktop.browsers.brave.mode;
         profile = let
-          modeFlag = if cfg.desktop.browsers.brave.mode == "complain"
-                     then "flags=(complain, attach_disconnected)"
-                     else "flags=(attach_disconnected)";
+          modeFlag = if cfg.desktop.browsers.brave.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
         in ''
           include <tunables/global>
 
-          profile brave ${modeFlag} {
+          profile brave /nix/store/*-brave*/opt/brave.com/brave/brave ${modeFlag} {
             include <abstractions/base>
             include <abstractions/nameservice>
             include <abstractions/fonts>
             include <abstractions/dconf>
             include <abstractions/ssl_certs>
 
+            # Chromium sandbox requires user namespaces
+            userns,
+
             # Nix store paths for Brave
-            /nix/store/*-brave*/bin/brave                          mrix,
-            /nix/store/*-brave*/lib/**                             r,
-            /nix/store/*-brave*/lib/*.so*                          mr,
-            /nix/store/*-brave*/lib/WidevineCdm/**                 mrwk,
+            /nix/store/*-brave*/opt/brave.com/brave/brave          mrix,
+            /nix/store/*-brave*/opt/brave.com/brave/*.so*          mr,
+            /nix/store/*-brave*/opt/brave.com/brave/WidevineCdm/** mrwk,
+            /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/chrome_crashpad_handler rix,
+            /nix/store/*-brave*/opt/brave.com/brave/chrome-management-service rix,
 
             # Network access
             network inet dgram,
@@ -138,12 +147,12 @@ in {
         '';
       };
 
-      "brave-sandbox" = mkIf cfg.desktop.browsers.brave.enable {
-        enable = true;
+      "brave-sandbox" = {
+        state = cfg.desktop.browsers.brave.mode;
         profile = ''
           include <tunables/global>
 
-          profile brave-sandbox {
+          profile brave-sandbox /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox {
             include <abstractions/base>
 
             capability setgid,
@@ -152,8 +161,8 @@ in {
             capability sys_chroot,
             capability sys_resource,
 
-            /nix/store/*-brave*/lib/chrome-sandbox                 mr,
-            /nix/store/*-brave*/lib/brave                          rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox mr,
+            /nix/store/*-brave*/opt/brave.com/brave/brave          rPx,
 
             @{PROC}                                                r,
             @{PROC}/@{pids}/                                       r,
@@ -166,16 +175,16 @@ in {
         '';
       };
 
-      "brave-wrapper" = mkIf cfg.desktop.browsers.brave.enable {
-        enable = true;
+      "brave-wrapper" = {
+        state = cfg.desktop.browsers.brave.mode;
         profile = ''
           include <tunables/global>
 
-          profile brave-wrapper {
+          profile brave-wrapper /nix/store/*-brave*/bin/brave {
             include <abstractions/base>
             include <abstractions/consoles>
 
-            /nix/store/*-brave*/bin/brave-browser                  r,
+            /nix/store/*-brave*/bin/**                               r,
 
             /nix/store/*/bin/{sh,bash,dash}                         rix,
             /nix/store/*coreutils*/bin/cat                         rix,
@@ -185,7 +194,8 @@ in {
             /nix/store/*coreutils*/bin/touch                       rix,
             /nix/store/*which*/bin/which                           rix,
 
-            /nix/store/*-brave*/lib/brave                          rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/brave          rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/brave-browser r,
 
             owner @{PROC}/@{pid}/fd/@{int}                         w,
 
