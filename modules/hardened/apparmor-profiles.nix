@@ -4,7 +4,16 @@
 # `eza -l -tree /etc/apparmor.d/`
 # Useful commands:
 # `sudo aa-status` `sudo aa-status --complaining`
-# `sudo ausearch -m AVC -ts today -c brave 2>/dev/null || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
+# `sudo ausearch -m AVC -ts today -c brave 2>/dev/nulla-i || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
+# TODO: Add AppArmor profiles for other Electron/Chromium-based apps in priority order:
+#   - signal-desktop (Electron messenger)
+#   - cursor (Electron IDE)
+#   - onlyoffice-desktopeditors (CEF-based office suite)
+#   - zed (native editor with WebView, accesses SSH keys/tokens/source)
+#   - localsend (Flutter-based file sharing, network+filesystem access)
+# TUI/CLI tools (opencode, curios-manager, nvim) do NOT need profiles — they
+# operate on explicit user input, have dynamic filesystem access, and minimal
+# attack surface. Profile maintenance cost outweighs security benefit.
 # References:
 # https://github.com/roddhjav/apparmor.d/tree/main/apparmor.d
 # https://wiki.debian.org/AppArmor/HowToUse
@@ -34,6 +43,16 @@ in {
             type = types.enum [ "complain" "enforce" "disable" ];
             default = "complain";
             description = "AppArmor profile mode for Brave.";
+          };
+        };
+      };
+
+      chat = {
+        signal-desktop = {
+          mode = mkOption {
+            type = types.enum [ "complain" "enforce" "disable" ];
+            default = "complain";
+            description = "AppArmor profile mode for Signal Desktop.";
           };
         };
       };
