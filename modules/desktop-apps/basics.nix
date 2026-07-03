@@ -196,6 +196,12 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
+    # bitwarden-desktop on NixOS 26.05 pins electron_39 which is marked EOL.
+    # TODO: remove when bitwarden-dekstop pin electron>=40
+    nixpkgs.config.permittedInsecurePackages =
+      lib.mkIf config.curios.desktop.utility.bitwarden.enable
+      [ "electron-39.8.10" ];
+
     environment = {
       systemPackages = [
         pkgs.caligula
