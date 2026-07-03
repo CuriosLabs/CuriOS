@@ -169,14 +169,14 @@ in {
         owner @{cache_dirs}/**                                                     rwk,
 
         # Temporary files. Chromium creates shared-memory files and dirs
-        # in /tmp/.org.chromium.Chromium.* — 'wk' on the file pattern allows
-        # mknod of top-level files, 'wk' on */ allows mkdir of dirs,
+        # in /tmp/.org.chromium.Chromium.* — 'rwk' on the file pattern allows
+        # mknod+read of top-level files, 'wk' on */ allows mkdir of dirs,
         # 'rwkm' on /** covers contents.
-        owner /tmp/.org.chromium.Chromium.*                                        wk,
+        owner /tmp/.org.chromium.Chromium.*                                        rwk,
         owner /tmp/.org.chromium.Chromium.*/                                       wk,
         owner /tmp/.org.chromium.Chromium.*/**                                     rwkm,
         # Chromium scoped temp dirs (file picker, downloads, plugins).
-        owner /tmp/scoped_dir*/                                                    wk,
+        owner /tmp/scoped_dir*/                                                    rwk,
         owner /tmp/scoped_dir*/**                                                  rwkm,
         owner @{HOME}/.tmp/**                                                      rw,
 
@@ -255,7 +255,7 @@ in {
         @{run}/user/@{uid}/pulse/**                                               rw,
         # PulseAudio cookie (audio authentication)
         owner @{HOME}/.config/pulse/                                              r,
-        owner @{HOME}/.config/pulse/cookie                                        rw,
+        owner @{HOME}/.config/pulse/cookie                                        rwk,
         owner @{HOME}/.pulse-cookie                                               r,
 
         # cgroup CPU limits (Chromium resource monitoring)
@@ -263,6 +263,7 @@ in {
 
         # GTK
         owner @{HOME}/.config/gtk-3.0/**                                          r,
+        owner @{HOME}/.config/gtk-4.0/**                                          r,
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
@@ -383,14 +384,14 @@ in {
         owner @{cache_dirs}/**                                                    rwk,
 
         # Temporary files. Chromium creates shared-memory files and dirs
-        # in /tmp/.org.chromium.Chromium.* — 'wk' on the file pattern allows
-        # mknod of top-level files, 'wk' on */ allows mkdir of dirs,
+        # in /tmp/.org.chromium.Chromium.* — 'rwk' on the file pattern allows
+        # mknod+read of top-level files, 'wk' on */ allows mkdir of dirs,
         # 'rwkm' on /** covers contents.
-        owner /tmp/.org.chromium.Chromium.*                                       wk,
+        owner /tmp/.org.chromium.Chromium.*                                       rwk,
         owner /tmp/.org.chromium.Chromium.*/                                      wk,
         owner /tmp/.org.chromium.Chromium.*/**                                    rwkm,
         # Chromium scoped temp dirs (file picker, downloads, plugins).
-        owner /tmp/scoped_dir*/                                                   wk,
+        owner /tmp/scoped_dir*/                                                   rwk,
         owner /tmp/scoped_dir*/**                                                 rwkm,
         owner @{HOME}/.tmp/**                                                     rw,
 
@@ -469,7 +470,7 @@ in {
         @{run}/user/@{uid}/pulse/**                                               rw,
         # PulseAudio cookie (audio authentication)
         owner @{HOME}/.config/pulse/                                              r,
-        owner @{HOME}/.config/pulse/cookie                                        rw,
+        owner @{HOME}/.config/pulse/cookie                                        rwk,
         owner @{HOME}/.pulse-cookie                                               r,
 
         # cgroup CPU limits (Chromium resource monitoring)
@@ -477,6 +478,7 @@ in {
 
         # GTK
         owner @{HOME}/.config/gtk-3.0/**                                          r,
+        owner @{HOME}/.config/gtk-4.0/**                                          r,
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
