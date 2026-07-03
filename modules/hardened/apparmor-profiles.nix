@@ -272,12 +272,17 @@ in {
 
         # PipeWire / PulseAudio
         owner @{run}/user/@{uid}/pipewire-*                                       rw,
-        @{run}/user/@{uid}/pulse/                                                 r,
+        @{run}/user/@{uid}/pulse/                                                 rw,
         @{run}/user/@{uid}/pulse/**                                               rw,
         # PulseAudio cookie (audio authentication)
         owner @{HOME}/.config/pulse/                                              r,
         owner @{HOME}/.config/pulse/cookie                                        rwk,
         owner @{HOME}/.pulse-cookie                                               r,
+        # ALSA sound devices and configuration
+        /dev/snd/                                                                 r,
+        /dev/snd/**                                                               rw,
+        /etc/alsa/                                                                r,
+        /etc/alsa/**                                                              r,
 
         # cgroup CPU limits (Chromium resource monitoring)
         @{sys}/fs/cgroup/**                                                       r,
@@ -377,6 +382,8 @@ in {
         @{sys}/devices/virtual/tty/tty0/active                                     r,
         @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
         @{sys}/devices/virtual/dmi/id/product_name                                 r,
+        @{sys}/devices/virtual/dmi/id/board_vendor                                 r,
+        @{sys}/devices/virtual/dmi/id/bios_vendor                                  r,
         # Disk enumeration (download location detection)
         /dev/disk/by-uuid/                                                         r,
 
@@ -569,12 +576,17 @@ in {
 
         # PipeWire / PulseAudio
         owner @{run}/user/@{uid}/pipewire-*                                       rw,
-        @{run}/user/@{uid}/pulse/                                                 r,
+        @{run}/user/@{uid}/pulse/                                                 rw,
         @{run}/user/@{uid}/pulse/**                                               rw,
         # PulseAudio cookie (audio authentication)
         owner @{HOME}/.config/pulse/                                              r,
         owner @{HOME}/.config/pulse/cookie                                        rwk,
         owner @{HOME}/.pulse-cookie                                               r,
+        # ALSA sound devices and configuration
+        /dev/snd/                                                                 r,
+        /dev/snd/**                                                               rw,
+        /etc/alsa/                                                                r,
+        /etc/alsa/**                                                              r,
 
         # cgroup CPU limits (Chromium resource monitoring)
         @{sys}/fs/cgroup/**                                                       r,
@@ -674,6 +686,8 @@ in {
         @{sys}/devices/virtual/tty/tty0/active                                     r,
         @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
         @{sys}/devices/virtual/dmi/id/product_name                                 r,
+        @{sys}/devices/virtual/dmi/id/board_vendor                                 r,
+        @{sys}/devices/virtual/dmi/id/bios_vendor                                  r,
         # Disk enumeration (download location detection)
         /dev/disk/by-uuid/                                                         r,
 
