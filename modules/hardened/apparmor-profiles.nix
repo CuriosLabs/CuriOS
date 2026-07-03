@@ -5,6 +5,8 @@
 # Useful commands:
 # `sudo aa-status` `sudo aa-status --complaining`
 # `sudo ausearch -m AVC -ts today -c brave 2>/dev/nulla-i || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
+# Clear AppArmor change when debugging:
+# `sudo rm -rf /var/cache/apparmor/* && sudo systemctl restart apparmor`
 # A shared `abstractions/electron` include is provided for Electron-based apps.
 # It encapsulates the common NixOS Electron runtime rules (shared binary chain,
 # /proc sandbox access, DRI/GPU, display, D-Bus, audio, etc.). App profiles need
@@ -164,17 +166,26 @@ in {
         network inet6 stream,
         network netlink raw,
 
-        # User config and cache (uses variables from calling profile)
-        owner @{config_dirs}/**                                                    rwk,
-        owner @{cache_dirs}/**                                                     rwk,
+        # User config and cache (uses variables from calling profile).
+        # 'm' (mmap) needed for WidevineCdm .so loaded from config dir.
+        owner @{config_dirs}/**                                                    rwkm,
+        owner @{cache_dirs}/**                                                     rwkm,
 
-        # Temporary files. Chromium creates shared-memory files and dirs
+        # Temporary files. /tmp/ directory listing needed by Chromium.
+        /tmp/                                                                     r,
+        # Root directory listing (filesystem enumeration)
+        /                                                                         r,
+        # Chromium creates shared-memory files and dirs
         # in /tmp/.org.chromium.Chromium.* — 'rwk' on the file pattern allows
         # mknod+read of top-level files, 'wk' on */ allows mkdir of dirs,
         # 'rwkm' on /** covers contents.
         owner /tmp/.org.chromium.Chromium.*                                        rwk,
-        owner /tmp/.org.chromium.Chromium.*/                                       wk,
+        owner /tmp/.org.chromium.Chromium.*/                                       rwk,
         owner /tmp/.org.chromium.Chromium.*/**                                     rwkm,
+        # Brave uses a variant without the leading dot
+        owner /tmp/org.chromium.Chromium.*                                         rwk,
+        owner /tmp/org.chromium.Chromium.*/                                        rwk,
+        owner /tmp/org.chromium.Chromium.*/**                                      rwkm,
         # Chromium scoped temp dirs (file picker, downloads, plugins).
         owner /tmp/scoped_dir*/                                                    rwk,
         owner /tmp/scoped_dir*/**                                                  rwkm,
@@ -199,6 +210,11 @@ in {
         owner @{PROC}/@{pid}/limits                                               r,
         @{PROC}/                                                                  r,
         @{PROC}/sys/kernel/yama/ptrace_scope                                      r,
+        # Kernel version (read by xdg scripts via grep)
+        @{PROC}/version                                                           r,
+        # Pressure Stall Information (Chromium resource monitoring)
+        @{PROC}/pressure/                                                         r,
+        @{PROC}/pressure/{cpu,io,memory}                                          r,
 
         # Chromium processes read each other's proc info (parent reads
         # child stats, ThreadPool reads sibling thread status). These must
@@ -207,6 +223,8 @@ in {
         @{PROC}/@{pid}/task/@{tid}/status                                          r,
         @{PROC}/@{pid}/comm                                                        r,
         @{PROC}/@{pid}/statm                                                       r,
+        # Memory profiling (Chromium memory infrastructure)
+        owner @{PROC}/@{pid}/clear_refs                                           w,
 
         # User namespace setup. On NixOS the nix store is read-only so
         # chrome-sandbox cannot be SUID 4755. Chromium must use unprivileged
@@ -264,6 +282,9 @@ in {
         # GTK
         owner @{HOME}/.config/gtk-3.0/**                                          r,
         owner @{HOME}/.config/gtk-4.0/**                                          r,
+        # GLib config (GSettings schema cache)
+        owner @{HOME}/.config/glib-2.0/                                           rwk,
+        owner @{HOME}/.config/glib-2.0/**                                         rwk,
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
@@ -271,6 +292,36 @@ in {
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
         owner @{HOME}/.local/share/applications/**                                r,
+
+        # XDG utilities (default browser check, URL opening). xdg scripts
+        # use shell utilities (grep, sed, awk, etc.) which inherit the
+        # browser profile, so they must be allowed for exec.
+        /nix/store/*-xdg-utils*/bin/xdg-settings                                  rix,
+        /nix/store/*-xdg-utils*/bin/xdg-open                                      rix,
+        /nix/store/*-xdg-utils*/bin/xdg-mime                                      rix,
+        /run/current-system/sw/bin/xdg-settings                                   rix,
+        /run/current-system/sw/bin/xdg-open                                       rix,
+        /run/current-system/sw/bin/xdg-mime                                       rix,
+        # Shell utilities used by xdg scripts and wrapper scripts
+        /nix/store/*coreutils*/bin/*                                              rix,
+        /nix/store/*-gnugrep*/bin/grep                                            rix,
+        /nix/store/*-gnused*/bin/sed                                              rix,
+        /nix/store/*-gawk*/bin/{awk,gawk}                                         rix,
+        /nix/store/*-findutils*/bin/find                                          rix,
+        /run/current-system/sw/bin/{grep,sed,awk,find}                            rix,
+        # D-Bus and X11 utilities used by xdg-settings
+        /nix/store/*-dbus*/bin/dbus-send                                          rix,
+        /nix/store/*-xprop*/bin/xprop                                             rix,
+
+        # Browser policies (Brave/Chromium system-managed policies)
+        /etc/brave/policies/                                                      r,
+        /etc/brave/policies/**                                                    r,
+        /etc/chromium/policies/                                                   r,
+        /etc/chromium/policies/**                                                 r,
+
+        # NSS certificate database (client certificates, CA trust)
+        owner @{HOME}/.pki/nssdb/                                                 rw,
+        owner @{HOME}/.pki/nssdb/**                                               rwk,
 
         # NixOS shared resources. On NixOS fonts, gsettings schemas, icon
         # themes, translations, xkb config, fontconfig caches, GDK pixbuf
@@ -297,10 +348,17 @@ in {
         /etc/machine-id                                                           r,
         @{sys}/devices/system/cpu/**                                              r,
 
-        # Hardware detection (GPU/PCI enumeration, active tty)
-        @{sys}/bus/pci/devices/                                                   r,
-        @{sys}/devices/pci*/**                                                    r,
-        @{sys}/devices/virtual/tty/tty0/active                                    r,
+        # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
+        @{sys}/bus/                                                                r,
+        @{sys}/bus/pci/devices/                                                    r,
+        @{sys}/bus/usb/devices/                                                    r,
+        @{sys}/class/                                                              r,
+        @{sys}/devices/pci*/**                                                     r,
+        @{sys}/devices/virtual/tty/tty0/active                                     r,
+        @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
+        @{sys}/devices/virtual/dmi/id/product_name                                 r,
+        # Disk enumeration (download location detection)
+        /dev/disk/by-uuid/                                                         r,
 
         # Device access
         /dev/urandom                                                              r,
@@ -311,6 +369,8 @@ in {
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
+        # Camera (video calls, webcam)
+        /dev/video*                                                               rw,
 
         # Silencer
         deny /etc/opt/                                                            w,
@@ -379,17 +439,30 @@ in {
         network inet6 stream,
         network netlink raw,
 
-        # User config and cache (uses variables from calling profile)
-        owner @{config_dirs}/**                                                   rwk,
-        owner @{cache_dirs}/**                                                    rwk,
+        # User config and cache (uses variables from calling profile).
+        # 'm' (mmap) needed for WidevineCdm .so loaded from config dir.
+        # Parent directory 'r' needed for directory listing (e.g.
+        # BraveSoftware/ must be listable to find Brave-Browser/).
+        owner @{config_dirs}/                                                     r,
+        owner @{config_dirs}/**                                                   rwkm,
+        owner @{cache_dirs}/                                                      r,
+        owner @{cache_dirs}/**                                                    rwkm,
 
-        # Temporary files. Chromium creates shared-memory files and dirs
+        # Temporary files. /tmp/ directory listing needed by Chromium.
+        /tmp/                                                                     r,
+        # Root directory listing (filesystem enumeration)
+        /                                                                         r,
+        # Chromium creates shared-memory files and dirs
         # in /tmp/.org.chromium.Chromium.* — 'rwk' on the file pattern allows
         # mknod+read of top-level files, 'wk' on */ allows mkdir of dirs,
         # 'rwkm' on /** covers contents.
         owner /tmp/.org.chromium.Chromium.*                                       rwk,
         owner /tmp/.org.chromium.Chromium.*/                                      wk,
         owner /tmp/.org.chromium.Chromium.*/**                                    rwkm,
+        # Brave uses a variant without the leading dot
+        owner /tmp/org.chromium.Chromium.*                                        rwk,
+        owner /tmp/org.chromium.Chromium.*/                                       rwk,
+        owner /tmp/org.chromium.Chromium.*/**                                     rwkm,
         # Chromium scoped temp dirs (file picker, downloads, plugins).
         owner /tmp/scoped_dir*/                                                   rwk,
         owner /tmp/scoped_dir*/**                                                 rwkm,
@@ -414,6 +487,11 @@ in {
         owner @{PROC}/@{pid}/limits                                               r,
         @{PROC}/                                                                  r,
         @{PROC}/sys/kernel/yama/ptrace_scope                                      r,
+        # Kernel version (read by xdg scripts via grep)
+        @{PROC}/version                                                           r,
+        # Pressure Stall Information (Chromium resource monitoring)
+        @{PROC}/pressure/                                                         r,
+        @{PROC}/pressure/{cpu,io,memory}                                          r,
 
         # Chromium processes read each other's proc info (parent reads
         # child stats, ThreadPool reads sibling thread status). These must
@@ -422,6 +500,8 @@ in {
         @{PROC}/@{pid}/task/@{tid}/status                                         r,
         @{PROC}/@{pid}/comm                                                       r,
         @{PROC}/@{pid}/statm                                                      r,
+        # Memory profiling (Chromium memory infrastructure)
+        owner @{PROC}/@{pid}/clear_refs                                           w,
 
         # User namespace setup. On NixOS the nix store is read-only so
         # chrome-sandbox cannot be SUID 4755. Chromium must use unprivileged
@@ -479,6 +559,9 @@ in {
         # GTK
         owner @{HOME}/.config/gtk-3.0/**                                          r,
         owner @{HOME}/.config/gtk-4.0/**                                          r,
+        # GLib config (GSettings schema cache)
+        owner @{HOME}/.config/glib-2.0/                                           rwk,
+        owner @{HOME}/.config/glib-2.0/**                                         rwk,
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
@@ -486,6 +569,36 @@ in {
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
         owner @{HOME}/.local/share/applications/**                                r,
+
+        # XDG utilities (default browser check, URL opening). xdg scripts
+        # use shell utilities (grep, sed, awk, etc.) which inherit the
+        # browser profile, so they must be allowed for exec.
+        /nix/store/*-xdg-utils*/bin/xdg-settings                                  rix,
+        /nix/store/*-xdg-utils*/bin/xdg-open                                      rix,
+        /nix/store/*-xdg-utils*/bin/xdg-mime                                      rix,
+        /run/current-system/sw/bin/xdg-settings                                   rix,
+        /run/current-system/sw/bin/xdg-open                                       rix,
+        /run/current-system/sw/bin/xdg-mime                                       rix,
+        # Shell utilities used by xdg scripts and wrapper scripts
+        /nix/store/*coreutils*/bin/*                                              rix,
+        /nix/store/*-gnugrep*/bin/grep                                            rix,
+        /nix/store/*-gnused*/bin/sed                                              rix,
+        /nix/store/*-gawk*/bin/{awk,gawk}                                         rix,
+        /nix/store/*-findutils*/bin/find                                          rix,
+        /run/current-system/sw/bin/{grep,sed,awk,find}                            rix,
+        # D-Bus and X11 utilities used by xdg-settings
+        /nix/store/*-dbus*/bin/dbus-send                                          rix,
+        /nix/store/*-xprop*/bin/xprop                                             rix,
+
+        # Browser policies (Brave/Chromium system-managed policies)
+        /etc/brave/policies/                                                      r,
+        /etc/brave/policies/**                                                    r,
+        /etc/chromium/policies/                                                   r,
+        /etc/chromium/policies/**                                                 r,
+
+        # NSS certificate database (client certificates, CA trust)
+        owner @{HOME}/.pki/nssdb/                                                 rw,
+        owner @{HOME}/.pki/nssdb/**                                               rwk,
 
         # NixOS shared resources. On NixOS fonts, gsettings schemas, icon
         # themes, translations, xkb config, fontconfig caches, GDK pixbuf
@@ -512,10 +625,17 @@ in {
         /etc/machine-id                                                           r,
         @{sys}/devices/system/cpu/**                                              r,
 
-        # Hardware detection (GPU/PCI enumeration, active tty)
-        @{sys}/bus/pci/devices/                                                   r,
-        @{sys}/devices/pci*/**                                                    r,
-        @{sys}/devices/virtual/tty/tty0/active                                    r,
+        # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
+        @{sys}/bus/                                                                r,
+        @{sys}/bus/pci/devices/                                                    r,
+        @{sys}/bus/usb/devices/                                                    r,
+        @{sys}/class/                                                              r,
+        @{sys}/devices/pci*/**                                                     r,
+        @{sys}/devices/virtual/tty/tty0/active                                     r,
+        @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
+        @{sys}/devices/virtual/dmi/id/product_name                                 r,
+        # Disk enumeration (download location detection)
+        /dev/disk/by-uuid/                                                         r,
 
         # Device access
         /dev/urandom                                                              r,
@@ -526,6 +646,8 @@ in {
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
+        # Camera (video calls, webcam)
+        /dev/video*                                                               rw,
 
         # Silencer
         deny /etc/opt/                                                            w,
@@ -574,6 +696,8 @@ in {
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
             /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            # glibc charset conversion (gconv-modules is a text file, not .so)
+            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
 
             capability setgid,
             capability setuid,
@@ -606,19 +730,22 @@ in {
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
             /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            # glibc charset conversion (gconv-modules is a text file, not .so)
+            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
 
             /nix/store/*-brave*/bin/**                               r,
 
+            # Shell and coreutils for the NixOS wrapper script. The wrapper
+            # calls readlink, dirname, mkdir, touch, cat via system PATH
+            # (/run/current-system/sw/bin/), which symlinks to the coreutils
+            # multicall binary. AppArmor resolves symlinks, so we must allow
+            # the coreutils binary itself (rix = read+inherit+exec).
             /nix/store/*/bin/{sh,bash,dash}                         rix,
-            /nix/store/*coreutils*/bin/cat                         rix,
-            /nix/store/*coreutils*/bin/dirname                     rix,
-            /nix/store/*coreutils*/bin/mkdir                       rix,
-            /nix/store/*coreutils*/bin/readlink                    rix,
-            /nix/store/*coreutils*/bin/touch                       rix,
-            /nix/store/*which*/bin/which                           rix,
+            /nix/store/*coreutils*/bin/*                            rix,
+            /run/current-system/sw/bin/{readlink,dirname,mkdir,touch,cat} rix,
 
             /nix/store/*-brave*/opt/brave.com/brave/brave          rPx,
-            /nix/store/*-brave*/opt/brave.com/brave/brave-browser r,
+            /nix/store/*-brave*/opt/brave.com/brave/brave-browser  rix,
 
             owner @{PROC}/@{pid}/fd/@{int}                         w,
 
@@ -686,6 +813,8 @@ in {
 
             # NixOS shared libraries (see abstractions/electron for rationale)
             /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            # glibc charset conversion (gconv-modules is a text file, not .so)
+            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
 
             capability setgid,
             capability setuid,
