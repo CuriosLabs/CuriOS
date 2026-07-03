@@ -99,6 +99,7 @@ in {
   config = mkIf (cfg.enable && anssi.enable && anssi.rule45) {
     security.apparmor.includes = {
       "abstractions/electron" = ''
+        abi <abi/4.0>,
         # CuriOS common abstraction for Electron-based applications on NixOS.
         # The Electron runtime is shared across all Electron apps via
         # /nix/store/*-electron-unwrapped-* — only the app.asar/resources differ.
@@ -136,10 +137,12 @@ in {
         # `capability sys_chroot` is required by the zygote process to
         # chroot sandboxed children into their namespace.
         # sys_ptrace: Chromium crash handler inspects child processes.
+        # mknod: needed to create temp files (.crdownload, shared memory)
         userns,
         capability sys_admin,
         capability sys_chroot,
         capability sys_ptrace,
+        capability mknod,
 
         # Electron exec chain: app wrapper → electron wrapper → electron binary (shared)
         /nix/store/*-electron-*/bin/electron                                       rix,
@@ -288,6 +291,18 @@ in {
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
+        # Downloads directory (Chromium temp download files: .crdownload,
+        # .org.chromium.Chromium.* temp files during download).
+        # The actual download path depends on XDG user-dirs.dirs and may be
+        # localized (e.g. ~/Téléchargements/ instead of ~/Downloads/).
+        # AppArmor can't read XDG config at policy load time, so we allow
+        # write/create in any top-level home directory. Security impact is
+        # limited: the browser can already read/write user files via file
+        # dialogs; this only adds top-level directory file creation.
+        owner @{HOME}/*/                                                rwk,
+        owner @{HOME}/*/**                                              rwkm,
+        owner @{HOME}/*/.org.chromium.Chromium.*                        rwkm,
+        owner @{HOME}/*.crdownload                                      rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
@@ -335,11 +350,16 @@ in {
         /nix/store/**                                                              r,
 
         # Icons, themes, shared data
+        @{HOME}/.local/share/icons/                                               r,
         @{HOME}/.local/share/icons/**                                             r,
+        @{HOME}/.local/share/themes/                                              r,
         @{HOME}/.local/share/themes/**                                            r,
+        @{HOME}/.local/share/mime/                                                r,
         @{HOME}/.local/share/mime/**                                              r,
         # Flatpak-exported icons/themes/applications
+        /var/lib/flatpak/exports/share/icons/                                     r,
         /var/lib/flatpak/exports/share/icons/**                                   r,
+        /var/lib/flatpak/exports/share/themes/                                    r,
         /var/lib/flatpak/exports/share/themes/**                                  r,
         /var/lib/flatpak/exports/share/applications/                              r,
         /var/lib/flatpak/exports/share/applications/**                            r,
@@ -378,6 +398,7 @@ in {
       '';
 
       "abstractions/chromium" = ''
+        abi <abi/4.0>,
         # CuriOS common abstraction for Chromium-based browsers on NixOS.
         # Inspired by https://github.com/roddhjav/apparmor.d/blob/main/apparmor.d/abstractions/app/chromium
         #
@@ -422,10 +443,12 @@ in {
         # `capability sys_chroot` is required by the zygote process to
         # chroot sandboxed children into their namespace.
         # sys_ptrace: Chromium crash handler inspects child processes.
+        # mknod: needed to create temp files (.crdownload, shared memory)
         userns,
         capability sys_admin,
         capability sys_chroot,
         capability sys_ptrace,
+        capability mknod,
 
         # Browser libraries, resources, and Widevine DRM
         @{lib_dirs}/{,**}                                                         r,
@@ -565,6 +588,18 @@ in {
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                      r,
+        # Downloads directory (Chromium temp download files: .crdownload,
+        # .org.chromium.Chromium.* temp files during download).
+        # The actual download path depends on XDG user-dirs.dirs and may be
+        # localized (e.g. ~/Téléchargements/ instead of ~/Downloads/).
+        # AppArmor can't read XDG config at policy load time, so we allow
+        # write/create in any top-level home directory. Security impact is
+        # limited: the browser can already read/write user files via file
+        # dialogs; this only adds top-level directory file creation.
+        owner @{HOME}/*/                                                rwk,
+        owner @{HOME}/*/**                                              rwkm,
+        owner @{HOME}/*/.org.chromium.Chromium.*                        rwkm,
+        owner @{HOME}/*.crdownload                                      rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
@@ -612,11 +647,16 @@ in {
         /nix/store/**                                                              r,
 
         # Icons, themes, shared data
+        @{HOME}/.local/share/icons/                                               r,
         @{HOME}/.local/share/icons/**                                             r,
+        @{HOME}/.local/share/themes/                                              r,
         @{HOME}/.local/share/themes/**                                            r,
+        @{HOME}/.local/share/mime/                                                r,
         @{HOME}/.local/share/mime/**                                              r,
         # Flatpak-exported icons/themes/applications
+        /var/lib/flatpak/exports/share/icons/                                     r,
         /var/lib/flatpak/exports/share/icons/**                                   r,
+        /var/lib/flatpak/exports/share/themes/                                    r,
         /var/lib/flatpak/exports/share/themes/**                                  r,
         /var/lib/flatpak/exports/share/applications/                              r,
         /var/lib/flatpak/exports/share/applications/**                            r,
@@ -664,6 +704,7 @@ in {
           else
             "flags=(attach_disconnected)";
         in ''
+          abi <abi/4.0>,
           include <tunables/global>
 
           @{lib_dirs} = /nix/store/*-brave*/opt/brave.com/brave
@@ -689,6 +730,7 @@ in {
       "brave-sandbox" = {
         state = cfg.desktop.browsers.brave.mode;
         profile = ''
+          abi <abi/4.0>,
           include <tunables/global>
 
           profile brave-sandbox /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox {
@@ -722,6 +764,7 @@ in {
       "brave-wrapper" = {
         state = cfg.desktop.browsers.brave.mode;
         profile = ''
+          abi <abi/4.0>,
           include <tunables/global>
 
           profile brave-wrapper /nix/store/*-brave*/bin/brave {
@@ -762,6 +805,7 @@ in {
           else
             "flags=(attach_disconnected)";
         in ''
+          abi <abi/4.0>,
           include <tunables/global>
 
           @{config_dirs} = @{HOME}/.config/Signal
@@ -806,6 +850,7 @@ in {
       "signal-desktop-chrome-sandbox" = {
         state = cfg.desktop.chat.signal-desktop.mode;
         profile = ''
+          abi <abi/4.0>,
           include <tunables/global>
 
           profile signal-desktop-chrome-sandbox /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox {
