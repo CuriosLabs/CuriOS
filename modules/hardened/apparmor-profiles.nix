@@ -116,14 +116,7 @@ in {
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
-        # library — including glibc (libdl.so.2, libc.so.6, ld-linux) —
-        # lives in /nix/store and must be allowed explicitly. Without this
-        # the dynamic loader aborts on the first exec with:
-        #   "error while loading shared libraries: libdl.so.2: cannot open
-        #    shared object file: No such file or directory"
-        # Recursive to cover DRI drivers (lib/dri/), NSS modules, etc.
-        # The nix store is world-readable by design, so this is not a
-        # meaningful security boundary on NixOS.
+        # library lives in /nix/store and must be allowed explicitly.
         /nix/store/*/lib{,32,64}/**.so*                                          mr,
 
         # glibc charset conversion (gconv-modules is a text file, not .so)
@@ -298,16 +291,12 @@ in {
         owner @{HOME}/.config/user-dirs.dirs                                      r,
         # Downloads directory (Chromium temp download files: .crdownload,
         # .org.chromium.Chromium.* temp files during download).
-        # The actual download path depends on XDG user-dirs.dirs and may be
-        # localized (e.g. ~/Téléchargements/ instead of ~/Downloads/).
         # AppArmor can't read XDG config at policy load time, so we allow
-        # write/create in any top-level home directory. Security impact is
-        # limited: the browser can already read/write user files via file
-        # dialogs; this only adds top-level directory file creation.
-        owner @{HOME}/*/                                                rwk,
-        owner @{HOME}/*/**                                              rwkm,
-        owner @{HOME}/*/.org.chromium.Chromium.*                        rwkm,
-        owner @{HOME}/*.crdownload                                      rwkm,
+        # write/create in any top-level home directory.
+        owner @{HOME}/*/                                                          rwk,
+        owner @{HOME}/*/**                                                        rwkm,
+        owner @{HOME}/*/.org.chromium.Chromium.*                                  rwkm,
+        owner @{HOME}/*.crdownload                                                rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
@@ -349,10 +338,8 @@ in {
         # /etc/fonts/. Upstream abstractions only cover FHS paths.
         # The nix store is world-readable by design, so granting read
         # access to it is not a meaningful security boundary on NixOS —
-        # equivalent to /usr/share/** r on FHS distros. AppArmor's value
-        # here is in restricting writes, network, capabilities, and user
-        # data access, not reads of world-readable system files.
-        /nix/store/**                                                              r,
+        # equivalent to /usr/share/** r on FHS distros.
+        /nix/store/**                                                             r,
 
         # Icons, themes, shared data
         @{HOME}/.local/share/icons/                                               r,
@@ -374,18 +361,18 @@ in {
         @{sys}/devices/system/cpu/**                                              r,
 
         # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
-        @{sys}/bus/                                                                r,
-        @{sys}/bus/pci/devices/                                                    r,
-        @{sys}/bus/usb/devices/                                                    r,
-        @{sys}/class/                                                              r,
-        @{sys}/devices/pci*/**                                                     r,
-        @{sys}/devices/virtual/tty/tty0/active                                     r,
+        @{sys}/bus/                                                               r,
+        @{sys}/bus/pci/devices/                                                   r,
+        @{sys}/bus/usb/devices/                                                   r,
+        @{sys}/class/                                                             r,
+        @{sys}/devices/pci*/**                                                    r,
+        @{sys}/devices/virtual/tty/tty0/active                                    r,
         @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
-        @{sys}/devices/virtual/dmi/id/product_name                                 r,
-        @{sys}/devices/virtual/dmi/id/board_vendor                                 r,
-        @{sys}/devices/virtual/dmi/id/bios_vendor                                  r,
+        @{sys}/devices/virtual/dmi/id/product_name                                r,
+        @{sys}/devices/virtual/dmi/id/board_vendor                                r,
+        @{sys}/devices/virtual/dmi/id/bios_vendor                                 r,
         # Disk enumeration (download location detection)
-        /dev/disk/by-uuid/                                                         r,
+        /dev/disk/by-uuid/                                                        r,
 
         # Device access
         /dev/urandom                                                              r,
@@ -401,19 +388,13 @@ in {
 
         # Silencer
         deny /etc/opt/                                                            w,
-        deny @{HOME}/.local/share/gvfs-metadata/*                                r,
+        deny @{HOME}/.local/share/gvfs-metadata/*                                 r,
       '';
 
       "abstractions/chromium" = ''
         abi <abi/4.0>,
         # CuriOS common abstraction for Chromium-based browsers on NixOS.
         # Inspired by https://github.com/roddhjav/apparmor.d/blob/main/apparmor.d/abstractions/app/chromium
-        #
-        # This abstraction is the browser counterpart to abstractions/electron:
-        # electron covers apps that bundle the Electron runtime, while this
-        # covers apps that ship their own Chromium (Brave, Chromium, etc.).
-        # Both share the same NixOS-specific rules (nix-store shared libraries,
-        # Chromium sandbox /proc access, DRI, D-Bus, PipeWire, etc.).
         #
         # REQUIRED VARIABLES (define in the calling profile header, before this include):
         #   @{lib_dirs}    — browser library/binary directory
@@ -429,14 +410,7 @@ in {
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
-        # library — including glibc (libdl.so.2, libc.so.6, ld-linux) —
-        # lives in /nix/store and must be allowed explicitly. Without this
-        # the dynamic loader aborts on the first exec with:
-        #   "error while loading shared libraries: libdl.so.2: cannot open
-        #    shared object file: No such file or directory"
-        # Recursive to cover DRI drivers (lib/dri/), NSS modules, etc.
-        # The nix store is world-readable by design, so this is not a
-        # meaningful security boundary on NixOS.
+        # library lives in /nix/store and must be allowed explicitly.
         /nix/store/*/lib{,32,64}/**.so*                                          mr,
 
         # glibc charset conversion (gconv-modules is a text file, not .so)
@@ -602,16 +576,12 @@ in {
         owner @{HOME}/.config/user-dirs.dirs                                      r,
         # Downloads directory (Chromium temp download files: .crdownload,
         # .org.chromium.Chromium.* temp files during download).
-        # The actual download path depends on XDG user-dirs.dirs and may be
-        # localized (e.g. ~/Téléchargements/ instead of ~/Downloads/).
         # AppArmor can't read XDG config at policy load time, so we allow
-        # write/create in any top-level home directory. Security impact is
-        # limited: the browser can already read/write user files via file
-        # dialogs; this only adds top-level directory file creation.
-        owner @{HOME}/*/                                                rwk,
-        owner @{HOME}/*/**                                              rwkm,
-        owner @{HOME}/*/.org.chromium.Chromium.*                        rwkm,
-        owner @{HOME}/*.crdownload                                      rwkm,
+        # write/create in any top-level home directory.
+        owner @{HOME}/*/                                                          rwk,
+        owner @{HOME}/*/**                                                        rwkm,
+        owner @{HOME}/*/.org.chromium.Chromium.*                                  rwkm,
+        owner @{HOME}/*.crdownload                                                rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                       r,
         owner @{HOME}/.local/share/applications/                                  r,
@@ -656,7 +626,7 @@ in {
         # equivalent to /usr/share/** r on FHS distros. AppArmor's value
         # here is in restricting writes, network, capabilities, and user
         # data access, not reads of world-readable system files.
-        /nix/store/**                                                              r,
+        /nix/store/**                                                             r,
 
         # Icons, themes, shared data
         @{HOME}/.local/share/icons/                                               r,
@@ -678,18 +648,18 @@ in {
         @{sys}/devices/system/cpu/**                                              r,
 
         # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
-        @{sys}/bus/                                                                r,
-        @{sys}/bus/pci/devices/                                                    r,
-        @{sys}/bus/usb/devices/                                                    r,
-        @{sys}/class/                                                              r,
-        @{sys}/devices/pci*/**                                                     r,
-        @{sys}/devices/virtual/tty/tty0/active                                     r,
+        @{sys}/bus/                                                               r,
+        @{sys}/bus/pci/devices/                                                   r,
+        @{sys}/bus/usb/devices/                                                   r,
+        @{sys}/class/                                                             r,
+        @{sys}/devices/pci*/**                                                    r,
+        @{sys}/devices/virtual/tty/tty0/active                                    r,
         @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
-        @{sys}/devices/virtual/dmi/id/product_name                                 r,
-        @{sys}/devices/virtual/dmi/id/board_vendor                                 r,
-        @{sys}/devices/virtual/dmi/id/bios_vendor                                  r,
+        @{sys}/devices/virtual/dmi/id/product_name                                r,
+        @{sys}/devices/virtual/dmi/id/board_vendor                                r,
+        @{sys}/devices/virtual/dmi/id/bios_vendor                                 r,
         # Disk enumeration (download location detection)
-        /dev/disk/by-uuid/                                                         r,
+        /dev/disk/by-uuid/                                                        r,
 
         # Device access
         /dev/urandom                                                              r,
@@ -705,7 +675,7 @@ in {
 
         # Silencer
         deny /etc/opt/                                                            w,
-        deny @{HOME}/.local/share/gvfs-metadata/*                                r,
+        deny @{HOME}/.local/share/gvfs-metadata/*                                 r,
       '';
     };
 
@@ -751,9 +721,9 @@ in {
             include <abstractions/base>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            /nix/store/*/lib{,32,64}/**.so*                          mr,
             # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
+            /nix/store/*/lib{,32,64}/gconv/**                        mr,
 
             capability setgid,
             capability setuid,
@@ -762,13 +732,13 @@ in {
             capability sys_resource,
 
             /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox mr,
-            /nix/store/*-brave*/opt/brave.com/brave/brave          rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/brave            rPx,
 
-            @{PROC}                                                r,
-            @{PROC}/@{pids}/                                       r,
-            owner @{PROC}/@{pid}/fd/                               r,
-            owner @{PROC}/@{pid}/oom_adj                           rw,
-            owner @{PROC}/@{pid}/oom_score_adj                     rw,
+            @{PROC}                                                  r,
+            @{PROC}/@{pids}/                                         r,
+            owner @{PROC}/@{pid}/fd/                                 r,
+            owner @{PROC}/@{pid}/oom_adj                             rw,
+            owner @{PROC}/@{pid}/oom_score_adj                       rw,
 
             include if exists <local/brave-sandbox>
           }
@@ -786,25 +756,25 @@ in {
             include <abstractions/consoles>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            /nix/store/*/lib{,32,64}/**.so*                               mr,
             # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
+            /nix/store/*/lib{,32,64}/gconv/**                             mr,
 
-            /nix/store/*-brave*/bin/**                               r,
+            /nix/store/*-brave*/bin/**                                    r,
 
             # Shell and coreutils for the NixOS wrapper script. The wrapper
             # calls readlink, dirname, mkdir, touch, cat via system PATH
             # (/run/current-system/sw/bin/), which symlinks to the coreutils
             # multicall binary. AppArmor resolves symlinks, so we must allow
             # the coreutils binary itself (rix = read+inherit+exec).
-            /nix/store/*/bin/{sh,bash,dash}                         rix,
-            /nix/store/*coreutils*/bin/*                            rix,
+            /nix/store/*/bin/{sh,bash,dash}                               rix,
+            /nix/store/*coreutils*/bin/*                                  rix,
             /run/current-system/sw/bin/{readlink,dirname,mkdir,touch,cat} rix,
 
-            /nix/store/*-brave*/opt/brave.com/brave/brave          rPx,
-            /nix/store/*-brave*/opt/brave.com/brave/brave-browser  rix,
+            /nix/store/*-brave*/opt/brave.com/brave/brave                 rPx,
+            /nix/store/*-brave*/opt/brave.com/brave/brave-browser         rix,
 
-            owner @{PROC}/@{pid}/fd/@{int}                         w,
+            owner @{PROC}/@{pid}/fd/@{int}                                w,
 
             include if exists <local/brave-wrapper>
           }
@@ -829,7 +799,7 @@ in {
             include <abstractions/electron>
 
             # Signal Desktop wrapper (inherits profile through electron exec chain)
-            /nix/store/*-signal-desktop-*/bin/signal-desktop                       rix,
+            /nix/store/*-signal-desktop-*/bin/signal-desktop                        rix,
 
             # Chromium sandbox (separate profile with elevated capabilities)
             /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox       rPx -> signal-desktop-chrome-sandbox,
@@ -871,9 +841,9 @@ in {
             include <abstractions/base>
 
             # NixOS shared libraries (see abstractions/electron for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                                       mr,
+            /nix/store/*/lib{,32,64}/**.so*                                         mr,
             # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                                     mr,
+            /nix/store/*/lib{,32,64}/gconv/**                                       mr,
 
             capability setgid,
             capability setuid,
