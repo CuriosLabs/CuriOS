@@ -164,8 +164,8 @@ in {
 
         # User config and cache (uses variables from calling profile).
         # 'm' (mmap) needed for WidevineCdm .so loaded from config dir.
-        owner @{config_dirs}/**                                                    rwkm,
-        owner @{cache_dirs}/**                                                     rwkm,
+        owner @{config_dirs}/**                                                   rwkm,
+        owner @{cache_dirs}/**                                                    rwkm,
 
         # Temporary files. /tmp/ directory listing needed by Chromium.
         /tmp/                                                                     r,
@@ -175,17 +175,17 @@ in {
         # in /tmp/.org.chromium.Chromium.* — 'rwk' on the file pattern allows
         # mknod+read of top-level files, 'wk' on */ allows mkdir of dirs,
         # 'rwkm' on /** covers contents.
-        owner /tmp/.org.chromium.Chromium.*                                        rwk,
-        owner /tmp/.org.chromium.Chromium.*/                                       rwk,
-        owner /tmp/.org.chromium.Chromium.*/**                                     rwkm,
+        owner /tmp/.org.chromium.Chromium.*                                       rwk,
+        owner /tmp/.org.chromium.Chromium.*/                                      rwk,
+        owner /tmp/.org.chromium.Chromium.*/**                                    rwkm,
         # Brave uses a variant without the leading dot
-        owner /tmp/org.chromium.Chromium.*                                         rwk,
-        owner /tmp/org.chromium.Chromium.*/                                        rwk,
-        owner /tmp/org.chromium.Chromium.*/**                                      rwkm,
+        owner /tmp/org.chromium.Chromium.*                                        rwk,
+        owner /tmp/org.chromium.Chromium.*/                                       rwk,
+        owner /tmp/org.chromium.Chromium.*/**                                     rwkm,
         # Chromium scoped temp dirs (file picker, downloads, plugins).
-        owner /tmp/scoped_dir*/                                                    rwk,
-        owner /tmp/scoped_dir*/**                                                  rwkm,
-        owner @{HOME}/.tmp/**                                                      rw,
+        owner /tmp/scoped_dir*/                                                   rwk,
+        owner /tmp/scoped_dir*/**                                                 rwkm,
+        owner @{HOME}/.tmp/**                                                     rw,
 
         # /proc access for Chromium sandbox
         owner @{PROC}/@{pid}/fd/                                                  r,
@@ -215,10 +215,10 @@ in {
         # Chromium processes read each other's proc info (parent reads
         # child stats, ThreadPool reads sibling thread status). These must
         # be non-owner since the reading process differs from the target.
-        @{PROC}/@{pid}/stat                                                        r,
-        @{PROC}/@{pid}/task/@{tid}/status                                          r,
-        @{PROC}/@{pid}/comm                                                        r,
-        @{PROC}/@{pid}/statm                                                       r,
+        @{PROC}/@{pid}/stat                                                       r,
+        @{PROC}/@{pid}/task/@{tid}/status                                         r,
+        @{PROC}/@{pid}/comm                                                       r,
+        @{PROC}/@{pid}/statm                                                      r,
         # Memory profiling (Chromium memory infrastructure)
         owner @{PROC}/@{pid}/clear_refs                                           w,
 
