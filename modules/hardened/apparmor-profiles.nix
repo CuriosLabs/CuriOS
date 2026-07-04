@@ -78,7 +78,7 @@ in {
         brave = {
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
-            default = "complain";
+            default = "enforce";
             description = "AppArmor profile mode for Brave.";
           };
         };
@@ -88,7 +88,7 @@ in {
         signal-desktop = {
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
-            default = "complain";
+            default = "enforce";
             description = "AppArmor profile mode for Signal Desktop.";
           };
         };

@@ -317,12 +317,12 @@
         "desktop": {
           "browsers": {
             "brave": {
-              "mode": "complain"
+              "mode": "enforce"
             }
           },
           "chat": {
             "signal-desktop": {
-              "mode": "complain"
+              "mode": "enforce"
             }
           }
         }
