@@ -41,11 +41,10 @@
       };
 
       # XDG user directories defaults
+      # $HOME directories are updated by xdg-user-dirs-update
       etc."xdg/user-dirs.defaults".text = ''
         DESKTOP=Desktop
         DOWNLOAD=Downloads
-        TEMPLATES=Templates
-        PUBLICSHARE=Public
         DOCUMENTS=Documents
         MUSIC=Music
         PICTURES=Pictures
@@ -75,7 +74,11 @@
       terminal-exec = {
         enable = true;
         settings = {
-          COSMIC = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" "com.system76.CosmicTerm.desktop" ];
+          COSMIC = [
+            "Alacritty.desktop"
+            "com.mitchellh.ghostty.desktop"
+            "com.system76.CosmicTerm.desktop"
+          ];
           default = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" ];
         };
       };
