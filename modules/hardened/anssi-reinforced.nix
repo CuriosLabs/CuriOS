@@ -44,10 +44,19 @@
     };
 
     security = {
-      apparmor = lib.mkIf config.curios.hardened.anssi.reinforced.rule45 {
-        enable = true;
+      apparmor = {
+        enable = lib.mkDefault config.curios.hardened.anssi.reinforced.rule45;
         enableCache = true;
         killUnconfinedConfinables = true;
+      };
+
+      auditd.enable = config.curios.hardened.anssi.reinforced.rule45;
+
+      audit = {
+        enable = config.curios.hardened.anssi.reinforced.rule45;
+        rules = [
+          "-a exit,always -F arch=b64 -S execve -F auid>=1000 -F auid!=-1 -k audit_watch_apparmor"
+        ];
       };
 
       sudo = lib.mkIf config.curios.hardened.anssi.reinforced.rule39 {

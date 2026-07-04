@@ -312,6 +312,21 @@
           "rule45": false
         }
       },
+      "apparmor-profiles": {
+        "enable": true,
+        "desktop": {
+          "browsers": {
+            "brave": {
+              "mode": "complain"
+            }
+          },
+          "chat": {
+            "signal-desktop": {
+              "mode": "complain"
+            }
+          }
+        }
+      },
       "cups": {
         "enable": false
       },

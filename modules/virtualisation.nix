@@ -42,9 +42,10 @@
         };
         extraFlags = lib.mkOption {
           type = lib.types.listOf lib.types.str;
-          default = [];
+          default = [ ];
           example = [ "--disable-network-policy" "--flannel-backend=host-gw" ];
-          description = "Extra flags passed to k3s (e.g. for networking or feature tweaks).";
+          description =
+            "Extra flags passed to k3s (e.g. for networking or feature tweaks).";
         };
       };
       wine.enable = lib.mkOption {
@@ -62,6 +63,11 @@
       # See https://wiki.nixos.org/wiki/Docker for more settings.
       docker = {
         enable = lib.mkDefault config.curios.virtualisation.docker.enable;
+        # dockerd needs apparmor_parser on its PATH to load the "docker-default"
+        # profile at container start. Without it, containers run unconfined
+        # despite docker inspect reporting the profile name.
+        extraPackages =
+          lib.optional config.security.apparmor.enable pkgs.apparmor-parser;
       };
       # Podman
       containers.enable =
@@ -87,6 +93,32 @@
       };
     };
 
+    # Docker + AppArmor on NixOS requires two workarounds:
+    #
+    # 1. containerd's apparmor.HostSupports() hardcodes /sbin/apparmor_parser
+    #    (os.Stat, not PATH lookup) to detect whether AppArmor is available.
+    #    NixOS has no /sbin, so the check always fails and dockerd never loads
+    #    the "docker-default" profile — containers run unconfined silently.
+    #
+    # 2. dockerd's macroExists() checks /etc/apparmor.d/tunables/global via
+    #    os.Stat to decide whether to add #include <tunables/global> to the
+    #    docker-default template. NixOS's linkFarm doesn't link tunables/
+    #    from the apparmor-profiles package, so the check fails and the
+    #    template falls back to @{PROC}=/proc/ — but abstractions/base still
+    #    references @{HOMEDIRS}, causing a parse error. We add tunables/global
+    #    to security.apparmor.includes (which writes to the linkFarm at build
+    #    time) so macroExists() passes; the parser then resolves the full
+    #    tunables/ tree from the apparmor-profiles package on its Include path.
+    systemd.tmpfiles.rules = lib.optional config.security.apparmor.enable
+      "L+ /sbin/apparmor_parser - - - - ${pkgs.apparmor-parser}/bin/apparmor_parser";
+
+    security.apparmor.includes =
+      lib.optionalAttrs config.security.apparmor.enable {
+        "tunables/global" = ''
+          include "${pkgs.apparmor-profiles}/etc/apparmor.d/tunables/global"
+        '';
+      };
+
     # k3s - lightweight Kubernetes for local development
     # Kubeconfig is written to /etc/rancher/k3s/k3s.yaml
     # Typical developer usage after enabling:
@@ -98,7 +130,8 @@
       enable = true;
       role = "server";
       disable = config.curios.virtualisation.k3s.disable;
-      extraFlags = lib.concatStringsSep " " config.curios.virtualisation.k3s.extraFlags;
+      extraFlags =
+        lib.concatStringsSep " " config.curios.virtualisation.k3s.extraFlags;
     };
 
     # VMs created by virt-manager can break after a libvirt update and a nix-collect-garbage, See: https://github.com/NixOS/nixpkgs/pull/421549 https://github.com/NixOS/nixpkgs/issues/378894
