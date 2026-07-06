@@ -6,7 +6,7 @@
 # `sudo aa-status` `sudo aa-status --complaining`
 # `sudo ausearch -m AVC -ts today -c brave 2>/dev/nulla-i || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
 # Clear AppArmor change when debugging:
-# `sudo rm -rf /var/cache/apparmor/* && sudo systemctl restart apparmor`
+# `sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {} && sudo systemctl restart apparmor`
 # A shared `abstractions/electron` include is provided for Electron-based apps.
 # It encapsulates the common NixOS Electron runtime rules (shared binary chain,
 # /proc sandbox access, DRI/GPU, display, D-Bus, audio, etc.). App profiles need
