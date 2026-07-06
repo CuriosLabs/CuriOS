@@ -172,6 +172,7 @@ nixos-upgrade: lint
         if systemctl is-active --quiet apparmor.service; then
           printf "\e[32m Clearing AppArmor cache...\e[0m\n"
           sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {}
+          sudo truncate -s 0 /var/log/audit/audit.log
           sudo systemctl restart apparmor
         fi
       fi
