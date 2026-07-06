@@ -4,7 +4,8 @@
 # `eza -l -tree /etc/apparmor.d/`
 # Useful commands:
 # `sudo aa-status` `sudo aa-status --complaining`
-# `sudo ausearch -m AVC -ts today -c brave 2>/dev/null || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
+# sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave
+# sudo grep -E "apparmor=\"(ALLOWED|DENIED)\"" /var/log/audit/audit.log | grep -i onlyoffice > /tmp/onlyoffice-audit.log
 # Clear AppArmor change when debugging:
 # `sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {} && sudo systemctl restart apparmor`
 # A shared `abstractions/electron` include is provided for Electron-based apps.
@@ -97,6 +98,18 @@ in {
             type = types.enum [ "complain" "enforce" "disable" ];
             default = "enforce";
             description = "AppArmor profile mode for Signal Desktop.";
+          };
+        };
+      };
+
+      office = {
+        onlyoffice = {
+          mode = mkOption {
+            type = types.enum [ "complain" "enforce" "disable" ];
+            # TODO: more OnlyOffice testing before changing default mode to enforce
+            default = "complain";
+            description =
+              "AppArmor profile mode for OnlyOffice desktop editors.";
           };
         };
       };
@@ -978,6 +991,147 @@ in {
             owner @{PROC}/@{pid}/oom_score_adj                                rw,
 
             include if exists <local/discord-sandbox>
+          }
+        '';
+      };
+
+      "onlyoffice-desktopeditors" = {
+        state = cfg.desktop.office.onlyoffice.mode;
+        profile = let
+          modeFlag = if cfg.desktop.office.onlyoffice.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          @{config_dirs} = @{HOME}/.config/onlyoffice
+          @{cache_dirs} = @{HOME}/.cache/onlyoffice
+          @{lib_dirs} = /nix/store/*onlyoffice-desktopeditors-*-fhsenv-rootfs
+
+          profile onlyoffice-desktopeditors /nix/store/*onlyoffice-desktopeditors-*-bwrap ${modeFlag} {
+            include <abstractions/base>
+            include <abstractions/nameservice>
+            include <abstractions/fonts>
+            include <abstractions/dconf>
+            include <abstractions/ssl_certs>
+
+            # Bubblewrap entry script and executor (link chain: bin -> -bwrap)
+            /nix/store/*onlyoffice-desktopeditors-*-bwrap                                    rix,
+            /nix/store/*-container-init                                                      rix,
+            /nix/store/*-ldconfig*/bin/ldconfig                                              rix,
+            /nix/store/*-glibc-*-bin/bin/ldconfig                                            rix,
+            /nix/store/*-onlyoffice-desktopeditors-*-init                                    rix,
+            /nix/store/*onlyoffice-desktopeditors-*/bin/.onlyoffice-desktopeditors-wrapped   rix,
+            /nix/store/*onlyoffice-desktopeditors-*/bin/onlyoffice-desktopeditors            rix,
+            /nix/store/*onlyoffice-desktopeditors-*/bin/desktopeditors                       rix,
+            /nix/store/*onlyoffice-desktopeditors-*/bin/DesktopEditors                       rix,
+            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/DesktopEditors      rix,
+
+            # Shell and coreutils (bwrap script, init, ldconfig helpers)
+            /nix/store/*/bin/{sh,bash,dash}                                     rix,
+            /nix/store/*coreutils*/bin/*                                        rix,
+
+            # Bubblewrap binary
+            /nix/store/*-bubblewrap-*/bin/bwrap                                 rix,
+
+            # FHSEnv rootfs (OnlyOffice binaries and libs inside FHS namespace)
+            @{lib_dirs}/                                                        r,
+            @{lib_dirs}/**                                                      mr,
+            @{lib_dirs}/opt/onlyoffice/desktopeditors/DesktopEditors            rix,
+
+            # OnlyOffice binary package (plugins, Qt libs, CEF, converter)
+            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/**             mr,
+            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/converter/x2t  rix,
+
+            # Nix store shared libraries (mmap needed by bwrap and child processes)
+            /nix/store/**                                                       r,
+            /nix/store/*/lib{,32,64}/**.so*                                     mr,
+            /nix/store/*/lib{,32,64}/gconv/**                                   mr,
+            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/editors_helper rix,
+
+            # Root filesystem — bwrap sets up the sandbox namespace via mount,
+            # mkdir, symlink, and mknod under /newroot/, /oldroot/ and /tmp/.
+            /                                                                   r,
+            owner /**                                                           rwk,
+
+            # Mount, pivot_root, unmount (bwrap namespace bootstrap)
+            mount,
+            umount,
+            pivot_root,
+
+            # Network
+            network inet dgram,
+            network inet6 dgram,
+            network inet stream,
+            network inet6 stream,
+            network netlink raw,
+
+            # User config and cache
+            owner @{config_dirs}/                                               rwk,
+            owner @{config_dirs}/**                                             rwkm,
+            owner @{cache_dirs}/                                                rwk,
+            owner @{cache_dirs}/**                                              rwkm,
+
+            # Proc (uid_map, gid_map, setgroups, mountinfo, fd/ for bwrap)
+            @{PROC}/                                                            r,
+            owner @{PROC}/@{pid}/fd/                                            r,
+            owner @{PROC}/@{pid}/fd/@{int}                                      w,
+            owner @{PROC}/@{pid}/uid_map                                        rw,
+            owner @{PROC}/@{pid}/gid_map                                        rw,
+            owner @{PROC}/@{pid}/setgroups                                      rw,
+            owner @{PROC}/@{pid}/mountinfo                                      r,
+            @{PROC}/@{pid}/stat                                                 r,
+            @{PROC}/sys/kernel/overflow{uid,gid}                                r,
+            @{PROC}/sys/fs/inotify/max_user_watches                             r,
+
+            # DRI / GPU (CEF rendering, editors_helper GPU detection)
+            /dev/                                                               r,
+            /dev/dri/                                                           r,
+            /dev/dri/**                                                         rw,
+            /dev/udmabuf                                                        rw,
+
+            # Disk enumeration (save/open file dialog)
+            /dev/disk/by-label/                                                 r,
+
+            # Sysfs (PCI/GPU/CPU enumeration by editors_helper)
+            @{sys}/devices/**                                                   r,
+            @{sys}/devices/system/cpu/**                                        r,
+
+            # Flatpak-exported icons/themes/applications
+            /var/lib/flatpak/exports/share/icons/                               r,
+            /var/lib/flatpak/exports/share/icons/**                             r,
+            /var/lib/flatpak/exports/share/themes/                              r,
+            /var/lib/flatpak/exports/share/themes/**                            r,
+            /var/lib/flatpak/exports/share/applications/                        r,
+            /var/lib/flatpak/exports/share/applications/**                      r,
+
+            # Devices
+            /dev/tty                                                            rw,
+            /dev/null                                                           rw,
+            /dev/urandom                                                        r,
+            /dev/zero                                                           rw,
+
+            # User namespace + bwrap + container-init capabilities
+            userns,
+            capability setpcap,
+            capability sys_admin,
+            capability sys_chroot,
+            capability sys_ptrace,
+            capability mknod,
+
+            # FHS namespace paths (bind-mounted from nix store, root-owned)
+            /usr/**                                                             r,
+
+            # .host-etc (host /etc bind-mounted into bwrap namespace, root-owned)
+            /.host-etc/**                                                       r,
+
+            # Host resolv.conf (bind-mounted into FHS namespace via .host-etc)
+            /etc/resolv.conf                                                    r,
+            /etc/machine-id                                                     r,
+
+            include if exists <local/onlyoffice-desktopeditors>
           }
         '';
       };
