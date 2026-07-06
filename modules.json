@@ -321,6 +321,9 @@
             }
           },
           "chat": {
+            "discord": {
+              "mode": "enforce"
+            },
             "signal-desktop": {
               "mode": "enforce"
             }
