@@ -4,7 +4,7 @@
 # `eza -l -tree /etc/apparmor.d/`
 # Useful commands:
 # `sudo aa-status` `sudo aa-status --complaining`
-# `sudo ausearch -m AVC -ts today -c brave 2>/dev/nulla-i || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
+# `sudo ausearch -m AVC -ts today -c brave 2>/dev/null || sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave`
 # Clear AppArmor change when debugging:
 # `sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {} && sudo systemctl restart apparmor`
 # A shared `abstractions/electron` include is provided for Electron-based apps.
@@ -85,6 +85,13 @@ in {
       };
 
       chat = {
+        discord = {
+          mode = mkOption {
+            type = types.enum [ "complain" "enforce" "disable" ];
+            default = "enforce";
+            description = "AppArmor profile mode for Discord.";
+          };
+        };
         signal-desktop = {
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
@@ -864,6 +871,113 @@ in {
             deny /dev/pts/@{u16} rw,
 
             include if exists <local/signal-desktop-chrome-sandbox>
+          }
+        '';
+      };
+
+      "discord" = {
+        state = cfg.desktop.chat.discord.mode;
+        profile = let
+          modeFlag = if cfg.desktop.chat.discord.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          @{lib_dirs} = /nix/store/*-discord-*/opt/Discord
+          @{config_dirs} = @{HOME}/.config/discord
+          @{cache_dirs} = @{HOME}/.cache/discord
+
+          profile discord /nix/store/*-discord-*/opt/Discord/Discord ${modeFlag} {
+            include <abstractions/chromium>
+
+            # Discord wrapper script (created by wrapProgramShell).
+            # The real Electron binary is moved to .Discord-wrapped; the
+            # wrapper sets up env vars, runs stageModules and
+            # disableBreakingUpdates.py, then execs .Discord-wrapped.
+            @{lib_dirs}/Discord                                                        mrix,
+            @{lib_dirs}/.Discord-wrapped                                               mrix,
+
+            # Chrome sandbox (child profile)
+            @{lib_dirs}/chrome-sandbox                                                 rPx -> discord-sandbox,
+
+            # Chrome crashpad handler
+            @{lib_dirs}/chrome_crashpad_handler                                        rix,
+
+            # Discord native modules (libuv-worker needs mmap for .node and .so files,
+            # gpu_encoder_helper needs exec for hardware video encoding)
+            @{lib_dirs}/modules/**                                                     mr,
+            @{lib_dirs}/modules/discord_voice/gpu_encoder_helper                       rix,
+
+            # /etc directory listing (libuv-worker)
+            /etc/                                                                      r,
+
+            # Shell for the wrapper script shebang and stageModules
+            /nix/store/*/bin/{sh,bash,dash}                                            rix,
+            /nix/store/*-discord-stage-modules                                          rix,
+
+            # disableBreakingUpdates.py (run directly by wrapper, shebang → python3)
+            /nix/store/*-disable-breaking-updates.py/bin/disable-breaking-updates.py   rix,
+            /nix/store/*-python3-*/bin/python3                                         rix,
+            /nix/store/*-python3-*/lib/**                                              r,
+
+            # Discord IPC socket
+            owner @{run}/user/@{uid}/discord-ipc-@{int}                                rw,
+
+            # Discord crash dumps and temp files
+            owner /tmp/Discord\ Crashes/                                               rw,
+            owner /tmp/Discord\ Crashes/**                                             rw,
+            owner /tmp/discord.sock                                                    rw,
+            owner /tmp/net-export/                                                     rw,
+            owner /tmp/net-export/**                                                   rw,
+
+            # Discord process management reads other PIDs' cmdline (Utils thread)
+            @{PROC}/@{pid}/cmdline                                                    r,
+
+            # Silencer
+            deny ptrace read,
+
+            # Flatpak app exports (xdg-open resolving links to installed Flatpak apps)
+            /var/lib/flatpak/app/                                                    r,
+            /var/lib/flatpak/app/**                                                  r,
+
+            include if exists <local/discord>
+          }
+        '';
+      };
+
+      "discord-sandbox" = {
+        state = cfg.desktop.chat.discord.mode;
+        profile = ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile discord-sandbox /nix/store/*-discord-*/opt/Discord/chrome-sandbox {
+            include <abstractions/base>
+
+            # NixOS shared libraries (see abstractions/chromium for rationale)
+            /nix/store/*/lib{,32,64}/**.so*                                   mr,
+            # glibc charset conversion (gconv-modules is a text file, not .so)
+            /nix/store/*/lib{,32,64}/gconv/**                                 mr,
+
+            capability setgid,
+            capability setuid,
+            capability sys_admin,
+            capability sys_chroot,
+            capability sys_resource,
+
+            /nix/store/*-discord-*/opt/Discord/chrome-sandbox                 mr,
+            /nix/store/*-discord-*/opt/Discord/Discord                        rPx -> discord,
+
+            @{PROC}                                                           r,
+            @{PROC}/@{pids}/                                                  r,
+            owner @{PROC}/@{pid}/fd/                                          r,
+            owner @{PROC}/@{pid}/oom_adj                                      rw,
+            owner @{PROC}/@{pid}/oom_score_adj                                rw,
+
+            include if exists <local/discord-sandbox>
           }
         '';
       };
