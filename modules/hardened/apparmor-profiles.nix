@@ -1001,6 +1001,7 @@ in {
             # Shell and coreutils (bwrap script, init, ldconfig helpers)
             /nix/store/*/bin/{sh,bash,dash}                                     rix,
             /nix/store/*coreutils*/bin/*                                        rix,
+            /nix/store/*curl-*-bin/bin/curl                                     rix,
 
             # Bubblewrap binary
             /nix/store/*-bubblewrap-*/bin/bwrap                                 rix,
