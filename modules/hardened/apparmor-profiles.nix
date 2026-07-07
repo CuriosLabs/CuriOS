@@ -59,7 +59,7 @@
 # https://hedgedoc.grimmauld.de/s/03eJUe0X3#
 # https://wiki.archlinux.org/title/AppArmor
 
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   inherit (lib) mkIf mkOption types;
@@ -118,6 +118,23 @@ in {
 
   config = mkIf (cfg.enable && anssi.enable && anssi.rule45) {
     security.apparmor.includes = {
+      "abstractions/curios/gconv" = ''
+        abi <abi/4.0>,
+        # glibc charset conversion module
+        # /nix/store/*/lib{,32,64}/gconv/** mr,
+        ${pkgs.glibc}/lib/gconv/*.so            mr,
+        ${pkgs.glibc}/lib/gconv/gconv-modules*  mr,
+      '';
+
+      "abstractions/curios/nss" = ''
+        abi <abi/4.0>,
+        # NSS certificate database (client certificates, CA trust)
+        owner @{HOME}/.pki/nssdb/                        rw,
+        owner @{HOME}/.pki/nssdb/pkcs11.txt              rw,
+        owner @{HOME}/.pki/nssdb/{cert9,key4}.db         rwk,
+        owner @{HOME}/.pki/nssdb/{cert9,key4}.db-journal rw,
+      '';
+
       "abstractions/electron" = ''
         abi <abi/4.0>,
         # CuriOS common abstraction for Electron-based applications on NixOS.
@@ -130,17 +147,17 @@ in {
 
         include <abstractions/base>
         include <abstractions/nameservice>
+        include <abstractions/audio>
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
+        include <abstractions/curios/nss>
+        include <abstractions/curios/gconv>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
         # library lives in /nix/store and must be allowed explicitly.
         /nix/store/*/lib{,32,64}/**.so*                                          mr,
-
-        # glibc charset conversion (gconv-modules is a text file, not .so)
-        /nix/store/*/lib{,32,64}/gconv/**                                        mr,
 
         # Chromium sandbox. On NixOS the nix store is read-only so
         # chrome-sandbox cannot be SUID 4755. Chromium must use unprivileged
@@ -283,19 +300,8 @@ in {
         owner @{run}/user/@{uid}/dconf/**                                         rwk,
         owner @{HOME}/.config/dconf/**                                            r,
 
-        # PipeWire / PulseAudio
-        owner @{run}/user/@{uid}/pipewire-*                                       rw,
-        @{run}/user/@{uid}/pulse/                                                 rw,
-        @{run}/user/@{uid}/pulse/**                                               rw,
-        # PulseAudio cookie (audio authentication)
-        owner @{HOME}/.config/pulse/                                              r,
-        owner @{HOME}/.config/pulse/cookie                                        rwk,
-        owner @{HOME}/.pulse-cookie                                               r,
-        # ALSA sound devices and configuration
-        /dev/snd/                                                                 r,
-        /dev/snd/**                                                               rw,
-        /etc/alsa/                                                                r,
-        /etc/alsa/**                                                              r,
+        # PipeWire
+        owner @{run}/user/*/pipewire-*                                          rw,
 
         # cgroup CPU limits (Chromium resource monitoring)
         @{sys}/fs/cgroup/**                                                       r,
@@ -348,10 +354,6 @@ in {
         /etc/chromium/policies/                                                   r,
         /etc/chromium/policies/**                                                 r,
 
-        # NSS certificate database (client certificates, CA trust)
-        owner @{HOME}/.pki/nssdb/                                                 rw,
-        owner @{HOME}/.pki/nssdb/**                                               rwk,
-
         # NixOS shared resources. On NixOS fonts, gsettings schemas, icon
         # themes, translations, xkb config, fontconfig caches, GDK pixbuf
         # loaders etc. live in /nix/store/ rather than /usr/share/ and
@@ -394,12 +396,6 @@ in {
         # Disk enumeration (download location detection)
         /dev/disk/by-uuid/                                                        r,
 
-        # Device access
-        /dev/urandom                                                              r,
-        /dev/random                                                               r,
-        /dev/null                                                                 rw,
-        /dev/zero                                                                 rw,
-        /dev/log                                                                  w,
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
@@ -424,17 +420,17 @@ in {
 
         include <abstractions/base>
         include <abstractions/nameservice>
+        include <abstractions/audio>
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
+        include <abstractions/curios/gconv>
+        include <abstractions/curios/nss>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
         # library lives in /nix/store and must be allowed explicitly.
         /nix/store/*/lib{,32,64}/**.so*                                          mr,
-
-        # glibc charset conversion (gconv-modules is a text file, not .so)
-        /nix/store/*/lib{,32,64}/gconv/**                                        mr,
 
         # Chromium sandbox. On NixOS the nix store is read-only so
         # chrome-sandbox cannot be SUID 4755. Chromium must use unprivileged
@@ -568,20 +564,6 @@ in {
         owner @{run}/user/@{uid}/dconf/**                                         rwk,
         owner @{HOME}/.config/dconf/**                                            r,
 
-        # PipeWire / PulseAudio
-        owner @{run}/user/@{uid}/pipewire-*                                       rw,
-        @{run}/user/@{uid}/pulse/                                                 rw,
-        @{run}/user/@{uid}/pulse/**                                               rw,
-        # PulseAudio cookie (audio authentication)
-        owner @{HOME}/.config/pulse/                                              r,
-        owner @{HOME}/.config/pulse/cookie                                        rwk,
-        owner @{HOME}/.pulse-cookie                                               r,
-        # ALSA sound devices and configuration
-        /dev/snd/                                                                 r,
-        /dev/snd/**                                                               rw,
-        /etc/alsa/                                                                r,
-        /etc/alsa/**                                                              r,
-
         # cgroup CPU limits (Chromium resource monitoring)
         @{sys}/fs/cgroup/**                                                       r,
 
@@ -633,10 +615,6 @@ in {
         /etc/chromium/policies/                                                   r,
         /etc/chromium/policies/**                                                 r,
 
-        # NSS certificate database (client certificates, CA trust)
-        owner @{HOME}/.pki/nssdb/                                                 rw,
-        owner @{HOME}/.pki/nssdb/**                                               rwk,
-
         # NixOS shared resources. On NixOS fonts, gsettings schemas, icon
         # themes, translations, xkb config, fontconfig caches, GDK pixbuf
         # loaders etc. live in /nix/store/ rather than /usr/share/ and
@@ -681,12 +659,6 @@ in {
         # Disk enumeration (download location detection)
         /dev/disk/by-uuid/                                                        r,
 
-        # Device access
-        /dev/urandom                                                              r,
-        /dev/random                                                               r,
-        /dev/null                                                                 rw,
-        /dev/zero                                                                 rw,
-        /dev/log                                                                  w,
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
@@ -739,11 +711,10 @@ in {
 
           profile brave-sandbox /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox {
             include <abstractions/base>
+            include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
             /nix/store/*/lib{,32,64}/**.so*                          mr,
-            # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                        mr,
 
             capability setgid,
             capability setuid,
@@ -774,11 +745,10 @@ in {
           profile brave-wrapper /nix/store/*-brave*/bin/brave {
             include <abstractions/base>
             include <abstractions/consoles>
+            include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
             /nix/store/*/lib{,32,64}/**.so*                               mr,
-            # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                             mr,
 
             /nix/store/*-brave*/bin/**                                    r,
 
@@ -859,11 +829,10 @@ in {
 
           profile signal-desktop-chrome-sandbox /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox {
             include <abstractions/base>
+            include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/electron for rationale)
             /nix/store/*/lib{,32,64}/**.so*                                         mr,
-            # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                                       mr,
 
             capability setgid,
             capability setuid,
@@ -969,11 +938,10 @@ in {
 
           profile discord-sandbox /nix/store/*-discord-*/opt/Discord/chrome-sandbox {
             include <abstractions/base>
+            include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
             /nix/store/*/lib{,32,64}/**.so*                                   mr,
-            # glibc charset conversion (gconv-modules is a text file, not .so)
-            /nix/store/*/lib{,32,64}/gconv/**                                 mr,
 
             capability setgid,
             capability setuid,
@@ -1016,6 +984,7 @@ in {
             include <abstractions/fonts>
             include <abstractions/dconf>
             include <abstractions/ssl_certs>
+            include <abstractions/curios/gconv>
 
             # Bubblewrap entry script and executor (link chain: bin -> -bwrap)
             /nix/store/*onlyoffice-desktopeditors-*-bwrap                                    rix,
@@ -1048,7 +1017,6 @@ in {
             # Nix store shared libraries (mmap needed by bwrap and child processes)
             /nix/store/**                                                       r,
             /nix/store/*/lib{,32,64}/**.so*                                     mr,
-            /nix/store/*/lib{,32,64}/gconv/**                                   mr,
             /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/editors_helper rix,
 
             # Root filesystem — bwrap sets up the sandbox namespace via mount,
@@ -1109,9 +1077,6 @@ in {
 
             # Devices
             /dev/tty                                                            rw,
-            /dev/null                                                           rw,
-            /dev/urandom                                                        r,
-            /dev/zero                                                           rw,
 
             # User namespace + bwrap + container-init capabilities
             userns,
