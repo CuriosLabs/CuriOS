@@ -118,12 +118,32 @@ in {
 
   config = mkIf (cfg.enable && anssi.enable && anssi.rule45) {
     security.apparmor.includes = {
+      "abstractions/curios/camera" = ''
+        abi <abi/4.0>,
+        # Allows access to all cameras
+        # Camera (video calls, webcam)
+        /dev/video*                             rw,
+      '';
+
       "abstractions/curios/gconv" = ''
         abi <abi/4.0>,
         # glibc charset conversion module
         # /nix/store/*/lib{,32,64}/gconv/** mr,
         ${pkgs.glibc}/lib/gconv/*.so            mr,
         ${pkgs.glibc}/lib/gconv/gconv-modules*  mr,
+      '';
+
+      "abstractions/curios/graphics" = ''
+        abi <abi/4.0>,
+        include <abstractions/dri-common>
+        # DRI / GPU access
+        # udmabuf (GPU buffer sharing for zero-copy video/camera)
+        /dev/udmabuf                                   rw,
+        /dev/shm/                                      r,
+        /dev/shm/**                                    rw,
+        # GPU shader caches (Mesa OpenGL + RADV Vulkan)
+        owner @{HOME}/.cache/mesa_shader_cache/**      rwk,
+        owner @{HOME}/.cache/radv_builtin_shaders/**   rwk,
       '';
 
       "abstractions/curios/nss" = ''
@@ -153,6 +173,7 @@ in {
         include <abstractions/ssl_certs>
         include <abstractions/curios/nss>
         include <abstractions/curios/gconv>
+        include <abstractions/curios/graphics>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
@@ -271,19 +292,6 @@ in {
         @{PROC}/sys/fs/inotify/max_queued_events                                  r,
         @{PROC}/sys/fs/inotify/max_user_instances                                 r,
 
-        # DRI / GPU access
-        /dev/                                                                     r,
-        /dev/dri/                                                                 r,
-        /dev/dri/**                                                               rw,
-        /dev/shm/                                                                 r,
-        /dev/shm/**                                                               rw,
-        # udmabuf (GPU buffer sharing for zero-copy video/camera)
-        /dev/udmabuf                                                              rw,
-
-        # GPU shader caches (Mesa OpenGL + RADV Vulkan)
-        owner @{HOME}/.cache/mesa_shader_cache/**                                 rwk,
-        owner @{HOME}/.cache/radv_builtin_shaders/**                              rwk,
-
         # Vulkan ICD/loader config (user-installed implicit layers)
         owner @{HOME}/.local/share/vulkan/**                                      r,
 
@@ -348,12 +356,6 @@ in {
         /nix/store/*-dbus*/bin/dbus-send                                          rix,
         /nix/store/*-xprop*/bin/xprop                                             rix,
 
-        # Browser policies (Brave/Chromium system-managed policies)
-        /etc/brave/policies/                                                      r,
-        /etc/brave/policies/**                                                    r,
-        /etc/chromium/policies/                                                   r,
-        /etc/chromium/policies/**                                                 r,
-
         # NixOS shared resources. On NixOS fonts, gsettings schemas, icon
         # themes, translations, xkb config, fontconfig caches, GDK pixbuf
         # loaders etc. live in /nix/store/ rather than /usr/share/ and
@@ -399,8 +401,6 @@ in {
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
-        # Camera (video calls, webcam)
-        /dev/video*                                                               rw,
 
         # Silencer
         deny /etc/opt/                                                            w,
@@ -424,7 +424,9 @@ in {
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
+        include <abstractions/curios/camera>
         include <abstractions/curios/gconv>
+        include <abstractions/curios/graphics>
         include <abstractions/curios/nss>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
@@ -534,19 +536,6 @@ in {
         @{PROC}/sys/fs/inotify/max_user_watches                                   r,
         @{PROC}/sys/fs/inotify/max_queued_events                                  r,
         @{PROC}/sys/fs/inotify/max_user_instances                                 r,
-
-        # DRI / GPU access
-        /dev/                                                                     r,
-        /dev/dri/                                                                 r,
-        /dev/dri/**                                                               rw,
-        /dev/shm/                                                                 r,
-        /dev/shm/**                                                               rw,
-        # udmabuf (GPU buffer sharing for zero-copy video/camera)
-        /dev/udmabuf                                                              rw,
-
-        # GPU shader caches (Mesa OpenGL + RADV Vulkan)
-        owner @{HOME}/.cache/mesa_shader_cache/**                                 rwk,
-        owner @{HOME}/.cache/radv_builtin_shaders/**                              rwk,
 
         # Vulkan ICD/loader config (user-installed implicit layers)
         owner @{HOME}/.local/share/vulkan/**                                      r,
@@ -662,8 +651,6 @@ in {
         # Terminal access (Chromium crash reporting, terminal detection)
         /dev/tty                                                                  rw,
         /dev/pts/@{int}                                                           rw,
-        # Camera (video calls, webcam)
-        /dev/video*                                                               rw,
 
         # Silencer
         deny /etc/opt/                                                            w,
@@ -683,11 +670,11 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          @{lib_dirs} = /nix/store/*-brave*/opt/brave.com/brave
+          @{lib_dirs} = ${pkgs.brave}/opt/brave.com/brave
           @{config_dirs} = @{HOME}/.config/BraveSoftware
           @{cache_dirs} = @{HOME}/.cache/BraveSoftware
 
-          profile brave /nix/store/*-brave*/opt/brave.com/brave/brave ${modeFlag} {
+          profile brave ${pkgs.brave}/opt/brave.com/brave/brave ${modeFlag} {
             include <abstractions/chromium>
 
             # Brave binary exec chain (chrome-sandbox transitions to the
@@ -709,12 +696,12 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile brave-sandbox /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox {
+          profile brave-sandbox ${pkgs.brave}/opt/brave.com/brave/chrome-sandbox {
             include <abstractions/base>
             include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/chromium for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                          mr,
+            /nix/store/*/lib{,32,64}/**.so*                  mr,
 
             capability setgid,
             capability setuid,
@@ -722,14 +709,14 @@ in {
             capability sys_chroot,
             capability sys_resource,
 
-            /nix/store/*-brave*/opt/brave.com/brave/chrome-sandbox mr,
-            /nix/store/*-brave*/opt/brave.com/brave/brave            rPx,
+            ${pkgs.brave}/opt/brave.com/brave/chrome-sandbox mr,
+            ${pkgs.brave}/opt/brave.com/brave/brave          rPx,
 
-            @{PROC}                                                  r,
-            @{PROC}/@{pids}/                                         r,
-            owner @{PROC}/@{pid}/fd/                                 r,
-            owner @{PROC}/@{pid}/oom_adj                             rw,
-            owner @{PROC}/@{pid}/oom_score_adj                       rw,
+            @{PROC}                                          r,
+            @{PROC}/@{pids}/                                 r,
+            owner @{PROC}/@{pid}/fd/                         r,
+            owner @{PROC}/@{pid}/oom_adj                     rw,
+            owner @{PROC}/@{pid}/oom_score_adj               rw,
 
             include if exists <local/brave-sandbox>
           }
@@ -742,7 +729,7 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile brave-wrapper /nix/store/*-brave*/bin/brave {
+          profile brave-wrapper ${pkgs.brave}/bin/brave {
             include <abstractions/base>
             include <abstractions/consoles>
             include <abstractions/curios/gconv>
@@ -761,8 +748,8 @@ in {
             /nix/store/*coreutils*/bin/*                                  rix,
             /run/current-system/sw/bin/{readlink,dirname,mkdir,touch,cat} rix,
 
-            /nix/store/*-brave*/opt/brave.com/brave/brave                 rPx,
-            /nix/store/*-brave*/opt/brave.com/brave/brave-browser         rix,
+            ${pkgs.brave}/opt/brave.com/brave/brave                 rPx,
+            ${pkgs.brave}/opt/brave.com/brave/brave-browser         rix,
 
             owner @{PROC}/@{pid}/fd/@{int}                                w,
 
@@ -785,20 +772,21 @@ in {
           @{config_dirs} = @{HOME}/.config/Signal
           @{cache_dirs} = @{HOME}/.cache/signal-desktop
 
-          profile signal-desktop /nix/store/*-signal-desktop-*/bin/signal-desktop ${modeFlag} {
+          profile signal-desktop ${pkgs.signal-desktop}/bin/signal-desktop ${modeFlag} {
             include <abstractions/electron>
+            include <abstractions/curios/camera>
 
             # Signal Desktop wrapper (inherits profile through electron exec chain)
-            /nix/store/*-signal-desktop-*/bin/signal-desktop                        rix,
+            ${pkgs.signal-desktop}/bin/signal-desktop                        rix,
 
             # Chromium sandbox (separate profile with elevated capabilities)
             /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox       rPx -> signal-desktop-chrome-sandbox,
 
             # Signal Desktop app resources
-            /nix/store/*-signal-desktop-*/share/signal-desktop/**                   r,
-            /nix/store/*-signal-desktop-*/share/signal-desktop/app.asar             mr,
+            ${pkgs.signal-desktop}/share/signal-desktop/**                   r,
+            ${pkgs.signal-desktop}/share/signal-desktop/app.asar             mr,
             # Native node modules (libsignal crypto, ringrtc WebRTC) — need mmap
-            /nix/store/*-signal-desktop-*/share/signal-desktop/app.asar.unpacked/**/*.node mr,
+            ${pkgs.signal-desktop}/share/signal-desktop/app.asar.unpacked/**/*.node mr,
 
             # Signal Desktop flags
             owner @{HOME}/.config/signal-desktop-flags.conf                         r,
@@ -808,9 +796,6 @@ in {
 
             # Temporary files
             /tmp/signal-desktop-*/**                                                rw,
-
-            # Camera (for video calls)
-            /dev/video*                                                             rw,
 
             # Bluetooth observe (for nearby device discovery)
             @{sys}/class/bluetooth/                                                 r,
@@ -868,11 +853,11 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          @{lib_dirs} = /nix/store/*-discord-*/opt/Discord
+          @{lib_dirs} = ${pkgs.discord}/opt/Discord
           @{config_dirs} = @{HOME}/.config/discord
           @{cache_dirs} = @{HOME}/.cache/discord
 
-          profile discord /nix/store/*-discord-*/opt/Discord/Discord ${modeFlag} {
+          profile discord ${pkgs.discord}/opt/Discord/Discord ${modeFlag} {
             include <abstractions/chromium>
 
             # Discord wrapper script (created by wrapProgramShell).
@@ -936,27 +921,22 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile discord-sandbox /nix/store/*-discord-*/opt/Discord/chrome-sandbox {
+          profile discord-sandbox ${pkgs.discord}/opt/Discord/chrome-sandbox {
             include <abstractions/base>
-            include <abstractions/curios/gconv>
 
-            # NixOS shared libraries (see abstractions/chromium for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                                   mr,
-
-            capability setgid,
-            capability setuid,
+            #capability setgid,
+            #capability setuid,
             capability sys_admin,
             capability sys_chroot,
             capability sys_resource,
 
-            /nix/store/*-discord-*/opt/Discord/chrome-sandbox                 mr,
-            /nix/store/*-discord-*/opt/Discord/Discord                        rPx -> discord,
+            ${pkgs.discord}/opt/Discord/chrome-sandbox      mr,
+            ${pkgs.discord}/opt/Discord/Discord             rPx -> discord,
 
-            @{PROC}                                                           r,
-            @{PROC}/@{pids}/                                                  r,
-            owner @{PROC}/@{pid}/fd/                                          r,
-            owner @{PROC}/@{pid}/oom_adj                                      rw,
-            owner @{PROC}/@{pid}/oom_score_adj                                rw,
+            @{PROC}/@{pids}/                                r,
+            owner @{PROC}/@{pid}/fd/                        r,
+            owner @{PROC}/@{pid}/oom_adj                    rw,
+            owner @{PROC}/@{pid}/oom_score_adj              rw,
 
             include if exists <local/discord-sandbox>
           }
@@ -985,6 +965,7 @@ in {
             include <abstractions/dconf>
             include <abstractions/ssl_certs>
             include <abstractions/curios/gconv>
+            include <abstractions/curios/graphics>
 
             # Bubblewrap entry script and executor (link chain: bin -> -bwrap)
             /nix/store/*onlyoffice-desktopeditors-*-bwrap                                    rix,
@@ -1054,12 +1035,6 @@ in {
             @{PROC}/@{pid}/stat                                                 r,
             @{PROC}/sys/kernel/overflow{uid,gid}                                r,
             @{PROC}/sys/fs/inotify/max_user_watches                             r,
-
-            # DRI / GPU (CEF rendering, editors_helper GPU detection)
-            /dev/                                                               r,
-            /dev/dri/                                                           r,
-            /dev/dri/**                                                         rw,
-            /dev/udmabuf                                                        rw,
 
             # Disk enumeration (save/open file dialog)
             /dev/disk/by-label/                                                 r,
