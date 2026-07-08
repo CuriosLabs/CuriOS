@@ -125,12 +125,51 @@ in {
         /dev/video*                             rw,
       '';
 
+      "abstractions/curios/dconf" = ''
+        abi <abi/4.0>,
+        # runtime and user dconf paths (used by COSMIC
+        # and other desktop environments) must be allowed here.
+        owner @{run}/user/@{uid}/dconf/cosmic rwk,
+      '';
+
+      "abstractions/curios/devices" = ''
+        abi <abi/4.0>,
+        # System config
+        /etc/machine-id                              r,
+        #@{sys}/devices/**                           r,
+        @{sys}/devices/system/cpu/**                 r,
+
+        # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
+        # Wide allocations are for Chromium hardware fingerprinting
+        # (captcha API enumerates all visible buses and device classes)
+        @{sys}/bus/                                  r,
+        @{sys}/bus/*/devices/                        r,
+        @{sys}/bus/pci/devices/                      r,
+        @{sys}/bus/usb/devices/                      r,
+        @{sys}/class/                                r,
+        @{sys}/class/*/                              r,
+        @{sys}/devices/pci*/**                       r,
+        @{sys}/devices/virtual/tty/tty0/active       r,
+        @{sys}/devices/virtual/dmi/id/sys_vendor     r,
+        @{sys}/devices/virtual/dmi/id/product_name   r,
+        @{sys}/devices/virtual/dmi/id/board_vendor   r,
+        @{sys}/devices/virtual/dmi/id/bios_vendor    r,
+        @{sys}/devices/**/uevent                     r,
+        @{run}/udev/data/*                           r,
+        # Disk enumeration (download location detection)
+        /dev/disk/by-uuid/                           r,
+        # Disk enumeration (save/open file dialog)
+        /dev/disk/by-label/                          r,
+      '';
+
       "abstractions/curios/gconv" = ''
         abi <abi/4.0>,
         # glibc charset conversion module
         # /nix/store/*/lib{,32,64}/gconv/** mr,
-        ${pkgs.glibc}/lib/gconv/*.so            mr,
-        ${pkgs.glibc}/lib/gconv/gconv-modules*  mr,
+        ${pkgs.glibc}/lib/gconv/*.so               mr,
+        ${pkgs.glibc}/lib/gconv/gconv-modules      mr,
+        ${pkgs.glibc}/lib/gconv/gconv-modules.d/   r,
+        ${pkgs.glibc}/lib/gconv/gconv-modules.d/*  mr,
       '';
 
       "abstractions/curios/graphics" = ''
@@ -138,12 +177,13 @@ in {
         include <abstractions/dri-common>
         # DRI / GPU access
         # udmabuf (GPU buffer sharing for zero-copy video/camera)
-        /dev/udmabuf                                   rw,
-        /dev/shm/                                      r,
-        /dev/shm/**                                    rw,
+        /dev/udmabuf                                                  rw,
+        /dev/shm/                                                     r,
         # GPU shader caches (Mesa OpenGL + RADV Vulkan)
-        owner @{HOME}/.cache/mesa_shader_cache/**      rwk,
-        owner @{HOME}/.cache/radv_builtin_shaders/**   rwk,
+        owner @{HOME}/.cache/mesa_shader_cache/**                     rwk,
+        owner @{HOME}/.cache/radv_builtin_shaders/**                  rwk,
+        # Vulkan ICD/loader config (user-installed implicit layers)
+        owner @{HOME}/.local/share/vulkan/implicit_layer.d/{,*.json}  r,
       '';
 
       "abstractions/curios/nss" = ''
@@ -153,6 +193,33 @@ in {
         owner @{HOME}/.pki/nssdb/pkcs11.txt              rw,
         owner @{HOME}/.pki/nssdb/{cert9,key4}.db         rwk,
         owner @{HOME}/.pki/nssdb/{cert9,key4}.db-journal rw,
+      '';
+
+      "abstractions/curios/wayland" = ''
+        abi <abi/4.0>,
+        # Needed when using QT_QPA_PLATFORM=wayland-egl (MESA dri config)
+        /etc/drirc r,
+
+        # Allow access to the Wayland compositor server socket
+        owner @{run}/user/@{uid}/wayland-@{int}               rw,
+        owner @{run}/user/@{uid}/wayland-@{int}.lock          rwk,
+        owner @{run}/user/@{uid}/wayland-cursor-shared-@{int} rw,
+        owner @{run}/user/@{uid}/wayland-proxy-@{int}         rw,
+
+        # Compositors specific socket path
+        owner @{run}/user/@{uid}/.mutter-Xwaylandauth.@{rand6} r,
+        owner @{run}/user/@{uid}/mesa-shared-@{int}            rw,
+        owner @{run}/user/@{uid}/mutter-shared-@{int}          rw,
+        owner @{run}/user/@{uid}/sdl-shared-@{int}             rw,
+        owner @{run}/user/@{uid}/weston-shared-@{int}          rw,
+        owner @{run}/user/@{uid}/xwayland-shared-@{int}        rw,
+
+        # Compositors based on wlroots
+        #owner /dev/shm/@{uuid}          rw,
+        owner /dev/shm/dunst-@{rand6}   rw,
+        owner /dev/shm/grim-@{rand6}    rw,
+        owner /dev/shm/sway*            rw,
+        owner /dev/shm/wlroots-@{rand6} rw,
       '';
 
       "abstractions/electron" = ''
@@ -168,12 +235,16 @@ in {
         include <abstractions/base>
         include <abstractions/nameservice>
         include <abstractions/audio>
+        include <abstractions/consoles>
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
-        include <abstractions/curios/nss>
+        include <abstractions/curios/dconf>
+        include <abstractions/curios/devices>
         include <abstractions/curios/gconv>
         include <abstractions/curios/graphics>
+        include <abstractions/curios/nss>
+        include <abstractions/curios/wayland>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
@@ -292,21 +363,11 @@ in {
         @{PROC}/sys/fs/inotify/max_queued_events                                  r,
         @{PROC}/sys/fs/inotify/max_user_instances                                 r,
 
-        # Vulkan ICD/loader config (user-installed implicit layers)
-        owner @{HOME}/.local/share/vulkan/**                                      r,
-
-        # Wayland / X11
-        owner @{run}/user/@{uid}/wayland-*                                        rw,
-        /tmp/.X11-unix/X*                                                         rw,
+        # Chromium shared memory
+        /dev/shm/.org.chromium.Chromium.* rw,
 
         # D-Bus
         owner @{run}/user/@{uid}/bus                                              rw,
-
-        # dconf (user settings). The NixOS abstractions/dconf include only
-        # covers /etc/dconf/**; runtime and user dconf paths (used by COSMIC
-        # and other desktop environments) must be allowed here.
-        owner @{run}/user/@{uid}/dconf/**                                         rwk,
-        owner @{HOME}/.config/dconf/**                                            r,
 
         # PipeWire
         owner @{run}/user/*/pipewire-*                                          rw,
@@ -380,28 +441,6 @@ in {
         /var/lib/flatpak/exports/share/applications/                              r,
         /var/lib/flatpak/exports/share/applications/**                            r,
 
-        # System config
-        /etc/machine-id                                                           r,
-        @{sys}/devices/system/cpu/**                                              r,
-
-        # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
-        @{sys}/bus/                                                               r,
-        @{sys}/bus/pci/devices/                                                   r,
-        @{sys}/bus/usb/devices/                                                   r,
-        @{sys}/class/                                                             r,
-        @{sys}/devices/pci*/**                                                    r,
-        @{sys}/devices/virtual/tty/tty0/active                                    r,
-        @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
-        @{sys}/devices/virtual/dmi/id/product_name                                r,
-        @{sys}/devices/virtual/dmi/id/board_vendor                                r,
-        @{sys}/devices/virtual/dmi/id/bios_vendor                                 r,
-        # Disk enumeration (download location detection)
-        /dev/disk/by-uuid/                                                        r,
-
-        # Terminal access (Chromium crash reporting, terminal detection)
-        /dev/tty                                                                  rw,
-        /dev/pts/@{int}                                                           rw,
-
         # Silencer
         deny /etc/opt/                                                            w,
         deny @{HOME}/.local/share/gvfs-metadata/*                                 r,
@@ -421,13 +460,16 @@ in {
         include <abstractions/base>
         include <abstractions/nameservice>
         include <abstractions/audio>
+        include <abstractions/consoles>
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
         include <abstractions/curios/camera>
+        include <abstractions/curios/devices>
         include <abstractions/curios/gconv>
         include <abstractions/curios/graphics>
         include <abstractions/curios/nss>
+        include <abstractions/curios/wayland>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
@@ -537,21 +579,11 @@ in {
         @{PROC}/sys/fs/inotify/max_queued_events                                  r,
         @{PROC}/sys/fs/inotify/max_user_instances                                 r,
 
-        # Vulkan ICD/loader config (user-installed implicit layers)
-        owner @{HOME}/.local/share/vulkan/**                                      r,
-
-        # Wayland / X11
-        owner @{run}/user/@{uid}/wayland-*                                        rw,
-        /tmp/.X11-unix/X*                                                         rw,
+        # Chromium shared memory
+        /dev/shm/.org.chromium.Chromium.* rw,
 
         # D-Bus
         owner @{run}/user/@{uid}/bus                                              rw,
-
-        # dconf (user settings). The NixOS abstractions/dconf include only
-        # covers /etc/dconf/**; runtime and user dconf paths (used by COSMIC
-        # and other desktop environments) must be allowed here.
-        owner @{run}/user/@{uid}/dconf/**                                         rwk,
-        owner @{HOME}/.config/dconf/**                                            r,
 
         # cgroup CPU limits (Chromium resource monitoring)
         @{sys}/fs/cgroup/**                                                       r,
@@ -629,28 +661,6 @@ in {
         /var/lib/flatpak/exports/share/themes/**                                  r,
         /var/lib/flatpak/exports/share/applications/                              r,
         /var/lib/flatpak/exports/share/applications/**                            r,
-
-        # System config
-        /etc/machine-id                                                           r,
-        @{sys}/devices/system/cpu/**                                              r,
-
-        # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
-        @{sys}/bus/                                                               r,
-        @{sys}/bus/pci/devices/                                                   r,
-        @{sys}/bus/usb/devices/                                                   r,
-        @{sys}/class/                                                             r,
-        @{sys}/devices/pci*/**                                                    r,
-        @{sys}/devices/virtual/tty/tty0/active                                    r,
-        @{sys}/devices/virtual/dmi/id/sys_vendor                                  r,
-        @{sys}/devices/virtual/dmi/id/product_name                                r,
-        @{sys}/devices/virtual/dmi/id/board_vendor                                r,
-        @{sys}/devices/virtual/dmi/id/bios_vendor                                 r,
-        # Disk enumeration (download location detection)
-        /dev/disk/by-uuid/                                                        r,
-
-        # Terminal access (Chromium crash reporting, terminal detection)
-        /dev/tty                                                                  rw,
-        /dev/pts/@{int}                                                           rw,
 
         # Silencer
         deny /etc/opt/                                                            w,
@@ -961,9 +971,11 @@ in {
           profile onlyoffice-desktopeditors /nix/store/*onlyoffice-desktopeditors-*-bwrap ${modeFlag} {
             include <abstractions/base>
             include <abstractions/nameservice>
+            include <abstractions/consoles>
             include <abstractions/fonts>
             include <abstractions/dconf>
             include <abstractions/ssl_certs>
+            include <abstractions/curios/devices>
             include <abstractions/curios/gconv>
             include <abstractions/curios/graphics>
 
@@ -1036,13 +1048,6 @@ in {
             @{PROC}/sys/kernel/overflow{uid,gid}                                r,
             @{PROC}/sys/fs/inotify/max_user_watches                             r,
 
-            # Disk enumeration (save/open file dialog)
-            /dev/disk/by-label/                                                 r,
-
-            # Sysfs (PCI/GPU/CPU enumeration by editors_helper)
-            @{sys}/devices/**                                                   r,
-            @{sys}/devices/system/cpu/**                                        r,
-
             # Flatpak-exported icons/themes/applications
             /var/lib/flatpak/exports/share/icons/                               r,
             /var/lib/flatpak/exports/share/icons/**                             r,
@@ -1050,9 +1055,6 @@ in {
             /var/lib/flatpak/exports/share/themes/**                            r,
             /var/lib/flatpak/exports/share/applications/                        r,
             /var/lib/flatpak/exports/share/applications/**                      r,
-
-            # Devices
-            /dev/tty                                                            rw,
 
             # User namespace + bwrap + container-init capabilities
             userns,
@@ -1070,7 +1072,6 @@ in {
 
             # Host resolv.conf (bind-mounted into FHS namespace via .host-etc)
             /etc/resolv.conf                                                    r,
-            /etc/machine-id                                                     r,
 
             include if exists <local/onlyoffice-desktopeditors>
           }
