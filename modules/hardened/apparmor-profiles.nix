@@ -128,6 +128,7 @@ in {
         # Hardware detection (GPU/PCI/USB enumeration, active tty, DMI info)
         # Wide allocations are for Chromium hardware fingerprinting
         # (captcha API enumerates all visible buses and device classes)
+        /dev/                                        r,
         @{sys}/bus/                                  r,
         @{sys}/bus/*/devices/                        r,
         @{sys}/bus/pci/devices/                      r,
@@ -135,6 +136,7 @@ in {
         @{sys}/class/                                r,
         @{sys}/class/*/                              r,
         @{sys}/devices/pci*/**                       r,
+        @{sys}/devices/platform/**                   r,
         @{sys}/devices/virtual/tty/tty0/active       r,
         @{sys}/devices/virtual/dmi/id/sys_vendor     r,
         @{sys}/devices/virtual/dmi/id/product_name   r,
@@ -251,7 +253,8 @@ in {
         capability mknod,
 
         # Shell and utilities for NixOS wrapper scripts
-        /nix/store/*/bin/{sh,bash,dash}                                        rix,
+        ${pkgs.bashInteractive}/bin/sh                                         rix,
+        ${pkgs.bashInteractive}/bin/bash                                       rix,
 
         # Network access
         network inet dgram,
@@ -568,7 +571,8 @@ in {
             # (/run/current-system/sw/bin/), which symlinks to the coreutils
             # multicall binary. AppArmor resolves symlinks, so we must allow
             # the coreutils binary itself (rix = read+inherit+exec).
-            /nix/store/*/bin/{sh,bash,dash}                                    rix,
+            ${pkgs.bashInteractive}/bin/sh                                     rix,
+            ${pkgs.bashInteractive}/bin/bash                                   rix,
             ${pkgs.coreutils-full}/bin/*                                       rix,
             /run/current-system/sw/bin/{readlink,dirname,mkdir,touch,cat}      rix,
 
@@ -604,7 +608,7 @@ in {
             ${pkgs.signal-desktop}/bin/signal-desktop                        rix,
 
             # Chromium sandbox (separate profile with elevated capabilities)
-            /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox       rPx -> signal-desktop-chrome-sandbox,
+            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                     rPx -> signal-desktop-chrome-sandbox,
 
             # Signal Desktop app resources
             ${pkgs.signal-desktop}/share/signal-desktop/**                   r,
@@ -614,9 +618,6 @@ in {
 
             # Signal Desktop flags
             owner @{HOME}/.config/signal-desktop-flags.conf                         r,
-
-            # Downloads directory (for file sharing)
-            owner @{HOME}/Downloads/**                                              rw,
 
             # Temporary files
             /tmp/signal-desktop-*/**                                                rw,
@@ -636,7 +637,7 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile signal-desktop-chrome-sandbox /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox {
+          profile signal-desktop-chrome-sandbox ${pkgs.electron_42}/libexec/electron/chrome-sandbox {
             include <abstractions/base>
             include <abstractions/curios/gconv>
 
@@ -649,8 +650,8 @@ in {
             capability sys_chroot,
             capability dac_override,
 
-            /nix/store/*-electron-unwrapped-*/libexec/electron/chrome-sandbox       mr,
-            /nix/store/*-electron-unwrapped-*/libexec/electron/electron             rPx -> signal-desktop,
+            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                     mr,
+            ${pkgs.electron_42}/libexec/electron/electron                           rPx -> signal-desktop,
 
             @{PROC}                                                                 r,
             @{PROC}/@{pids}/                                                        r,
@@ -779,9 +780,9 @@ in {
 
           @{config_dirs} = @{HOME}/.config/onlyoffice
           @{cache_dirs} = @{HOME}/.cache/onlyoffice
-          @{lib_dirs} = /nix/store/*onlyoffice-desktopeditors-*-fhsenv-rootfs
+          @{lib_dirs} = ${pkgs.onlyoffice-desktopeditors.fhsenv}
 
-          profile onlyoffice-desktopeditors /nix/store/*onlyoffice-desktopeditors-*-bwrap ${modeFlag} {
+          profile onlyoffice-desktopeditors ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors ${modeFlag} {
             include <abstractions/base>
             include <abstractions/nameservice>
             include <abstractions/consoles>
@@ -793,25 +794,25 @@ in {
             include <abstractions/curios/graphics>
 
             # Bubblewrap entry script and executor (link chain: bin -> -bwrap)
-            /nix/store/*onlyoffice-desktopeditors-*-bwrap                                    rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors                  rix,
             /nix/store/*-container-init                                                      rix,
-            /nix/store/*-ldconfig*/bin/ldconfig                                              rix,
-            /nix/store/*-glibc-*-bin/bin/ldconfig                                            rix,
+            ${pkgs.glibc.bin}/bin/ldconfig                                                      rix,
             /nix/store/*-onlyoffice-desktopeditors-*-init                                    rix,
-            /nix/store/*onlyoffice-desktopeditors-*/bin/.onlyoffice-desktopeditors-wrapped   rix,
-            /nix/store/*onlyoffice-desktopeditors-*/bin/onlyoffice-desktopeditors            rix,
-            /nix/store/*onlyoffice-desktopeditors-*/bin/desktopeditors                       rix,
-            /nix/store/*onlyoffice-desktopeditors-*/bin/DesktopEditors                       rix,
-            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/DesktopEditors      rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/.onlyoffice-desktopeditors-wrapped   rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors            rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/desktopeditors                       rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/DesktopEditors                       rix,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/DesktopEditors      rix,
 
             # Shell and coreutils (bwrap script, init, ldconfig helpers)
-            /nix/store/*/bin/{sh,bash,dash}                                    rix,
+            ${pkgs.bashInteractive}/bin/sh                                     rix,
+            ${pkgs.bashInteractive}/bin/bash                                   rix,
             ${pkgs.coreutils-full}/bin/*                                       rix,
             ${pkgs.coreutils}/bin/*                                            rix,
-            /nix/store/*curl-*-bin/bin/curl                                    rix,
+            ${pkgs.curl}/bin/curl                                              rix,
 
             # Bubblewrap binary
-            /nix/store/*-bubblewrap-*/bin/bwrap                                rix,
+            ${pkgs.bubblewrap}/bin/bwrap                                       rix,
 
             # FHSEnv rootfs (OnlyOffice binaries and libs inside FHS namespace)
             @{lib_dirs}/                                                       r,
@@ -819,13 +820,13 @@ in {
             @{lib_dirs}/opt/onlyoffice/desktopeditors/DesktopEditors           rix,
 
             # OnlyOffice binary package (plugins, Qt libs, CEF, converter)
-            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/**    mr,
-            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/converter/x2t  rix,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/**          mr,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/converter/x2t  rix,
 
             # Nix store shared libraries (mmap needed by bwrap and child processes)
             /nix/store/**                                                      r,
             /nix/store/*/lib{,32,64}/**.so*                                    mr,
-            /nix/store/*onlyoffice-desktopeditors-*/share/desktopeditors/editors_helper rix,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/editors_helper rix,
 
             # Root filesystem — bwrap sets up the sandbox namespace via mount,
             # mkdir, symlink, and mknod under /newroot/, /oldroot/ and /tmp/.
