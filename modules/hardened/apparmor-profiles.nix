@@ -426,6 +426,84 @@ in {
         deny @{HOME}/.local/share/gvfs-metadata/*                              r,
       '';
 
+      "abstractions/curios/fhsenv-bwrap" = ''
+        abi <abi/4.0>,
+        # CuriOS common abstraction for NixOS buildFHSEnv / bubblewrap apps.
+        # Covers the shared bwrap bootstrap chain used by every FHSEnv package:
+        #   app-bwrap script → bwrap → container-init → {name}-init → app
+        #
+        # REQUIRED VARIABLES (define in the calling profile header, before this include):
+        #   @{lib_dirs} — FHSEnv rootfs path (e.g. {pkgs.foo.fhsenv})
+        #
+        # App-specific pieces stay in the calling profile:
+        #   - {name}-init script (not on passthru; keep store glob)
+        #   - app binaries / share / modules
+        #   - network, config/cache dirs, desktop abstractions
+
+        include <abstractions/base>
+        include <abstractions/nameservice>
+        include <abstractions/consoles>
+        include <abstractions/fonts>
+        include <abstractions/dconf>
+        include <abstractions/ssl_certs>
+        include <abstractions/curios/devices>
+        include <abstractions/curios/gconv>
+
+        # Static container-init shim (shared across all FHSEnv packages;
+        # runs ldconfig then execs /init). Not exposed via pkgs.*.
+        /nix/store/*-container-init                                            rix,
+        ${pkgs.glibc.bin}/bin/ldconfig                                         rix,
+
+        # Bubblewrap binary and shell helpers used by the *-bwrap launcher
+        ${pkgs.bubblewrap}/bin/bwrap                                           rix,
+        ${pkgs.bashInteractive}/bin/sh                                         rix,
+        ${pkgs.bashInteractive}/bin/bash                                       rix,
+        ${pkgs.coreutils-full}/bin/*                                           rix,
+        ${pkgs.coreutils}/bin/*                                                rix,
+
+        # FHSEnv rootfs (bind-mounted into the namespace as /usr, /lib, …)
+        @{lib_dirs}/                                                           r,
+        @{lib_dirs}/**                                                         mr,
+
+        # Nix store — FHSEnv rootfs is mostly symlinks into the store;
+        # mmap needed for shared libraries loaded inside the namespace.
+        /nix/store/**                                                          r,
+        /nix/store/*/lib{,32,64}/**.so*                                        mr,
+
+        # bwrap namespace bootstrap: mount/mkdir/symlink/mknod under
+        # /newroot/, /oldroot/, /tmp/ and pivot into the FHS tree.
+        /                                                                      r,
+        owner /**                                                              rwk,
+        mount,
+        umount,
+        pivot_root,
+
+        # User namespace setup (unprivileged bwrap on NixOS)
+        userns,
+        capability setpcap,
+        capability sys_admin,
+        capability sys_chroot,
+        capability sys_ptrace,
+        capability mknod,
+
+        # Proc (uid/gid maps, mountinfo, fd for bwrap)
+        @{PROC}/                                                               r,
+        owner @{PROC}/@{pid}/fd/                                               r,
+        owner @{PROC}/@{pid}/fd/@{int}                                         w,
+        owner @{PROC}/@{pid}/uid_map                                           rw,
+        owner @{PROC}/@{pid}/gid_map                                           rw,
+        owner @{PROC}/@{pid}/setgroups                                         rw,
+        owner @{PROC}/@{pid}/mountinfo                                         r,
+        @{PROC}/@{pid}/stat                                                    r,
+        @{PROC}/sys/kernel/overflow{uid,gid}                                   r,
+        @{PROC}/sys/fs/inotify/max_user_watches                                r,
+
+        # Paths visible inside the FHS namespace (root-owned bind mounts)
+        /usr/**                                                                r,
+        /.host-etc/**                                                          r,
+        /etc/resolv.conf                                                       r,
+      '';
+
       "abstractions/electron" = ''
         abi <abi/4.0>,
         # CuriOS common abstraction for Electron-based applications on NixOS.
@@ -797,60 +875,25 @@ in {
           @{lib_dirs} = ${pkgs.onlyoffice-desktopeditors.fhsenv}
 
           profile onlyoffice-desktopeditors ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors ${modeFlag} {
-            include <abstractions/base>
-            include <abstractions/nameservice>
-            include <abstractions/consoles>
-            include <abstractions/fonts>
-            include <abstractions/dconf>
-            include <abstractions/ssl_certs>
-            include <abstractions/curios/devices>
-            include <abstractions/curios/gconv>
             include <abstractions/curios/graphics>
+            include <abstractions/curios/fhsenv-bwrap>
 
-            # Bubblewrap entry script and executor (link chain: bin -> -bwrap)
-            ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors                  rix,
-            /nix/store/*-container-init                                                      rix,
-            ${pkgs.glibc.bin}/bin/ldconfig                                                      rix,
-            /nix/store/*-onlyoffice-desktopeditors-*-init                                    rix,
-            ${pkgs.onlyoffice-desktopeditors}/bin/.onlyoffice-desktopeditors-wrapped   rix,
-            ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors            rix,
-            ${pkgs.onlyoffice-desktopeditors}/bin/desktopeditors                       rix,
-            ${pkgs.onlyoffice-desktopeditors}/bin/DesktopEditors                       rix,
-            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/DesktopEditors      rix,
-
-            # Shell and coreutils (bwrap script, init, ldconfig helpers)
-            ${pkgs.bashInteractive}/bin/sh                                     rix,
-            ${pkgs.bashInteractive}/bin/bash                                   rix,
-            ${pkgs.coreutils-full}/bin/*                                       rix,
-            ${pkgs.coreutils}/bin/*                                            rix,
-            ${pkgs.curl}/bin/curl                                              rix,
-
-            # Bubblewrap binary
-            ${pkgs.bubblewrap}/bin/bwrap                                       rix,
-
-            # FHSEnv rootfs (OnlyOffice binaries and libs inside FHS namespace)
-            @{lib_dirs}/                                                       r,
-            @{lib_dirs}/**                                                     mr,
-            @{lib_dirs}/opt/onlyoffice/desktopeditors/DesktopEditors           rix,
+            # OnlyOffice bwrap entry + real init (app-specific; not on passthru)
+            ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors          rix,
+            /nix/store/*-onlyoffice-desktopeditors-*-init                            rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/.onlyoffice-desktopeditors-wrapped rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/desktopeditors                     rix,
+            ${pkgs.onlyoffice-desktopeditors}/bin/DesktopEditors                     rix,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/DesktopEditors    rix,
+            @{lib_dirs}/opt/onlyoffice/desktopeditors/DesktopEditors                 rix,
 
             # OnlyOffice binary package (plugins, Qt libs, CEF, converter)
-            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/**          mr,
+            ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/**             mr,
             ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/converter/x2t  rix,
-
-            # Nix store shared libraries (mmap needed by bwrap and child processes)
-            /nix/store/**                                                      r,
-            /nix/store/*/lib{,32,64}/**.so*                                    mr,
             ${pkgs.onlyoffice-desktopeditors}/share/desktopeditors/editors_helper rix,
 
-            # Root filesystem — bwrap sets up the sandbox namespace via mount,
-            # mkdir, symlink, and mknod under /newroot/, /oldroot/ and /tmp/.
-            /                                                                  r,
-            owner /**                                                          rwk,
-
-            # Mount, pivot_root, unmount (bwrap namespace bootstrap)
-            mount,
-            umount,
-            pivot_root,
+            # curl used by wrapper / network helpers
+            ${pkgs.curl}/bin/curl                                              rix,
 
             # Network
             network inet dgram,
@@ -865,18 +908,6 @@ in {
             owner @{cache_dirs}/                                               rwk,
             owner @{cache_dirs}/**                                             rwkm,
 
-            # Proc (uid_map, gid_map, setgroups, mountinfo, fd/ for bwrap)
-            @{PROC}/                                                           r,
-            owner @{PROC}/@{pid}/fd/                                           r,
-            owner @{PROC}/@{pid}/fd/@{int}                                     w,
-            owner @{PROC}/@{pid}/uid_map                                       rw,
-            owner @{PROC}/@{pid}/gid_map                                       rw,
-            owner @{PROC}/@{pid}/setgroups                                     rw,
-            owner @{PROC}/@{pid}/mountinfo                                     r,
-            @{PROC}/@{pid}/stat                                                r,
-            @{PROC}/sys/kernel/overflow{uid,gid}                               r,
-            @{PROC}/sys/fs/inotify/max_user_watches                            r,
-
             # Flatpak-exported icons/themes/applications
             /var/lib/flatpak/exports/share/icons/                              r,
             /var/lib/flatpak/exports/share/icons/**                            r,
@@ -884,23 +915,6 @@ in {
             /var/lib/flatpak/exports/share/themes/**                           r,
             /var/lib/flatpak/exports/share/applications/                       r,
             /var/lib/flatpak/exports/share/applications/**                     r,
-
-            # User namespace + bwrap + container-init capabilities
-            userns,
-            capability setpcap,
-            capability sys_admin,
-            capability sys_chroot,
-            capability sys_ptrace,
-            capability mknod,
-
-            # FHS namespace paths (bind-mounted from nix store, root-owned)
-            /usr/**                                                            r,
-
-            # .host-etc (host /etc bind-mounted into bwrap namespace, root-owned)
-            /.host-etc/**                                                      r,
-
-            # Host resolv.conf (bind-mounted into FHS namespace via .host-etc)
-            /etc/resolv.conf                                                   r,
 
             include if exists <local/onlyoffice-desktopeditors>
           }
