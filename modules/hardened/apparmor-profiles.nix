@@ -5,7 +5,10 @@
 # Useful commands:
 # `sudo aa-status` `sudo aa-status --complaining`
 # sudo grep "apparmor=\"DENIED\"" /var/log/audit/audit.log | grep -i brave
-# sudo grep -E "apparmor=\"(ALLOWED|DENIED)\"" /var/log/audit/audit.log | grep -i onlyoffice > /tmp/onlyoffice-audit.log
+# sudo grep -E "apparmor=\"(ALLOWED|DENIED|ERROR)\"" /var/log/audit/audit.log
+# sudo grep -E 'apparmor="(STATUS|ERROR)"' /var/log/audit/audit.log
+# sudo grep -E 'seccomp|SECCOMP' /var/log/audit/audit.log
+# sudo grep -E 'op=capable|capname=' /var/log/audit/audit.log | grep -iE 'sys_admin|sys_chroot|setuid|setgid'
 # Clear AppArmor change when debugging:
 # `sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {} && sudo systemctl restart apparmor`
 #
@@ -92,8 +95,7 @@ in {
         onlyoffice = {
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
-            # TODO: more OnlyOffice testing before changing default mode to enforce
-            default = "complain";
+            default = "enforce";
             description =
               "AppArmor profile mode for OnlyOffice desktop editors.";
           };
@@ -438,21 +440,33 @@ in {
         include <abstractions/curios/dconf>
 
         # Electron exec chain: app wrapper → electron wrapper → electron binary (shared)
-        /nix/store/*-electron-*/bin/electron                                       rix,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/electron                mrix,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/chrome_crashpad_handler rix,
+        ${pkgs.electron}/bin/electron                                          rix,
+        ${pkgs.electron.unwrapped}/libexec/electron/electron                   mrix,
+        ${pkgs.electron.unwrapped}/libexec/electron/chrome_crashpad_handler    rix,
+        ${pkgs.electron_42}/bin/electron                                       rix,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/electron                mrix,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/chrome_crashpad_handler rix,
+
 
         # Electron libraries and resources
-        /nix/store/*-electron-unwrapped-*/libexec/electron/*.so*                   mr,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/*.pak                   r,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/*.dat                   r,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/*.bin                   r,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/locales/**              r,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/resources/**            r,
-        /nix/store/*-electron-unwrapped-*/libexec/electron/vk_swiftshader_icd.json r,
+        ${pkgs.electron.unwrapped}/libexec/electron/*.so*                      mr,
+        ${pkgs.electron.unwrapped}/libexec/electron/*.pak                      r,
+        ${pkgs.electron.unwrapped}/libexec/electron/*.dat                      r,
+        ${pkgs.electron.unwrapped}/libexec/electron/*.bin                      r,
+        ${pkgs.electron.unwrapped}/libexec/electron/locales/**                 r,
+        ${pkgs.electron.unwrapped}/libexec/electron/resources/**               r,
+        ${pkgs.electron.unwrapped}/libexec/electron/vk_swiftshader_icd.json    r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/*.so*                   mr,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/*.pak                   r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/*.dat                   r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/*.bin                   r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/locales/**              r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/resources/**            r,
+        ${pkgs.electron_42.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
+
 
         # PipeWire
-        owner @{run}/user/*/pipewire-*                                             rw,
+        owner @{run}/user/*/pipewire-*                                         rw,
       '';
 
       "abstractions/chromium" = ''
@@ -605,26 +619,26 @@ in {
             include <abstractions/curios/camera>
 
             # Signal Desktop wrapper (inherits profile through electron exec chain)
-            ${pkgs.signal-desktop}/bin/signal-desktop                        rix,
+            ${pkgs.signal-desktop}/bin/signal-desktop                          rix,
 
             # Chromium sandbox (separate profile with elevated capabilities)
-            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                     rPx -> signal-desktop-chrome-sandbox,
+            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                rPx -> signal-desktop-chrome-sandbox,
 
             # Signal Desktop app resources
-            ${pkgs.signal-desktop}/share/signal-desktop/**                   r,
-            ${pkgs.signal-desktop}/share/signal-desktop/app.asar             mr,
+            ${pkgs.signal-desktop}/share/signal-desktop/**                     r,
+            ${pkgs.signal-desktop}/share/signal-desktop/app.asar               mr,
             # Native node modules (libsignal crypto, ringrtc WebRTC) — need mmap
             ${pkgs.signal-desktop}/share/signal-desktop/app.asar.unpacked/**/*.node mr,
 
             # Signal Desktop flags
-            owner @{HOME}/.config/signal-desktop-flags.conf                         r,
+            owner @{HOME}/.config/signal-desktop-flags.conf                    r,
 
             # Temporary files
-            /tmp/signal-desktop-*/**                                                rw,
+            /tmp/signal-desktop-*/**                                           rw,
 
             # Bluetooth observe (for nearby device discovery)
-            @{sys}/class/bluetooth/                                                 r,
-            @{run}/bluetooth/**                                                     r,
+            @{sys}/class/bluetooth/                                            r,
+            @{run}/bluetooth/**                                                r,
 
             include if exists <local/signal-desktop>
           }
@@ -642,7 +656,7 @@ in {
             include <abstractions/curios/gconv>
 
             # NixOS shared libraries (see abstractions/electron for rationale)
-            /nix/store/*/lib{,32,64}/**.so*                                         mr,
+            /nix/store/*/lib{,32,64}/**.so*                                    mr,
 
             capability setgid,
             capability setuid,
@@ -650,14 +664,14 @@ in {
             capability sys_chroot,
             capability dac_override,
 
-            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                     mr,
-            ${pkgs.electron_42}/libexec/electron/electron                           rPx -> signal-desktop,
+            ${pkgs.electron_42}/libexec/electron/chrome-sandbox                mr,
+            ${pkgs.electron_42}/libexec/electron/electron                      rPx -> signal-desktop,
 
-            @{PROC}                                                                 r,
-            @{PROC}/@{pids}/                                                        r,
-            owner @{PROC}/@{pid}/fd/                                                r,
-            owner @{PROC}/@{pid}/oom_adj                                            rw,
-            owner @{PROC}/@{pid}/oom_score_adj                                      rw,
+            @{PROC}                                                            r,
+            @{PROC}/@{pids}/                                                   r,
+            owner @{PROC}/@{pid}/fd/                                           r,
+            owner @{PROC}/@{pid}/oom_adj                                       rw,
+            owner @{PROC}/@{pid}/oom_score_adj                                 rw,
 
             # Silencer
             deny /dev/pts/@{u16} rw,
@@ -710,9 +724,9 @@ in {
             /nix/store/*-discord-stage-modules                                 rix,
 
             # disableBreakingUpdates.py (run directly by wrapper, shebang → python3)
-            /nix/store/*-disable-breaking-updates.py/bin/disable-breaking-updates.py   rix,
-            /nix/store/*-python3-*/bin/python3                                         rix,
-            /nix/store/*-python3-*/lib/**                                              r,
+            ${pkgs.discord.disableBreakingUpdates}/bin/disable-breaking-updates.py  rix,
+            ${pkgs.python3}/bin/python3                                        rix,
+            ${pkgs.python3}/lib/**                                             r,
 
             # Discord IPC socket
             owner @{run}/user/@{uid}/discord-ipc-@{int}                        rw,
