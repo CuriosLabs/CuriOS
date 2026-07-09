@@ -359,14 +359,15 @@ in {
 
         # XDG user directories (used by file dialogs, download paths)
         owner @{HOME}/.config/user-dirs.dirs                                   r,
-        # Downloads directory (Chromium temp download files: .crdownload,
-        # .org.chromium.Chromium.* temp files during download).
-        # AppArmor can't read XDG config at policy load time, so we allow
-        # write/create in any top-level home directory.
-        owner @{HOME}/*/                                                       rwk,
-        owner @{HOME}/*/**                                                     rwkm,
-        owner @{HOME}/*/.org.chromium.Chromium.*                               rwkm,
-        owner @{HOME}/*.crdownload                                             rwkm,
+        # Non-hidden top-level home dirs only (Documents, Downloads, …).
+        # [^.]* excludes ~/.ssh, ~/.gnupg, ~/.config, etc. AppArmor can't
+        # follow real XDG user-dirs at policy load time, so any non-hidden
+        # top-level directory is allowed. Nested hidden files (e.g.
+        # ~/Documents/.something) are still covered by /**.
+        owner @{HOME}/[^.]*/                                                   rwk,
+        owner @{HOME}/[^.]*/**                                                 rwkm,
+        # Chromium temp download files
+        owner @{HOME}/[^.]*/**/*.crdownload                                    rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                    r,
         owner @{HOME}/.local/share/applications/                               r,
@@ -472,8 +473,22 @@ in {
 
         # bwrap namespace bootstrap: mount/mkdir/symlink/mknod under
         # /newroot/, /oldroot/, /tmp/ and pivot into the FHS tree.
+        # Intentionally NOT "owner /**" — that would grant full $HOME
+        # including ~/.ssh, ~/.gnupg, etc.
         /                                                                      r,
-        owner /**                                                              rwk,
+        owner /tmp/                                                            rwk,
+        owner /tmp/**                                                          rwk,
+        owner /newroot/                                                        rwk,
+        owner /newroot/**                                                      rwk,
+        owner /oldroot/                                                        rwk,
+        owner /oldroot/**                                                      rwk,
+        owner /dev/shm/                                                        rwk,
+        owner /dev/shm/**                                                      rwk,
+        # Non-hidden top-level home dirs only (Documents, Downloads, …).
+        # [^.]* excludes ~/.ssh, ~/.gnupg, ~/.config, etc. Nested hidden
+        # files under normal dirs remain allowed via /**.
+        owner @{HOME}/[^.]*/                                                   rwk,
+        owner @{HOME}/[^.]*/**                                                 rwkm,
         mount,
         umount,
         pivot_root,
