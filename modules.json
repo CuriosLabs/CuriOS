@@ -327,6 +327,11 @@
             "signal-desktop": {
               "mode": "enforce"
             }
+          },
+          "office": {
+            "onlyoffice": {
+              "mode": "enforce"
+            }
           }
         }
       },
