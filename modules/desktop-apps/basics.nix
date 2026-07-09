@@ -170,8 +170,7 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default =
-            false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
+          default = false;
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
