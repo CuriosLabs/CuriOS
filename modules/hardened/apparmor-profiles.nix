@@ -681,6 +681,7 @@ in {
             ${pkgs.bashInteractive}/bin/sh                                     rix,
             ${pkgs.bashInteractive}/bin/bash                                   rix,
             ${pkgs.coreutils-full}/bin/*                                       rix,
+            ${pkgs.coreutils}/bin/*                                            rix,
             /run/current-system/sw/bin/{readlink,dirname,mkdir,touch,cat}      rix,
 
             ${pkgs.brave}/opt/brave.com/brave/brave                            rPx,
