@@ -7,8 +7,16 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-pkgs-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/curios-pkgs.nix ];
-    users.users.test-user = { isNormalUser = true; };
+    imports = [ ../modules/cosmic.nix ../modules/curios-pkgs.nix ];
+    config = {
+      curios.cosmic.enable = true;
+      time.timeZone = "UTC";
+      users.users.nixos = {
+        isNormalUser = true;
+        description = "Test User";
+        home = "/home/nixos";
+      };
+    };
   };
 
   # Test script to verify packages and systemd user units.
