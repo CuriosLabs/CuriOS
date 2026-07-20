@@ -59,6 +59,19 @@ Curi*OS* comes with pre-installed desktop shortcuts for popular AI chat web appl
 - Grok
 - Mistral LeChat
 
+### In-browser LLMs (WebGPU)
+
+Some sites run LLMs entirely in the browser (no local server), for example
+[WebLLM](https://webllm.mlc.ai/). They need **WebGPU**.
+
+On Linux, Brave may require an extra flag:
+
+1. Open `brave://flags/#force-enable-webgpu-interop`
+2. Set **Force enable WebGPU interop** to **Enabled**
+3. Relaunch Brave
+
+Check status on `brave://gpu` (WebGPU should be available) or on [webgpureport.org](https://webgpureport.org/).
+
 ---
 
 ## For Advanced Users & Developers
