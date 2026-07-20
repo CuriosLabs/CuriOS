@@ -11,6 +11,10 @@
 # sudo grep -E 'op=capable|capname=' /var/log/audit/audit.log | grep -iE 'sys_admin|sys_chroot|setuid|setgid'
 # Clear AppArmor change when debugging:
 # `sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {} && sudo systemctl restart apparmor`
+# Get current AppArmor profile mode of an app:
+# `curios-update --nixos-option curios.hardened.apparmor-profiles.desktop.browsers.brave.mode`
+# Change an AppArmor profile mode:
+# `sudo curios-update --update-module curios.hardened.apparmor-profiles.desktop.browsers.brave.mode "complain" && sudo curios-update --update`
 #
 # TODO: Add AppArmor profiles in priority order:
 #   Tier 1 — Chromium/Electron (render untrusted network content):
@@ -163,16 +167,32 @@ in {
 
       "abstractions/curios/graphics" = ''
         abi <abi/4.0>,
+        # NixOS-aware GPU stack for WebGL/WebGL2 (Mesa + Vulkan + DRI).
+        # dri-common is exported under /etc/apparmor.d/abstractions/; mesa and
+        # dri-enumerate are not, so pin them to pkgs.apparmor-profiles.
+        # mesa already includes dri-common + dri-enumerate + shader caches.
         include <abstractions/dri-common>
-        # DRI / GPU access
-        # udmabuf (GPU buffer sharing for zero-copy video/camera)
-        /dev/udmabuf                                                  rw,
+        include "${pkgs.apparmor-profiles}/etc/apparmor.d/abstractions/dri-enumerate"
+        include "${pkgs.apparmor-profiles}/etc/apparmor.d/abstractions/mesa"
+        include "${pkgs.apparmor-profiles}/etc/apparmor.d/abstractions/vulkan"
+
+        # Extra GPU nodes (not always covered / needed on AMD)
+        /dev/kfd                                                      rw,
         /dev/shm/                                                     r,
-        # GPU shader caches (Mesa OpenGL + RADV Vulkan)
-        owner @{HOME}/.cache/mesa_shader_cache/**                     rwk,
-        owner @{HOME}/.cache/radv_builtin_shaders/**                  rwk,
-        # Vulkan ICD/loader config (user-installed implicit layers)
-        owner @{HOME}/.local/share/vulkan/implicit_layer.d/{,*.json}  r,
+
+        # NixOS graphics drivers (Mesa/Vulkan ICDs, Gallium, GBM)
+        # Upstream abstractions only cover FHS /usr/lib and /usr/share paths.
+        /run/opengl-driver/                                           r,
+        /run/opengl-driver/**                                         mr,
+        /run/opengl-driver-32/                                        r,
+        /run/opengl-driver-32/**                                      mr,
+
+        # Vulkan ICD/layer discovery under the NixOS driver tree
+        /run/opengl-driver/share/vulkan/icd.d/{,*.json}               r,
+        /run/opengl-driver/share/vulkan/{explicit,implicit}_layer.d/{,*.json} r,
+
+        # AMD GPU identity table (libdrm; FHS path is /usr/share/libdrm/)
+        /nix/store/*-libdrm-*/share/libdrm/amdgpu.ids                 r,
       '';
 
       "abstractions/curios/nss" = ''
