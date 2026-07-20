@@ -132,7 +132,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260709.1400";
+    nixos.variant_id = "unstable-20260720.0657";
   };
 
   nix = {

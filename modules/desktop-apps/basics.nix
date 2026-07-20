@@ -201,6 +201,42 @@ in {
       lib.mkIf config.curios.desktop.utility.bitwarden.enable
       [ "electron-39.8.10" ];
 
+    # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
+    # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
+    # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs
+    # Chromium: patchelf RPATH onto ANGLE + replace bundled vulkan-loader.
+    nixpkgs.overlays = lib.mkIf config.curios.desktop.browser.brave.enable [
+      (final: prev: {
+        brave = prev.brave.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            braveLib=$out/opt/brave.com/brave
+            glRpath=${
+              lib.makeLibraryPath [
+                final.libGL
+                final.vulkan-loader
+              ]
+            }
+            for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
+              if [ -f "$f" ]; then
+                oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)
+                if [ -n "$oldRpath" ]; then
+                  patchelf --set-rpath "$glRpath:$oldRpath" "$f"
+                else
+                  patchelf --set-rpath "$glRpath" "$f"
+                fi
+              fi
+            done
+            if [ -e "$braveLib/libvulkan.so.1" ]; then
+              rm -f "$braveLib/libvulkan.so.1"
+              ln -s ${
+                lib.getLib final.vulkan-loader
+              }/lib/libvulkan.so.1 "$braveLib/libvulkan.so.1"
+            fi
+          '';
+        });
+      })
+    ];
+
     environment = {
       systemPackages = [
         pkgs.caligula
