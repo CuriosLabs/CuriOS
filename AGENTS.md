@@ -98,6 +98,7 @@ consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 are defined in the "options" part of their respective `modules/*.nix`.
 See `just list-options` output.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
+- **Language**: English must be used for comments and variable names.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
 - **Comments**: The code is sparsely commented. When adding new code, add
 comments only when necessary to explain complex logic.
