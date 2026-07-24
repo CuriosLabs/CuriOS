@@ -119,9 +119,11 @@ in {
 
       "abstractions/curios/dconf" = ''
         abi <abi/4.0>,
-        # runtime and user dconf paths (used by COSMIC
-        # and other desktop environments) must be allowed here.
+        # COSMIC dconf paths (upstream abstractions/dconf only covers
+        # dconf/user). Parent dir 'w' allows creating the db file.
+        owner @{run}/user/@{uid}/dconf/        rwk,
         owner @{run}/user/@{uid}/dconf/cosmic  rwk,
+        owner @{HOME}/.config/dconf/cosmic     r,
       '';
 
       "abstractions/curios/devices" = ''
@@ -245,9 +247,11 @@ in {
         include <abstractions/nameservice>
         include <abstractions/audio>
         include <abstractions/consoles>
+        include <abstractions/cups-client>
         include <abstractions/fonts>
         include <abstractions/dconf>
         include <abstractions/ssl_certs>
+        include <abstractions/curios/dconf>
         include <abstractions/curios/devices>
         include <abstractions/curios/gconv>
         include <abstractions/curios/graphics>

@@ -19,9 +19,15 @@
         default = false;
         description = "Ollama(local AI) and open-webui services.";
       };
+      avahi.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable Avahi mDNS/DNS-SD (network printer discovery, .local hostnames).";
+      };
       printing.enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "Enable CUPS printing services.";
       };
       sshd.enable = lib.mkOption {
@@ -32,7 +38,8 @@
       earlyoom.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
+        description =
+          "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
       };
       n8n.enable = lib.mkOption {
         type = lib.types.bool;
@@ -152,8 +159,21 @@
           X11Forwarding = false;
         };
       };
-      # Enable CUPS to print documents.
-      printing.enable = lib.mkDefault config.curios.services.printing.enable;
+      # CUPS client for local/network printers (IPP Everywhere / driverless).
+      # Keep listenAddresses/openFirewall at NixOS defaults (localhost only).
+      printing = {
+        enable = lib.mkDefault config.curios.services.printing.enable;
+        startWhenNeeded = true;
+        browsing = false; # do not advertise local queues
+        webInterface = false; # admin via lpadmin/lpstat, not :631
+        # browsed (default on) + avahi: auto-discover LAN printers
+      };
+      # mDNS/DNS-SD for network printer discovery (.local hostnames)
+      avahi = {
+        enable = lib.mkDefault config.curios.services.avahi.enable;
+        nssmdns4 = lib.mkDefault true;
+        openFirewall = lib.mkDefault true;
+      };
       # Enabling Flatpak
       flatpak.enable = true;
       # Enable sound.

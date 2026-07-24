@@ -336,7 +336,7 @@
         }
       },
       "cups": {
-        "enable": false
+        "enable": true
       },
       "dbus": {
         "enable": false
@@ -429,6 +429,9 @@
       }
     },
     "services": {
+      "avahi": {
+        "enable": true
+      },
       "earlyoom": {
         "enable": true
       },
@@ -440,7 +443,7 @@
         "enable": false
       },
       "printing": {
-        "enable": false
+        "enable": true
       },
       "sshd": {
         "enable": false
