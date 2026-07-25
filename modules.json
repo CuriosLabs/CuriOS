@@ -153,6 +153,9 @@
         "heroic": {
           "enable": false
         },
+        "openrgb": {
+          "enable": false
+        },
         "retroarchFree": {
           "enable": false
         },
@@ -390,6 +393,12 @@
       },
       "nvidiaGpu": {
         "enable": false
+      },
+      "various": {
+        "enable": true,
+        "i2c": {
+          "enable": true
+        }
       }
     },
     "networking": {
