@@ -133,8 +133,8 @@
     # Automatic collect garbage
     nix.gc = {
       automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
-      dates = "daily";
-      options = "--delete-older-than 7d";
+      dates = "weekly";
+      options = "--delete-older-than 15d";
     };
 
     # ZRAM swap configuration
