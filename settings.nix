@@ -37,7 +37,9 @@
       extraGroups =
         [ "users" "wheel" "audio" "sound" "video" "plugdev" "dialout" ]
         ++ lib.optionals config.curios.desktop.crypto.enable [ "tty" ]
-        ++ lib.optionals config.curios.hardware.various.i2c.enable ["i2c"]
+        ++ lib.optionals (config.curios.hardware.amdGpu.enable
+          || config.curios.hardware.nvidiaGpu.enable) [ "render" ]
+        ++ lib.optionals config.curios.hardware.various.i2c.enable [ "i2c" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
         ++ lib.optionals config.curios.virtualisation.enable [
           "libvirtd"
