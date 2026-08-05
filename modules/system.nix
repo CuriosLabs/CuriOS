@@ -62,7 +62,7 @@
         javascript.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "NodeJS (npm, npx) Javascript runtime and eslint.";
+          description = "NodeJS LTS (npm, npx) Javascript runtime and eslint.";
         };
         javascript.bun.enable = lib.mkOption {
           type = lib.types.bool;
@@ -153,7 +153,7 @@
       [ pkgs.jetbrains.jdk ]
       ++ lib.optionals config.curios.system.languages.javascript.enable [
         pkgs.eslint
-        pkgs.nodejs_24
+        pkgs.nodejs
       ] ++ lib.optionals config.curios.system.languages.javascript.bun.enable
       [ pkgs.bun ]
       ++ lib.optionals config.curios.system.languages.python312.enable [
