@@ -24,8 +24,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           java.enable = true;
           javascript.enable = true;
           javascript.bun.enable = true;
-          python312.enable = true;
-          python313.enable = true;
+          python3.enable = true;
           ruby.enable = true;
           rust.enable = true;
         };
@@ -53,8 +52,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("bun")
         check_which("eslint")
         check_which("golangci-lint")
-        check_which("python3.12")
-        check_which("python3.13")
+        check_which("python3")
         check_which("pyright")
         check_which("uv")
         check_which("ruff")

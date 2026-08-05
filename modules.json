@@ -486,10 +486,7 @@
           },
           "enable": true
         },
-        "python312": {
-          "enable": false
-        },
-        "python313": {
+        "python3": {
           "enable": false
         },
         "ruby": {

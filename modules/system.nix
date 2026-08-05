@@ -69,17 +69,21 @@
           default = false;
           description = "A fast JavaScript toolkit.";
         };
-        python312.enable = lib.mkOption {
+        python3.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
           description =
-            "Enable Python 3.12, pip, setuptools, cryptography, uv, pyright and ruff.";
+            "Enable Python 3.14, pip, setuptools, cryptography, uv, pyright and ruff.";
+        };
+        python312.enable = lib.mkOption {
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
         python313.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description =
-            "Enable Python 3.13, pip, setuptools, cryptography, uv, pyright and ruff.";
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
         ruby.enable = lib.mkOption {
           type = lib.types.bool;
@@ -156,22 +160,14 @@
         pkgs.nodejs
       ] ++ lib.optionals config.curios.system.languages.javascript.bun.enable
       [ pkgs.bun ]
-      ++ lib.optionals config.curios.system.languages.python312.enable [
-        pkgs.python312
-        pkgs.python312Packages.pip
-        pkgs.python312Packages.setuptools
-        pkgs.python312Packages.cryptography
-        pkgs.uv
+      ++ lib.optionals config.curios.system.languages.python3.enable [
+        pkgs.python314
+        pkgs.python314Packages.pip
+        pkgs.python314Packages.setuptools
+        pkgs.python314Packages.cryptography
+        pkgs.python314Packages.uv
+        pkgs.python314Packages.ruff
         pkgs.pyright
-        pkgs.ruff
-      ] ++ lib.optionals config.curios.system.languages.python313.enable [
-        pkgs.python313
-        pkgs.python313Packages.pip
-        pkgs.python313Packages.setuptools
-        pkgs.python313Packages.cryptography
-        pkgs.uv
-        pkgs.pyright
-        pkgs.ruff
       ]
       ++ lib.optionals config.curios.system.languages.ruby.enable [ pkgs.ruby ]
       ++ lib.optionals config.curios.system.languages.rust.enable [

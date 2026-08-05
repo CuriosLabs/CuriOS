@@ -166,8 +166,7 @@ let
               enable = true;
               bun.enable = true;
             };
-            python312.enable = true;
-            python313.enable = true;
+            python3.enable = true;
             ruby.enable = true;
             rust.enable = true;
           };
