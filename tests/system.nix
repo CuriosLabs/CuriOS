@@ -55,6 +55,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("python3")
         check_which("pyright")
         check_which("uv")
+        check_which("uvx")
         check_which("ruff")
         check_which("ruby")
         check_which("gem")
