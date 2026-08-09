@@ -73,7 +73,7 @@
           type = lib.types.bool;
           default = false;
           description =
-            "Enable Python 3.14, pip, setuptools, cryptography, uv, pyright and ruff.";
+            "Enable Python 3.14, pip, setuptools, cryptography, uv, uvx, pyright and ruff.";
         };
         python312.enable = lib.mkOption {
           type = lib.types.nullOr lib.types.bool;
@@ -165,9 +165,9 @@
         pkgs.python314Packages.pip
         pkgs.python314Packages.setuptools
         pkgs.python314Packages.cryptography
-        pkgs.python314Packages.uv
         pkgs.python314Packages.ruff
         pkgs.pyright
+        pkgs.uv
       ]
       ++ lib.optionals config.curios.system.languages.ruby.enable [ pkgs.ruby ]
       ++ lib.optionals config.curios.system.languages.rust.enable [
