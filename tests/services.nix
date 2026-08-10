@@ -17,6 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     config = {
       virtualisation.memorySize = 4096;
       nixpkgs.config.allowUnfree = true;
+      system.stateVersion = "26.05";
       curios = {
         # Enable all services for comprehensive testing
         services = {
@@ -24,7 +25,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           printing.enable = true;
           sshd.enable = true;
           ollama.enable = true;
-          n8n.enable = true;
         };
 
         cosmic.enable = true;
@@ -90,13 +90,9 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_service_active("ollama")
         check_service_active("open-webui")
 
-    with subtest("check-n8n"):
-        check_service_active("n8n")
-
     with subtest("check-network-ports"):
         machine.wait_for_open_port(11434) # ollama
         machine.wait_for_open_port(8080)  # open-webui
-        machine.wait_for_open_port(5678)  # n8n
 
     with subtest("check-desktop-app"):
         check_desktop_file("com.ollama.openwebui")

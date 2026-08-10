@@ -170,8 +170,7 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default =
-            false; # WARNING: build seems to fails in Nixos 26.05 due to an outdated electron usage.
+          default = false;
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -196,14 +195,47 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
-    # signal-desktop on nixos-26.05 pins pnpm_10_29_2 (build-time only, marked
-    # insecure due to CVEs that do not ship in the final binary). Drop this
-    # once nixos-26.05 ships signal-desktop built with pnpm_10. A pnpm_10
-    # override was attempted but causes a runtime crash because signal-desktop
-    # 8.13.0's electron-builder is incompatible with pnpm >=10.29.3
-    # (see https://github.com/pnpm/pnpm/issues/10601).
+    # bitwarden-desktop on NixOS 26.05 pins electron_39 which is marked EOL.
+    # TODO: remove when bitwarden-dekstop pin electron>=40
     nixpkgs.config.permittedInsecurePackages =
-      lib.mkIf config.curios.desktop.chat.signal.enable [ "pnpm-10.29.2" ];
+      lib.mkIf config.curios.desktop.utility.bitwarden.enable
+      [ "electron-39.8.10" ];
+
+    # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
+    # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
+    # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs
+    # Chromium: patchelf RPATH onto ANGLE + replace bundled vulkan-loader.
+    nixpkgs.overlays = lib.mkIf config.curios.desktop.browser.brave.enable [
+      (final: prev: {
+        brave = prev.brave.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            braveLib=$out/opt/brave.com/brave
+            glRpath=${
+              lib.makeLibraryPath [
+                final.libGL
+                final.vulkan-loader
+              ]
+            }
+            for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
+              if [ -f "$f" ]; then
+                oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)
+                if [ -n "$oldRpath" ]; then
+                  patchelf --set-rpath "$glRpath:$oldRpath" "$f"
+                else
+                  patchelf --set-rpath "$glRpath" "$f"
+                fi
+              fi
+            done
+            if [ -e "$braveLib/libvulkan.so.1" ]; then
+              rm -f "$braveLib/libvulkan.so.1"
+              ln -s ${
+                lib.getLib final.vulkan-loader
+              }/lib/libvulkan.so.1 "$braveLib/libvulkan.so.1"
+            fi
+          '';
+        });
+      })
+    ];
 
     environment = {
       systemPackages = [

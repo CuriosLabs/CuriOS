@@ -13,6 +13,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'crypto.nix' module.
     config = {
+      system.stateVersion = "26.05";
       # Some crypto software might be unfree.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";

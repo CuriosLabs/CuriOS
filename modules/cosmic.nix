@@ -6,7 +6,7 @@
     curios.cosmic.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "REQUIRED enable the COSMIC desktop environment.";
+      description = "REQUIRED - Enable the COSMIC desktop environment.";
     };
   };
 
@@ -41,11 +41,10 @@
       };
 
       # XDG user directories defaults
+      # $HOME directories are updated by xdg-user-dirs-update
       etc."xdg/user-dirs.defaults".text = ''
         DESKTOP=Desktop
         DOWNLOAD=Downloads
-        TEMPLATES=Templates
-        PUBLICSHARE=Public
         DOCUMENTS=Documents
         MUSIC=Music
         PICTURES=Pictures
@@ -75,7 +74,11 @@
       terminal-exec = {
         enable = true;
         settings = {
-          COSMIC = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" "com.system76.CosmicTerm.desktop" ];
+          COSMIC = [
+            "Alacritty.desktop"
+            "com.mitchellh.ghostty.desktop"
+            "com.system76.CosmicTerm.desktop"
+          ];
           default = [ "Alacritty.desktop" "com.mitchellh.ghostty.desktop" ];
         };
       };

@@ -12,6 +12,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'gaming.nix' module.
     config = {
+      system.stateVersion = "26.05";
       # The module already forces this, but we're explicit.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";

@@ -168,6 +168,14 @@ nixos-upgrade: lint
           fi
         done
       fi
+      if command -v aa-status >/dev/null; then
+        if systemctl is-active --quiet apparmor.service; then
+          printf "\e[32m Clearing AppArmor cache...\e[0m\n"
+          sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {}
+          sudo truncate -s 0 /var/log/audit/audit.log
+          sudo systemctl restart apparmor
+        fi
+      fi
       printf "\e[32m Done.\e[0m\n"
       ;;
     [Nn]*) echo "No selected"; exit;;

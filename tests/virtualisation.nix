@@ -11,13 +11,13 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/virtualisation.nix ];
 
     config = {
+      system.stateVersion = "26.05";
       curios.virtualisation = {
         enable = true;
         docker.enable = true;
         podman.enable = false;
         wine.enable = true;
       };
-      # TODO: check samba
 
       # Wine requires some unfree packages
       nixpkgs.config.allowUnfree = true;

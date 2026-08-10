@@ -153,6 +153,9 @@
         "heroic": {
           "enable": false
         },
+        "openrgb": {
+          "enable": false
+        },
         "retroarchFree": {
           "enable": false
         },
@@ -203,11 +206,7 @@
             "enable": false
           }
         },
-        "finance": {
-          "gnucash": {
-            "enable": false
-          }
-        },
+        "finance": {},
         "libreoffice": {
           "enable": false
         },
@@ -312,8 +311,31 @@
           "rule45": false
         }
       },
+      "apparmor-profiles": {
+        "enable": true,
+        "desktop": {
+          "browsers": {
+            "brave": {
+              "mode": "enforce"
+            }
+          },
+          "chat": {
+            "discord": {
+              "mode": "enforce"
+            },
+            "signal-desktop": {
+              "mode": "enforce"
+            }
+          },
+          "office": {
+            "onlyoffice": {
+              "mode": "enforce"
+            }
+          }
+        }
+      },
       "cups": {
-        "enable": false
+        "enable": true
       },
       "dbus": {
         "enable": false
@@ -367,6 +389,12 @@
       },
       "nvidiaGpu": {
         "enable": false
+      },
+      "various": {
+        "enable": true,
+        "i2c": {
+          "enable": true
+        }
       }
     },
     "networking": {
@@ -406,6 +434,9 @@
       }
     },
     "services": {
+      "avahi": {
+        "enable": true
+      },
       "earlyoom": {
         "enable": true
       },
@@ -413,11 +444,8 @@
       "ollama": {
         "enable": false
       },
-      "n8n": {
-        "enable": false
-      },
       "printing": {
-        "enable": false
+        "enable": true
       },
       "sshd": {
         "enable": false
@@ -451,10 +479,7 @@
           },
           "enable": true
         },
-        "python312": {
-          "enable": false
-        },
-        "python313": {
+        "python3": {
           "enable": false
         },
         "ruby": {

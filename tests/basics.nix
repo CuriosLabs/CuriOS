@@ -14,6 +14,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     # Enable all options from the 'basics.nix' module.
     # This also implicitly tests the default values for webapps etc.
     config = {
+      system.stateVersion = "26.05";
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 

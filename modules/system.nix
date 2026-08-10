@@ -62,24 +62,28 @@
         javascript.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "NodeJS (npm, npx) Javascript runtime and eslint.";
+          description = "NodeJS LTS (npm, npx) Javascript runtime and eslint.";
         };
         javascript.bun.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
           description = "A fast JavaScript toolkit.";
         };
-        python312.enable = lib.mkOption {
+        python3.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
           description =
-            "Enable Python 3.12, pip, setuptools, cryptography, uv, pyright and ruff.";
+            "Enable Python 3.14, pip, setuptools, cryptography, uv, uvx, pyright and ruff.";
+        };
+        python312.enable = lib.mkOption {
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
         python313.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description =
-            "Enable Python 3.13, pip, setuptools, cryptography, uv, pyright and ruff.";
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
         ruby.enable = lib.mkOption {
           type = lib.types.bool;
@@ -133,8 +137,8 @@
     # Automatic collect garbage
     nix.gc = {
       automatic = lib.mkDefault config.curios.system.pkgs.gc.enable;
-      dates = "daily";
-      options = "--delete-older-than 7d";
+      dates = "weekly";
+      options = "--delete-older-than 15d";
     };
 
     # ZRAM swap configuration
@@ -153,25 +157,17 @@
       [ pkgs.jetbrains.jdk ]
       ++ lib.optionals config.curios.system.languages.javascript.enable [
         pkgs.eslint
-        pkgs.nodejs_24
+        pkgs.nodejs
       ] ++ lib.optionals config.curios.system.languages.javascript.bun.enable
       [ pkgs.bun ]
-      ++ lib.optionals config.curios.system.languages.python312.enable [
-        pkgs.python312
-        pkgs.python312Packages.pip
-        pkgs.python312Packages.setuptools
-        pkgs.python312Packages.cryptography
-        pkgs.uv
+      ++ lib.optionals config.curios.system.languages.python3.enable [
+        pkgs.python314
+        pkgs.python314Packages.pip
+        pkgs.python314Packages.setuptools
+        pkgs.python314Packages.cryptography
+        pkgs.python314Packages.ruff
         pkgs.pyright
-        pkgs.ruff
-      ] ++ lib.optionals config.curios.system.languages.python313.enable [
-        pkgs.python313
-        pkgs.python313Packages.pip
-        pkgs.python313Packages.setuptools
-        pkgs.python313Packages.cryptography
         pkgs.uv
-        pkgs.pyright
-        pkgs.ruff
       ]
       ++ lib.optionals config.curios.system.languages.ruby.enable [ pkgs.ruby ]
       ++ lib.optionals config.curios.system.languages.rust.enable [

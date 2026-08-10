@@ -10,6 +10,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/networking.nix ];
 
     config = {
+      system.stateVersion = "26.05";
       curios.networking.enable = true;
       # Required for many NixOS tests
       time.timeZone = "UTC";

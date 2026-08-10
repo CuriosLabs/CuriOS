@@ -14,6 +14,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'devops.nix' and 'system.nix' (languages) modules.
     config = {
+      system.stateVersion = "26.05";
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
@@ -73,8 +74,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-editors"):
         check_which("goland")
-        check_which("idea-oss")
-        check_which("pycharm-oss")
+        check_which("idea")
+        check_which("pycharm")
         check_which("rust-rover")
         check_which("zeditor")
         check_which("nil")

@@ -131,7 +131,6 @@ let
               hubspot.enable = true;
             };
             erp.odoo.enable = true;
-            finance.gnucash.enable = true;
             projects = {
               basecamp = {
                 enable = true;
@@ -166,8 +165,7 @@ let
               enable = true;
               bun.enable = true;
             };
-            python312.enable = true;
-            python313.enable = true;
+            python3.enable = true;
             ruby.enable = true;
             rust.enable = true;
           };
@@ -177,7 +175,6 @@ let
           ollama.enable = true;
           printing.enable = true;
           sshd.enable = true;
-          n8n.enable = true;
         };
       };
     };
