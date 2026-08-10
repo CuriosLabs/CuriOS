@@ -11,6 +11,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the system module and ansible.
     config = {
+      system.stateVersion = "26.05";
       curios.system = {
         enable = true;
         ansible.enable = true;

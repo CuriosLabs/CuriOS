@@ -14,6 +14,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'devops.nix' and 'system.nix' (languages) modules.
     config = {
+      system.stateVersion = "26.05";
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";

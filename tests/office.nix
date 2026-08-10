@@ -13,6 +13,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'office.nix' module.
     config = {
+      system.stateVersion = "26.05";
       # Allow unfree packages for Obsidian, Zoom, etc.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";

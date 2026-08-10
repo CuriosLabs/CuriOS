@@ -9,6 +9,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   nodes.machine = { config, pkgs, ... }: {
     imports = [ ../modules/cosmic.nix ../modules/curios-pkgs.nix ];
     config = {
+      system.stateVersion = "26.05";
       curios.cosmic.enable = true;
       time.timeZone = "UTC";
       users.users.nixos = {
