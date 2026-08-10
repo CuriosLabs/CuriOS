@@ -131,7 +131,6 @@ let
               hubspot.enable = true;
             };
             erp.odoo.enable = true;
-            finance.gnucash.enable = true;
             projects = {
               basecamp = {
                 enable = true;

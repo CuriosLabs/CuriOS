@@ -206,11 +206,7 @@
             "enable": false
           }
         },
-        "finance": {
-          "gnucash": {
-            "enable": false
-          }
-        },
+        "finance": {},
         "libreoffice": {
           "enable": false
         },

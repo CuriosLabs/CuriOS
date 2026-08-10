@@ -72,11 +72,11 @@ in {
         };
       };
       finance = {
-        # WARNING: GNUcash build seems to fails in Nixos 26.05 due to a Perl dependency build fail - See: https://seclists.org/oss-sec/2026/q2/699
+        # TODO: find a pkgs worthy of installation
         gnucash.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Free software for accounting.";
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "DEPRECATED";
         };
       };
       projects = {
@@ -151,8 +151,6 @@ in {
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.erp.odoo.enable
       [ (import ./webapp-odoo.nix { inherit config pkgs lib; }) ]
-      ++ lib.optionals config.curios.desktop.office.finance.gnucash.enable
-      [ pkgs.gnucash ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.enable
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.cli
