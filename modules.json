@@ -448,9 +448,6 @@
       "ollama": {
         "enable": false
       },
-      "n8n": {
-        "enable": false
-      },
       "printing": {
         "enable": true
       },

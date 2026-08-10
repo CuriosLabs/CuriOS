@@ -176,7 +176,6 @@ let
           ollama.enable = true;
           printing.enable = true;
           sshd.enable = true;
-          n8n.enable = true;
         };
       };
     };

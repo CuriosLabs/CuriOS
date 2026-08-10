@@ -104,39 +104,6 @@
       # May require overriding if rocm does not detect your AMD GPU. 
       #rocmOverrideGfx = "11.0.2";
     };
-
-    ### n8n webhook configuration (for external services calling your workflows)
-    # n8n = {
-    #   environment = {
-    #     # By default n8n webhooks only work from the local machine
-    #     # (http://localhost:5678/webhook/... and /webhook-test/...).
-    #     # This is sufficient for local testing and scripts running on the same laptop.
-    #     #
-    #     # To receive webhooks from external services (GitHub, Stripe, Typeform,
-    #     # external APIs, etc.), n8n must know its public URL.
-    #     # You need a tunnel or reverse proxy.
-    #     #
-    #     # Recommended easy approach on CuriOS:
-    #     #   1. Enable the cloudflared client:
-    #     #        curios.desktop.devops.cloudflared.enable = true;
-    #     #   2. In a terminal run:
-    #     #        cloudflared tunnel --url http://localhost:5678
-    #     #   3. Copy the https://*.trycloudflare.com URL it prints
-    #     #   4. Paste it below (keep the trailing slash!)
-    #     #
-    #     # Important variables:
-    #     #   WEBHOOK_URL         → used for activated (production) workflows
-    #     #   N8N_EDITOR_BASE_URL → used for the n8n UI and test webhooks
-    #     #   N8N_PROXY_HOPS      → must be set when n8n is behind any tunnel/proxy
-    #     #
-    #     # After changing these values, restart n8n:
-    #     #   sudo systemctl restart n8n
-    #
-    #     WEBHOOK_URL = "https://your-tunnel-id.trycloudflare.com/";
-    #     N8N_EDITOR_BASE_URL = "https://your-tunnel-id.trycloudflare.com/";
-    #     N8N_PROXY_HOPS = "1";
-    #   };
-    # };
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
