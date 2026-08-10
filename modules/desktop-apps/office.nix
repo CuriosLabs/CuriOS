@@ -74,7 +74,7 @@ in {
       finance = {
         # TODO: find a pkgs worthy of installation
         gnucash.enable = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
+          type = lib.types.nullOr lib.types.bool;
           default = null;
           description = "DEPRECATED";
         };
