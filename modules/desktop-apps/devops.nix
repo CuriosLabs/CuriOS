@@ -43,7 +43,7 @@
         java.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "JetBrains IDEA oss - Kotlin";
+          description = "JetBrains IDEA - Kotlin (buy online)";
         };
         opencode.enable = lib.mkOption {
           type = lib.types.bool;
@@ -53,7 +53,7 @@
         python.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "JetBrains PyCharm Community";
+          description = "JetBrains PyCharm (buy online)";
         };
         rust.enable = lib.mkOption {
           type = lib.types.bool;
@@ -198,11 +198,11 @@
       ] ++ lib.optionals config.curios.desktop.devops.editor.go.enable
       [ jetbrains.goland ]
       ++ lib.optionals config.curios.desktop.devops.editor.java.enable
-      [ jetbrains.idea-oss ]
+      [ jetbrains.idea ]
       ++ lib.optionals config.curios.desktop.devops.editor.opencode.enable
       [ opencode-desktop ]
       ++ lib.optionals config.curios.desktop.devops.editor.python.enable
-      [ jetbrains.pycharm-oss ]
+      [ jetbrains.pycharm ]
       ++ lib.optionals config.curios.desktop.devops.editor.rust.enable
       [ jetbrains.rust-rover ]
       ++ lib.optionals config.curios.desktop.devops.editor.zed.enable [

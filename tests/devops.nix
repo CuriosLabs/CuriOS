@@ -74,8 +74,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-editors"):
         check_which("goland")
-        check_which("idea-oss")
-        check_which("pycharm-oss")
+        check_which("idea")
+        check_which("pycharm")
         check_which("rust-rover")
         check_which("zeditor")
         check_which("nil")
