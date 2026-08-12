@@ -446,6 +446,10 @@ in {
         /var/lib/flatpak/exports/share/applications/                           r,
         /var/lib/flatpak/exports/share/applications/**                         r,
 
+        # Removable media (USB drives, SD cards, external storage)
+        /run/media/                                                           r,
+        /run/media/**                                                         r,
+
         # Silencer
         deny /etc/opt/                                                         w,
         deny @{HOME}/.local/share/gvfs-metadata/*                              r,
