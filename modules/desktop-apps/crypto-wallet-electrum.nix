@@ -5,12 +5,12 @@
 { pkgs, lib }:
 let
   pname = "electrum";
-  version = "4.7.2";
+  version = "4.8.1";
 
   src = pkgs.fetchurl {
     url =
       "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
-    hash = "sha256-z3dft0oYLKUwQbUTtJtf+0FGEAV8K21DA38cTnflBlo=";
+    hash = "sha256-v5fZz11Cn6v+cMOXXg5BN73vubuqgOfQ9HgygbPrd+Y=";
 
     # Verify Appimage signature
     nativeBuildInputs = [ pkgs.gnupg ];
@@ -25,10 +25,15 @@ let
       #echo -e "trust\n5\ny\nsave" | gpg --batch --no-tty --command-fd 0 --edit-key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
       ln -s ${appSignature} ./appSignature.asc
       ln -s $downloadedFile ./${pname}-${version}-x86_64.AppImage
-      # TODO: gpg --verify exit code 2 (even with authSignature.asc marked as trusted) seems to bug the postFetch process.
-      #gpg --batch --verify appSignature.asc ${pname}-${version}-x86_64.AppImage
-      #TODO: test gpg verify
-      #gpg --batch --verify --fingerprint "6694D8DE7BE8EE5631BED9502BD5824B7F9470E6" appSignature.asc
+      set +e
+      gpg --batch --verify appSignature.asc ./${pname}-${version}-x86_64.AppImage
+      GPG_EXIT=$?
+      set -e
+      if [ $GPG_EXIT -ne 0 ] && [ $GPG_EXIT -ne 2 ]; then
+        echo "GPG verification failed!" >&2
+        exit 1
+      fi
+      echo -e "\e[32mGPG signature verified!\e[0m"
       popd
       mv $downloadedFile $out
     '';
@@ -37,7 +42,7 @@ let
   appSignature = pkgs.fetchurl {
     url =
       "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "sha256-P4FY4CFzAgzgOXYVF+KM7xp+G4wSYOANL+vIj2kRi08=";
+    hash = "sha256-jzQHu/luaKoLCyRUvdvdlSeL/D2Sj9EZutCF3i2JItI=";
   };
 
   authorPubKey = pkgs.fetchurl {
