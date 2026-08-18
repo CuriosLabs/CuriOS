@@ -231,6 +231,50 @@ in {
         owner /dev/shm/wine-*                            rw,
       '';
 
+      "abstractions/curios/secrets-deny" = ''
+        abi <abi/4.0>,
+        deny @{HOME}/.ssh/**                             r,
+        deny @{HOME}/.gnupg/**                           r,
+        deny @{HOME}/.password-store/**                  r,
+        deny @{HOME}/.aws/**                             r,
+        deny @{HOME}/.azure/**                           r,
+        deny @{HOME}/.config/gcloud/**                   r,
+        deny @{HOME}/.kube/**                            r,
+        deny @{HOME}/.docker/config.json                 r,
+        deny @{HOME}/.netrc                              r,
+        deny @{HOME}/.npmrc                              r,
+        deny @{HOME}/.pypirc                             r,
+        deny @{HOME}/.git-credentials                    r,
+        deny @{HOME}/.config/gh/**                       r,
+        deny @{HOME}/.config/git/**                      r,
+        deny @{HOME}/.local/share/keyrings/**            r,
+        deny @{HOME}/.config/keepassxc/**                r,
+        deny @{HOME}/.config/Bitwarden/**                r,
+        deny @{HOME}/.config/1Password/**                r,
+        deny @{HOME}/.electrum/**                        r,
+        deny @{HOME}/.bitcoin/**                         r,
+        deny @{HOME}/.ethereum/**                        r,
+        deny @{HOME}/.monero/**                          r,
+        deny @{HOME}/.config/solana/**                   r,
+        deny "@{HOME}/.config/Ledger Live/**"            r,
+        deny @{HOME}/.config/Exodus/**                   r,
+        deny @{HOME}/.local/share/Exodus/**              r,
+        deny @{HOME}/**/.env                             r,
+        deny @{HOME}/**/.env.*                           r,
+        deny @{HOME}/**/.envrc                           r,
+        deny @{HOME}/**/id_{rsa,ed25519,ecdsa,dsa}       r,
+        deny @{HOME}/**/*.pem                            r,
+        deny @{HOME}/**/*.kdbx                           r,
+      '';
+
+      "abstractions/curios/secrets-deny-browsers" = ''
+        abi <abi/4.0>,
+        deny @{HOME}/.mozilla/**                         r,
+        deny @{HOME}/.config/BraveSoftware/**            r,
+        deny @{HOME}/.config/chromium/**                 r,
+        deny @{HOME}/.config/google-chrome/**            r,
+      '';
+
       "abstractions/curios/wayland" = ''
         abi <abi/4.0>,
         # Needed when using QT_QPA_PLATFORM=wayland-egl (MESA dri config)
@@ -282,6 +326,7 @@ in {
         include <abstractions/curios/graphics>
         include <abstractions/curios/nss>
         include <abstractions/curios/wayland>
+        include <abstractions/curios/secrets-deny>
 
         # NixOS shared libraries. Upstream abstractions/base only grants
         # access to FHS paths (/{usr/,}lib{,32,64}/*.so*); on NixOS every
@@ -774,6 +819,7 @@ in {
           profile signal-desktop ${pkgs.signal-desktop}/bin/signal-desktop ${modeFlag} {
             include <abstractions/electron>
             include <abstractions/curios/camera>
+            include <abstractions/curios/secrets-deny-browsers>
 
             # Signal Desktop wrapper (inherits profile through electron exec chain)
             ${pkgs.signal-desktop}/bin/signal-desktop                          rix,
@@ -855,6 +901,7 @@ in {
 
           profile discord ${pkgs.discord}/opt/Discord/Discord ${modeFlag} {
             include <abstractions/chromium>
+            include <abstractions/curios/secrets-deny-browsers>
 
             # Discord wrapper script (created by wrapProgramShell).
             # The real Electron binary is moved to .Discord-wrapped; the
@@ -956,6 +1003,8 @@ in {
           profile onlyoffice-desktopeditors ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors ${modeFlag} {
             include <abstractions/curios/graphics>
             include <abstractions/curios/fhsenv-bwrap>
+            include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/secrets-deny-browsers>
 
             # OnlyOffice bwrap entry + real init (app-specific; not on passthru)
             ${pkgs.onlyoffice-desktopeditors}/bin/onlyoffice-desktopeditors          rix,
@@ -1026,6 +1075,8 @@ in {
             include <abstractions/curios/dconf>
             include <abstractions/curios/nss>
             include <abstractions/curios/wine>
+            include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/secrets-deny-browsers>
 
             # NixOS shared libraries (Steam is 32-bit + 64-bit multiarch)
             /nix/store/*/lib{,32,64}/**.so*                                    mr,
@@ -1083,7 +1134,7 @@ in {
             # Native + Proton + SLR binaries in all Steam libraries.
             # rPx -> steam-game-native blocked by bwrap NNP; inherit instead.
             @{config_dirs}/steamapps/common/**                                 mrix,
-            owner @{HOME}/[^.]*/steamapps/common/**                            mrix,
+            owner @{HOME}/**/steamapps/common/**                               mrix,
             /run/media/**/steamapps/common/**                                  mrix,
             /usr/bin/python3                                                   rix,
             /usr/bin/python3.*                                                 rix,
@@ -1140,9 +1191,9 @@ in {
             /nix/store/*-pulseaudio-*/.bin-unwrapped/pactl                     rix,
             /run/current-system/sw/bin/{wpctl,pactl}                           rix,
 
-            # Process inspection (game detection, overlay injection, wineserver)
-            ptrace read,
-            ptrace trace,
+            # Process inspection (game detection, overlay, wineserver).
+            # Restrict to the steam tree so a game cannot dump ssh-agent/browsers.
+            ptrace (read,trace) peer=steam,
 
             # Signal child processes (steamwebhelper, game sandboxes)
             signal send set=(kill term) peer=steam//web,
@@ -1162,10 +1213,16 @@ in {
             owner @{config_dirs}/                                              rwk,
             owner @{config_dirs}/**                                            rwlkm,
 
-            # Game library directories (including external drives)
-            owner @{HOME}/[^.]*/**                                             rwkm,
+            # Steam libraries only (not the whole visible home).
+            owner @{HOME}/Games/                                               rwk,
+            owner @{HOME}/Games/**                                             rwlkm,
+            owner @{HOME}/games/                                               rwk,
+            owner @{HOME}/games/**                                             rwlkm,
+            owner @{HOME}/**/steamapps/                                        rwk,
+            owner @{HOME}/**/steamapps/**                                      rwlkm,
             /run/media/                                                        r,
-            /run/media/**                                                      r,
+            /run/media/**/steamapps/                                           r,
+            /run/media/**/steamapps/**                                         rwlkm,
 
             # Crash dumps (bind-mounted via bwrap --bind-try /tmp/dumps)
             owner /tmp/dumps/                                                  rwk,
@@ -1239,7 +1296,6 @@ in {
             @{PROC}/@{pid}/stat                                                r,
             @{PROC}/@{pid}/statm                                               r,
             @{PROC}/@{pid}/comm                                                rk,
-            @{PROC}/@{pid}/environ                                             r,
             @{PROC}/@{pid}/fdinfo/@{int}                                       r,
             @{PROC}/@{pid}/task/@{tid}/status                                  r,
             @{PROC}/@{pid}/net/*                                               r,
@@ -1260,19 +1316,13 @@ in {
             @{PROC}/pressure/io                                                r,
             @{PROC}/uptime                                                     r,
             owner @{PROC}/@{pid}/autogroup                                     rw,
-            @{PROC}/@{pid}/pagemap                                             r,
+            owner @{PROC}/@{pid}/pagemap                                        r,
             @{PROC}/@{pid}/task/@{tid}/stat                                    r,
             /dev/                                                              r,
             /dev/ntsync                                                        r,
             /dev/ttyS*                                                         r,
             /dev/bus/usb/                                                      r,
             /dev/bus/usb/**                                                    r,
-            /dev/nvme*                                                         r,
-            /dev/dm-*                                                          r,
-            /dev/zram*                                                         r,
-            /dev/sd*                                                           r,
-            /dev/vd*                                                           r,
-            /dev/mapper/                                                       r,
             @{sys}/power/suspend_stats/success                                 rk,
             @{sys}/devices/virtual/net/                                        r,
             @{sys}/devices/virtual/net/*/                                      r,
@@ -1327,9 +1377,7 @@ in {
             owner @{HOME}/.config/gtk-3.0/**                                    r,
             owner @{HOME}/.config/gtk-4.0/**                                    r,
 
-            # Silencers
-            deny @{HOME}/.ssh/**                                                r,
-            deny @{HOME}/.gnupg/**                                              r,
+            # Silencers (secrets-deny covers ssh/gnupg/wallets/.env)
 
             # Steam web helper (CEF embedded browser — sandboxed)
             profile web ${webModeFlag} {
@@ -1699,6 +1747,8 @@ in {
             include <abstractions/curios/graphics>
             include <abstractions/curios/wayland>
             include <abstractions/curios/wine>
+            include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/secrets-deny-browsers>
             include <abstractions/audio>
 
             capability dac_override,
@@ -1785,6 +1835,8 @@ in {
             include <abstractions/curios/graphics>
             include <abstractions/curios/wayland>
             include <abstractions/audio>
+            include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/secrets-deny-browsers>
 
             network inet dgram,
             network inet stream,
