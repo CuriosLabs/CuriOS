@@ -95,6 +95,16 @@ in {
         };
       };
 
+      gaming = {
+        steam = {
+          mode = mkOption {
+            type = types.enum [ "complain" "enforce" "disable" ];
+            default = "complain";
+            description = "AppArmor profile mode for Steam.";
+          };
+        };
+      };
+
       office = {
         onlyoffice = {
           mode = mkOption {
@@ -971,6 +981,253 @@ in {
             /var/lib/flatpak/exports/share/applications/**                     r,
 
             include if exists <local/onlyoffice-desktopeditors>
+          }
+        '';
+      };
+
+      "steam" = {
+        state = cfg.desktop.gaming.steam.mode;
+        profile = let
+          modeFlag = if cfg.desktop.gaming.steam.mode == "complain" then
+            "flags=(complain, attach_disconnected, mediate_deleted)"
+          else
+            "flags=(attach_disconnected, mediate_deleted)";
+          webModeFlag = if cfg.desktop.gaming.steam.mode == "complain" then
+            "flags=(attach_disconnected, mediate_deleted, complain)"
+          else
+            "flags=(attach_disconnected, mediate_deleted)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          @{lib_dirs} = ${pkgs.steam.fhsenv}
+          @{config_dirs} = @{HOME}/.local/share/Steam
+
+          profile steam @{config_dirs}/steam.sh ${modeFlag} {
+            include <abstractions/curios/fhsenv-bwrap>
+            include <abstractions/curios/graphics>
+            include <abstractions/curios/wayland>
+            include <abstractions/audio>
+            include <abstractions/curios/dconf>
+
+            # NixOS shared libraries (Steam is 32-bit + 64-bit multiarch)
+            /nix/store/*/lib{,32,64}/**.so*                                    mr,
+
+            # Steam FHS-env bwrap chain (app-specific, not exposed via pkgs)
+            /nix/store/*-steam-*-init                                          rix,
+            /nix/store/*-steam-wrapped                                         rix,
+
+            # Steam Valve runtime entry points (self-managed, outside nix store)
+            @{config_dirs}/steam.sh                                            mrix,
+            @{config_dirs}/ubuntu12_32/steam*                                  mrix,
+            @{config_dirs}/ubuntu12_64/steamwebhelper*                         mrix,
+
+            # Network (client, downloads, multiplayer, In-Home Streaming)
+            network inet dgram,
+            network inet6 dgram,
+            network inet stream,
+            network inet6 stream,
+            network netlink raw,
+
+            # Unprivileged user namespaces (pressure-vessel / Proton)
+            userns,
+            capability sys_admin,
+            capability sys_chroot,
+            capability sys_ptrace,
+            capability sys_nice,
+            capability mknod,
+
+            # Shell and utilities
+            ${pkgs.bashInteractive}/bin/sh                                     rix,
+            ${pkgs.bashInteractive}/bin/bash                                   rix,
+            ${pkgs.coreutils-full}/bin/*                                       rix,
+            ${pkgs.coreutils}/bin/*                                            rix,
+            ${pkgs.gnugrep}/bin/grep                                           rix,
+            ${pkgs.gnused}/bin/sed                                             rix,
+
+            # System tools (hardware detection, dependency checks)
+            ${pkgs.lsb-release}/bin/lsb_release                                rix,
+            ${pkgs.pciutils}/bin/lspci                                         rix,
+            ${pkgs.xz}/bin/xz                                                  rix,
+
+            # Process inspection (game detection, overlay injection)
+            ptrace read,
+
+            # Signal child processes (steamwebhelper, game sandboxes)
+            signal send set=(kill term) peer=steam//web,
+
+            # Steam home (~/.steam/ symlink or directory)
+            owner @{HOME}/.steam/                                              rwk,
+            owner @{HOME}/.steam/**                                            rwkm,
+            owner @{HOME}/.steampath                                           rw,
+            owner @{HOME}/.steampid                                            rw,
+
+            # Steam data (~/.local/share/Steam/)
+            owner @{config_dirs}/                                              rwk,
+            owner @{config_dirs}/**                                            rwkm,
+
+            # Game library directories (including external drives)
+            owner @{HOME}/[^.]*/**                                             rwkm,
+            /run/media/                                                        r,
+            /run/media/**                                                      r,
+
+            # Crash dumps (bind-mounted via bwrap --bind-try /tmp/dumps)
+            owner /tmp/dumps/                                                  rwk,
+            owner /tmp/dumps/**                                                rwkm,
+
+            # Steam IPC shared memory
+            owner /dev/shm/ValveIPCSHM_@{uid}                                  rw,
+            owner /dev/shm/u@{uid}-Shm_*                                       rw,
+            owner /dev/shm/u@{uid}-ValveIPCSharedObj-Steam                     rwk,
+
+            # Game controllers, HID devices, VR
+            /dev/input/                                                        r,
+            /dev/input/*                                                       rw,
+            /dev/uinput                                                        rw,
+            /dev/hidraw*                                                       rw,
+
+            # Controller/input sysfs
+            @{sys}/class/hidraw/                                               r,
+            @{sys}/class/input/                                                r,
+            @{sys}/devices/**/input*/**                                        r,
+            @{sys}/devices/**/report_descriptor                                r,
+
+            # Distro identification (Steam runtime detection)
+            /etc/lsb-release                                                   r,
+            /etc/timezone                                                      r,
+
+            # Process and CPU monitoring (game detection)
+            @{PROC}/                                                           r,
+            owner @{PROC}/@{pid}/cmdline                                       r,
+            owner @{PROC}/@{pid}/fd/                                           r,
+            owner @{PROC}/@{pid}/mounts                                        r,
+            owner @{PROC}/@{pid}/mountinfo                                     r,
+            owner @{PROC}/@{pid}/stat                                          r,
+            owner @{PROC}/@{pid}/status                                        r,
+            owner @{PROC}/@{pid}/mem                                           r,
+            owner @{PROC}/@{pid}/task/                                         r,
+            owner @{PROC}/@{pid}/task/@{tid}/comm                              rw,
+            owner @{PROC}/@{pid}/task/@{tid}/children                          r,
+            @{PROC}/@{pid}/stat                                                r,
+            @{PROC}/@{pid}/comm                                                r,
+            @{PROC}/@{pid}/task/@{tid}/status                                  r,
+            @{PROC}/@{pid}/net/*                                               r,
+            @{PROC}/version                                                    r,
+            @{PROC}/sys/kernel/yama/ptrace_scope                               r,
+            @{PROC}/sys/kernel/sched_autogroup_enabled                         r,
+
+            # Desktop integration
+            owner @{HOME}/.local/share/applications/*.desktop                   rw,
+            owner @{HOME}/.local/share/icons/hicolor/**/apps/steam*             rw,
+
+            # Vulkan implicit layers (Steam overlay, Fossilize shader cache)
+            owner @{HOME}/.local/share/vulkan/implicit_layer.d/steam*.json      rwk,
+
+            # URL handling (Steam store links, community)
+            ${pkgs.xdg-utils}/bin/xdg-open                                      rix,
+            /run/current-system/sw/bin/xdg-open                                 rix,
+            ${pkgs.brave}/bin/brave                                             rPx -> brave-wrapper,
+
+            # Flatpak exports (xdg-open resolving links to installed Flatpak apps)
+            /var/lib/flatpak/exports/share/icons/                               r,
+            /var/lib/flatpak/exports/share/icons/**                             r,
+            /var/lib/flatpak/exports/share/applications/                        r,
+            /var/lib/flatpak/exports/share/applications/**                      r,
+
+            # GTK theme (Steam uses GTK3 for file dialogs, settings UI)
+            owner @{HOME}/.config/gtk-3.0/**                                    r,
+
+            # Silencers
+            deny @{HOME}/.ssh/**                                                r,
+            deny @{HOME}/.gnupg/**                                              r,
+
+            # Steam web helper (CEF embedded browser — sandboxed)
+            profile web ${webModeFlag} {
+              include <abstractions/base>
+              include <abstractions/nameservice>
+              include <abstractions/audio>
+              include <abstractions/consoles>
+              include <abstractions/fonts>
+              include <abstractions/dconf>
+              include <abstractions/ssl_certs>
+              include <abstractions/curios/dconf>
+              include <abstractions/curios/devices>
+              include <abstractions/curios/gconv>
+              include <abstractions/curios/graphics>
+              include <abstractions/curios/wayland>
+
+              # Signal handling (receive from parent steam process)
+              signal receive set=(cont kill term) peer=steam,
+
+              # NixOS shared libraries
+              /nix/store/*/lib{,32,64}/**.so*                                    mr,
+              /nix/store/**                                                      r,
+
+              # FHS env rootfs (CEF libs and steamwebhelper binary)
+              @{lib_dirs}/                                                       r,
+              @{lib_dirs}/**                                                     mr,
+
+              # Chromium sandbox (CEF uses the same sandbox as Chromium)
+              userns,
+              capability sys_admin,
+              capability sys_chroot,
+              capability sys_ptrace,
+              capability mknod,
+
+              # Network (store, library, community, chat)
+              network inet dgram,
+              network inet6 dgram,
+              network inet stream,
+              network inet6 stream,
+              network netlink raw,
+
+              # Shell (wrapper scripts)
+              ${pkgs.bashInteractive}/bin/sh                                     rix,
+              ${pkgs.bashInteractive}/bin/bash                                   rix,
+              ${pkgs.coreutils-full}/bin/*                                       rix,
+              ${pkgs.coreutils}/bin/*                                            rix,
+
+              # Steam data access (read config, write cache/logs)
+              owner @{config_dirs}/                                              r,
+              owner @{config_dirs}/config/**                                     rwk,
+              owner @{config_dirs}/logs/**                                       rwk,
+              owner @{config_dirs}/public/**                                     r,
+              owner @{config_dirs}/appcache/**                                    r,
+
+              # Steam IPC shared memory
+              owner /dev/shm/ValveIPCSHM_@{uid}                                  rw,
+              owner /dev/shm/u@{uid}-Shm_*                                       rw,
+              owner /dev/shm/u@{uid}-ValveIPCSharedObj-Steam                     rwk,
+
+              # Temp (CEF shared memory, downloads)
+              /tmp/                                                              r,
+              owner /tmp/steam_chrome_shmem_*                                    rw,
+              owner /tmp/.com.valvesoftware.Steam.*/**                           rw,
+              owner /tmp/#@{int}                                                 rw,
+
+              # Process info (parent/child monitoring)
+              owner @{PROC}/@{pid}/cmdline                                       r,
+              owner @{PROC}/@{pid}/fd/                                           r,
+              owner @{PROC}/@{pid}/stat                                          r,
+              owner @{PROC}/@{pid}/status                                        r,
+              owner @{PROC}/@{pid}/oom_score_adj                                 w,
+              @{PROC}/@{pid}/stat                                                r,
+              @{PROC}/@{pid}/task/@{tid}/comm                                    r,
+              @{PROC}/@{pid}/task/@{tid}/status                                  r,
+              @{PROC}/version                                                    r,
+              @{PROC}/sys/kernel/yama/ptrace_scope                               r,
+              @{PROC}/sys/fs/inotify/max_user_watches                            r,
+
+              # D-Bus
+              owner @{run}/user/@{uid}/bus                                       rw,
+
+              # PipeWire audio
+              owner @{run}/user/*/pipewire-*                                     rw,
+
+              include if exists <local/steam_web>
+            }
+
+            include if exists <local/steam>
           }
         '';
       };

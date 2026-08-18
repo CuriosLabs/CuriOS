@@ -327,6 +327,11 @@
               "mode": "enforce"
             }
           },
+          "gaming": {
+            "steam": {
+              "mode": "complain"
+            }
+          },
           "office": {
             "onlyoffice": {
               "mode": "enforce"
