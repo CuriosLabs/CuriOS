@@ -464,6 +464,7 @@ in {
         owner @{HOME}/[^.]*/**/*.crdownload                                    rwkm,
         # XDG MIME associations and application listings
         owner @{HOME}/.config/mimeapps.list                                    r,
+        owner @{HOME}/.config/cosmic-mimeapps.list                             r,
         owner @{HOME}/.local/share/applications/                               r,
         owner @{HOME}/.local/share/applications/**                             r,
 
