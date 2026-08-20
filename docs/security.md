@@ -12,10 +12,11 @@ The security features work together to protect your system at every stage:
 - **Unlocking your disk** — use your YubiKey to decrypt your drive at boot time
 - **Remote access** — store SSH keys securely on your YubiKey
 - **Boot protection** — ensure only trusted software can start your computer
+- **Application confinement** — restrict what desktop apps can access on your system
 
-![CuriOS manager security menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_security1.png?raw=true "curios-manager security")
+![CuriOS manager security menu](https://github.com/CuriosLabs/CuriOS/blob/testing/img/curios-manager_security2.png?raw=true "curios-manager security")
 
-## Four Security Features at a Glance
+## Five Security Features at a Glance
 
 It is important to understand that these are **independent features** you can
 enable in any combination:
@@ -26,6 +27,7 @@ enable in any combination:
 | LUKS FIDO2 disk decryption | During early boot | Unlock the encrypted root filesystem | Strong recovery passphrase (mandatory) |
 | SSH key on YubiKey | When connecting to remote servers | Use a hardware-backed key for SSH | Standard SSH keys or passwords still work |
 | Secure Boot | Every time the computer starts | Blocks untrusted software from booting | Can be disabled in the firmware settings |
+| AppArmor | While applications are running | Restricts what confined apps can read, write, or execute | Per-app complain mode or disable |
 
 Enabling one does **not** automatically enable the others.
 
@@ -211,6 +213,96 @@ The Curi*OS* Manager provides a guided, step-by-step setup:
 > Always keep your LUKS recovery passphrase in a safe place. Secure Boot protects
 > the boot process, but disk encryption is still your last line of defense.
 
+## AppArmor
+
+AppArmor is a Mandatory Access Control (MAC) system. When it is enabled, selected
+desktop applications run inside a **profile** that lists what they are allowed to
+do — which files they may read or write, which devices they may open, and which
+other programs they may start.
+
+This limits the damage if an application is compromised. A confined browser, for
+example, cannot freely read your SSH keys or password-manager files even if a
+tab is exploited.
+
+AppArmor is **disabled by default**. Enable it from the Curi*OS* Manager
+**🔐 Security** menu with **🛡️ Enable AppArmor**.
+
+### What the manager enables
+
+The manager turns on three related options, then applies a system update:
+
+1. **ANSSI reinforced hardening** — the parent module required by AppArmor
+   (`curios.hardened.anssi.reinforced.enable`). Other reinforced rules (IOMMU,
+   module loading, sudo `noexec`) stay off unless you enable them yourself.
+2. **ANSSI rule R45** — starts the AppArmor service, enables audit logging of
+   program executions, and kills processes that have a profile but are running
+   unconfined (`curios.hardened.anssi.reinforced.rule45`).
+3. **Curi*OS* AppArmor profiles** — ships the confinement rules for supported
+   desktop apps (`curios.hardened.apparmor-profiles.enable`).
+
+After the update, the manager shows whether AppArmor is active and how many
+profiles are in **enforce** or **complain** mode.
+
+### Confined applications
+
+| Application | Default mode | What the profile covers |
+| --- | --- | --- |
+| Brave | enforce | Browser, sandbox, and launcher |
+| Discord | enforce | Desktop client and sandbox |
+| Signal Desktop | enforce | Desktop client and sandbox |
+| OnlyOffice | enforce | Desktop editors |
+| Steam | complain | Steam client, Proton, and native games |
+
+Only these applications are confined. Everything else on the system keeps its
+normal permissions.
+
+### Profile modes
+
+Each profile can be set independently:
+
+- **enforce** — unauthorized actions are blocked and logged.
+- **complain** — unauthorized actions are allowed but still logged. Useful to
+  diagnose a broken app without turning AppArmor off.
+- **disable** — the profile is not loaded for that application.
+
+Steam defaults to **complain** because games and Proton prefixes vary widely and
+a strict profile would break many titles.
+
+### If an application breaks
+
+If a confined app cannot open a file, use a device, or start a helper after you
+enable AppArmor, switch that profile to complain, then update:
+
+```bash
+sudo curios-update --update-module curios.hardened.apparmor-profiles.desktop.browsers.brave.mode "complain" && sudo curios-update --update
+```
+
+Replace the option path with the application you need:
+
+| Application | Option |
+| --- | --- |
+| Brave | `curios.hardened.apparmor-profiles.desktop.browsers.brave.mode` |
+| Discord | `curios.hardened.apparmor-profiles.desktop.chat.discord.mode` |
+| Signal Desktop | `curios.hardened.apparmor-profiles.desktop.chat.signal-desktop.mode` |
+| OnlyOffice | `curios.hardened.apparmor-profiles.desktop.office.onlyoffice.mode` |
+| Steam | `curios.hardened.apparmor-profiles.desktop.gaming.steam.mode` |
+
+To inspect denials:
+
+```bash
+sudo aa-status
+sudo grep 'apparmor="DENIED"' /var/log/audit/audit.log
+```
+
+> [!WARNING]
+> AppArmor is an **advanced hardening feature**. A too-strict profile can prevent
+> an application from working until you switch it to complain or disable it.
+> Test your usual workflow after enabling it.
+
+> [!NOTE]
+> Enabling AppArmor does not replace disk encryption, Secure Boot, or YubiKey
+> authentication. It only confines the applications listed above.
+
 ## Configuration via Curi*OS* Manager
 
 All security settings, as well as the enrollment process itself, are managed
@@ -229,6 +321,7 @@ From this menu you can:
 - Test PAM authentication
 - Add an SSH key to your YubiKey
 - List the SSH keys and credentials stored on your YubiKey
+- Enable AppArmor
 
 ## Best Practices
 
@@ -238,8 +331,10 @@ From this menu you can:
   machines.
 - The `lockOnRemove` feature is very convenient but can be surprising if you
   frequently unplug your key. Test it first.
-- U2F/PAM, LUKS FIDO2, SSH keys, and Secure Boot can be enabled independently.
-  Choose the combination that matches your security requirements.
+- U2F/PAM, LUKS FIDO2, SSH keys, Secure Boot, and AppArmor can be enabled
+  independently. Choose the combination that matches your security requirements.
+- After enabling AppArmor, test the confined applications you use daily. If one
+  misbehaves, switch its profile to `complain` before turning AppArmor off.
 - The default origin and application ID values are designed so you can use one
   YubiKey across several machines. Only change them if you have a specific reason.
 - At the Plymouth boot prompt with FIDO2 active, remember you can always use the
