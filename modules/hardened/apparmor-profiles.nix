@@ -1093,16 +1093,16 @@ in {
             # rPx blocked by bwrap no_new_privs; standalone profile still
             # attaches if gameoverlayui is exec'd outside the steam NNP tree
             @{config_dirs}/ubuntu12_{32,64}/gameoverlayui                      mrix,
-            @{config_dirs}/ubuntu12_{32,64}/reaper                            rix,
-            @{config_dirs}/ubuntu12_{32,64}/fossilize_replay                  mrix,
-            @{config_dirs}/steamrt{32,64}/fossilize_replay                    mrix,
+            @{config_dirs}/ubuntu12_{32,64}/reaper                             rix,
+            @{config_dirs}/ubuntu12_{32,64}/fossilize_replay                   mrix,
+            @{config_dirs}/steamrt{32,64}/fossilize_replay                     mrix,
             @{config_dirs}/bin/hardwareupdater/hardwareupdater.x86_64          rix,
 
             # steamwebhelper wrap stays here; the CEF binary enters steam//web
             @{config_dirs}/ubuntu12_64/steamwebhelper.sh                       rix,
             @{config_dirs}/ubuntu12_64/steamwebhelper_sniper_wrap.sh           rix,
             # cix/Cx → web is blocked by bwrap no_new_privs; inherit instead
-            @{config_dirs}/ubuntu12_64/steamwebhelper                         mrix,
+            @{config_dirs}/ubuntu12_64/steamwebhelper                          mrix,
 
             # Scout runtime helpers
             @{config_dirs}/ubuntu12_32/steam-runtime/{run,setup}.sh            rix,
@@ -1306,7 +1306,7 @@ in {
 
             @{sys}/                                                            r,
             @{sys}/kernel/                                                     r,
-            @{sys}/devices/virtual/dmi/id/                                      r,
+            @{sys}/devices/virtual/dmi/id/                                     r,
             @{sys}/devices/virtual/dmi/id/*                                    rk,
             @{sys}/devices/system/node/                                        r,
             @{sys}/devices/system/node/**                                      r,
@@ -1357,26 +1357,26 @@ in {
             /nix/store/**                                                      rk,
 
             # Desktop integration
-            owner @{HOME}/.local/share/applications/*.desktop                   rw,
-            owner @{HOME}/.local/share/icons/hicolor/**/apps/steam*             rw,
+            owner @{HOME}/.local/share/applications/*.desktop                  rw,
+            owner @{HOME}/.local/share/icons/hicolor/**/apps/steam*            rw,
 
             # Vulkan implicit layers (Steam overlay, Fossilize shader cache)
-            owner @{HOME}/.local/share/vulkan/implicit_layer.d/steam*.json      rwk,
+            owner @{HOME}/.local/share/vulkan/implicit_layer.d/steam*.json     rwk,
 
             # URL handling (Steam store links, community)
-            ${pkgs.xdg-utils}/bin/xdg-open                                      rix,
-            /run/current-system/sw/bin/xdg-open                                 rix,
-            ${pkgs.brave}/bin/brave                                             rPx -> brave-wrapper,
+            ${pkgs.xdg-utils}/bin/xdg-open                                     rix,
+            /run/current-system/sw/bin/xdg-open                                rix,
+            ${pkgs.brave}/bin/brave                                            rPx -> brave-wrapper,
 
             # Flatpak exports (xdg-open resolving links to installed Flatpak apps)
-            /var/lib/flatpak/exports/share/icons/                               r,
-            /var/lib/flatpak/exports/share/icons/**                             r,
-            /var/lib/flatpak/exports/share/applications/                        r,
-            /var/lib/flatpak/exports/share/applications/**                      r,
+            /var/lib/flatpak/exports/share/icons/                              r,
+            /var/lib/flatpak/exports/share/icons/**                            r,
+            /var/lib/flatpak/exports/share/applications/                       r,
+            /var/lib/flatpak/exports/share/applications/**                     r,
 
             # GTK theme (Steam uses GTK3/4 for file dialogs, settings UI)
-            owner @{HOME}/.config/gtk-3.0/**                                    r,
-            owner @{HOME}/.config/gtk-4.0/**                                    r,
+            owner @{HOME}/.config/gtk-3.0/**                                   r,
+            owner @{HOME}/.config/gtk-4.0/**                                   r,
 
             # Silencers (secrets-deny covers ssh/gnupg/wallets/.env)
 
@@ -1399,18 +1399,18 @@ in {
               signal receive set=(cont kill term) peer=steam,
 
               # NixOS shared libraries
-              /nix/store/*/lib{,32,64}/**.so*                                    mr,
-              /nix/store/**                                                      r,
+              /nix/store/*/lib{,32,64}/**.so*                                  mr,
+              /nix/store/**                                                    r,
 
               # FHS env rootfs (CEF libs and steamwebhelper binary)
-              @{lib_dirs}/                                                       r,
-              @{lib_dirs}/**                                                     mr,
+              @{lib_dirs}/                                                     r,
+              @{lib_dirs}/**                                                   mr,
 
-              @{config_dirs}/ubuntu12_64/steamwebhelper                          mrix,
-              @{config_dirs}/ubuntu12_64/steamwebhelper*                         rix,
-              @{config_dirs}/ubuntu12_32/steam-runtime/**/srt-logger             rix,
-              @{config_dirs}/steamrt64/**/_v2-entry-point                        rix,
-              @{config_dirs}/steamrt64/**/run                                    rix,
+              @{config_dirs}/ubuntu12_64/steamwebhelper                        mrix,
+              @{config_dirs}/ubuntu12_64/steamwebhelper*                       rix,
+              @{config_dirs}/ubuntu12_32/steam-runtime/**/srt-logger           rix,
+              @{config_dirs}/steamrt64/**/_v2-entry-point                      rix,
+              @{config_dirs}/steamrt64/**/run                                  rix,
               @{config_dirs}/steamrt64/**/pressure-vessel/bin/pressure-vessel-*  rix,
               @{config_dirs}/steamrt64/**/pressure-vessel/libexec/steam-runtime-tools-@{int}/* rix,
               /usr/lib/pressure-vessel/from-host/libexec/steam-runtime-tools-@{int}/* rix,
@@ -1432,62 +1432,62 @@ in {
               network netlink raw,
 
               # Shell (wrapper scripts)
-              ${pkgs.bashInteractive}/bin/sh                                     rix,
-              ${pkgs.bashInteractive}/bin/bash                                   rix,
-              ${pkgs.coreutils-full}/bin/*                                       rix,
-              ${pkgs.coreutils}/bin/*                                            rix,
+              ${pkgs.bashInteractive}/bin/sh                                   rix,
+              ${pkgs.bashInteractive}/bin/bash                                 rix,
+              ${pkgs.coreutils-full}/bin/*                                     rix,
+              ${pkgs.coreutils}/bin/*                                          rix,
 
               # Steam data access (read config, write cache/logs)
-              owner @{config_dirs}/                                              r,
-              owner @{config_dirs}/**                                            rwlkm,
-              owner @{config_dirs}/config/**                                     rwk,
-              owner @{config_dirs}/logs/**                                       rwk,
-              owner @{config_dirs}/public/**                                     r,
-              owner @{config_dirs}/appcache/**                                    r,
+              owner @{config_dirs}/                                            r,
+              owner @{config_dirs}/**                                          rwlkm,
+              owner @{config_dirs}/config/**                                   rwk,
+              owner @{config_dirs}/logs/**                                     rwk,
+              owner @{config_dirs}/public/**                                   r,
+              owner @{config_dirs}/appcache/**                                 r,
 
-              owner @{run}/user/@{uid}/srt-fifo.*/                               rwk,
-              owner @{run}/user/@{uid}/srt-fifo.*/**                             rwk,
-              /run/host/                                                         r,
-              /run/host/**                                                       r,
-              /run/pressure-vessel/                                              r,
-              /run/pressure-vessel/**                                            r,
-              /var/pressure-vessel/                                              rwk,
-              /var/pressure-vessel/**                                            rwk,
+              owner @{run}/user/@{uid}/srt-fifo.*/                             rwk,
+              owner @{run}/user/@{uid}/srt-fifo.*/**                           rwk,
+              /run/host/                                                       r,
+              /run/host/**                                                     r,
+              /run/pressure-vessel/                                            r,
+              /run/pressure-vessel/**                                          r,
+              /var/pressure-vessel/                                            rwk,
+              /var/pressure-vessel/**                                          rwk,
 
               # Steam IPC shared memory
-              owner /dev/shm/ValveIPCSHM_@{uid}                                  rw,
-              owner /dev/shm/u@{uid}-Shm_*                                       rw,
-              owner /dev/shm/u@{uid}-ValveIPCSharedObj-Steam                     rwk,
+              owner /dev/shm/ValveIPCSHM_@{uid}                                rw,
+              owner /dev/shm/u@{uid}-Shm_*                                     rw,
+              owner /dev/shm/u@{uid}-ValveIPCSharedObj-Steam                   rwk,
 
               # Temp (CEF shared memory, downloads)
-              /tmp/                                                              r,
-              owner /tmp/steam_chrome_shmem_*                                    rw,
-              owner /tmp/.com.valvesoftware.Steam.*/**                           rw,
-              owner /tmp/#@{int}                                                 rw,
+              /tmp/                                                            r,
+              owner /tmp/steam_chrome_shmem_*                                  rw,
+              owner /tmp/.com.valvesoftware.Steam.*/**                         rw,
+              owner /tmp/#@{int}                                               rw,
 
               # Process info (parent/child monitoring)
-              owner @{PROC}/@{pid}/cmdline                                       r,
-              owner @{PROC}/@{pid}/environ                                       r,
-              owner @{PROC}/@{pid}/fd/                                           r,
-              owner @{PROC}/@{pid}/fdinfo/@{int}                                 r,
-              owner @{PROC}/@{pid}/stat                                          r,
-              owner @{PROC}/@{pid}/statm                                         r,
-              owner @{PROC}/@{pid}/status                                        r,
-              owner @{PROC}/@{pid}/clear_refs                                    w,
-              owner @{PROC}/@{pid}/oom_score_adj                                 w,
-              @{PROC}/sys/user/max_user_namespaces                               r,
-              @{PROC}/@{pid}/stat                                                r,
-              @{PROC}/@{pid}/task/@{tid}/comm                                    r,
-              @{PROC}/@{pid}/task/@{tid}/status                                  r,
-              @{PROC}/version                                                    r,
-              @{PROC}/sys/kernel/yama/ptrace_scope                               r,
-              @{PROC}/sys/fs/inotify/max_user_watches                            r,
+              owner @{PROC}/@{pid}/cmdline                                     r,
+              owner @{PROC}/@{pid}/environ                                     r,
+              owner @{PROC}/@{pid}/fd/                                         r,
+              owner @{PROC}/@{pid}/fdinfo/@{int}                               r,
+              owner @{PROC}/@{pid}/stat                                        r,
+              owner @{PROC}/@{pid}/statm                                       r,
+              owner @{PROC}/@{pid}/status                                      r,
+              owner @{PROC}/@{pid}/clear_refs                                  w,
+              owner @{PROC}/@{pid}/oom_score_adj                               w,
+              @{PROC}/sys/user/max_user_namespaces                             r,
+              @{PROC}/@{pid}/stat                                              r,
+              @{PROC}/@{pid}/task/@{tid}/comm                                  r,
+              @{PROC}/@{pid}/task/@{tid}/status                                r,
+              @{PROC}/version                                                  r,
+              @{PROC}/sys/kernel/yama/ptrace_scope                             r,
+              @{PROC}/sys/fs/inotify/max_user_watches                          r,
 
               # D-Bus
-              owner @{run}/user/@{uid}/bus                                       rw,
+              owner @{run}/user/@{uid}/bus                                     rw,
 
               # PipeWire audio
-              owner @{run}/user/*/pipewire-*                                     rw,
+              owner @{run}/user/*/pipewire-*                                   rw,
 
               include if exists <local/steam_web>
             }
@@ -1550,7 +1550,7 @@ in {
             # srt-logger (sourced + exec from bin_steam.sh)
             @{libsteam_dirs}/steam-runtime/usr/libexec/steam-runtime-tools-@{int}/* r,
             @{libsteam_dirs}/steam-runtime/usr/libexec/steam-runtime-tools-@{int}/srt-logger rix,
-            @{libsteam_dirs}/steam-runtime/{amd64,i386}/usr/bin/srt-logger      rix,
+            @{libsteam_dirs}/steam-runtime/{amd64,i386}/usr/bin/srt-logger     rix,
 
             # User-managed Steam binaries (not in the nix store)
             @{libsteam_dirs}/**                                                mr,
