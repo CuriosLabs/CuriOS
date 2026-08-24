@@ -21,6 +21,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       curios.desktop.office = {
         enable = true;
         calibre.enable = true;
+        evince.enable = true;
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;
         thunderbird.enable = true;
@@ -63,6 +64,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("obsidian")
         check_which("joplin-desktop")
         check_which("calibre")
+        check_which("evince")
 
     with subtest("check-office-suites"):
         check_which("libreoffice")

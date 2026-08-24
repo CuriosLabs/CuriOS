@@ -16,6 +16,11 @@ in {
         default = false;
         description = "Calibre e-books manager.";
       };
+      evince.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Evince document viewer for PDF and Postscript.";
+      };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -163,5 +168,8 @@ in {
       [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
         && config.curios.platform.amd64.enable) [ pkgs.zoom-us ];
+  };
+  programs = {
+    evince.enable = lib.mkDefault config.curios.desktop.office.evince.enable;
   };
 }

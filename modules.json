@@ -178,6 +178,9 @@
         "calibre": {
           "enable": false
         },
+        "evince": {
+          "enable": true
+        },
         "conferencing": {
           "slack": {
             "enable": false
