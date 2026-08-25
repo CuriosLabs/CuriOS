@@ -168,8 +168,9 @@ in {
       [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
         && config.curios.platform.amd64.enable) [ pkgs.zoom-us ];
-  };
-  programs = {
-    evince.enable = lib.mkDefault config.curios.desktop.office.evince.enable;
+
+    programs = {
+      evince.enable = lib.mkDefault config.curios.desktop.office.evince.enable;
+    };
   };
 }
