@@ -21,7 +21,7 @@
 #     - cursor (Electron IDE)
 #   Tier 1 — Document viewers (PDF is turing-complete: JS, fonts, 3D;
 #            long CVE history; files arrive from email/web):
-#     - evince / okular / zathura (PDF viewers)
+#     - okular / zathura (PDF viewers)
 #   Tier 1 — Email clients (render HTML mail, parse MIME, open
 #            attachments — classic malware delivery vector):
 #     - thunderbird / geary
@@ -106,6 +106,14 @@ in {
       };
 
       office = {
+        evince = {
+          mode = mkOption {
+            type = types.enum [ "complain" "enforce" "disable" ];
+            default = "enforce";
+            description =
+              "AppArmor profile mode for Evince (viewer, previewer, daemon, thumbnailer).";
+          };
+        };
         onlyoffice = {
           mode = mkOption {
             type = types.enum [ "complain" "enforce" "disable" ];
@@ -300,6 +308,98 @@ in {
         owner /dev/shm/grim-@{rand6}    rw,
         owner /dev/shm/sway*            rw,
         owner /dev/shm/wlroots-@{rand6} rw,
+      '';
+
+      "abstractions/curios/evince" = ''
+        abi <abi/4.0>,
+        # CuriOS common abstraction for Evince on NixOS.
+        # Inspired by apparmor.d evince / evince-thumbnailer and the Ubuntu
+        # evince abstraction, rewritten for NixOS store paths and CuriOS
+        # abstractions (no FHS /usr/share, no ubuntu-* helpers).
+        #
+        # Shared by evince, evince-previewer, evinced, and evince-thumbnailer.
+
+        include <abstractions/base>
+        include <abstractions/nameservice>
+        include <abstractions/consoles>
+        include <abstractions/fonts>
+        include <abstractions/dconf>
+        include <abstractions/cups-client>
+        include <abstractions/curios/dconf>
+        include <abstractions/curios/gconv>
+        include <abstractions/curios/graphics>
+        include <abstractions/curios/wayland>
+        include <abstractions/curios/secrets-deny>
+        include <abstractions/curios/secrets-deny-browsers>
+
+        /nix/store/*/lib{,32,64}/**.so*                                        mr,
+        /nix/store/**                                                          r,
+
+        ${pkgs.evince}/bin/evince                                              mr,
+        ${pkgs.evince}/bin/.evince-wrapped                                     mr,
+        ${pkgs.evince}/bin/evince-previewer                                    mr,
+        ${pkgs.evince}/bin/.evince-previewer-wrapped                           mr,
+        ${pkgs.evince}/libexec/evinced                                         mr,
+        ${pkgs.evince}/libexec/.evinced-wrapped                                mr,
+        ${pkgs.evince}/lib/*.so*                                               mr,
+        ${pkgs.evince}/lib/evince/**                                           mr,
+        ${pkgs.evince}/share/evince/**                                         r,
+        ${pkgs.evince}/share/thumbnailers/**                                   r,
+
+        ${pkgs.glib.out}/libexec/gio-launch-desktop                            rix,
+        ${pkgs.bashInteractive}/bin/sh                                         rix,
+        ${pkgs.bashInteractive}/bin/bash                                       rix,
+        ${pkgs.coreutils-full}/bin/*                                           rix,
+        ${pkgs.coreutils}/bin/*                                                rix,
+
+        ${pkgs.gzip}/bin/gzip                                                  rix,
+        ${pkgs.bzip2}/bin/bzip2                                                rix,
+        ${pkgs.xz}/bin/xz                                                      rix,
+        ${pkgs.gnutar}/bin/tar                                                 rix,
+        ${pkgs.unzip}/bin/unzip                                                rix,
+        ${pkgs.p7zip}/bin/{7z,7za,7zr}                                         rix,
+        ${pkgs.ghostscript}/bin/gs                                             rix,
+
+        owner @{HOME}/.config/evince/                                          rwk,
+        owner @{HOME}/.config/evince/**                                        rwkl,
+        owner @{HOME}/.cache/evince/                                           rwk,
+        owner @{HOME}/.cache/evince/**                                         rwk,
+        owner @{HOME}/.config/gtk-3.0/**                                       r,
+        owner @{HOME}/.config/gtk-4.0/**                                       r,
+        owner @{HOME}/.config/glib-2.0/                                        rwk,
+        owner @{HOME}/.config/glib-2.0/**                                      rwk,
+        owner @{HOME}/.config/user-dirs.dirs                                   r,
+        owner @{HOME}/.config/mimeapps.list                                    r,
+        owner @{HOME}/.config/cosmic-mimeapps.list                             r,
+        owner @{HOME}/.local/share/                                            r,
+        owner @{HOME}/.local/share/applications/                               r,
+        owner @{HOME}/.local/share/applications/**                             r,
+        owner @{HOME}/.local/share/mime/                                       r,
+        owner @{HOME}/.local/share/mime/**                                     r,
+        owner @{HOME}/.local/share/icons/                                      r,
+        owner @{HOME}/.local/share/icons/**                                    r,
+        owner @{HOME}/.local/share/gvfs-metadata/*                             r,
+        owner @{HOME}/.local/share/recently-used.xbel                          rwk,
+        owner @{HOME}/.local/share/recently-used.xbel.*                        rwk,
+        owner @{HOME}/.cache/thumbnails/                                       rwk,
+        owner @{HOME}/.cache/thumbnails/**                                     rwk,
+        /var/lib/flatpak/exports/share/icons/                                  r,
+        /var/lib/flatpak/exports/share/icons/**                                r,
+        /var/lib/flatpak/exports/share/applications/                           r,
+        /var/lib/flatpak/exports/share/applications/**                         r,
+
+        owner @{run}/user/@{uid}/bus                                           rw,
+        owner @{PROC}/@{pid}/fd/                                               r,
+        owner @{PROC}/@{pid}/mountinfo                                         r,
+        owner @{PROC}/@{pid}/mounts                                            r,
+        owner @{PROC}/@{pid}/status                                            r,
+
+        /                                                                      r,
+        /tmp/                                                                  r,
+        /run/media/                                                            r,
+        /dev/tty                                                               rw,
+        /etc/papersize                                                         r,
+        /etc/fstab                                                             r,
       '';
 
       "abstractions/curios/chromium-engine" = ''
@@ -982,6 +1082,145 @@ in {
             owner @{PROC}/@{pid}/oom_score_adj              rw,
 
             include if exists <local/discord-sandbox>
+          }
+        '';
+      };
+
+      "evince" = {
+        state = cfg.desktop.office.evince.mode;
+        profile = let
+          modeFlag = if cfg.desktop.office.evince.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile evince ${pkgs.evince}/bin/evince ${modeFlag} {
+            include <abstractions/curios/evince>
+
+            deny network inet,
+            deny network inet6,
+
+            ${pkgs.evince}/bin/evince                                          rix,
+            ${pkgs.evince}/bin/.evince-wrapped                                 rix,
+            ${pkgs.evince}/bin/evince-previewer                                rPx -> evince-previewer,
+            ${pkgs.evince}/libexec/evinced                                     rPx -> evinced,
+            ${pkgs.brave}/bin/brave                                            rPx -> brave-wrapper,
+            ${pkgs.xdg-utils}/bin/xdg-open                                     rix,
+            /run/current-system/sw/bin/xdg-open                                rix,
+            ${pkgs.cosmic-files}/bin/cosmic-files                              rUx,
+            /run/current-system/sw/bin/cosmic-files                            rUx,
+
+            owner @{HOME}/[^.]*/                                               rwk,
+            owner @{HOME}/[^.]*/**                                             rwkm,
+            /run/media/**                                                      rw,
+            owner /tmp/.goutputstream-*                                        rw,
+            owner /tmp/*.pdf                                                   r,
+            owner /tmp/evince-@{int}/                                          rwk,
+            owner /tmp/evince-@{int}/**                                        rw,
+            owner /tmp/gtkprint_@{rand6}                                       rw,
+            owner /tmp/gtkprint@{rand6}                                        rw,
+            owner /tmp/org.gnome.Evince-@{int}/                                rwk,
+            owner /tmp/org.gnome.Evince-@{int}/**                              rw,
+
+            include if exists <local/evince>
+          }
+        '';
+      };
+
+      "evince-previewer" = {
+        state = cfg.desktop.office.evince.mode;
+        profile = let
+          modeFlag = if cfg.desktop.office.evince.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile evince-previewer ${pkgs.evince}/bin/evince-previewer ${modeFlag} {
+            include <abstractions/curios/evince>
+
+            deny network inet,
+            deny network inet6,
+
+            ${pkgs.evince}/bin/evince-previewer                                rix,
+            ${pkgs.evince}/bin/.evince-previewer-wrapped                       rix,
+
+            owner @{HOME}/[^.]*/                                               rwk,
+            owner @{HOME}/[^.]*/**                                             rwkm,
+            owner /tmp/.goutputstream-*                                        rw,
+            owner /tmp/gtkprint_@{rand6}                                       rw,
+            owner /tmp/gtkprint@{rand6}                                        rw,
+
+            include if exists <local/evince-previewer>
+          }
+        '';
+      };
+
+      "evinced" = {
+        state = cfg.desktop.office.evince.mode;
+        profile = let
+          modeFlag = if cfg.desktop.office.evince.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile evinced ${pkgs.evince}/libexec/evinced ${modeFlag} {
+            include <abstractions/curios/evince>
+
+            deny network inet,
+            deny network inet6,
+
+            ${pkgs.evince}/libexec/evinced                                     rix,
+            ${pkgs.evince}/libexec/.evinced-wrapped                            rix,
+            ${pkgs.evince}/bin/evince                                          rPx -> evince,
+
+            include if exists <local/evinced>
+          }
+        '';
+      };
+
+      "evince-thumbnailer" = {
+        state = cfg.desktop.office.evince.mode;
+        profile = let
+          modeFlag = if cfg.desktop.office.evince.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile evince-thumbnailer ${pkgs.evince}/bin/evince-thumbnailer ${modeFlag} {
+            include <abstractions/curios/evince>
+
+            deny network inet,
+            deny network inet6,
+
+            ${pkgs.evince}/bin/evince-thumbnailer                              rix,
+            ${pkgs.evince}/bin/.evince-thumbnailer-wrapped                     rix,
+
+            owner @{HOME}/[^.]*/**                                             r,
+            /run/media/**                                                      r,
+            owner @{HOME}/.cache/thumbnails/                                   rwk,
+            owner @{HOME}/.cache/thumbnails/**                                 rwk,
+            owner /tmp/gnome-desktop-file-to-thumbnail.pdf                     r,
+            owner /tmp/gnome-desktop-thumbnailer.png                           w,
+            owner /tmp/.gnome_desktop_thumbnail*                               w,
+            owner /tmp/gnome-desktop-*                                         rw,
+            owner /tmp/evince-thumbnailer*/                                    rwk,
+            owner /tmp/evince-thumbnailer*/**                                  rw,
+
+            deny @{HOME}/.local/share/gvfs-metadata/*                          r,
+
+            include if exists <local/evince-thumbnailer>
           }
         '';
       };

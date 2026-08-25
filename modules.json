@@ -336,6 +336,9 @@
             }
           },
           "office": {
+            "evince": {
+              "mode": "enforce"
+            },
             "onlyoffice": {
               "mode": "enforce"
             }

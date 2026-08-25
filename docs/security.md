@@ -250,6 +250,7 @@ profiles are in **enforce** or **complain** mode.
 | Brave | enforce | Browser, sandbox, and launcher |
 | Discord | enforce | Desktop client and sandbox |
 | Signal Desktop | enforce | Desktop client and sandbox |
+| Evince | enforce | Document viewer, previewer, daemon, and thumbnailer |
 | OnlyOffice | enforce | Desktop editors |
 | Steam | complain | Steam client, Proton, and native games |
 
@@ -284,6 +285,7 @@ Replace the option path with the application you need:
 | Brave | `curios.hardened.apparmor-profiles.desktop.browsers.brave.mode` |
 | Discord | `curios.hardened.apparmor-profiles.desktop.chat.discord.mode` |
 | Signal Desktop | `curios.hardened.apparmor-profiles.desktop.chat.signal-desktop.mode` |
+| Evince | `curios.hardened.apparmor-profiles.desktop.office.evince.mode` |
 | OnlyOffice | `curios.hardened.apparmor-profiles.desktop.office.onlyoffice.mode` |
 | Steam | `curios.hardened.apparmor-profiles.desktop.gaming.steam.mode` |
 
