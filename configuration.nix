@@ -23,7 +23,11 @@ in {
     ##################### Step 3: User Settings #####################
     # User custom settings
     ./settings.nix
-  ];
+  ] ++ lib.optional (builtins.pathExists ./custom)
+  ##################### Step 4: Import custom Nix files #####################
+  { imports = lib.filesystem.listFilesRecursive ./custom
+      |> builtins.filter (f: lib.hasSuffix ".nix" (toString f));
+  };
 
   # Importing curios modules settings from JSON files
   curios = curiosModules.curios or { };
