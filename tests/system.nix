@@ -50,6 +50,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("java")
         check_which("node")
         check_which("npm")
+        check_which("ncu")
         check_which("bun")
         check_which("eslint")
         check_which("golangci-lint")

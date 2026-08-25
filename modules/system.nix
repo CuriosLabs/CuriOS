@@ -158,6 +158,7 @@
       ++ lib.optionals config.curios.system.languages.javascript.enable [
         pkgs.eslint
         pkgs.nodejs
+        pkgs.npm-check-updates
       ] ++ lib.optionals config.curios.system.languages.javascript.bun.enable
       [ pkgs.bun ]
       ++ lib.optionals config.curios.system.languages.python3.enable [
