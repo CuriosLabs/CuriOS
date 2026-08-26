@@ -28,7 +28,7 @@
           "enable": true
         },
         "cursor": {
-          "enable": true
+          "enable": false
         },
         "gemini": {
           "enable": true
@@ -37,7 +37,7 @@
           "enable": true
         },
         "lmstudio": {
-          "enable": true
+          "enable": false
         },
         "mistral": {
           "enable": true
@@ -215,7 +215,7 @@
         },
         "onlyoffice": {
           "desktopeditors": {
-            "enable": true
+            "enable": false
           }
         },
         "projects": {

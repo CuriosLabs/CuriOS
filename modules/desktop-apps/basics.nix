@@ -104,7 +104,7 @@ in {
         };
         cursor.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "Cursor AI-assisted IDE - desktop app and CLI.";
         };
         gemini.enable = lib.mkOption {
@@ -119,7 +119,7 @@ in {
         };
         lmstudio.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "LM Studio - Local AI on your computer.";
         };
         mistral.enable = lib.mkOption {
@@ -210,12 +210,7 @@ in {
         brave = prev.brave.overrideAttrs (old: {
           postFixup = (old.postFixup or "") + ''
             braveLib=$out/opt/brave.com/brave
-            glRpath=${
-              lib.makeLibraryPath [
-                final.libGL
-                final.vulkan-loader
-              ]
-            }
+            glRpath=${lib.makeLibraryPath [ final.libGL final.vulkan-loader ]}
             for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
               if [ -f "$f" ]; then
                 oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)

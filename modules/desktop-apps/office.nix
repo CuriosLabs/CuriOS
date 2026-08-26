@@ -28,7 +28,7 @@ in {
       };
       onlyoffice.desktopeditors.enable = lib.mkOption {
         type = lib.types.bool;
-        default = true;
+        default = false;
         description = "OnlyOffice Desktop Editors suite.";
       };
       thunderbird.enable = lib.mkOption {
