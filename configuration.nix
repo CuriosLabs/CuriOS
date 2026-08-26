@@ -15,8 +15,11 @@ in {
     # Include the results of the hardware scan.
     # You could re-generated one with 'sudo nixos-generate-config --no-filesystems'.
     # For hardware related configurations, see: https://github.com/NixOS/nixos-hardware
-    # Do NOT edit
-    ./hardware-configuration.nix
+    # Do NOT edit on an installed system. The stub is used only when building the ISO seed.
+    (if builtins.pathExists ./hardware-configuration.nix then
+      ./hardware-configuration.nix
+    else
+      ./iso/hardware-stub.nix)
     ##################### Step 2: Modules #####################
     # Import all modules, activate or deactivate them in settings.nix
     ./modules/default.nix
@@ -132,7 +135,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260825.1503";
+    nixos.variant_id = "unstable-20260826.1458";
   };
 
   nix = {

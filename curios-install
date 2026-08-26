@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.10"
+readonly SCRIPT_VERSION="0.11"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -1014,7 +1014,11 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   fi
   echo "Adding channel: $NIX_CHANNEL_URL"
   nix-channel --add "$NIX_CHANNEL_URL" nixos
-  nix-channel --update
+  if [[ -e /root/.nix-defexpr/channels/nixos || -e /nix/var/nix/profiles/per-user/root/channels/nixos ]]; then
+    echo "Using NixOS channel bundled on the ISO (skipping nix-channel --update)"
+  else
+    nix-channel --update
+  fi
   if [[ $AMD64_INSTALL -eq 1 ]]; then
     if ! nixos-install --cores 0 --no-root-passwd; then
       echo -e "${RED}nixos-install failed!${NC}"
