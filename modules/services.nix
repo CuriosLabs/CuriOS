@@ -12,7 +12,13 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED CuriOS services - Flatpak, pipewire, fwupd...";
+        description = "REQUIRED CuriOS services - pipewire, fwupd...";
+      };
+      flatpak.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Flatpak apps repositories (Flathub and Cosmic) and services.";
       };
       ollama.enable = lib.mkOption {
         type = lib.types.bool;
@@ -151,7 +157,7 @@
         openFirewall = lib.mkDefault true;
       };
       # Enabling Flatpak
-      flatpak.enable = true;
+      flatpak.enable = lib.mkDefault config.curios.services.flatpak.enable;
       # Enable sound.
       pipewire = {
         enable = true;
@@ -213,7 +219,7 @@
       settings.Manager = { DefaultTimeoutStopSec = "10s"; };
       # Flatpak system, add repo
       services.flatpak-repo = {
-        enable = true;
+        enable = lib.mkDefault config.curios.services.flatpak.enable;
         description = "Flatpak add default repos";
         after = [ "network-online.target" ];
         requires = [ "network-online.target" ];
@@ -232,7 +238,7 @@
       # systemctl --user status flatpak-update.timer
       user = {
         services.flatpak-update = {
-          enable = true;
+          enable = lib.mkDefault config.curios.services.flatpak.enable;
           description = "Flatpak user update";
           #path = [ pkgs.flatpak ];
           serviceConfig = {
@@ -243,7 +249,7 @@
           wantedBy = [ ];
         };
         timers.flatpak-update = {
-          enable = true;
+          enable = lib.mkDefault config.curios.services.flatpak.enable;
           description = "Flatpak user update";
           timerConfig = {
             OnStartupSec = "30s";

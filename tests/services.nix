@@ -22,6 +22,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         # Enable all services for comprehensive testing
         services = {
           enable = true;
+          flatpak.enable = true;
           printing.enable = true;
           sshd.enable = true;
           ollama.enable = true;

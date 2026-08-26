@@ -452,6 +452,9 @@
         "enable": true
       },
       "enable": true,
+      "flatpak": {
+        "enable": true
+      },
       "ollama": {
         "enable": false
       },
