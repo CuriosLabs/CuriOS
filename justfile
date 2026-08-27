@@ -4,6 +4,8 @@ name := 'CuriOS'
 owner := 'CuriosLabs'
 branch := '$(git branch --show-current)'
 platform := 'amd64_intel'
+r2_bucket := 'curios-iso'
+r2_public_url := 'https://iso.curioslabs.dev'
 
 # Default option list available recipes.
 default:
@@ -183,16 +185,17 @@ nixos-upgrade: lint
     *) echo "Invalid input"; exit 1;;
   esac
 
-# Push build ISO file to github as a release.
+# Push source to GitHub and upload the ISO to Cloudflare R2.
+# Configure "endpoint_url" in ~/.aws/config and connect with `aws configure`
 publish: lint
   #!/usr/bin/env bash
   set -euxo pipefail
   gh auth status
+  aws s3 ls "s3://{{r2_bucket}}/" >/dev/null
   if [[ "{{branch}}" != release* ]]; then
     printf "\e[31m Wrong git branch - not a release!\e[0m\n"
     exit 1
   else
-    printf "\e[32m Github release upload...\e[0m\n"
     releaseNumber=$(sed -E "s/release\/(.+)/\1/" <<<"{{branch}}")
     if git rev-parse "$releaseNumber" >/dev/null 2>&1; then echo "Warning: Tag ${releaseNumber} already exists."; exit 1; fi
 
@@ -202,11 +205,18 @@ publish: lint
       printf "\e[33m ISO file %s not found! Launch `just build` first.\e[0m\n" "${isoFilePath}"
       exit 1
     fi
+    if [ ! -f "${isoFilePath}.sha256" ]; then
+      printf "\e[33m Checksum file %s.sha256 not found!\e[0m\n" "${isoFilePath}"
+      exit 1
+    fi
 
     git push --set-upstream origin "{{branch}}"
-    gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes
-    gh release upload "$releaseNumber" "$isoFilePath"
-    gh release upload "$releaseNumber" "$isoFilePath".sha256
+    printf "\e[32m Uploading ISO to Cloudflare R2...\e[0m\n"
+    aws s3 cp "$isoFilePath" "s3://{{r2_bucket}}/${isoFilename}"
+    aws s3 cp "${isoFilePath}.sha256" "s3://{{r2_bucket}}/${isoFilename}.sha256"
+    printf "\e[32m Creating GitHub release...\e[0m\n"
+    gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes \
+      --notes "$(printf '## Download\n\n- ISO: {{r2_public_url}}/%s\n- SHA256: {{r2_public_url}}/%s.sha256\n' "${isoFilename}" "${isoFilename}")"
   fi
 
 # Run all integrations tests sequentially

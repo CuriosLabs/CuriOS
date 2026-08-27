@@ -52,6 +52,11 @@ Python3, Rust and more...
 * 🔑 Register a YubiKey for user login and `sudo` operations.
 * 🗛  bunch of nerd fonts...
 
+## Download
+
+The latest ISO download links are listed on the
+[GitHub Releases](https://github.com/CuriosLabs/CuriOS/releases) page.
+
 ## Quick start / installation guide
 
 See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md)
@@ -85,7 +90,7 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [26.05.7](https://github.com/CuriosLabs/CuriOS/tree/release/26.05.7)
+The current release is [26.05.7](https://github.com/CuriosLabs/CuriOS/releases/tag/26.05.7)
 based on a Nixos 26.05 build.
 
 ## License
@@ -114,4 +119,4 @@ do not imply endorsement.
 ## Sources
 
 [Cosmic desktop](https://github.com/pop-os/cosmic-epoch) by system76.
-Hardened configuration files by [wallago](https://github.com/wallago/nix-system-services-hardened).
+Hardened configuration files inspired by [wallago](https://github.com/wallago/nix-system-services-hardened).
