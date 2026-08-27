@@ -44,7 +44,7 @@ build: lint update-nixos-hardware
     fi
   fi
   printf "Launch nix-build...\n"
-  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-minimal.nix
+  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-installer.nix
   # Save and rename ISO file
   cp ./result/iso/nixos-minimal-*.iso "${isoFilePath}"
   sha256sum "${isoFilePath}" >>"${isoFilePath}".sha256
