@@ -5,6 +5,7 @@
 .env
 .venv/
 .idea/
+.wrangler/
 .zed/
 docs/.obsidian/
 iso/result/
