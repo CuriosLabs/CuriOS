@@ -23,7 +23,7 @@ readonly YELLOW="\033[33;1;3m" # Yellow, bold and italic
 readonly NC="\033[0m" # No Color
 
 #------------- Variables init
-readonly SCRIPT_VERSION="0.11"
+readonly SCRIPT_VERSION="0.12"
 CURIOS_INSTALL_PATH="."
 CURIOS_SRC_PATH="."
 SCRIPT_PATH="$(dirname "$0")"
@@ -47,6 +47,7 @@ RPI5_INSTALL=0
 NIXOS_CONFIG_DIR="/mnt/etc/nixos"
 DO_DOTFILES_INSTALL=1
 VERBOSE=0
+REPORT_PLAN=0
 # Pre configured timezone based on user language - adjust to choose_lang() list order.
 LOCALES_TZ=(
   "Europe/Amsterdam"
@@ -180,12 +181,13 @@ ${GREY}OPTIONS:${NC}
   ${GREY}--rpi4${NC}             Raspberry PI 4 installation.
   ${GREY}--rpi5${NC}             Raspberry PI 5 installation (experimental).
   ${GREY}-v, --verbose${NC}      Print more information.
+  ${GREY}--reporting${NC}        Print Nix store plan (ISO vs cache vs compile).
   ${GREY}--version${NC}          Print version number and exit."
   exit 0
 }
 
 #------------- Scripts arguments parse options
-ARGS=$(getopt --longoptions="verbose,version,rpi4,rpi5,help" --options ":hv" --name "$0" -- "$@")
+ARGS=$(getopt --longoptions="verbose,version,reporting,rpi4,rpi5,help" --options ":hv" --name "$0" -- "$@")
 eval set -- "$ARGS"
 
 while true; do
@@ -200,6 +202,10 @@ while true; do
   --version)
     echo "$SCRIPT_VERSION"
     exit 0
+    ;;
+  --reporting)
+    REPORT_PLAN=1
+    shift
     ;;
   --rpi4)
     VERBOSE=1
@@ -732,6 +738,7 @@ if [ $VERBOSE -eq 1 ]; then
   echo "RPI4 install: $RPI4_INSTALL"
   echo "RPI5 install: $RPI5_INSTALL"
   echo "NixOS config dir: $NIXOS_CONFIG_DIR"
+  echo "report plan: $REPORT_PLAN"
   echo -e "${YELLOW}End of options.${NC}"
 fi
 
@@ -839,6 +846,126 @@ dotfiles_install() {
   done
   jq -n '{ "BrowserThemeColor": "#20252c" }' >"$BRAVE_THEMES_FILE"
   chown 1000:100 "$BRAVE_THEMES_FILE"
+}
+
+# Classify nixos-install realisation: live ISO store vs binary cache vs compile.
+report_nix_store_plan() {
+  local log_file="/tmp/curios-install-nix.log"
+  local dry_file="/tmp/curios-install-dry-run.txt"
+  local config="${NIXOS_CONFIG_DIR}/configuration.nix"
+  local sys_drv=""
+  local applet_drv=""
+  local applet_wanted=""
+  local built_n=0
+  local fetch_n=0
+  local fetch_size=""
+  local existing
+
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${BLUE}Nix store plan (ISO vs cache vs compile)...${NC}"
+  {
+    echo "=== CuriOS install Nix plan $(date --utc -Iseconds) ==="
+    echo "nixos-config: ${config}"
+    echo "substituters: $(nix --extra-experimental-features nix-command config show substituters 2>/dev/null || echo unknown)"
+    echo
+  } | tee "$log_file"
+
+  echo "Instantiating system derivation (eval only)..."
+  if ! sys_drv=$(nix-instantiate '<nixpkgs/nixos>' -A system -I "nixos-config=${config}" 2>>"$log_file"); then
+    echo -e "${YELLOW}Could not instantiate system derivation; skipping store plan.${NC}"
+    return 0
+  fi
+  echo "system drv: ${sys_drv}" | tee -a "$log_file"
+
+  if ! nix-store --realise --dry-run "$sys_drv" >"$dry_file" 2>&1; then
+    echo -e "${YELLOW}nix-store --dry-run failed; skipping store plan.${NC}"
+    cat "$dry_file" >>"$log_file" || true
+    return 0
+  fi
+  cat "$dry_file" >>"$log_file"
+
+  built_n=$(awk '
+    /will be built:$/ { s=1; next }
+    /will be fetched/ { s=0 }
+    /^[^[:space:]]/ { s=0 }
+    s && /\/nix\/store\/.*\.drv/ { c++ }
+    END { print c+0 }
+  ' "$dry_file")
+  fetch_n=$(awk '
+    /will be fetched/ { s=1; next }
+    /^[^[:space:]]/ { s=0 }
+    s && /\/nix\/store\// { c++ }
+    END { print c+0 }
+  ' "$dry_file")
+  fetch_size=$(awk -F'[()]' '/will be fetched/ { print $2; exit }' "$dry_file")
+
+  echo
+  echo -e "${YELLOW}Summary:${NC}"
+  echo -e "  compile from source : ${built_n} derivation(s)"
+  echo -e "  fetch from cache    : ${fetch_n} path(s)${fetch_size:+ (${fetch_size})}"
+  echo -e "  already in live store (ISO seed): not listed above"
+  echo -e "  dry-run log: ${dry_file}"
+  echo -e "  full log   : ${log_file}"
+  echo
+  echo "During nixos-install, watch for:"
+  echo "  copying path '...' from 'https://cache.nixos.org'  -> binary cache"
+  echo "  building '/nix/store/....drv'                     -> compile"
+  echo "  (silent / already valid)                          -> ISO seed hit"
+
+  echo
+  echo -e "${YELLOW}curios-manager-applet:${NC}"
+  if applet_drv=$(nix-instantiate -E "with import <nixpkgs> {}; callPackage ${NIXOS_CONFIG_DIR}/pkgs/curios-manager-applet {}" 2>>"$log_file"); then
+    applet_wanted=$(nix-store --query --outputs "$applet_drv" | awk 'NR==1 { print; exit }')
+    echo "  wanted: ${applet_wanted}"
+    echo "  live store copies:"
+    shopt -s nullglob
+    existing=(/nix/store/*-curios-manager-applet-*)
+    shopt -u nullglob
+    if [[ ${#existing[@]} -gt 0 ]]; then
+      printf '    %s\n' "${existing[@]}"
+    else
+      echo "    (none)"
+    fi
+    if [[ -e "$applet_wanted" ]]; then
+      echo -e "  ${GREEN}result: ISO/live store HIT (will copy, not compile)${NC}"
+    elif grep -F -q -- "$applet_wanted" "$dry_file"; then
+      echo -e "  ${YELLOW}result: will FETCH from binary cache${NC}"
+    elif grep -q 'curios-manager-applet' "$dry_file"; then
+      echo -e "  ${RED}result: will COMPILE from source${NC}"
+    else
+      echo -e "  ${YELLOW}result: not named in dry-run (see ${dry_file})${NC}"
+    fi
+  else
+    echo -e "  ${YELLOW}could not instantiate applet derivation${NC}"
+  fi
+
+  echo
+  echo -e "${YELLOW}CuriOS package lines in dry-run:${NC}"
+  if grep -E 'curios-(manager|dotfiles|sources)' "$dry_file"; then
+    true
+  else
+    echo "  (none -- custom pkgs are already in the live store or not in this closure)"
+  fi
+
+  if [[ $built_n -gt 0 ]]; then
+    echo
+    echo -e "${YELLOW}First derivations that will compile:${NC}"
+    awk '/will be built:$/ { s=1; next } /will be fetched/ { s=0 } /^[^[:space:]]/ { s=0 } s { print }' "$dry_file" | awk 'NR <= 25'
+  fi
+  echo
+}
+
+persist_install_logs() {
+  local dest
+  if [[ $AMD64_INSTALL -eq 1 && -d /mnt ]]; then
+    dest=/mnt/var/log
+  else
+    dest=/var/log
+  fi
+  mkdir -p "$dest"
+  cp -f /tmp/curios-install-nix.log "$dest"/curios-install-nix.log 2>/dev/null || true
+  cp -f /tmp/curios-install-dry-run.txt "$dest"/curios-install-dry-run.txt 2>/dev/null || true
 }
 
 if [ $CONFIRM_INSTALL -eq 1 ]; then
@@ -1019,16 +1146,40 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   else
     nix-channel --update
   fi
+  if [ $REPORT_PLAN -eq 1 ]; then
+    report_nix_store_plan
+  fi
+  set -o pipefail
   if [[ $AMD64_INSTALL -eq 1 ]]; then
-    if ! nixos-install --cores 0 --no-root-passwd; then
-      echo -e "${RED}nixos-install failed!${NC}"
-      exit 1
+    if [ $REPORT_PLAN -eq 1 ]; then
+      if ! nixos-install --cores 0 --no-root-passwd 2>&1 | tee -a /tmp/curios-install-nix.log; then
+        persist_install_logs
+        echo -e "${RED}nixos-install failed! See /tmp/curios-install-nix.log${NC}"
+        exit 1
+      fi
+    else
+      if ! nixos-install --cores 0 --no-root-passwd; then
+        echo -e "${RED}nixos-install failed!${NC}"
+        exit 1
+      fi
     fi
   elif [[ $RPI4_INSTALL -eq 1 || $RPI5_INSTALL -eq 1 ]]; then
-    if ! nixos-rebuild boot; then
-      echo -e "${RED}nixos-rebuild failed!${NC}"
-      exit 1
+    if [ $REPORT_PLAN -eq 1 ]; then
+      if ! nixos-rebuild boot 2>&1 | tee -a /tmp/curios-install-nix.log; then
+        persist_install_logs
+        echo -e "${RED}nixos-rebuild failed! See /tmp/curios-install-nix.log${NC}"
+        exit 1
+      fi
+    else
+      if ! nixos-rebuild boot; then
+        echo -e "${RED}nixos-rebuild failed!${NC}"
+        exit 1
+      fi
     fi
+  fi
+  set +o pipefail
+  if [ $REPORT_PLAN -eq 1 ]; then
+    persist_install_logs
   fi
 
   if [ $DO_DOTFILES_INSTALL -eq 1 ]; then
