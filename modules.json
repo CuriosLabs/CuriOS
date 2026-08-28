@@ -231,6 +231,9 @@
         },
         "thunderbird": {
           "enable": false
+        },
+        "xournalpp": {
+          "enable": true
         }
       },
       "studio": {

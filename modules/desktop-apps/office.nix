@@ -36,6 +36,11 @@ in {
         default = false;
         description = "Mozilla Thunderbird email client.";
       };
+      xournalpp.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Xournal++ handwriting notetaking app with PDF support.";
+      };
       crm = {
         salesforce = {
           enable = lib.mkOption {
@@ -77,7 +82,7 @@ in {
         };
       };
       finance = {
-        # TODO: find a pkgs worthy of installation
+        # TODO: find a pkgs worthy of installation: frappe books?
         gnucash.enable = lib.mkOption {
           type = lib.types.nullOr lib.types.bool;
           default = null;
@@ -150,6 +155,8 @@ in {
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.office.thunderbird.enable
       [ pkgs.thunderbird ]
+      ++ lib.optionals config.curios.desktop.office.xournalpp.enable
+      [ pkgs.xournalpp ]
       ++ lib.optionals config.curios.desktop.office.crm.salesforce.enable
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.crm.hubspot.enable

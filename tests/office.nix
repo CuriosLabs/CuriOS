@@ -25,6 +25,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;
         thunderbird.enable = true;
+        xournalpp.enable = true;
         crm = {
           salesforce.enable = true;
           hubspot.enable = true;
@@ -65,6 +66,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("joplin-desktop")
         check_which("calibre")
         check_which("evince")
+        check_which("xournalpp")
 
     with subtest("check-office-suites"):
         check_which("libreoffice")
