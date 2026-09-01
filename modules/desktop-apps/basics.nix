@@ -4,6 +4,8 @@
 
 let
   lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+  lmstudioBionicApp =
+    import ./desktop-lm-studio-bionic.nix { inherit pkgs lib; };
   curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
 in {
   # Declare options
@@ -121,6 +123,11 @@ in {
           type = lib.types.bool;
           default = false;
           description = "LM Studio - Local AI on your computer.";
+        };
+        bionic.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "LM Studio Bionic - Local AI agent for open models.";
         };
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
@@ -273,6 +280,8 @@ in {
         [ (import ./webapp-grok.nix) ] ++ lib.optionals
         (config.curios.desktop.ai.lmstudio.enable
           && config.curios.platform.amd64.enable) [ lmstudioApp ]
+        ++ lib.optionals (config.curios.desktop.ai.bionic.enable
+          && config.curios.platform.amd64.enable) [ lmstudioBionicApp ]
         ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable

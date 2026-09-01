@@ -46,6 +46,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           gemini.enable = true;
           grok.enable = true;
           lmstudio.enable = true;
+          bionic.enable = true;
           mistral.enable = true;
         };
 
@@ -110,6 +111,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.x.grok")
         check_which("lm-studio")
         check_which("lms") # LM Studio CLI
+        check_which("lm-studio-bionic")
         check_webapp("ai.mistral.chat")
 
     with subtest("check-chat-apps"):

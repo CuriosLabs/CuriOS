@@ -68,6 +68,7 @@ let
             gemini.enable = true;
             grok.enable = true;
             lmstudio.enable = true;
+            bionic.enable = true;
             mistral.enable = true;
           };
           chat = {

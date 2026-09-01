@@ -39,6 +39,9 @@
         "lmstudio": {
           "enable": false
         },
+        "bionic": {
+          "enable": false
+        },
         "mistral": {
           "enable": true
         }
