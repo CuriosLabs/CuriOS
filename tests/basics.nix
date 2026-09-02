@@ -45,8 +45,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           cursor.enable = true;
           gemini.enable = true;
           grok.enable = true;
-          lmstudio.enable = true;
-          bionic.enable = true;
+          lmstudio = {
+            enable = true;
+            bionic = true;
+          };
           mistral.enable = true;
         };
 

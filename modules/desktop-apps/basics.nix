@@ -119,15 +119,17 @@ in {
           default = true;
           description = "Grok web app.";
         };
-        lmstudio.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "LM Studio - Local AI on your computer.";
-        };
-        bionic.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "LM Studio Bionic - Local AI agent for open models.";
+        lmstudio = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "LM Studio - Local AI on your computer.";
+          };
+          bionic = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "LM Studio Bionic - Local AI agent for open models.";
+          };
         };
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
@@ -280,7 +282,7 @@ in {
         [ (import ./webapp-grok.nix) ] ++ lib.optionals
         (config.curios.desktop.ai.lmstudio.enable
           && config.curios.platform.amd64.enable) [ lmstudioApp ]
-        ++ lib.optionals (config.curios.desktop.ai.bionic.enable
+        ++ lib.optionals (config.curios.desktop.ai.lmstudio.bionic
           && config.curios.platform.amd64.enable) [ lmstudioBionicApp ]
         ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
