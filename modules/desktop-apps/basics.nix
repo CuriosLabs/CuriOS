@@ -7,6 +7,10 @@ let
   lmstudioBionicApp =
     import ./desktop-lm-studio-bionic.nix { inherit pkgs lib; };
   curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
+  voxtypeHasGpu =
+    (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
+    || (lib.attrByPath [ "curios" "hardware" "amdGpu" "enable" ] false config);
+  voxtypePkg = if voxtypeHasGpu then pkgs.voxtype-vulkan else pkgs.voxtype;
 in {
   # Declare options
   options = {
@@ -198,6 +202,19 @@ in {
           description =
             "LocalSend - Cross-platform file sharing on your local network.";
         };
+        voxtype = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description =
+              "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled). After enabling, download the selected Whisper model.";
+          };
+          model = lib.mkOption {
+            type = lib.types.enum [ "tiny" "base" "small" "medium" "large-v3" ];
+            default = "small";
+            description = "Whisper model (multilingual).";
+          };
+        };
       };
     };
   };
@@ -313,25 +330,65 @@ in {
         ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
         [ pkgs.keepassxc ]
         ++ lib.optionals config.curios.desktop.utility.flameshot.enable
-        [ pkgs.flameshot ];
+        [ pkgs.flameshot ]
+        ++ lib.optionals config.curios.desktop.utility.voxtype.enable
+        [ voxtypePkg ];
 
       # Brave group policy examples
       # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
       # https://chromeenterprise.google/policies/
-      etc."brave/policies/managed/settings.json".text = ''
-        {
-          "BraveRewardsDisabled": true,
-          "BraveWalletDisabled": true
-        }
-      '';
-      etc."brave/policies/managed/inspect.json" =
-        lib.mkIf config.curios.desktop.browser.brave.remoteDebuggingAllowed {
-          text = ''
-            {
-              "RemoteDebuggingAllowed": true
-            }
-          '';
-        };
+      etc = {
+        "brave/policies/managed/settings.json".text = ''
+          {
+            "BraveRewardsDisabled": true,
+            "BraveWalletDisabled": true
+          }
+        '';
+        "brave/policies/managed/inspect.json" =
+          lib.mkIf config.curios.desktop.browser.brave.remoteDebuggingAllowed {
+            text = ''
+              {
+                "RemoteDebuggingAllowed": true
+              }
+            '';
+          };
+        "voxtype/config.toml" =
+          lib.mkIf config.curios.desktop.utility.voxtype.enable {
+            text = ''
+              state_file = "auto"
+
+              [hotkey]
+              enabled = false
+              mode = "toggle"
+
+              [audio]
+              device = "default"
+              sample_rate = 16000
+              max_duration_secs = 60
+
+              [whisper]
+              model = "${config.curios.desktop.utility.voxtype.model}"
+              language = "auto"
+              translate = false
+              on_demand_loading = false
+              # context_window_optimization = true
+
+              [output]
+              mode = "type"
+              fallback_to_clipboard = true
+              type_delay_ms = 0
+              pre_type_delay_ms = 0
+
+              [output.notification]
+              on_recording_start = true
+              on_recording_stop = true
+              on_transcription = false
+
+              [status]
+              icon_theme = "emoji"
+            '';
+          };
+      };
       # Add Bitwarden browser extension to Brave
       # See: https://chromeenterprise.google/policies/#ExtensionSettings
       #etc."brave/policies/managed/settings.json".text = ''
@@ -387,6 +444,20 @@ in {
             TimeoutStopSec = 10;
           };
         };
+        services.voxtype =
+          lib.mkIf config.curios.desktop.utility.voxtype.enable {
+            description = "Voxtype voice-to-text daemon";
+            wantedBy = [ "graphical-session.target" ];
+            wants = [ "graphical-session.target" ];
+            after = [ "graphical-session.target" ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStart = "${voxtypePkg}/bin/voxtype daemon";
+              Restart = "on-failure";
+              RestartSec = 5;
+              TimeoutStopSec = 10;
+            };
+          };
       };
     };
 

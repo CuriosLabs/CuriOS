@@ -68,11 +68,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         # Utilities
         utility = {
-          # WARNING: Bitwarden build seems to fails in Nixos 26.05 due to an outdated electron usage.
           bitwarden.enable = false;
           flameshot.enable = true;
           keepassxc.enable = true;
           localsend.enable = true;
+          voxtype = {
+            enable = true;
+            model = "small";
+          };
         };
       };
     };
@@ -131,6 +134,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("flameshot")
         check_which("keepassxc")
         check_which("localsend_app")
+        check_which("voxtype")
+        machine.succeed("test -f /etc/voxtype/config.toml")
 
     with subtest("check-unconditional-basics"):
         check_which("vlc")

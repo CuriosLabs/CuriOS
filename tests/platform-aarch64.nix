@@ -86,6 +86,10 @@ let
             flameshot.enable = true;
             keepassxc.enable = true;
             localsend.enable = true;
+            voxtype = {
+              enable = true;
+              model = "small";
+            };
           };
           crypto = {
             enable = true;

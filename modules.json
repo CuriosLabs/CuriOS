@@ -261,6 +261,10 @@
         },
         "localsend": {
           "enable": true
+        },
+        "voxtype": {
+          "enable": true,
+          "model": "small"
         }
       },
       "vpn": {
