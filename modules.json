@@ -263,8 +263,13 @@
           "enable": true
         },
         "voxtype": {
+          "audiofeedback": {
+            "enable": true,
+            "volume": 0.3
+          },
           "enable": true,
-          "model": "small"
+          "model": "base",
+          "notifications": true
         }
       },
       "vpn": {

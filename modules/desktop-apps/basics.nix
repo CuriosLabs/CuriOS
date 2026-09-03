@@ -11,6 +11,17 @@ let
     (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
     || (lib.attrByPath [ "curios" "hardware" "amdGpu" "enable" ] false config);
   voxtypePkg = if voxtypeHasGpu then pkgs.voxtype-vulkan else pkgs.voxtype;
+  voxtypeSetupScript = pkgs.writeShellApplication {
+    name = "voxtype-setup";
+    runtimeInputs = [ pkgs.curl voxtypePkg ];
+    text = ''
+      mkdir -p "$HOME/.config/voxtype"
+      rm -f "$HOME/.config/voxtype/config.toml"
+      cp /etc/voxtype/config.toml "$HOME/.config/voxtype/config.toml"
+      chmod u+w "$HOME/.config/voxtype/config.toml"
+      /run/current-system/sw/bin/voxtype setup --download
+    '';
+  };
 in {
   # Declare options
   options = {
@@ -209,10 +220,29 @@ in {
             description =
               "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled). After enabling, download the selected Whisper model.";
           };
+          audiofeedback = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description =
+                "Voxtype audio feedback when recording starts and stops.";
+            };
+            volume = lib.mkOption {
+              type = lib.types.numbers.between 0.0 1.0;
+              default = 0.3;
+              description = "Voxtype audio feedback volume (0.0 to 1.0).";
+            };
+          };
           model = lib.mkOption {
-            type = lib.types.enum [ "tiny" "base" "small" "medium" "large-v3" ];
-            default = "small";
+            type = lib.types.enum [ "tiny" "base" "medium" "large-v3" ];
+            default = "base";
             description = "Whisper model (multilingual).";
+          };
+          notifications = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description =
+              "Voxtype notification when recording starts and stops.";
           };
         };
       };
@@ -366,6 +396,17 @@ in {
               sample_rate = 16000
               max_duration_secs = 60
 
+              [audio.feedback]
+              enabled = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.audiofeedback.enable
+              }
+              theme = "default"
+              volume = ${
+                lib.toString
+                config.curios.desktop.utility.voxtype.audiofeedback.volume
+              }
+
               [whisper]
               model = "${config.curios.desktop.utility.voxtype.model}"
               language = "auto"
@@ -377,15 +418,18 @@ in {
               mode = "type"
               fallback_to_clipboard = true
               type_delay_ms = 0
-              pre_type_delay_ms = 0
+              pre_type_delay_ms = 100
 
               [output.notification]
-              on_recording_start = true
-              on_recording_stop = true
+              on_recording_start = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.notifications
+              }
+              on_recording_stop = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.notifications
+              }
               on_transcription = false
-
-              [status]
-              icon_theme = "emoji"
             '';
           };
       };
@@ -450,11 +494,14 @@ in {
             wantedBy = [ "graphical-session.target" ];
             wants = [ "graphical-session.target" ];
             after = [ "graphical-session.target" ];
+            path = [ pkgs.curl ];
             serviceConfig = {
               Type = "simple";
+              ExecStartPre = "${voxtypeSetupScript}/bin/voxtype-setup";
               ExecStart = "${voxtypePkg}/bin/voxtype daemon";
               Restart = "on-failure";
               RestartSec = 5;
+              TimeoutStartSec = 600;
               TimeoutStopSec = 10;
             };
           };
