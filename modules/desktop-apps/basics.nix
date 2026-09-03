@@ -194,7 +194,7 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -251,12 +251,6 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
-    # bitwarden-desktop on NixOS 26.05 pins electron_39 which is marked EOL.
-    # TODO: remove when bitwarden-dekstop pin electron>=40
-    nixpkgs.config.permittedInsecurePackages =
-      lib.mkIf config.curios.desktop.utility.bitwarden.enable
-      [ "electron-39.8.10" ];
-
     # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
     # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
     # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs

@@ -840,7 +840,6 @@ dotfiles_install() {
   for DIR in $HOME_DIR; do
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
-      # TODO: Any way to predict OWNER at this stage ?
       chown -R 1000:1000 "$DIR"
     fi
   done

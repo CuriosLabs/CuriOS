@@ -68,13 +68,13 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
         # Utilities
         utility = {
-          bitwarden.enable = false;
+          bitwarden.enable = true;
           flameshot.enable = true;
           keepassxc.enable = true;
           localsend.enable = true;
           voxtype = {
             enable = true;
-            model = "small";
+            model = "tiny";
           };
         };
       };
@@ -130,7 +130,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("spotify")
 
     with subtest("check-utilities"):
-        #check_which("bitwarden")
+        check_which("bitwarden")
         check_which("flameshot")
         check_which("keepassxc")
         check_which("localsend_app")

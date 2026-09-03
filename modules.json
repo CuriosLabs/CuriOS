@@ -251,7 +251,7 @@
       },
       "utility": {
         "bitwarden": {
-          "enable": false
+          "enable": true
         },
         "flameshot": {
           "enable": false
