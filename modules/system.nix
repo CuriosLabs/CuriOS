@@ -1,6 +1,10 @@
 # system options
 
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, ... }:
+let
+  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
+  curios-manager-applet = pkgs.callPackage ../pkgs/curios-manager-applet { };
+in {
   # Declare options
   options = {
     curios.system = {
@@ -13,6 +17,19 @@
         type = lib.types.bool;
         default = false;
         description = "Enable Ansible automation tool.";
+      };
+      core = {
+        dotfiles = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description =
+            "CuriOS opinionated configurations files for COSMIC, Alacritty, btop, LazyVim, AI agents skills and more.";
+        };
+        manager-applet = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "CuriOS main applet for COSMIC deskop environment.";
+        };
       };
       hostname = lib.mkOption {
         type = lib.types.str;
@@ -150,6 +167,9 @@
 
     environment.systemPackages =
       lib.optionals config.curios.system.ansible.enable [ pkgs.ansible ]
+      ++ lib.optionals config.curios.system.core.dotfiles [ curios-dotfiles ]
+      ++ lib.optionals config.curios.system.core.manager-applet
+      [ curios-manager-applet ]
       ++ lib.optionals config.curios.system.languages.go.enable [
         pkgs.go
         pkgs.golangci-lint

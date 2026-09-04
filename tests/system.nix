@@ -15,6 +15,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       curios.system = {
         enable = true;
         ansible.enable = true;
+        core = {
+          dotfiles = true;
+          manager-applet = true;
+        };
         # Use 'machine' to avoid conflict with NixOS test driver node name
         hostname = "machine";
         i18n.locale = "en_US.UTF-8";
@@ -44,6 +48,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     with subtest("check-ansible-installed"):
         check_which("ansible")
         check_which("ansible-playbook")
+
+    with subtest("check-curios-core"):
+        check_which("curios-dotfiles")
+        check_which("curios-manager-applet")
 
     with subtest("check-languages-installed"):
         check_which("go")

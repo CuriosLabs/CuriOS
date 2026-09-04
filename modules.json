@@ -487,6 +487,10 @@
       "ansible": {
         "enable": false
       },
+      "core": {
+        "dotfiles": true,
+        "manager-applet": true
+      },
       "enable": true,
       "hostname": "CuriOS",
       "i18n": {

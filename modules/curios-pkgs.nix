@@ -1,16 +1,10 @@
 # Custom made packages for CuriOS
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 let
-  curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
   curios-manager = pkgs.callPackage ../pkgs/curios-manager { };
-  curios-manager-applet = pkgs.callPackage ../pkgs/curios-manager-applet { };
   snitch = pkgs.callPackage ../pkgs/snitch { };
 in {
-  environment.systemPackages = [ curios-manager snitch ]
-    ++ lib.optionals config.curios.cosmic.enable [
-      curios-dotfiles
-      curios-manager-applet
-    ];
+  environment.systemPackages = [ curios-manager snitch ];
 
   # 'curios-update --check' as a systemd service/timer
   # systemctl --user status curios-updater.timer
