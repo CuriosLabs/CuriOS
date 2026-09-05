@@ -38,6 +38,7 @@
       sessionVariables = {
         # Hint Electron apps to use Wayland
         NIXOS_OZONE_WL = "1";
+        XDG_CONFIG_HOME = "$HOME/.config";
       };
 
       # XDG user directories defaults
