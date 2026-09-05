@@ -144,6 +144,9 @@
           }
         },
         "tui": {
+          "herdr": {
+            "enable": false
+          },
           "opencode": {
             "enable": true
           }

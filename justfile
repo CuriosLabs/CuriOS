@@ -132,6 +132,7 @@ nixos-upgrade: lint
       sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager/ ./pkgs/curios-manager/default.nix
       sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/default.nix
       sudo install -D -m 600 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/Cargo.lock
+      sudo install -D -m 644 -t /etc/nixos/pkgs/herdr/ ./pkgs/herdr/default.nix
       sudo install -D -m 644 -t /etc/nixos/pkgs/snitch/ ./pkgs/snitch/default.nix
 
       NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
