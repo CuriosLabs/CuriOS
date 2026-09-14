@@ -19,7 +19,7 @@
       darktable.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Darktable darkroom for photograpers.";
+        description = "Darktable darkroom for photographers.";
       };
       davinci-resolve.enable = lib.mkOption {
         type = lib.types.bool;
