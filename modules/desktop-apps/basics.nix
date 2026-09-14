@@ -229,7 +229,7 @@ in {
             type = lib.types.bool;
             default = true;
             description =
-              "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled). After enabling, download the selected Whisper model.";
+              "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled).";
           };
           audiofeedback = {
             enable = lib.mkOption {
