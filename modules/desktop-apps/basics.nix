@@ -155,7 +155,7 @@ in {
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "Mistral LeChat web app.";
+          description = "Mistral Vibe web app.";
         };
         windsurf.enable = lib.mkOption {
           type = lib.types.nullOr lib.types.bool;
