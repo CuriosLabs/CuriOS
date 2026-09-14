@@ -29,15 +29,16 @@ You can enable these applications via the **Curi*OS* Manager**:
 1. Open `curios-manager` (Shortcut: `Super+Return`).
 2. Go the `Applications` menu, then `Install/uninstall CuriOS Apps` menu.
 3. Toggle `(curios.desktop) studio - Video...` option.
-4. Press Enter to Save and `curios-manager` will handle the installation.
+4. Toggle `(curios.desktop.studio) obs-studio` the application options that you need.
+5. Press Enter to Save and `curios-manager` will handle the installation.
 
-This will install:
+Applications that you can install:
 
 - **OBS Studio**: Software for video recording and live streaming.
 - **Audacity**: Easy-to-use, multi-track audio editor and recorder.
-- **DaVinci Resolve**: Professional video editing, color correction, visual effects,
-  and audio post-production.
-- **Darktable**: An open-source photography workflow application and raw developer.
+- **DaVinci Resolve**: Free and paid versions. Professional video editing, color
+  correction, visual effects, and audio post-production.
+- **Darktable/RawTherapee**: Open-source photography workflow applications and raw developers.
 
 ## Audio Enhancement with EasyEffects
 
@@ -51,7 +52,7 @@ quality of headphones or microphones. Visit
 You can significantly enhance your listening experience by applying an **Equalizer**
 matched to your specific headphone model.
 
-1. **Launch EasyEffects** from the application menu.
+1. **Launch Easy Effects** from the application menu.
 2. **Add an Equalizer Effect**:
    - Click on the **Output** tab (for speakers/headphones).
    - Click **Add Effect** and select **Equalizer**.
@@ -63,6 +64,14 @@ matched to your specific headphone model.
    - In EasyEffects, inside the Equalizer effect settings, click on **Import APO**
    (or "Load APO Preset").
    - Select the file you downloaded from AutoEQ.
+4. **Save your preset**:
+   - Click the **Presets** button.
+   - In the **local** tab, give your preset a name like the name of your headphone,
+   and click the add **+** button.
+   - In the **auto-load** tab, link your headphone to your preset.
+5. **Easy Effects preferences**:
+   - In the preferences window make sure to select "Launch service at startup"
+   and "Automatic startup on user connexion".
 
 This process flattens the frequency response of your headphones, providing a
 more neutral and high-fidelity sound, which you can then further tweak to your
