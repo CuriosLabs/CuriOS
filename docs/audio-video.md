@@ -81,6 +81,8 @@ If you are satisfied with your EasyEffects setup, do not forget to set up the
 auto start option on user connexion in the application preferences menu.
 
 ---
+**Next**: [Office applications](office.md).
+
 **Previous**: [Security](security.md)
 
 **Back**: [index](index.md).

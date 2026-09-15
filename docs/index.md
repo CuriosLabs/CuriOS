@@ -68,6 +68,7 @@ How-to:
 - [Security, YubiKey and FIDO2 configuration](security.md)
 - [Work with AI tools](ai-tools.md)
 - [Work with Audio/Video applications](audio-video.md)
+- [Work with Office applications](office.md)
 
 ## Architecture
 
