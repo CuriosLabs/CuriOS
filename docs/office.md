@@ -105,6 +105,8 @@ sudo curios-update --update
 ```
 
 ---
+**Next**: [Virtualisation](virtualisation.md).
+
 **Previous**: [Audio/Video applications](audio-video.md)
 
 **Back**: [index](index.md).

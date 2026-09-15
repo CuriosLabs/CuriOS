@@ -69,6 +69,7 @@ How-to:
 - [Work with AI tools](ai-tools.md)
 - [Work with Audio/Video applications](audio-video.md)
 - [Work with Office applications](office.md)
+- [Work with Virtualisation](virtualisation.md)
 
 ## Architecture
 
