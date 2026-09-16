@@ -123,7 +123,8 @@ On Linux, Brave may require an extra flag:
 2. Set **Force enable WebGPU interop** to **Enabled**
 3. Relaunch Brave
 
-Check the status at [brave://gpu](brave://gpu) (WebGPU should be available) or at [webgpureport.org](https://webgpureport.org/).
+Check the status at [brave://gpu](brave://gpu) (WebGPU should be available) or
+at [webgpureport.org](https://webgpureport.org/).
 
 ---
 
@@ -169,10 +170,19 @@ These applications are advanced code editors (**IDEs**) with built-in AI assista
 
 ### Terminal (CLI) Tools
 
-Most of these tools require **Node.js** and its package manager, **npm**, which come
+Some of these tools require **Node.js** and its package manager, **npm**, which come
 pre-installed on Curi*OS*. You can install them with the `npm install -g` command.
 
 - **Claude Code**: Run with `claude`. Install it with `npm install -g @anthropic-ai/claude-code`.
+- **Grok Build**: Run with `grok`. Install it with:
+  `curl -fsSL https://x.ai/cli/install.sh | bash`
+  Some skills may require Python3, install it with:
+
+  ```bash
+  sudo curios-update --update-module curios.system.languages.python3.enable true && \
+  sudo curios-update --update
+  ```
+
 - **OpenAI/ChatGPT Codex**: Run with `codex`. Install it with `npm install -g @openai/codex`.
 - **OpenCode**: The *recommended* open source terminal-based coding assistant.
   Installed by default. Run it with `opencode`. Use the `/connect` command to
