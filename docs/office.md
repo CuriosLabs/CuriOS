@@ -82,8 +82,14 @@ These options add a desktop shortcut that opens your tenant in the browser.
 Replace the default URL with your own domain:
 
 - **Salesforce**: `curios.desktop.office.crm.salesforce.enable` and
-  `curios.desktop.office.crm.salesforce.baseUrl` (example:
-  `your-domain.my.salesforce.com`).
+  `curios.desktop.office.crm.salesforce.baseUrl` - Example:
+
+```bash
+sudo curios-update --update-module curios.desktop.office.crm.salesforce.enable true && \
+sudo curios-update --update-module curios.desktop.office.crm.salesforce.baseUrl "your-domain.my.salesforce.com" && \
+sudo curios-update --update
+```
+
 - **HubSpot**: `curios.desktop.office.crm.hubspot.enable` and
   `curios.desktop.office.crm.hubspot.baseUrl` (default: `app.hubspot.com`).
 - **Odoo**: `curios.desktop.office.erp.odoo.enable` and
