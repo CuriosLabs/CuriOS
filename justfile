@@ -224,17 +224,17 @@ publish: lint
 # Run all integrations tests sequentially
 test-all:
   for file in `fd --type f ".nix" ./tests/`; do statix check $file; done
-  for file in `fd --type f ".nix" ./tests/`; do nix-build $file --show-trace; done
+  for file in `fd --type f ".nix" ./tests/`; do nix-build $file --show-trace --no-out-link; done
 
 # Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
 test-unit target:
   statix check "./tests/{{target}}.nix"
-  nix-build "./tests/{{target}}.nix" --show-trace
+  nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
 
 # Run the aarch64-linux (RPI4) platform compatibility test. Evaluates all modules with all options enabled and reports x86_64-only packages.
 test-aarch64:
   statix check "./tests/platform-aarch64.nix"
-  nix-build "./tests/platform-aarch64.nix" --show-trace
+  nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
 
 # Update the pinned nixos-hardware commit in the Raspberry Pi modules.
 update-nixos-hardware:
