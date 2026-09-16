@@ -123,6 +123,16 @@ in {
   else
     false;
 
+  # IMPORTANT: Define nixpkgs permittedInsecurePackages ONLY here!
+  # opencode-desktop / winboat pin EOL Electron on NixOS 26.05.
+  # Must live here: nixpkgs.config inside a module lib.mkIf is ignored by pkgs.
+  # TODO: remove when those packages pin electron>=42
+  nixpkgs.config.permittedInsecurePackages = lib.optionals
+    (config.curios.desktop.devops.enable
+      && config.curios.desktop.devops.editor.opencode.enable)
+    [ "electron-41.9.1" ] ++ lib.optionals (config.curios.virtualisation.enable
+      && config.curios.virtualisation.winboat.enable) [ "electron-40.10.5" ];
+
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
@@ -135,7 +145,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260911.1421";
+    nixos.variant_id = "26.05.8";
   };
 
   nix = {

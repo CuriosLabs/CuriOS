@@ -171,12 +171,6 @@
       preferStaticEmulators = true; # Make it work with docker
     };
 
-    # winboat on NixOS 26.05 pins electron_40 which is marked as EOL.
-    # TODO: remove it when winboat pin electron>=43
-    nixpkgs.config.permittedInsecurePackages =
-      lib.mkIf config.curios.virtualisation.winboat.enable
-      [ "electron-40.10.5" ];
-
     # Samba, provide ntlm_auth, winbind, required by most Windows programs under Wine
     services.samba = {
       enable = lib.mkDefault config.curios.virtualisation.wine.enable;
