@@ -15,6 +15,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         enable = true;
         docker.enable = false; # Disable Docker to avoid conflicts
         podman.enable = true;
+        winboat.enable = true;
         wine.enable = false;
       };
 
@@ -45,5 +46,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-podman-socket"):
         check_service_socket("podman")
+
+    with subtest("check-virtualisation-packages"):
+        check_which("winboat")
   '';
 }

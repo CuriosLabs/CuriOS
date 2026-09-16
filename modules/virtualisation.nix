@@ -11,11 +11,18 @@
         default = false;
         description = "Enabling virtualisation app: QEMU/KVM - virt-manager.";
       };
-      docker.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description =
-          "Docker containers + docker-compose, docker-buildx, lazydocker.";
+      docker = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description =
+            "Docker containers + docker-compose, docker-buildx, lazydocker.";
+        };
+        rootless = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Run Docker daemon as a non-root user.";
+        };
       };
       podman.enable = lib.mkOption {
         type = lib.types.bool;
@@ -48,6 +55,11 @@
             "Extra flags passed to k3s (e.g. for networking or feature tweaks).";
         };
       };
+      winboat.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Run Windows apps on Linux with seamless integration.";
+      };
       wine.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -62,12 +74,25 @@
       # Docker
       # See https://wiki.nixos.org/wiki/Docker for more settings.
       docker = {
-        enable = lib.mkDefault config.curios.virtualisation.docker.enable;
+        enable = lib.mkDefault (config.curios.virtualisation.docker.enable
+          && !config.curios.virtualisation.docker.rootless);
+        daemon.settings = { log-driver = "journald"; };
         # dockerd needs apparmor_parser on its PATH to load the "docker-default"
         # profile at container start. Without it, containers run unconfined
         # despite docker inspect reporting the profile name.
         extraPackages =
           lib.optional config.security.apparmor.enable pkgs.apparmor-parser;
+        rootless = {
+          enable = lib.mkDefault config.curios.virtualisation.docker.rootless;
+          daemon.settings = {
+            data-root = ".local/docker";
+            log-driver = "journald";
+          };
+          extraPackages =
+            lib.optional config.security.apparmor.enable pkgs.apparmor-parser;
+          setSocketVariable =
+            lib.mkDefault config.curios.virtualisation.docker.rootless;
+        };
       };
       # Podman
       containers.enable =
@@ -194,7 +219,8 @@
         k9s
         kustomize
         cri-tools
-      ] ++ lib.optionals config.curios.virtualisation.wine.enable [
+      ] ++ lib.optionals config.curios.virtualisation.winboat.enable [ winboat ]
+      ++ lib.optionals config.curios.virtualisation.wine.enable [
         wineWow64Packages.waylandFull
         winetricks
         wineWow64Packages.fonts

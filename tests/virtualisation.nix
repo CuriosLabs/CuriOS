@@ -14,7 +14,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       system.stateVersion = "26.05";
       curios.virtualisation = {
         enable = true;
-        docker.enable = true;
+        docker = {
+          enable = true;
+          rootless = false;
+        };
         podman.enable = false;
         wine.enable = true;
       };

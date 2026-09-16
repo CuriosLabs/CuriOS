@@ -47,8 +47,8 @@
           "kvm"
           "input"
           "disk"
-        ]
-        ++ lib.optionals config.curios.virtualisation.docker.enable [ "docker" ]
+        ] ++ lib.optionals (config.curios.virtualisation.docker.enable
+          && !config.curios.virtualisation.docker.rootless) [ "docker" ]
         ++ lib.optionals config.curios.virtualisation.podman.enable
         [ "podman" ];
       # account UID

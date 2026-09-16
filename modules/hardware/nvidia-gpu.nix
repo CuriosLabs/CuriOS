@@ -7,10 +7,26 @@
 {
   # Declare options
   options = {
-    curios.hardware.nvidiaGpu.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enabling Nvidia GPU configuration";
+    curios.hardware.nvidiaGpu = {
+      branch = lib.mkOption {
+        type = lib.types.enum [
+          "beta"
+          "bleeding_edge"
+          "stable"
+          "latest"
+          "legacy_580"
+          "new_feature"
+          "production"
+        ];
+        default = "production";
+        description = "Nvidia GPU driver branch to use.";
+        example = "stable";
+      };
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enabling Nvidia GPU configuration";
+      };
     };
   };
 
@@ -73,10 +89,9 @@
       nvidiaSettings = true;
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      # For RTX 50, 40, 30, 20, GTX 16 series and set open to true !
-      package = config.boot.kernelPackages.nvidiaPackages.production;
-      # For GeForce 800, 900 and 10 series
-      #package = config.boot.kernelPackages.nvidiaPackages.legacy_390;
+      # For RTX 50, 40, 30, 20, GTX 16 series use "production" and set open to true !
+      # For GeForce 800, 900 and 10 series use "legacy_580"
+      branch = lib.mkDefault config.curios.hardware.nvidiaGpu.branch;
     };
   };
 }

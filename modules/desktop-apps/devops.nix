@@ -2,7 +2,8 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let herdrPkg = pkgs.callPackage ../../pkgs/herdr { };
+in {
   # Declare options
   options = {
     curios.desktop.devops = {
@@ -135,6 +136,12 @@
         description = "Doggo, Nmap, Zenmap, wireshark, remina.";
       };
       tui = {
+        herdr.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description =
+            "Herdr - multiplexer for your AI agents in the terminal.";
+        };
         opencode.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -214,7 +221,8 @@
       ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
-      [ ghostty ]
+      [ ghostty ] ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable
+      [ herdrPkg ]
       ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
         opencode
         (import ./desktop-opencode-tui.nix)

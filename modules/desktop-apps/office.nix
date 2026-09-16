@@ -9,12 +9,17 @@ in {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED office applications - Obsidian, Joplin.";
+        description = "Office applications - Obsidian, Joplin.";
       };
       calibre.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description = "Calibre e-books manager.";
+      };
+      evince.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Evince document viewer for PDF and Postscript.";
       };
       libreoffice.enable = lib.mkOption {
         type = lib.types.bool;
@@ -23,13 +28,18 @@ in {
       };
       onlyoffice.desktopeditors.enable = lib.mkOption {
         type = lib.types.bool;
-        default = true;
+        default = false;
         description = "OnlyOffice Desktop Editors suite.";
       };
       thunderbird.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description = "Mozilla Thunderbird email client.";
+      };
+      xournalpp.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Xournal++ handwriting notetaking app with PDF support.";
       };
       crm = {
         salesforce = {
@@ -72,11 +82,30 @@ in {
         };
       };
       finance = {
-        # TODO: find a pkgs worthy of installation
+        # TODO: find a pkgs worthy of installation: frappe books?
         gnucash.enable = lib.mkOption {
           type = lib.types.nullOr lib.types.bool;
           default = null;
           description = "DEPRECATED";
+        };
+      };
+      ms = {
+        office365 = {
+          excel.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Microsoft 365 Excel (buy online).";
+          };
+          powerpoint.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Microsoft 365 PowerPoint (buy online).";
+          };
+          word.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Microsoft 365 Word (buy online).";
+          };
         };
       };
       projects = {
@@ -145,12 +174,20 @@ in {
       [ pkgs.onlyoffice-desktopeditors ]
       ++ lib.optionals config.curios.desktop.office.thunderbird.enable
       [ pkgs.thunderbird ]
+      ++ lib.optionals config.curios.desktop.office.xournalpp.enable
+      [ pkgs.xournalpp ]
       ++ lib.optionals config.curios.desktop.office.crm.salesforce.enable
       [ (import ./webapp-salesforce.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.crm.hubspot.enable
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.erp.odoo.enable
       [ (import ./webapp-odoo.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.ms.office365.excel.enable
+      [ (import ./webapp-ms-excel.nix { inherit pkgs lib; }) ] ++ lib.optionals
+      config.curios.desktop.office.ms.office365.powerpoint.enable
+      [ (import ./webapp-ms-powerpoint.nix { inherit pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.ms.office365.word.enable
+      [ (import ./webapp-ms-word.nix { inherit pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.enable
       [ (import ./webapp-basecamp.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.projects.basecamp.cli
@@ -163,5 +200,9 @@ in {
       [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
         && config.curios.platform.amd64.enable) [ pkgs.zoom-us ];
+
+    programs = {
+      evince.enable = lib.mkDefault config.curios.desktop.office.evince.enable;
+    };
   };
 }

@@ -18,10 +18,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       time.timeZone = "UTC";
 
       curios.desktop.studio = {
+        audacity.enable = true;
         enable = true;
+        darktable.enable = true;
         davinci-resolve.enable = true;
         davinci-resolve-studio.enable = true;
         mpv.enable = true;
+        obs-studio.enable = true;
+        rawtherapee.enable = true;
       };
     };
   };
@@ -35,11 +39,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         machine.succeed(f"which {pkg_name}")
 
     with subtest("check-studio-apps"):
-        check_which("obs")
         check_which("audacity")
         check_which("davinci-resolve")
         check_which("davinci-resolve-studio")
         check_which("darktable")
+        check_which("gimp")
         check_which("mpv")
+        check_which("obs")
+        check_which("rawtherapee")
+        check_which("vlc")
   '';
 }

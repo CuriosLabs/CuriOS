@@ -21,15 +21,24 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       curios.desktop.office = {
         enable = true;
         calibre.enable = true;
+        evince.enable = true;
         libreoffice.enable = true;
         onlyoffice.desktopeditors.enable = true;
         thunderbird.enable = true;
+        xournalpp.enable = true;
         crm = {
           salesforce.enable = true;
           hubspot.enable = true;
         };
         erp = { odoo.enable = true; };
         finance = { };
+        ms = {
+          office365 = {
+            excel.enable = true;
+            powerpoint.enable = true;
+            word.enable = true;
+          };
+        };
         projects = {
           basecamp = {
             enable = true;
@@ -63,6 +72,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("obsidian")
         check_which("joplin-desktop")
         check_which("calibre")
+        check_which("evince")
+        check_which("xournalpp")
 
     with subtest("check-office-suites"):
         check_which("libreoffice")
@@ -80,6 +91,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     #with subtest("check-finance-apps"):
     #    check_which("")
+
+    with subtest("check-msoffice365-webapps"):
+        check_webapp("microsoft.cloud.excel")
+        check_webapp("microsoft.cloud.powerpoint")
+        check_webapp("microsoft.cloud.word")
 
     with subtest("check-project-management-webapps"):
         check_webapp("com.basecamp")

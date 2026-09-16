@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname = "webapp-teams";
-  version = "0.2";
+  version = "0.3";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "com.microsoft.teams";
     exec = "/run/current-system/sw/bin/xdg-open https://teams.microsoft.com/";
-    desktopName = "MS Teams webapp";
+    desktopName = "Microsoft Teams";
     icon = "webapp-teams";
     categories = [ "Chat" "Network" "Office" ];
   };

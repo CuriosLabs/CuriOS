@@ -4,7 +4,24 @@
 
 let
   lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
+  lmstudioBionicApp =
+    import ./desktop-lm-studio-bionic.nix { inherit pkgs lib; };
   curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
+  voxtypeHasGpu =
+    (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
+    || (lib.attrByPath [ "curios" "hardware" "amdGpu" "enable" ] false config);
+  voxtypePkg = if voxtypeHasGpu then pkgs.voxtype-vulkan else pkgs.voxtype;
+  voxtypeSetupScript = pkgs.writeShellApplication {
+    name = "voxtype-setup";
+    runtimeInputs = [ pkgs.curl voxtypePkg ];
+    text = ''
+      mkdir -p "$HOME/.config/voxtype"
+      rm -f "$HOME/.config/voxtype/config.toml"
+      cp /etc/voxtype/config.toml "$HOME/.config/voxtype/config.toml"
+      chmod u+w "$HOME/.config/voxtype/config.toml"
+      /run/current-system/sw/bin/voxtype setup --download
+    '';
+  };
 in {
   # Declare options
   options = {
@@ -13,7 +30,7 @@ in {
         type = lib.types.bool;
         default = true;
         description =
-          "REQUIRED - CuriOS desktop applications: Brave, Bitwarden, VLC, Yubikey...";
+          "REQUIRED - CuriOS desktop applications: Brave, Bitwarden, Yubikey...";
       };
       appImage.enable = lib.mkOption {
         type = lib.types.bool;
@@ -26,6 +43,12 @@ in {
             type = lib.types.bool;
             default = true;
             description = "Brave privacy-oriented Web Browser";
+          };
+          policy-enterprise = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "Disable Brave password manager, payment autofill, browser sign-in and profile sync.";
           };
           remoteDebuggingAllowed = lib.mkOption {
             type = lib.types.bool;
@@ -104,7 +127,7 @@ in {
         };
         cursor.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "Cursor AI-assisted IDE - desktop app and CLI.";
         };
         gemini.enable = lib.mkOption {
@@ -117,15 +140,22 @@ in {
           default = true;
           description = "Grok web app.";
         };
-        lmstudio.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "LM Studio - Local AI on your computer.";
+        lmstudio = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "LM Studio - Local AI on your computer.";
+          };
+          bionic = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "LM Studio Bionic - Local AI agent for open models.";
+          };
         };
         mistral.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "Mistral LeChat web app.";
+          description = "Mistral Vibe web app.";
         };
         windsurf.enable = lib.mkOption {
           type = lib.types.nullOr lib.types.bool;
@@ -149,6 +179,11 @@ in {
           default = false;
           description = "TeamSpeak6 desktop app.";
         };
+        telegram.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Telegram messenger desktop app.";
+        };
         whatsapp.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -170,7 +205,7 @@ in {
       utility = {
         bitwarden.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description = "Bitwarden password manager.";
         };
         flameshot.enable = lib.mkOption {
@@ -189,18 +224,44 @@ in {
           description =
             "LocalSend - Cross-platform file sharing on your local network.";
         };
+        voxtype = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description =
+              "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled).";
+          };
+          audiofeedback = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description =
+                "Voxtype audio feedback when recording starts and stops.";
+            };
+            volume = lib.mkOption {
+              type = lib.types.numbers.between 0.0 1.0;
+              default = 0.3;
+              description = "Voxtype audio feedback volume (0.0 to 1.0).";
+            };
+          };
+          model = lib.mkOption {
+            type = lib.types.enum [ "tiny" "base" "medium" "large-v3" ];
+            default = "base";
+            description = "Whisper model (multilingual).";
+          };
+          notifications = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description =
+              "Voxtype notification when recording starts and stops.";
+          };
+        };
       };
     };
   };
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
-    # bitwarden-desktop on NixOS 26.05 pins electron_39 which is marked EOL.
-    # TODO: remove when bitwarden-dekstop pin electron>=40
-    nixpkgs.config.permittedInsecurePackages =
-      lib.mkIf config.curios.desktop.utility.bitwarden.enable
-      [ "electron-39.8.10" ];
-
     # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
     # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
     # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs
@@ -210,12 +271,7 @@ in {
         brave = prev.brave.overrideAttrs (old: {
           postFixup = (old.postFixup or "") + ''
             braveLib=$out/opt/brave.com/brave
-            glRpath=${
-              lib.makeLibraryPath [
-                final.libGL
-                final.vulkan-loader
-              ]
-            }
+            glRpath=${lib.makeLibraryPath [ final.libGL final.vulkan-loader ]}
             for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
               if [ -f "$f" ]; then
                 oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)
@@ -248,14 +304,12 @@ in {
         # 3rd party apps
         pkgs.easyeffects
         pkgs.ffmpeg_6-full
-        pkgs.gimp3-with-plugins
         pkgs.gparted
         pkgs.imagemagick
         pkgs.libsecret
         pkgs.polkit_gnome
         pkgs.procs
         pkgs.tldr
-        pkgs.vlc
         pkgs.yubioath-flutter
       ] ++ lib.optionals config.curios.desktop.vpn.proton.enable [
         pkgs.proton-vpn
@@ -278,6 +332,8 @@ in {
         [ (import ./webapp-grok.nix) ] ++ lib.optionals
         (config.curios.desktop.ai.lmstudio.enable
           && config.curios.platform.amd64.enable) [ lmstudioApp ]
+        ++ lib.optionals (config.curios.desktop.ai.lmstudio.bionic
+          && config.curios.platform.amd64.enable) [ lmstudioBionicApp ]
         ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
@@ -296,6 +352,8 @@ in {
         [ pkgs.signal-desktop ] ++ lib.optionals
         (config.curios.desktop.chat.teamspeak.enable
           && config.curios.platform.amd64.enable) [ pkgs.teamspeak6-client ]
+        ++ lib.optionals config.curios.desktop.chat.telegram.enable
+        [ pkgs.telegram-desktop ]
         ++ lib.optionals config.curios.desktop.chat.whatsapp.enable
         [ (import ./webapp-whatsapp.nix) ]
         ++ lib.optionals config.curios.desktop.music.strawberry.enable
@@ -307,25 +365,102 @@ in {
         ++ lib.optionals config.curios.desktop.utility.keepassxc.enable
         [ pkgs.keepassxc ]
         ++ lib.optionals config.curios.desktop.utility.flameshot.enable
-        [ pkgs.flameshot ];
+        [ pkgs.flameshot ]
+        ++ lib.optionals config.curios.desktop.utility.voxtype.enable
+        [ voxtypePkg ];
 
       # Brave group policy examples
       # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
       # https://chromeenterprise.google/policies/
-      etc."brave/policies/managed/settings.json".text = ''
-        {
-          "BraveRewardsDisabled": true,
-          "BraveWalletDisabled": true
-        }
-      '';
-      etc."brave/policies/managed/inspect.json" =
-        lib.mkIf config.curios.desktop.browser.brave.remoteDebuggingAllowed {
-          text = ''
-            {
-              "RemoteDebuggingAllowed": true
-            }
-          '';
-        };
+      # TODO: GPO to consider: DownloadRestrictions, ExtensionInstallAllowlist
+      # DefaultNotificationsSetting, BraveAIChatEnabled, BraveNewsDisabled,
+      # BravePlaylistEnabled, BraveTalkDisabled, EmailAliasesEnabled
+      etc = {
+        "brave/policies/managed/settings.json".text = ''
+          {
+            "BraveRewardsDisabled": true,
+            "BraveWalletDisabled": true,
+            "BraveWebDiscoveryEnabled": false
+          }
+        '';
+        "brave/policies/managed/enterprise.json" =
+          lib.mkIf config.curios.desktop.browser.brave.policy-enterprise {
+            text = ''
+              {
+                "AutofillAddressEnabled": false,
+                "AutofillCreditCardEnabled": false,
+                "BraveP3AEnabled": false,
+                "BrowserAddPersonEnabled": false,
+                "BrowserSignin": 0,
+                "ImportAutofillFormData": false,
+                "ImportSavedPasswords": false,
+                "PasswordManagerEnabled": false,
+                "PasswordManagerPasskeysEnabled": false,
+                "PasswordSharingEnabled": false,
+                "PaymentMethodQueryEnabled": false,
+                "SyncDisabled": true
+              }
+            '';
+          };
+        "brave/policies/managed/inspect.json" =
+          lib.mkIf config.curios.desktop.browser.brave.remoteDebuggingAllowed {
+            text = ''
+              {
+                "RemoteDebuggingAllowed": true
+              }
+            '';
+          };
+        "voxtype/config.toml" =
+          lib.mkIf config.curios.desktop.utility.voxtype.enable {
+            text = ''
+              state_file = "auto"
+
+              [hotkey]
+              enabled = false
+              mode = "toggle"
+
+              [audio]
+              device = "default"
+              sample_rate = 16000
+              max_duration_secs = 60
+
+              [audio.feedback]
+              enabled = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.audiofeedback.enable
+              }
+              theme = "default"
+              volume = ${
+                lib.toString
+                config.curios.desktop.utility.voxtype.audiofeedback.volume
+              }
+
+              [whisper]
+              model = "${config.curios.desktop.utility.voxtype.model}"
+              language = "auto"
+              translate = false
+              on_demand_loading = false
+              # context_window_optimization = true
+
+              [output]
+              mode = "type"
+              fallback_to_clipboard = true
+              type_delay_ms = 0
+              pre_type_delay_ms = 100
+
+              [output.notification]
+              on_recording_start = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.notifications
+              }
+              on_recording_stop = ${
+                lib.boolToString
+                config.curios.desktop.utility.voxtype.notifications
+              }
+              on_transcription = false
+            '';
+          };
+      };
       # Add Bitwarden browser extension to Brave
       # See: https://chromeenterprise.google/policies/#ExtensionSettings
       #etc."brave/policies/managed/settings.json".text = ''
@@ -381,6 +516,23 @@ in {
             TimeoutStopSec = 10;
           };
         };
+        services.voxtype =
+          lib.mkIf config.curios.desktop.utility.voxtype.enable {
+            description = "Voxtype voice-to-text daemon";
+            wantedBy = [ "graphical-session.target" ];
+            wants = [ "graphical-session.target" ];
+            after = [ "graphical-session.target" ];
+            path = [ pkgs.curl ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStartPre = "${voxtypeSetupScript}/bin/voxtype-setup";
+              ExecStart = "${voxtypePkg}/bin/voxtype daemon";
+              Restart = "on-failure";
+              RestartSec = 5;
+              TimeoutStartSec = 600;
+              TimeoutStopSec = 10;
+            };
+          };
       };
     };
 

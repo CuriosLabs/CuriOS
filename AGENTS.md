@@ -74,7 +74,7 @@ should be done in `settings.nix` and `modules.json`.
 main configuration. This is where users can add custom packages or NixOS settings.
 - `modules.json`: A file to define which Nix `modules/` are enabled or not and
 configure CuriOS options.
-- `iso/iso-minimal.nix`: The Nix expression that defines the contents and
+- `iso/iso-installer.nix`: The Nix expression that defines the contents and
 configuration of the bootable ISO image.
 - `justfile`: The project's command runner configuration, containing recipes
 for building, testing, and linting.

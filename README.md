@@ -37,10 +37,12 @@ the whole system from a modern sleek Terminal User Interface.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
-* ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
-(Ollama is also easily installable). [Cursor](https://cursor.com/features) for
-an AI-assisted IDE. Desktop shortcut for AI chat web applications (ChatGPT,
-Claude, Grok and Mistral).
+* 🦁 Brave as the default browser - block ads, better privacy.
+* ✨AI tools: [OpenCode](https://opencode.ai/) TUI and desktop versions installed by default.
+[LM Studio](https://lmstudio.ai/) to run local AI on your GPU (Ollama is also available).
+[Cursor](https://cursor.com/features) and [Zed](https://zed.dev/) for an AI-assisted IDE.
+Desktop shortcut for AI chat web applications (ChatGPT, Claude, Grok and Mistral).
+[Voxtype](https://voxtype.io/) (Shortcut: Super + V) for local Speech to Text.
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager,
 Python3, Rust and more...
@@ -49,8 +51,14 @@ Python3, Rust and more...
 * ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
 * 🔗 Enable Secure Boot.
+* 🛡️AppArmor Mandatory Access Control profiles - WIP.
 * 🔑 Register a YubiKey for user login and `sudo` operations.
 * 🗛  bunch of nerd fonts...
+
+## Download
+
+The latest ISO download links are listed on the
+[GitHub Releases](https://github.com/CuriosLabs/CuriOS/releases) page.
 
 ## Quick start / installation guide
 
@@ -85,7 +93,7 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is [26.05.7](https://github.com/CuriosLabs/CuriOS/tree/release/26.05.7)
+The current release is [26.05.8](https://github.com/CuriosLabs/CuriOS/releases/tag/26.05.8)
 based on a Nixos 26.05 build.
 
 ## License
@@ -114,4 +122,4 @@ do not imply endorsement.
 ## Sources
 
 [Cosmic desktop](https://github.com/pop-os/cosmic-epoch) by system76.
-Hardened configuration files by [wallago](https://github.com/wallago/nix-system-services-hardened).
+Hardened configuration files inspired by [wallago](https://github.com/wallago/nix-system-services-hardened).

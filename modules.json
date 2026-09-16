@@ -28,7 +28,7 @@
           "enable": true
         },
         "cursor": {
-          "enable": true
+          "enable": false
         },
         "gemini": {
           "enable": true
@@ -37,7 +37,8 @@
           "enable": true
         },
         "lmstudio": {
-          "enable": true
+          "enable": false,
+          "bionic": false
         },
         "mistral": {
           "enable": true
@@ -52,6 +53,7 @@
       "browser": {
         "brave": {
           "enable": true,
+          "policy-enterprise": false,
           "remoteDebuggingAllowed": false
         },
         "chromium": {
@@ -75,6 +77,9 @@
           "enable": true
         },
         "teamspeak": {
+          "enable": false
+        },
+        "telegram": {
           "enable": false
         },
         "whatsapp": {
@@ -143,6 +148,9 @@
           }
         },
         "tui": {
+          "herdr": {
+            "enable": false
+          },
           "opencode": {
             "enable": true
           }
@@ -178,6 +186,9 @@
         "calibre": {
           "enable": false
         },
+        "evince": {
+          "enable": true
+        },
         "conferencing": {
           "slack": {
             "enable": false
@@ -210,9 +221,22 @@
         "libreoffice": {
           "enable": false
         },
+        "ms": {
+          "office365": {
+            "excel": {
+              "enable": false
+            },
+            "powerpoint": {
+              "enable": false
+            },
+            "word": {
+              "enable": false
+            }
+          }
+        },
         "onlyoffice": {
           "desktopeditors": {
-            "enable": true
+            "enable": false
           }
         },
         "projects": {
@@ -228,10 +252,19 @@
         },
         "thunderbird": {
           "enable": false
+        },
+        "xournalpp": {
+          "enable": true
         }
       },
       "studio": {
-        "enable": false,
+        "audacity": {
+          "enable": false
+        },
+        "enable": true,
+        "darktable": {
+          "enable": false
+        },
         "davinci-resolve": {
           "enable": false
         },
@@ -240,11 +273,17 @@
         },
         "mpv": {
           "enable": false
+        },
+        "obs-studio": {
+          "enable": false
+        },
+        "rawtherapee": {
+          "enable": false
         }
       },
       "utility": {
         "bitwarden": {
-          "enable": false
+          "enable": true
         },
         "flameshot": {
           "enable": false
@@ -254,6 +293,15 @@
         },
         "localsend": {
           "enable": true
+        },
+        "voxtype": {
+          "audiofeedback": {
+            "enable": true,
+            "volume": 0.3
+          },
+          "enable": true,
+          "model": "base",
+          "notifications": true
         }
       },
       "vpn": {
@@ -327,7 +375,15 @@
               "mode": "enforce"
             }
           },
+          "gaming": {
+            "steam": {
+              "mode": "complain"
+            }
+          },
           "office": {
+            "evince": {
+              "mode": "enforce"
+            },
             "onlyoffice": {
               "mode": "enforce"
             }
@@ -388,6 +444,7 @@
         "enable": false
       },
       "nvidiaGpu": {
+        "branch": "production",
         "enable": false
       },
       "various": {
@@ -441,6 +498,9 @@
         "enable": true
       },
       "enable": true,
+      "flatpak": {
+        "enable": true
+      },
       "ollama": {
         "enable": false
       },
@@ -459,6 +519,10 @@
     "system": {
       "ansible": {
         "enable": false
+      },
+      "core": {
+        "dotfiles": true,
+        "manager-applet": true
       },
       "enable": true,
       "hostname": "CuriOS",
@@ -504,7 +568,8 @@
     },
     "virtualisation": {
       "docker": {
-        "enable": false
+        "enable": false,
+        "rootless": false
       },
       "enable": false,
       "k3s": {
@@ -515,6 +580,9 @@
         "extraFlags": []
       },
       "podman": {
+        "enable": false
+      },
+      "winboat": {
         "enable": false
       },
       "wine": {

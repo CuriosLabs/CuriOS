@@ -41,7 +41,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           alacritty.enable = true;
           ghostty.enable = true;
         };
-        tui.opencode.enable = true;
+        tui = {
+          herdr.enable = true;
+          opencode.enable = true;
+        };
       };
     };
   };
@@ -100,6 +103,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("gcloud")
 
     with subtest("check-tui"):
+        check_which("herdr")
         check_which("opencode")
   '';
 }

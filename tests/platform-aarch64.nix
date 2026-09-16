@@ -68,12 +68,14 @@ let
             gemini.enable = true;
             grok.enable = true;
             lmstudio.enable = true;
+            bionic.enable = true;
             mistral.enable = true;
           };
           chat = {
             discord.enable = true;
             signal.enable = true;
             teamspeak.enable = true;
+            telegram.enable = true;
             whatsapp.enable = true;
           };
           music = {
@@ -85,6 +87,10 @@ let
             flameshot.enable = true;
             keepassxc.enable = true;
             localsend.enable = true;
+            voxtype = {
+              enable = true;
+              model = "small";
+            };
           };
           crypto = {
             enable = true;

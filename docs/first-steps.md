@@ -25,6 +25,7 @@ on Apple's keyboard.
 | Maximize application        | Super + M                          |
 | Close application           | Super + Q                          |
 | Tile mode on/off            | Super + Y                          |
+| Speech to Text toggle       | Super + V                          |
 | Workspaces overview         | Super + W                          |
 | Lock session                | Super + Esc                        |
 | Logout                      | Super + Shift + Esc                |

@@ -29,9 +29,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         machine.succeed(f"which {pkg_name}")
 
     with subtest("check-curios-packages"):
-        check_which("curios-dotfiles")
         check_which("curios-manager")
-        check_which("curios-manager-applet")
         check_which("curios-update")
         check_which("snitch")
 
