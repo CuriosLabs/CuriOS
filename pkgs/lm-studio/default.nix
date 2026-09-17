@@ -2,23 +2,23 @@
 # See: https://lmstudio.ai/download
 # See: https://wiki.nixos.org/wiki/Appimage
 
-{ pkgs, lib }:
+{ lib, stdenv, fetchurl, makeDesktopItem, appimageTools, imagemagick
+, patchelf }:
 let
   pname = "lm-studio";
   version = "0.4.24-1";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://installers.lmstudio.ai/linux/x64/0.4.14-4/LM-Studio-0.4.14-4-x64.AppImage)"
-  src = pkgs.fetchurl {
+  src = fetchurl {
     url =
       "https://installers.lmstudio.ai/linux/x64/${version}/LM-Studio-${version}-x64.AppImage";
     hash = "sha256-F8uKxjdPkYL8En764gaAJl48TBfZbq3xR+tf5hEak1M=";
   };
 
-  appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
-  downloadToTemp = true;
+  appimageContents = appimageTools.extract { inherit pname version src; };
 
-  desktopItem = pkgs.makeDesktopItem {
+  desktopItem = makeDesktopItem {
     name = "ai.lmstudio";
     exec = "/run/current-system/sw/bin/lm-studio";
     desktopName = "LM Studio local AI";
@@ -27,10 +27,10 @@ let
     terminal = false;
     type = "Application";
   };
-in pkgs.appimageTools.wrapType2 {
-  inherit pname version pkgs src;
+in appimageTools.wrapType2 {
+  inherit pname version src;
 
-  nativeBuildInputs = [ pkgs.imagemagick pkgs.patchelf ];
+  nativeBuildInputs = [ imagemagick patchelf ];
 
   extraInstallCommands = ''
     mkdir -p $out/share
@@ -45,7 +45,7 @@ in pkgs.appimageTools.wrapType2 {
     mkdir -p $out/bin
     install -D -m 755 -t $out/bin/ ${appimageContents}/resources/app/.webpack/lms
 
-    patchelf --set-interpreter "${pkgs.stdenv.cc.bintools.dynamicLinker}" $out/bin/lms
+    patchelf --set-interpreter "${stdenv.cc.bintools.dynamicLinker}" $out/bin/lms
   '';
 
   meta = {
@@ -57,4 +57,3 @@ in pkgs.appimageTools.wrapType2 {
     platforms = [ "x86_64-linux" ];
   };
 }
-

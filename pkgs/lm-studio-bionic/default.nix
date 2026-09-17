@@ -2,22 +2,22 @@
 # See: https://lmstudio.ai/download
 # See: https://wiki.nixos.org/wiki/Appimage
 
-{ pkgs, lib }:
+{ lib, fetchurl, makeDesktopItem, appimageTools }:
 let
   pname = "lm-studio-bionic";
   version = "1.1.3-5";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://bionic-installers.lmstudio.ai/linux/x64/1.1.1-5/Bionic-1.1.1-5-x64.AppImage)"
-  src = pkgs.fetchurl {
+  src = fetchurl {
     url =
       "https://bionic-installers.lmstudio.ai/linux/x64/${version}/Bionic-${version}-x64.AppImage";
     hash = "sha256-0rmi8lB2caV4LP64BmxusQpNsmdIH6MMhXX3oo88iZg=";
   };
 
-  appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
+  appimageContents = appimageTools.extract { inherit pname version src; };
 
-  desktopItem = pkgs.makeDesktopItem {
+  desktopItem = makeDesktopItem {
     name = "ai.lmstudio.bionic";
     exec = "/run/current-system/sw/bin/lm-studio-bionic";
     desktopName = "LM Studio Bionic";
@@ -27,8 +27,8 @@ let
     type = "Application";
     startupWMClass = "ai.lmstudio.bionic";
   };
-in pkgs.appimageTools.wrapType2 {
-  inherit pname version pkgs src;
+in appimageTools.wrapType2 {
+  inherit pname version src;
 
   extraInstallCommands = ''
     mkdir -p $out/share

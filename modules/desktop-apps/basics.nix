@@ -3,9 +3,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  lmstudioApp = import ./desktop-lm-studio.nix { inherit pkgs lib; };
-  lmstudioBionicApp =
-    import ./desktop-lm-studio-bionic.nix { inherit pkgs lib; };
+  lmstudioApp = pkgs.callPackage ../../pkgs/lm-studio { };
+  lmstudioBionicApp = pkgs.callPackage ../../pkgs/lm-studio-bionic { };
   curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
   voxtypeHasGpu =
     (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
