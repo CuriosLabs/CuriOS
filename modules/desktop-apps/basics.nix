@@ -304,7 +304,6 @@ in {
         pkgs.easyeffects
         pkgs.ffmpeg_6-full
         pkgs.gparted
-        pkgs.imagemagick
         pkgs.libsecret
         pkgs.polkit_gnome
         pkgs.procs
