@@ -56,12 +56,83 @@ build: lint update-nixos-hardware
 # Cleaning build and test artifacts.
 clean:
   rm -rf ./result
+  rm -rf ./sbom
+  rm http_cache.sqlite
   nix-store --gc
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
 install:
   nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/curios-sources/default.nix {}' && nix profile add ./result
   ./curios-install --verbose
+
+# Generate a CycloneDX SBOM for a package name found in the nix store (i.e: opencode-desktop). Saved in ./sbom/.
+sbom pkg:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  if [ -L "/run/current-system/sw/bin/{{pkg}}" ]; then
+    store_path=$(readlink -f "/run/current-system/sw/bin/{{pkg}}")
+  else
+    store_path=$(ls -d /nix/store/*-{{pkg}}-*/ 2>/dev/null | grep -Ev '\.(drv|lock|env)/$' | sort -V | tail -1)
+  fi
+  if [ -z "$store_path" ] || [ ! -e "$store_path" ]; then
+    printf "\e[31m Package '{{pkg}}' not found in the nix store (neither /run/current-system/sw/bin nor /nix/store).\e[0m\n"
+    exit 1
+  fi
+  name=$(basename "$store_path")
+  printf "Generating SBOM for %s...\n" "$store_path"
+  sbomnix \
+    --cdx "./sbom/${name}.cdx.json" \
+    --spdx "./sbom/${name}.spdx.json" \
+    --csv "./sbom/${name}.csv" \
+    "$store_path"
+  printf "\e[32m SBOM written to ./sbom/${name}.cdx.json\e[0m\n"
+
+# Generate an SLSA v1.0 provenance file for a package name found in the nix store (i.e: opencode-desktop). Saved in ./sbom/.
+sbom-provenance pkg:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  if [ -L "/run/current-system/sw/bin/{{pkg}}" ]; then
+    store_path=$(dirname "$(dirname "$(readlink -f "/run/current-system/sw/bin/{{pkg}}")")")
+  else
+    store_path=$(ls -d /nix/store/*-{{pkg}}-*/ 2>/dev/null | grep -Ev '\.(drv|lock|env)/$' | sort -V | tail -1)
+  fi
+  if [ -z "$store_path" ] || [ ! -e "$store_path" ]; then
+    printf "\e[31m Package '{{pkg}}' not found in the nix store (neither /run/current-system/sw/bin nor /nix/store).\e[0m\n"
+    exit 1
+  fi
+  name=$(basename "$store_path")
+  printf "Generating provenance for %s...\n" "$store_path"
+  provenance --out "./sbom/${name}-provenance.json" "$store_path"
+  printf "\e[32m Provenance written to ./sbom/${name}-provenance.json\e[0m\n"
+
+# Generate a CycloneDX SBOM for the whole current NixOS system (/run/current-system). Saved in ./sbom/.
+sbom-system:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  system=$(readlink -f /run/current-system)
+  printf "Generating SBOM for %s...\n" "$system"
+  sbomnix \
+    --cdx "./sbom/current-system.cdx.json" \
+    --spdx "./sbom/current-system.spdx.json" \
+    --csv "./sbom/current-system.csv" \
+    "$system"
+  printf "\e[32m SBOM written to ./sbom/current-system.cdx.json\e[0m\n"
+
+# Generate an inverse dependency graph (PNG + CSV) matching <pattern> in the current NixOS system. Saved in ./sbom/.
+sbom-graph pattern='heif' depth='6':
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  system=$(readlink -f /run/current-system)
+  printf "Generating inverse dependency graph for '%s'...\n" "{{pattern}}"
+  nixgraph --inverse "{{pattern}}" --depth {{depth}} \
+    --out "./sbom/{{pattern}}-graph.png" "$system"
+  nixgraph --inverse "{{pattern}}" --depth {{depth}} \
+    --out "./sbom/{{pattern}}-graph.csv" "$system"
+  printf "\e[32m Graphs written to ./sbom/{{pattern}}-graph.png and ./sbom/{{pattern}}-graph.csv\e[0m\n"
 
 # Linting Bash scripts and Nix files.
 lint:
