@@ -27,6 +27,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         krita.enable = true;
         mpv.enable = true;
         obs-studio.enable = true;
+        rapidraw.enable = true;
         rawtherapee.enable = true;
       };
     };
@@ -50,6 +51,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("krita")
         check_which("mpv")
         check_which("obs")
+        check_which("rapidraw")
         check_which("rawtherapee")
         check_which("vlc")
   '';

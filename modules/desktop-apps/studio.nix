@@ -53,6 +53,12 @@
         default = false;
         description = "OBS Studio for video recording and live streaming.";
       };
+      rapidraw.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Blazingly-fast, non-destructive, and GPU-accelerated RAW image editor.";
+      };
       rawtherapee.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -81,6 +87,8 @@
       [ pkgs.inkscape-with-extensions ]
       ++ lib.optionals config.curios.desktop.studio.krita.enable [ pkgs.krita ]
       ++ lib.optionals config.curios.desktop.studio.mpv.enable [ pkgs.mpv ]
+      ++ lib.optionals config.curios.desktop.studio.rapidraw.enable
+      [ pkgs.rapidraw ]
       ++ lib.optionals config.curios.desktop.studio.rawtherapee.enable
       [ pkgs.rawtherapee ];
   };
