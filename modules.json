@@ -271,6 +271,12 @@
         "davinci-resolve-studio": {
           "enable": false
         },
+        "inkscape": {
+          "enable": false
+        },
+        "krita": {
+          "enable": false
+        },
         "mpv": {
           "enable": false
         },

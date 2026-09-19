@@ -31,6 +31,17 @@
         default = false;
         description = "DaVinci Resolve Studio version (buy online)";
       };
+      inkscape.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Inkscape is a feature-rich vector graphics editor for SVG files.";
+      };
+      krita.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Krita is a professional free and open source painting.";
+      };
       mpv.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -66,6 +77,9 @@
       ++ lib.optionals
       (config.curios.desktop.studio.davinci-resolve-studio.enable
         && config.curios.platform.amd64.enable) [ pkgs.davinci-resolve-studio ]
+      ++ lib.optionals config.curios.desktop.studio.inkscape.enable
+      [ pkgs.inkscape-with-extensions ]
+      ++ lib.optionals config.curios.desktop.studio.krita.enable [ pkgs.krita ]
       ++ lib.optionals config.curios.desktop.studio.mpv.enable [ pkgs.mpv ]
       ++ lib.optionals config.curios.desktop.studio.rawtherapee.enable
       [ pkgs.rawtherapee ];
