@@ -160,7 +160,7 @@
         "blender": {
           "enable": false
         },
-        "enable": false,
+        "enable": true,
         "f3d": {
           "enable": false
         },

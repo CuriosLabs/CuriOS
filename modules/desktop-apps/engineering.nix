@@ -9,9 +9,8 @@ in {
     curios.desktop.engineering = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
-        description =
-          "Engineering applications - FreeCAD, KiCad, f3d, Blender, OrcaSlicer.";
+        default = true;
+        description = "Engineering applications";
       };
       blender.enable = lib.mkOption {
         type = lib.types.bool;
