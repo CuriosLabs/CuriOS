@@ -156,6 +156,30 @@
           }
         }
       },
+      "engineering": {
+        "blender": {
+          "enable": false
+        },
+        "enable": false,
+        "f3d": {
+          "enable": false
+        },
+        "freecad": {
+          "enable": false
+        },
+        "kicad": {
+          "enable": false
+        },
+        "librecad": {
+          "enable": false
+        },
+        "opencad-studio": {
+          "enable": false
+        },
+        "orca-slicer": {
+          "enable": false
+        }
+      },
       "gaming": {
         "enable": false,
         "heroic": {
@@ -281,6 +305,9 @@
           "enable": false
         },
         "obs-studio": {
+          "enable": false
+        },
+        "rapidraw": {
           "enable": false
         },
         "rawtherapee": {
