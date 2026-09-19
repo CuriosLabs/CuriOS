@@ -57,7 +57,7 @@ build: lint update-nixos-hardware
 clean:
   rm -rf ./result
   rm -rf ./sbom
-  rm http_cache.sqlite
+  if [ -f http_cache.sqlite ]; then rm http_cache.sqlite; else printf '\e[33m http_cache.sqlite not found!\e[0m\n'; fi
   nix-store --gc
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
