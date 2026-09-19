@@ -111,7 +111,7 @@ sudo curios-update --update
 ```
 
 ---
-**Next**: [Virtualisation](virtualisation.md).
+**Next**: [Engineering applications](engineering.md).
 
 **Previous**: [Audio/Video applications](audio-video.md)
 

@@ -139,6 +139,6 @@ and more — see [dockur/windows](https://github.com/dockur/windows/)):
 - Podman: `~/.winboat/podman-compose.yml`
 
 ---
-**Previous**: [Office applications](office.md)
+**Previous**: [Engineering applications](engineering.md)
 
 **Back**: [index](index.md).
