@@ -1,6 +1,6 @@
 # Curi*OS*
 
-[![NixOS 26.05](https://img.shields.io/badge/NixOS-26.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
 
 > [!WARNING]
