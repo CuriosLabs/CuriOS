@@ -66,7 +66,7 @@ be initialized, you can now use the `Backup now` menu.
 
 ### S3-compatible server (MinIO, RustFS...)
 
-For S3-compatible storage that is **not** Amazon AWS, you must provide an access
+For S3-compatible storage that is **NOT** Amazon AWS, you must provide an access
 key and the secret key of your S3 bucket. You must also provide the complete URL
 (IP/host name and port number included) of the bucket. For example on a **RustFS**
 server running on a NAS on your local network, the URL could look like this:
@@ -125,7 +125,11 @@ specified period (e.g., 7 days).
 ### Configuration - AWS CLI
 
 You can use the standard `aws` CLI tool to configure this on AWS or any S3-compatible
-server.
+server. You can install the CLI tool with the following command:
+
+```bash
+sudo curios-update --update-module curios.desktop.devops.cli.aws.enable true && sudo curios-update --update
+```
 
 1. **Create a Bucket with Object Lock Enabled**
 

@@ -10,6 +10,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/zsh.nix ];
 
     config = {
+      system.stateVersion = "26.05";
       curios.shell.zsh.enable = true;
       users.users.test-user = { isNormalUser = true; };
     };

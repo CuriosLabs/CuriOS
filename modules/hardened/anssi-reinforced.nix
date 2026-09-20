@@ -9,8 +9,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description =
-          "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
+        description = "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
       };
       rule7 = lib.mkOption {
         type = lib.types.bool;
@@ -25,8 +24,7 @@
       rule39 = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description =
-          "R39 - /etc/sudoers extra configuration (noexec, requiretty). WILL break a lot of SUDO commands.";
+        description = "R39 - /etc/sudoers extra configuration (noexec, requiretty). WILL break a lot of SUDO commands.";
       };
       rule45 = lib.mkOption {
         type = lib.types.bool;
@@ -38,24 +36,28 @@
 
   config = lib.mkIf config.curios.hardened.anssi.reinforced.enable {
     boot = {
-      kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7
-        [ "iommu=force" ];
+      kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7 [ "iommu=force" ];
 
-      kernel.sysctl =
-        lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
-          "kernel.modules_disabled" = 1;
-        };
+      kernel.sysctl = lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
+        "kernel.modules_disabled" = 1;
+      };
     };
 
     security = {
-      apparmor = lib.mkIf config.curios.hardened.anssi.reinforced.rule45 {
-        enable = true;
+      apparmor = {
+        enable = lib.mkDefault config.curios.hardened.anssi.reinforced.rule45;
         enableCache = true;
         killUnconfinedConfinables = true;
       };
 
-      lsm = lib.optionals config.curios.hardened.anssi.reinforced.rule45
-        [ "apparmor" ];
+      auditd.enable = config.curios.hardened.anssi.reinforced.rule45;
+
+      audit = {
+        enable = config.curios.hardened.anssi.reinforced.rule45;
+        rules = [
+          "-a exit,always -F arch=b64 -S execve -F auid>=1000 -F auid!=-1 -k audit_watch_apparmor"
+        ];
+      };
 
       sudo = lib.mkIf config.curios.hardened.anssi.reinforced.rule39 {
         extraConfig = "Defaults noexec,requiretty";

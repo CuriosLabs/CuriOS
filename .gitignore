@@ -5,11 +5,14 @@
 .env
 .venv/
 .idea/
+.wrangler/
 .zed/
 docs/.obsidian/
+http_cache.sqlite
 iso/result/
 iso/*.iso
 iso/*.iso.sha256
 result/
+sbom/
 tests/result/
 

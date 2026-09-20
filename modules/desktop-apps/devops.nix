@@ -2,7 +2,8 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let herdrPkg = pkgs.callPackage ../../pkgs/herdr { };
+in {
   # Declare options
   options = {
     curios.desktop.devops = {
@@ -11,6 +12,18 @@
         default = true;
         description =
           "REQUIRED desktop applications for developers - Alacritty terminal, Neovim, git for github (gh), shellcheck, statix.";
+      };
+      cli = {
+        aws.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Amazon Web Services unified command line interface.";
+        };
+        gcloud.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Google Cloud SDK command line interface.";
+        };
       };
       cloudflared.enable = lib.mkOption {
         type = lib.types.bool;
@@ -31,7 +44,7 @@
         java.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "JetBrains IDEA oss - Kotlin";
+          description = "JetBrains IDEA - Kotlin (buy online)";
         };
         opencode.enable = lib.mkOption {
           type = lib.types.bool;
@@ -41,7 +54,7 @@
         python.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "JetBrains PyCharm Community";
+          description = "JetBrains PyCharm (buy online)";
         };
         rust.enable = lib.mkOption {
           type = lib.types.bool;
@@ -123,6 +136,12 @@
         description = "Doggo, Nmap, Zenmap, wireshark, remina.";
       };
       tui = {
+        herdr.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description =
+            "Herdr - multiplexer for your AI agents in the terminal.";
+        };
         opencode.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
@@ -168,7 +187,10 @@
         ripgrep
         # YQ - yaml/xml/toml parser
         yq
-      ] ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
+      ] ++ lib.optionals config.curios.desktop.devops.cli.aws.enable [ awscli2 ]
+      ++ lib.optionals config.curios.desktop.devops.cli.gcloud.enable
+      [ google-cloud-sdk ]
+      ++ lib.optionals config.curios.desktop.devops.cloudflared.enable
       [ cloudflared ]
       ++ lib.optionals config.curios.desktop.devops.just.enable [ just ]
       ++ lib.optionals config.curios.desktop.devops.networks.enable [
@@ -183,11 +205,11 @@
       ] ++ lib.optionals config.curios.desktop.devops.editor.go.enable
       [ jetbrains.goland ]
       ++ lib.optionals config.curios.desktop.devops.editor.java.enable
-      [ jetbrains.idea-oss ]
+      [ jetbrains.idea ]
       ++ lib.optionals config.curios.desktop.devops.editor.opencode.enable
       [ opencode-desktop ]
       ++ lib.optionals config.curios.desktop.devops.editor.python.enable
-      [ jetbrains.pycharm-oss ]
+      [ jetbrains.pycharm ]
       ++ lib.optionals config.curios.desktop.devops.editor.rust.enable
       [ jetbrains.rust-rover ]
       ++ lib.optionals config.curios.desktop.devops.editor.zed.enable [
@@ -199,7 +221,8 @@
       ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
-      [ ghostty ]
+      [ ghostty ] ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable
+      [ herdrPkg ]
       ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
         opencode
         (import ./desktop-opencode-tui.nix)

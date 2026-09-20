@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-dotfiles";
-  version = "0.31.3";
+  version = "0.36.1";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-dotfiles";
     rev = version;
-    hash = "sha256-keWj+8T1mSZOuqqQp4zCTy8iAfWZdtwgafQKMSI0mNo=";
+    hash = "sha256-Nl5EGWS9UmYw+dAf9hBngeg5fVmRvSrVY+aE+W0efWA=";
   };
 
   dontPatch = true;
@@ -27,8 +27,8 @@ stdenvNoCC.mkDerivation rec {
     install -D -m 555 -t $out/bin/ curios-dotfiles
     cp -r .config/ $out/share/
     cp -r .agents/ $out/share/
-    cp -r .gemini/ $out/share/
     cp -r .pi/ $out/share/
+    cp -r .zsh/ $out/share/
     install -D -m 644 -t $out/share/ .npmrc
     install -D -m 644 -t $out/share/ .zshrc
     install -D -m 444 -t $out/share/backgrounds/curios/ wallpapers/*.jpg

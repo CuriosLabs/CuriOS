@@ -17,10 +17,15 @@
         default = false;
         description = "Heroic Games Launcher";
       };
+      openrgb.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Open Source RGB lighting control.";
+      };
       retroarchFree.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "libRetro RetroArch free version.";
+        description = "RetroArch with libRetro cores.";
       };
       #retroarchFull.enable = lib.mkOption {
       #  type = lib.types.bool;
@@ -62,9 +67,17 @@
           proton-ge-bin # proton-ge-custom by GloriousEggroll
         ];
     };
+    services = {
+      # OpenRGB
+      hardware.openrgb = {
+        enable = lib.mkDefault config.curios.desktop.gaming.openrgb.enable;
+        package = pkgs.openrgb-with-all-plugins;
+        server.port = 6742;
+      };
+      # Input-remapper
+      input-remapper = { enable = true; };
+    };
 
-    # Various packages
-    services.input-remapper = { enable = true; };
     environment.systemPackages = [
       # In Steam, set game property > launch option to "gamemoderun %command%" for Windows only games.
       # See: https://www.protondb.com/ for more launch options.
@@ -79,7 +92,9 @@
         }))
     ] ++ lib.optionals config.curios.desktop.gaming.heroic.enable
       [ pkgs.heroic ]
-      ++ lib.optionals config.curios.desktop.gaming.retroarchFree.enable
-      [ pkgs.retroarch-free ];
+      ++ lib.optionals config.curios.desktop.gaming.retroarchFree.enable [
+        pkgs.retroarch
+        pkgs.retroarch-joypad-autoconfig
+      ];
   };
 }

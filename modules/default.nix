@@ -10,16 +10,12 @@
     ./desktop-apps/default.nix
     ./fonts.nix
     ./hardened/default.nix
-    ./hardware/amd-gpu.nix
-    ./hardware/intel-gpu.nix
-    ./hardware/laptop.nix
-    ./hardware/nvidia-gpu.nix
+    ./hardware/default.nix
     ./filesystems/filesystems-luks-v2.nix
     ./filesystems/filesystems-mini-v2.nix
     ./networking.nix
     ./others.nix
-    ./platforms/amd64.nix
-    ./platforms/rpi4.nix
+    ./platforms/default.nix
     ./services.nix
     ./security.nix
     ./system.nix

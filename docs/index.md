@@ -23,25 +23,32 @@ your system with Nix modules.
 ## Main Features
 
 - 🖥️Automatic GPU hardware configuration during installation. AMD and Nvidia
-GPUs are detected and corresponding drivers are installed.
-- 🔐 Full disk encryption with LUKS on an LVM disk partition.
+  GPUs are detected and corresponding drivers are installed.
+- 🔐 Full disk encryption with LUKS on an LVM disk partition, with the option to
+  enroll a Yubikey for disk decryption.
 - 🌟 COSMIC, a Wayland desktop environment/window manager by System76 with
-excellent window tiling management.
+  excellent window tiling management.
 - 🚀 Pop_launcher: launch or switch to any desktop application with just the
-Super key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget
-about your mouse; use Super key combinations for everything!
+  Super key (Windows symbol on your keyboard, or Cmd on Apple keyboard). Forget
+  about your mouse; use Super key combinations for everything!
 - 🔁 System packages auto-update every night or at the first boot of the day.
 - 📦 More packages with Flatpak! COSMIC and Flathub repositories are pre-installed.
-Packages installed from Flatpak are also auto-updated every day.
+  Packages installed from Flatpak are also auto-updated every day.
 - 💻 Curi*OS* TUI Manager (shortcut: Super+Return). Manage/update/upgrade/backup
-the whole system from a modern sleek Terminal User Interface.
+  the whole system from a modern sleek Terminal User Interface.
 - ⌨️ Alacritty terminal with ZSH and a lot of useful modern commands, including
 ⚡️ Neovim + Lazyvim pre-installed, btop, bat, duf, dust, fd, and many more...
-- ✨AI tools: [LM Studio](https://lmstudio.ai/) to run local AI on your GPU
-([Ollama](https://ollama.com/) is also easily installable).
-[Cursor](https://cursor.com/features) for an AI-assisted IDE. Desktop shortcuts
-for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
+- 🦁 Brave as the default browser - block ads, better privacy.
+- ✨AI tools: [OpenCode](https://opencode.ai/) TUI and desktop versions installed by default.
+  [LM Studio](https://lmstudio.ai/) and LM Studio Bionic are available to run local AI on your GPU.
+  [Ollama](https://ollama.com/) is also available.
+  [Cursor](https://cursor.com/features) and [Zed](https://zed.dev/) for an AI-assisted IDE.
+  Desktop shortcuts for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
+  [Voxtype](https://voxtype.io/) (Shortcut: Super + V) for local Speech to Text.
 - 🐧 Uses the latest stable Linux kernel by default.
+- 🔗 Enable Secure Boot.
+- 🛡️AppArmor Mandatory Access Control profiles - WIP.
+- 🔑 Register a YubiKey for user login and `sudo` operations.
 - 🗛  A bunch of nerd fonts...
 
 ## Getting Started
@@ -61,6 +68,9 @@ How-to:
 - [Security, YubiKey and FIDO2 configuration](security.md)
 - [Work with AI tools](ai-tools.md)
 - [Work with Audio/Video applications](audio-video.md)
+- [Work with Office applications](office.md)
+- [Work with Engineering applications](engineering.md)
+- [Work with Virtualisation](virtualisation.md)
 
 ## Architecture
 

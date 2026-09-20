@@ -11,9 +11,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the system module and ansible.
     config = {
+      system.stateVersion = "26.05";
       curios.system = {
         enable = true;
         ansible.enable = true;
+        core = {
+          dotfiles = true;
+          manager-applet = true;
+        };
         # Use 'machine' to avoid conflict with NixOS test driver node name
         hostname = "machine";
         i18n.locale = "en_US.UTF-8";
@@ -24,8 +29,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           java.enable = true;
           javascript.enable = true;
           javascript.bun.enable = true;
-          python312.enable = true;
-          python313.enable = true;
+          python3.enable = true;
           ruby.enable = true;
           rust.enable = true;
         };
@@ -45,18 +49,23 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("ansible")
         check_which("ansible-playbook")
 
+    with subtest("check-curios-core"):
+        check_which("curios-dotfiles")
+        check_which("curios-manager-applet")
+
     with subtest("check-languages-installed"):
         check_which("go")
         check_which("java")
         check_which("node")
         check_which("npm")
+        check_which("ncu")
         check_which("bun")
         check_which("eslint")
         check_which("golangci-lint")
-        check_which("python3.12")
-        check_which("python3.13")
+        check_which("python3")
         check_which("pyright")
         check_which("uv")
+        check_which("uvx")
         check_which("ruff")
         check_which("ruby")
         check_which("gem")

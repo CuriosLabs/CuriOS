@@ -7,14 +7,15 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED - CuriOS security options.";
+        description = "REQUIRED - CuriOS security keys options.";
       };
 
       u2f = {
         enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).";
+          description =
+            "Enable U2F/FIDO2 authentication with pam_u2f (YubiKey, Nitrokey, etc.).";
         };
 
         appid = lib.mkOption {
@@ -27,7 +28,8 @@
         lockOnRemove = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Automatically lock all user sessions when a YubiKey is physically removed.";
+          description =
+            "Automatically lock all user sessions when a YubiKey is physically removed.";
         };
 
         origin = lib.mkOption {
@@ -41,7 +43,8 @@
       keyringProvider = lib.mkOption {
         type = lib.types.enum [ "gnome-keyring" "keepassxc" ];
         default = "gnome-keyring";
-        description = "EXPERIMENTAL - Select the Secret Service (freedesktop.org) provider used while U2F is active.";
+        description =
+          "EXPERIMENTAL - Select the Secret Service (freedesktop.org) provider used while U2F is active.";
       };
 
       # LUKS disk encryption with FIDO2 (YubiKey etc.) is configured here
@@ -51,7 +54,8 @@
         enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Enable FIDO2 key support (YubiKey, etc.) for unlocking the LUKS disk volume during boot.";
+          description =
+            "Enable FIDO2 key support (YubiKey, etc.) for unlocking the LUKS disk volume during boot.";
         };
       };
     };
@@ -59,47 +63,86 @@
 
   # Declare configuration
   config = lib.mkIf config.curios.security.enable {
-    security.pam.u2f = {
-      # U2F are sufficient replacements to passwords.
-      control = "sufficient";
-      enable = lib.mkDefault config.curios.security.u2f.enable;
-      settings = {
-        cue = true;
-        interactive = true;
-        nouserok = true; # Do not fail if the user has no U2F key configured
-        origin = config.curios.security.u2f.origin;
-        appid = config.curios.security.u2f.appid;
+    programs = {
+      ssh = {
+        agentPKCS11Whitelist = "${pkgs.opensc}/lib/opensc-pkcs11.so";
+        # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
+        startAgent = lib.mkDefault false;
       };
     };
 
-    security.pam.services = {
-      cosmic-greeter.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-      sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
-    };
-
-    # Lock screen when YubiKey is removed (physical security feature)
-    services.udev.extraRules = lib.mkIf config.curios.security.u2f.lockOnRemove ''
-      ACTION=="remove",\
-        SUBSYSTEM=="usb",\
-        ENV{ID_VENDOR_ID}=="1050",\
-        ENV{ID_VENDOR}=="Yubico",\
-        RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
-    '';
-
-    # Replace gnome-keyring with an alternative Secret Service provider when
-    # passwordless U2F is active, since gnome-keyring cannot auto-unlock
-    # without the login password.
-    services.gnome.gnome-keyring = lib.mkIf
-      (config.curios.security.keyringProvider != "gnome-keyring") {
-        enable = lib.mkForce false;
+    security = {
+      # /etc/login.defs additionnal settings
+      loginDefs.settings = {
+        LOGIN_RETRIES = 3;
+        LOGIN_TIMEOUT = 60;
       };
 
-    environment.systemPackages = lib.optionals
-      (config.curios.security.keyringProvider == "keepassxc"
-        && !config.curios.desktop.utility.keepassxc.enable)
-      [ pkgs.keepassxc ];
+      pam = {
+        u2f = {
+          # U2F are sufficient replacements to passwords.
+          control = "sufficient";
+          enable = lib.mkDefault config.curios.security.u2f.enable;
+          settings = {
+            cue = true;
+            interactive = true;
+            nouserok = true; # Do not fail if the user has no U2F key configured
+            origin = config.curios.security.u2f.origin;
+            appid = config.curios.security.u2f.appid;
+          };
+        };
+
+        services = {
+          cosmic-greeter.u2f.enable =
+            lib.mkDefault config.curios.security.u2f.enable;
+          greetd.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          login.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+          sudo.u2f.enable = lib.mkDefault config.curios.security.u2f.enable;
+        };
+      };
+
+      rtkit.enable =
+        lib.mkDefault true; # realtime scheduling priority for pipewire.
+
+      # Show password feedback for sudo command.
+      sudo.extraConfig = "Defaults pwfeedback";
+    };
+
+    services = {
+      # Enabling PCSC-lite for Yubikey
+      pcscd.enable = true;
+
+      # Lock screen when YubiKey is removed (physical security feature)
+      udev.extraRules = lib.mkIf config.curios.security.u2f.lockOnRemove ''
+        ACTION=="remove",\
+          SUBSYSTEM=="usb",\
+          ENV{ID_VENDOR_ID}=="1050",\
+          ENV{ID_VENDOR}=="Yubico",\
+          RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+      '';
+
+      gnome = {
+        # Replace gnome-keyring with an alternative Secret Service provider when
+        # passwordless U2F is active, since gnome-keyring cannot auto-unlock
+        # without the login password.
+        gnome-keyring =
+          lib.mkIf (config.curios.security.keyringProvider != "gnome-keyring") {
+            enable = lib.mkForce false;
+          };
+        # Disable Gnome keyring for SSH agent
+        gcr-ssh-agent.enable = lib.mkDefault false;
+      };
+    };
+
+    environment.systemPackages = [
+      pkgs.opensc # Set of librairies for smart cards
+      #pkgs.yubico-piv-tool # For using a YubiKey as a PIV smart card.
+      pkgs.yubikey-manager # ykman
+    ] ++ lib.optionals (config.curios.security.keyringProvider == "keepassxc"
+      && !config.curios.desktop.utility.keepassxc.enable) [ pkgs.keepassxc ];
+
+    # NOTE: opensc-pkcs11 library command to test a Yubikey with PKSC#11 (PIV method):
+    # nix-shell -p opensc --run "ssh-keygen -D $(nix-build '<nixpkgs>' -A opensc --no-out-link)/lib/opensc-pkcs11.so"
 
     # When using an alternative keyring provider, override the COSMIC portal
     # configuration so sandboxed apps (Flatpak) use the correct Secret backend.

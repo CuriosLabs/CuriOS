@@ -15,8 +15,11 @@ in {
     # Include the results of the hardware scan.
     # You could re-generated one with 'sudo nixos-generate-config --no-filesystems'.
     # For hardware related configurations, see: https://github.com/NixOS/nixos-hardware
-    # Do NOT edit
-    ./hardware-configuration.nix
+    # Do NOT edit on an installed system. The stub is used only when building the ISO seed.
+    (if builtins.pathExists ./hardware-configuration.nix then
+      ./hardware-configuration.nix
+    else
+      ./iso/hardware-stub.nix)
     ##################### Step 2: Modules #####################
     # Import all modules, activate or deactivate them in settings.nix
     ./modules/default.nix
@@ -120,16 +123,15 @@ in {
   else
     false;
 
-  security = {
-    # Security settings
-    # /etc/login.defs additionnal settings
-    loginDefs.settings = {
-      LOGIN_RETRIES = 3;
-      LOGIN_TIMEOUT = 60;
-    };
-    # Show password feedback for sudo command.
-    sudo.extraConfig = "Defaults pwfeedback";
-  };
+  # IMPORTANT: Define nixpkgs permittedInsecurePackages ONLY here!
+  # opencode-desktop / winboat pin EOL Electron on NixOS 26.05.
+  # Must live here: nixpkgs.config inside a module lib.mkIf is ignored by pkgs.
+  # TODO: remove when those packages pin electron>=42
+  nixpkgs.config.permittedInsecurePackages = lib.optionals
+    (config.curios.desktop.devops.enable
+      && config.curios.desktop.devops.editor.opencode.enable)
+    [ "electron-41.9.1" ] ++ lib.optionals (config.curios.virtualisation.enable
+      && config.curios.virtualisation.winboat.enable) [ "electron-40.10.5" ];
 
   system = {
     # Automatic OS updates and cleanup
@@ -143,7 +145,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20260522.1321";
+    nixos.variant_id = "unstable";
   };
 
   nix = {
@@ -151,6 +153,8 @@ in {
       auto-optimise-store = true;
       # Allowing Flakes
       experimental-features = [ "nix-command" "flakes" ];
+      # A list of names of users that are allowed to connect to the Nix daemon
+      allowed-users = [ "root" "@wheel" ];
       # List of users that have additional rights when connecting to the Nix daemon.
       trusted-users = [ "@wheel" ];
     };

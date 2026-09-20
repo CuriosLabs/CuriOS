@@ -7,6 +7,7 @@
     ./anssi-intermediate.nix
     ./anssi-minimal.nix
     ./anssi-reinforced.nix
+    ./apparmor-profiles.nix
     ./cups.nix
     ./dbus.nix
     ./display-manager.nix

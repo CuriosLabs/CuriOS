@@ -7,12 +7,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-fonts-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [
-      ../modules/fonts.nix
-      ../modules/cosmic.nix
-    ];
+    imports = [ ../modules/fonts.nix ../modules/cosmic.nix ];
 
     config = {
+      system.stateVersion = "26.05";
       curios.fonts.enable = true;
       # Enable cosmic to include conditional fonts
       curios.cosmic.enable = true;

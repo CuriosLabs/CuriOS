@@ -23,6 +23,8 @@
 
     # AMD GPU
     hardware = {
+      # Enable OpenCL using ROCm runtime library
+      amdgpu.opencl.enable = lib.mkDefault true;
       graphics = {
         # Enable OpenGL
         enable = lib.mkDefault true;
@@ -30,13 +32,20 @@
       };
     };
 
+    # Enable ROCm support for packages (HIP, etc.)
+    nixpkgs.config.rocmSupport = true;
+
     # Load driver for Xorg and Wayland
-    services.xserver.enable = lib.mkDefault true;
-    services.xserver.videoDrivers = lib.mkDefault [ "amdgpu" ];
+    services.xserver = {
+      enable = lib.mkDefault true;
+      videoDrivers = lib.mkDefault [ "amdgpu" ];
+    };
 
     # GUI AMD GPU controller + RadeonTOP
-    environment.systemPackages = with pkgs; [ lact radeontop ];
-    systemd.packages = with pkgs; [ lact ];
-    systemd.services.lactd.wantedBy = [ "multi-user.target" ];
+    environment.systemPackages = with pkgs; [ lact radeontop rocmPackages.clr ];
+    systemd = {
+      packages = with pkgs; [ lact ];
+      services.lactd.wantedBy = [ "multi-user.target" ];
+    };
   };
 }

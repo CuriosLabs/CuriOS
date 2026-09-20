@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This file is specifically designed to provide context and instructions for AI
-> assistants (such as Gemini CLI, Claude Code, etc.) interacting with this
+> assistants (such as Opencode, Claude Code, etc.) interacting with this
 > repository. Human developers should also refer to [docs/development.md](docs/development.md).
 
 This guide provides instructions and best practices for developers contributing
@@ -74,14 +74,12 @@ should be done in `settings.nix` and `modules.json`.
 main configuration. This is where users can add custom packages or NixOS settings.
 - `modules.json`: A file to define which Nix `modules/` are enabled or not and
 configure CuriOS options.
-- `iso/iso-minimal.nix`: The Nix expression that defines the contents and
+- `iso/iso-installer.nix`: The Nix expression that defines the contents and
 configuration of the bootable ISO image.
 - `justfile`: The project's command runner configuration, containing recipes
 for building, testing, and linting.
 - `modules/default.nix`: The top-level module that imports all other modules in
 the `modules/` directory.
-- `modules/curios-options.nix`: Defines some of the CuriOS-specific configuration
-options under `config.curios.*`.
 - `curios-install`: A script for installing CuriOS to a target system, launched
 when user boot from the ISO file.
 - `shell.nix`: A Nix configuration file for the `nix-shell` command. It will setup
@@ -97,9 +95,10 @@ organized manner.
 consistent pattern (e.g., `filesystems-luks-v2.nix`, `webapp-chatgpt.nix`).
 - **Variable Naming**: Configuration options must start with `config.curios`
 (e.g., `config.curios.desktop.browser.chromium.enable`). Some custom options
-are defined in `modules/curios-options.nix`, the other in the "options" part of
-their respective `modules/*.nix`. See `just list-options` output.
+are defined in the "options" part of their respective `modules/*.nix`.
+See `just list-options` output.
 - **Code Style**: Use 2 spaces for indentation in Nix files.
+- **Language**: English must be used for comments and variable names.
 - **Nix formatting**: Use `nixfmt` the official formatter for Nix code.
 - **Comments**: The code is sparsely commented. When adding new code, add
 comments only when necessary to explain complex logic.

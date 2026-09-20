@@ -3,7 +3,7 @@
 with import <nixpkgs> { };
 stdenv.mkDerivation rec {
   pname = "webapp-mistral";
-  version = "0.9";
+  version = "0.10";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   desktopItem = pkgs.makeDesktopItem {
     name = "ai.mistral.chat";
     exec = "/run/current-system/sw/bin/xdg-open https://chat.mistral.ai/chat";
-    desktopName = "Mistral LeChat";
+    desktopName = "Mistral Vibe";
     icon = "webapp-mistral";
     categories = [ "Science" "ArtificialIntelligence" ];
   };

@@ -12,16 +12,28 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED CuriOS services - Flatpak, pipewire, fwupd...";
+        description = "REQUIRED CuriOS services - pipewire, fwupd...";
+      };
+      flatpak.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Flatpak apps repositories (Flathub and Cosmic) and services.";
       };
       ollama.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description = "Ollama(local AI) and open-webui services.";
       };
+      avahi.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable Avahi mDNS/DNS-SD (network printer discovery, .local hostnames).";
+      };
       printing.enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "Enable CUPS printing services.";
       };
       sshd.enable = lib.mkOption {
@@ -32,12 +44,13 @@
       earlyoom.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
+        description =
+          "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
       };
       n8n.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "n8n workflow automation tool (http://localhost:5678).";
+        type = lib.types.nullOr lib.types.bool;
+        default = null;
+        description = "DEPRECATED";
       };
     };
   };
@@ -97,30 +110,6 @@
         port = 8080;
       };
 
-      # n8n workflow automation - https://n8n.io
-      # Access the editor at http://localhost:5678 once enabled.
-      #
-      # For webhooks that external services need to reach (GitHub, Stripe, etc.),
-      # configure WEBHOOK_URL, N8N_EDITOR_BASE_URL and N8N_PROXY_HOPS in your
-      # settings.nix. See the "n8n webhook configuration" example in settings.nix
-      # (including recommended cloudflared tunnel usage).
-      n8n = {
-        enable = lib.mkDefault config.curios.services.n8n.enable;
-        # Security-first: do not open the port in the firewall by default.
-        # Remote access should go through a reverse proxy (Caddy/Nginx) with TLS.
-        openFirewall = false;
-        # Privacy + resource-friendly defaults
-        environment = {
-          N8N_DIAGNOSTICS_ENABLED = "false";
-
-          # Execution data pruning (strongly recommended for SQLite, n8n's default DB).
-          # Prevents execution history from growing forever, which can make n8n slow
-          # and bloat the database on long-running systems.
-          EXECUTIONS_DATA_PRUNE = "true";
-          EXECUTIONS_DATA_MAX_AGE = "14"; # keep last 14 days of executions
-        };
-      };
-
       # X server
       xserver = {
         enable = lib.mkDefault true;
@@ -152,14 +141,30 @@
           X11Forwarding = false;
         };
       };
-      # Enable CUPS to print documents.
-      printing.enable = lib.mkDefault config.curios.services.printing.enable;
+      # CUPS client for local/network printers (IPP Everywhere / driverless).
+      # Keep listenAddresses/openFirewall at NixOS defaults (localhost only).
+      printing = {
+        enable = lib.mkDefault config.curios.services.printing.enable;
+        startWhenNeeded = true;
+        browsing = false; # do not advertise local queues
+        webInterface = false; # admin via lpadmin/lpstat, not :631
+        # browsed (default on) + avahi: auto-discover LAN printers
+      };
+      # mDNS/DNS-SD for network printer discovery (.local hostnames)
+      avahi = {
+        enable = lib.mkDefault config.curios.services.avahi.enable;
+        nssmdns4 = lib.mkDefault true;
+        openFirewall = lib.mkDefault true;
+      };
       # Enabling Flatpak
-      flatpak.enable = true;
+      flatpak.enable = lib.mkDefault config.curios.services.flatpak.enable;
       # Enable sound.
       pipewire = {
         enable = true;
-        alsa.enable = true;
+        alsa = {
+          enable = true;
+          support32Bit = lib.mkForce false;
+        };
         pulse.enable = true;
         extraConfig.pipewire."92-low-latency" = {
           "context.properties" = { "default.clock.rate" = 48000; };
@@ -214,7 +219,7 @@
       settings.Manager = { DefaultTimeoutStopSec = "10s"; };
       # Flatpak system, add repo
       services.flatpak-repo = {
-        enable = true;
+        enable = lib.mkDefault config.curios.services.flatpak.enable;
         description = "Flatpak add default repos";
         after = [ "network-online.target" ];
         requires = [ "network-online.target" ];
@@ -233,7 +238,7 @@
       # systemctl --user status flatpak-update.timer
       user = {
         services.flatpak-update = {
-          enable = true;
+          enable = lib.mkDefault config.curios.services.flatpak.enable;
           description = "Flatpak user update";
           #path = [ pkgs.flatpak ];
           serviceConfig = {
@@ -244,7 +249,7 @@
           wantedBy = [ ];
         };
         timers.flatpak-update = {
-          enable = true;
+          enable = lib.mkDefault config.curios.services.flatpak.enable;
           description = "Flatpak user update";
           timerConfig = {
             OnStartupSec = "30s";
@@ -256,11 +261,5 @@
         };
       };
     };
-
-    # Other
-    # SSH start-agent - not compatible with gnupg.agent SSH - Cosmic already set services.gnome.gnome-keyring.enable to true - cannot run both.
-    #programs.ssh.startAgent = true;
-    #services.gnome.gnome-keyring.enable = lib.mkForce false;
-    security.rtkit.enable = true; # realtime scheduling priority for pipewire.
   };
 }

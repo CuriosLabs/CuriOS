@@ -12,6 +12,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/virtualisation.nix ];
 
     config = {
+      system.stateVersion = "26.05";
       # k3s + containerd + etcd/sqlite need a decent amount of memory to start reliably in CI
       virtualisation.memorySize = 4096;
       virtualisation.diskSize = 4096;

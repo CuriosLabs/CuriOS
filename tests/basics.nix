@@ -8,11 +8,13 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
   name = "curios-basics-all-options-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/desktop-apps/basics.nix ];
+    imports =
+      [ ../modules/desktop-apps/basics.nix ../modules/platforms/default.nix ];
 
     # Enable all options from the 'basics.nix' module.
     # This also implicitly tests the default values for webapps etc.
     config = {
+      system.stateVersion = "26.05";
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
@@ -43,7 +45,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           cursor.enable = true;
           gemini.enable = true;
           grok.enable = true;
-          lmstudio.enable = true;
+          lmstudio = {
+            enable = true;
+            bionic = true;
+          };
           mistral.enable = true;
         };
 
@@ -52,6 +57,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           discord.enable = true;
           signal.enable = true;
           teamspeak.enable = true;
+          telegram.enable = true;
           whatsapp.enable = true;
         };
 
@@ -67,6 +73,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           flameshot.enable = true;
           keepassxc.enable = true;
           localsend.enable = true;
+          voxtype = {
+            enable = true;
+            model = "tiny";
+          };
         };
       };
     };
@@ -107,12 +117,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.x.grok")
         check_which("lm-studio")
         check_which("lms") # LM Studio CLI
+        check_which("lm-studio-bionic")
         check_webapp("ai.mistral.chat")
 
     with subtest("check-chat-apps"):
         check_which("Discord")
         check_which("signal-desktop")
         check_which("TeamSpeak")
+        check_which("Telegram")
         check_webapp("com.whatsapp.web")
 
     with subtest("check-music-players"):
@@ -124,13 +136,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("flameshot")
         check_which("keepassxc")
         check_which("localsend_app")
+        check_which("voxtype")
+        machine.succeed("test -f /etc/voxtype/config.toml")
 
     with subtest("check-unconditional-basics"):
-        check_which("vlc")
-        check_which("gimp")
         check_which("tldr")
         check_which("tmux")
         check_which("procs")
+        check_which("yubioath-flutter")
         check_webapp("dev.curioslabs.docs")
   '';
 }

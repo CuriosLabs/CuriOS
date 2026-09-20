@@ -11,6 +11,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable the backup module.
     config = {
+      system.stateVersion = "26.05";
       curios.backup.enable = true;
     };
   };

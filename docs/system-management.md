@@ -37,9 +37,8 @@ file.
   - Bitwarden password manager, Yubico authenticator, LocalSend file sharing.
   - Zed.dev code editor, Neovim+LazyVim terminal IDE, Cursor AI-assisted IDE.
   - AI web applications: ChatGPT, Claude, Grok, Mistral.
-  - Local AI: LM Studio.
   - Project management: Basecamp.
-  - Office: OnlyOffice, Obsidian, Joplin.
+  - Office: Obsidian, Joplin.
   - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, snitch, whois, yq,
   shellcheck, statix, zsh.
   - Backup: Restic (see backups menu in `curios-manager`).
@@ -51,7 +50,7 @@ see the previous section on how to install them.
 
 - **Browsers**: Chromium, Firefox, LibreWolf, Vivaldi.
 
-- **Office Apps**: LibreOffice, Thunderbird email client.
+- **Office Apps**: OnlyOffice, LibreOffice, Thunderbird email client.
 
 - **Project Management**: Jira web apps.
 
@@ -61,7 +60,7 @@ see the previous section on how to install them.
 
 - **Security**: ProtonVPN, Tailscale, Mullvad VPNs, KeePassXC password manager.
 
-- **AI Tools**: Ollama local AI.
+- **AI Tools**: LM Studio / Bionic, Ollama local AI.
 
 - **Development**: Go/JetBrains GoLand, Rust/JetBrains RustRover, Node.js(npm,
 npx)/bun, Python/JetBrains PyCharm, Docker/Podman, lazydocker, Wine, Visual
@@ -78,7 +77,7 @@ detected during the installation and enabled accordingly.
 Launcher, RetroArch.
 
 - **Specialized Apps**:
-  - OBS Studio, Audacity, DaVinci Resolve, Darktable.
+  - OBS Studio, Audacity, DaVinci Resolve (Studio), Darktable.
   - Nmap/Zenmap, Wireshark, Remmina, Cloudflared.
   - Bitcoin: Electrum/Sparrow wallets, Coingecko, Bisq2, mempool web app.
 
@@ -144,13 +143,13 @@ See the [NixOS manual](https://nixos.org/manual/nixos/stable/) to learn more.
 The default 'configuration.nix' is set to **AUTO UPDATE** every night at 03:40
 or on your first boot of the day; see `systemctl list-timers`.
 
-Generations older than 7 days are automatically garbage collected. You can also
+Generations older than 15 days are automatically garbage collected. You can also
 manually do the equivalent with:
 
 ```bash
-sudo nix-collect-garbage --delete-older-than 7d &&
+sudo nix-collect-garbage --delete-older-than 15d &&
 sudo nixos-rebuild switch --upgrade &&
-sudo nixos-rebuild list-generations
+nixos-rebuild list-generations
 ```
 
 Most advanced users can manually edit the Curi*OS* system settings file

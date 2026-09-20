@@ -14,12 +14,17 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     # Enable all options from the 'devops.nix' and 'system.nix' (languages) modules.
     config = {
+      system.stateVersion = "26.05";
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
       curios.desktop.devops = {
         enable = true;
+        cli = {
+          aws.enable = true;
+          gcloud.enable = true;
+        };
         cloudflared.enable = true;
         editor = {
           default.nvim.enable = true;
@@ -36,7 +41,10 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           alacritty.enable = true;
           ghostty.enable = true;
         };
-        tui.opencode.enable = true;
+        tui = {
+          herdr.enable = true;
+          opencode.enable = true;
+        };
       };
     };
   };
@@ -69,8 +77,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
 
     with subtest("check-editors"):
         check_which("goland")
-        check_which("idea-oss")
-        check_which("pycharm-oss")
+        check_which("idea")
+        check_which("pycharm")
         check_which("rust-rover")
         check_which("zeditor")
         check_which("nil")
@@ -90,7 +98,12 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("alacritty")
         check_which("ghostty")
 
+    with subtest("check-cli"):
+        check_which("aws")
+        check_which("gcloud")
+
     with subtest("check-tui"):
+        check_which("herdr")
         check_which("opencode")
   '';
 }

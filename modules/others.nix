@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED other system category programs.";
+        description = "REQUIRED - Other system category programs.";
       };
       openssl.enable = lib.mkOption {
         type = lib.types.bool;
@@ -25,7 +25,11 @@
   # Declare configuration
   config = lib.mkIf config.curios.others.enable {
     environment.systemPackages = with pkgs;
-      [ htop ] ++ lib.optionals config.curios.others.openssl.enable [ openssl ]
+      [
+        drm_info
+        htop
+        v4l-utils
+      ] ++ lib.optionals config.curios.others.openssl.enable [ openssl ]
       ++ lib.optionals config.curios.others.p7zip.enable [ p7zip ];
   };
 }

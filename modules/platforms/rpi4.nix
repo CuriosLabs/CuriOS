@@ -1,36 +1,42 @@
 # For Raspberry PI 4 platform
 # All other platforms and file-system configurations should be disabled.
-# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-25.11/nixos.sd_image.aarch64-linux
-# Burn the zst image with caligula: caligula burn -z zst nixos-image-sd-card-25.11.5198.e576e3c9cf9b-aarch64-linux.img.zst
-# boot from the SD card, then as root:
-# nix-shell ./shell-rpi.nix
+# Download NixOS ISO file from: https://hydra.nixos.org/job/nixos/release-26.05/nixos.sd_image.aarch64-linux
+# Burn the zst image with caligula with:
+# caligula burn -z zst nixos-image-sd-card-26.05.2462.e8210c649915-aarch64-linux.img.zst
+# Boot from the SD card.
+# If needed, change keyboard layout with:
+# sudo loadkeys us
+# Then:
 # cd /tmp
+# nix-shell -p git
 # git clone https://github.com/CuriosLabs/CuriOS.git
 # cd CuriOS/
-# ./curios-install --rpi4
+# nix-shell shell-rpi.nix --run "sudo ./curios-install --rpi4"
 
-{ config, pkgs, lib, ... }:
+let
+  nixos-hardware = builtins.fetchTarball {
+    url =
+      "https://github.com/NixOS/nixos-hardware/archive/9b881d7df9b32c307655ee071d61e6efcc99a32c.tar.gz";
+    sha256 = "08846gmfgqyjqwwvvc1ildbyx2di2mj2nqqwkgryv1aascbv8828";
+  };
+in { config, pkgs, lib, ... }:
 
 {
+  imports = [ "${nixos-hardware}/raspberry-pi/4" ];
+
   # Declare options
-  options = {
-    curios.platform.rpi4.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "REQUIRED config on Raspberry PI 4 platform.";
-    };
-  };
+  options = { };
 
   config = lib.mkIf config.curios.platform.rpi4.enable {
     boot = {
-      kernelPackages = lib.mkDefault pkgs.linuxKernel.packages.linux_rpi4;
       kernelParams = [
         "snd_bcm2835.enable_hdmi=1"
         "snd_bcm2835.enable_headphones=1"
         "usbhid.mousepoll=8"
       ];
-      initrd.availableKernelModules =
-        [ "xhci_pci" "usbhid" "usb_storage" "vc4" ];
+      initrd.availableKernelModules = lib.mkDefault
+        (config.boot.initrd.availableKernelModules
+          ++ [ "xhci_pci" "usbhid" "usb_storage" "vc4" ]);
       loader = {
         grub.enable = lib.mkDefault false;
         generic-extlinux-compatible.enable = lib.mkDefault true;
@@ -56,8 +62,8 @@
     nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
     hardware = {
+      # nixos-hardware already sets deviceTree.filter
       deviceTree.enable = lib.mkDefault true;
-      deviceTree.filter = lib.mkDefault "bcm2711-rpi-*.dtb"; # "*rpi-4-*.dtb";
       # For Wifi module firmware
       enableRedistributableFirmware = true;
       #raspberry-pi."4".fkms-3d.enable = true;

@@ -2,7 +2,7 @@
 
 { config, lib, pkgs, ... }:
 
-let electrumApp = import ./crypto-wallet-electrum.nix { inherit pkgs lib; };
+let electrumApp = pkgs.callPackage ../../pkgs/electrum { };
 in {
   # Declare options
   options = {
@@ -29,9 +29,9 @@ in {
       (import ./webapp-mempool.nix)
     ] ++ lib.optionals config.curios.desktop.crypto.btc.enable [
       pkgs.bisq2
-      electrumApp
       pkgs.sparrow
-    ];
+    ] ++ lib.optionals (config.curios.desktop.crypto.btc.enable
+      && config.curios.platform.amd64.enable) [ electrumApp ];
     # Add sparrow udev rules for hardware wallets
     services.udev.packages =
       lib.mkIf config.curios.desktop.crypto.btc.enable [ pkgs.sparrow ];
