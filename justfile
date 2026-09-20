@@ -45,7 +45,15 @@ build: lint update-nixos-hardware
     fi
   fi
   printf "Launch nix-build...\n"
-  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-installer.nix
+  # On the unstable branch, add/update the "nixos-unstable" channel and force
+  # building against it regardless of the host's <nixpkgs> channel.
+  NIXPKGS_ARG=""
+  if [[ "{{branch}}" == unstable ]]; then
+    sudo nix-channel --add https://channels.nixos.org/nixos-unstable nixos-unstable
+    sudo nix-channel --update
+    NIXPKGS_ARG="-I nixpkgs=channel:nixos-unstable"
+  fi
+  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-installer.nix $NIXPKGS_ARG
   # Save and rename ISO file
   cp ./result/iso/nixos-minimal-*.iso "${isoFilePath}"
   cd ./iso/
