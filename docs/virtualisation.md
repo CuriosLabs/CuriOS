@@ -64,7 +64,8 @@ sudo curios-update --update-module curios.virtualisation.docker.rootless true &&
 sudo curios-update --update
 ```
 
-Do not enable Docker and Podman at the same time.
+> [!WARNING]
+> Do **NOT** enable Docker and Podman at the same time.
 
 To build multi-architecture images with buildx:
 
