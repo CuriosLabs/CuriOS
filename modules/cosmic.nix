@@ -3,23 +3,34 @@
 { config, lib, pkgs, ... }: {
   # Declare options
   options = {
-    curios.cosmic.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "REQUIRED - Enable the COSMIC desktop environment.";
+    curios.cosmic = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "REQUIRED - Enable the COSMIC desktop environment.";
+      };
+      orca = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Enable screen reader for blind or visually impaired people.";
+      };
     };
   };
 
   # Declare configuration
   config = lib.mkIf config.curios.cosmic.enable {
     # Cosmic Desktop Env
-    services.desktopManager.cosmic = {
-      enable = true;
-      xwayland.enable = true;
-    };
-    services.displayManager.cosmic-greeter = {
-      enable = true;
-      package = pkgs.cosmic-greeter;
+    services = {
+      desktopManager.cosmic = {
+        enable = true;
+        xwayland.enable = true;
+      };
+      displayManager.cosmic-greeter = {
+        enable = true;
+        package = pkgs.cosmic-greeter;
+      };
+      orca.enable = lib.mkForce config.curios.cosmic.orca;
     };
 
     environment = {
