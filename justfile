@@ -620,7 +620,7 @@ check-pkg-updates pkg='':
       printf "  %-22s %-36s %-12s \e[32mahead of %s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$latest"
     else
       printf "  %-22s %-36s %-12s \e[32mup to date\e[0m\n" "$name" "${owner}/${repo}" "$pin"
-    finixos-option nixpkgs.config 2>&1
+    fi
   done
 
   printf "\n"
