@@ -162,6 +162,6 @@ Bottles is an alternative to the Wine and WinBoat options above: pick the tool
 that fits your workflow best.
 
 ---
-**Previous**: [Engineering applications](engineering.md)
+**Previous**: [Gaming applications](gaming.md)
 
 **Back**: [index](index.md).
