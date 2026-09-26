@@ -52,6 +52,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           slack.enable = true;
           teams.enable = true;
           zoom.enable = true;
+          zulip.enable = true;
         };
       };
     };
@@ -106,5 +107,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("com.slack.app")
         check_webapp("com.microsoft.teams")
         check_which("zoom")
+        check_which("zulip")
   '';
 }

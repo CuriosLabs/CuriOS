@@ -158,6 +158,11 @@ in {
           default = false;
           description = "Zoom.us video conference app.";
         };
+        zulip.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Zulip organised chat desktop client.";
+        };
       };
     };
   };
@@ -199,7 +204,9 @@ in {
       ++ lib.optionals config.curios.desktop.office.conferencing.teams.enable
       [ (import ./webapp-teams.nix) ] ++ lib.optionals
       (config.curios.desktop.office.conferencing.zoom.enable
-        && config.curios.platform.amd64.enable) [ pkgs.zoom-us ];
+        && config.curios.platform.amd64.enable) [ pkgs.zoom-us ]
+      ++ lib.optionals config.curios.desktop.office.conferencing.zulip.enable
+      [ pkgs.zulip ];
 
     programs = {
       evince.enable = lib.mkDefault config.curios.desktop.office.evince.enable;
