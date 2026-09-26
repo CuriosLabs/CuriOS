@@ -326,3 +326,316 @@ update-nixos-hardware:
   echo "  - ./modules/platforms/rpi4.nix"
   echo "  - ./modules/platforms/rpi5.nix"
 
+# Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
+check-pkg-updates pkg='':
+  #!/usr/bin/env bash
+  set -euo pipefail
+  export GIT_TERMINAL_PROMPT=0
+  export LC_ALL=C
+
+  if ! command -v git >/dev/null; then
+    printf "\e[31mgit is required.\e[0m\n"
+    exit 1
+  fi
+
+  pkg="{{pkg}}"
+  updates=0
+  errors=0
+  checked=0
+  skipped=()
+  errfile=$(mktemp)
+  trap 'rm -f "$errfile"' EXIT
+
+  trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    s="${s%"${s##*[![:space:]]}"}"
+    printf '%s' "$s"
+  }
+
+  attr() {
+    local name="$1"
+    local block="$2"
+    local value
+    value=$(printf '%s\n' "$block" | grep -m1 -oP "^\s*${name}\s*=\s*\K[^;]+" || true)
+    trim "$value"
+  }
+
+  unquote() {
+    local s="$1"
+    if [[ "$s" == \"*\" && "$s" == *\" ]]; then
+      s="${s:1:${#s}-2}"
+    fi
+    printf '%s' "$s"
+  }
+
+  resolve_pin() {
+    local expr version="$2"
+    expr=$(trim "$1")
+    if [[ "$expr" == \"*\" && "$expr" == *\" ]]; then
+      expr=$(unquote "$expr")
+      local token='${finalAttrs.version}'
+      expr="${expr//"$token"/$version}"
+      token='${version}'
+      expr="${expr//"$token"/$version}"
+      if [[ "$expr" == *'${'* ]]; then
+        return 1
+      fi
+      expr="${expr#refs/tags/}"
+      printf '%s' "$expr"
+      return 0
+    fi
+    case "$expr" in
+      version|finalAttrs.version)
+        if [[ -z "$version" ]]; then
+          return 1
+        fi
+        printf '%s' "$version"
+        ;;
+      *)
+        return 1
+        ;;
+    esac
+  }
+
+  is_commit() {
+    local pin="$1"
+    if [[ "$pin" =~ ^[0-9a-fA-F]{40}$ ]]; then
+      return 0
+    fi
+    if [[ "$pin" =~ [a-fA-F] && "$pin" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+      return 0
+    fi
+    return 1
+  }
+
+  is_prerelease() {
+    local re='[._-](alpha|beta|rc|pre|preview|dev|nightly|snapshot)([._-]|[0-9]|$)'
+    [[ "$1" =~ $re ]]
+  }
+
+  is_semver() {
+    local re='^[vV]?[0-9]+(\.[0-9]+)+'
+    [[ "$1" =~ $re ]]
+  }
+
+  ver_gt() {
+    if [[ "$1" == "$2" ]]; then
+      return 1
+    fi
+    [[ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -1)" == "$1" ]]
+  }
+
+  normalize_ver() {
+    local v="$1"
+    v="${v#v}"
+    v="${v#V}"
+    printf '%s' "$v"
+  }
+
+  fetch_block() {
+    awk '
+      function count(s, c,    n, i) {
+        n = 0
+        for (i = 1; i <= length(s); i++)
+          if (substr(s, i, 1) == c) n++
+        return n
+      }
+      /fetchFromGitHub[[:space:]]*\{/ && !found { found = 1; depth = 0 }
+      found {
+        print
+        depth += count($0, "{") - count($0, "}")
+        if (depth <= 0) exit
+      }
+    ' "$1"
+  }
+
+  # Pick the highest stable tag. Pre-releases are ignored unless force_pre=1
+  # or the pinned ref is itself a pre-release.
+  latest_tag() {
+    local pin="$1"
+    local force_pre="$2"
+    shift 2
+    local include_pre=0 tag norm best="" best_norm="" pin_has_v=0
+    if [[ "$force_pre" == 1 ]] || is_prerelease "$pin"; then
+      include_pre=1
+    fi
+    if [[ "$pin" == [vV]* ]]; then
+      pin_has_v=1
+    fi
+    for tag in "$@"; do
+      if ! is_semver "$tag"; then
+        continue
+      fi
+      if (( include_pre == 0 )) && is_prerelease "$tag"; then
+        continue
+      fi
+      norm=$(normalize_ver "$tag")
+      if [[ -z "$best" ]] || ver_gt "$norm" "$best_norm"; then
+        best="$tag"
+        best_norm="$norm"
+      elif [[ "$norm" == "$best_norm" ]]; then
+        if (( pin_has_v == 1 )) && [[ "$tag" == [vV]* && "$best" != [vV]* ]]; then
+          best="$tag"
+        elif (( pin_has_v == 0 )) && [[ "$tag" != [vV]* && "$best" == [vV]* ]]; then
+          best="$tag"
+        fi
+      fi
+    done
+    printf '%s' "$best"
+  }
+
+  shopt -s nullglob
+  if [[ -n "$pkg" ]]; then
+    files=("./pkgs/${pkg}/default.nix")
+    if [[ ! -f "${files[0]}" ]]; then
+      printf "\e[31mPackage '%s' not found in pkgs/.\e[0m\n" "$pkg"
+      exit 1
+    fi
+  else
+    files=(./pkgs/*/default.nix)
+  fi
+
+  if [[ -n "$pkg" ]] && ! grep -q 'fetchFromGitHub' "${files[0]}"; then
+    printf "\e[33m%s does not use fetchFromGitHub.\e[0m\n" "$pkg"
+    exit 0
+  fi
+
+  printf "Checking fetchFromGitHub packages in pkgs/...\n"
+  printf "  %-22s %-36s %-12s %s\n" "PACKAGE" "REPOSITORY" "PIN" "STATUS"
+
+  for file in "${files[@]}"; do
+    name=$(basename "$(dirname "$file")")
+    if ! grep -q 'fetchFromGitHub' "$file"; then
+      skipped+=("$name")
+      continue
+    fi
+
+    version=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' "$file" || true)
+    block=$(fetch_block "$file")
+    owner=$(unquote "$(attr owner "$block")")
+    repo=$(unquote "$(attr repo "$block")")
+    raw_ref=$(attr tag "$block")
+    if [[ -z "$raw_ref" ]]; then
+      raw_ref=$(attr rev "$block")
+    fi
+
+    if [[ -z "$owner" || -z "$repo" || -z "$raw_ref" ]]; then
+      printf "  %-22s %-36s \e[31mcould not parse fetchFromGitHub\e[0m\n" "$name" "${owner}/${repo}"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    if ! pin=$(resolve_pin "$raw_ref" "$version"); then
+      printf "  %-22s %-36s \e[31munresolved ref %s\e[0m\n" "$name" "${owner}/${repo}" "$raw_ref"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    url="https://github.com/${owner}/${repo}.git"
+    if ! remote=$(git ls-remote --tags --refs "$url" 2>"$errfile"); then
+      msg="failed to list tags"
+      IFS= read -r errline <"$errfile" || true
+      if [[ -n "${errline:-}" ]]; then
+        msg="$errline"
+      fi
+      printf "  %-22s %-36s %-12s \e[31m%s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$msg"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    tags=()
+    shas=()
+    if [[ -n "$remote" ]]; then
+      while read -r sha tag; do
+        if [[ -z "${tag:-}" ]]; then
+          continue
+        fi
+        tags+=("$tag")
+        shas+=("$sha")
+      done < <(printf '%s\n' "$remote" | awk 'NF >= 2 { sub("refs/tags/", "", $2); print $1, $2 }')
+    fi
+
+    # A commit pin that matches a tag is compared as that tag. Otherwise it is
+    # compared to the default branch tip: ls-remote cannot prove ancestry.
+    if is_commit "$pin"; then
+      matched=""
+      for i in "${!shas[@]}"; do
+        sha="${shas[$i]}"
+        tag="${tags[$i]}"
+        if [[ "$sha" != "$pin" && "$sha" != "$pin"* ]]; then
+          continue
+        fi
+        if ! is_semver "$tag"; then
+          continue
+        fi
+        if [[ -z "$matched" ]] || ver_gt "$(normalize_ver "$tag")" "$(normalize_ver "$matched")"; then
+          matched="$tag"
+        fi
+      done
+      if [[ -z "$matched" ]]; then
+        if ! head_sha=$(git ls-remote "$url" HEAD 2>"$errfile" | awk '{print $1}'); then
+          printf "  %-22s %-36s %-12s \e[31mfailed to query HEAD\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+          errors=$((errors + 1))
+          continue
+        fi
+        checked=$((checked + 1))
+        if [[ -n "$head_sha" && ( "$head_sha" == "$pin" || "$head_sha" == "$pin"* ) ]]; then
+          printf "  %-22s %-36s %-12s \e[32mup to date\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+        else
+          printf "  %-22s %-36s %-12s \e[33mtip %s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "${head_sha:0:12}"
+          updates=$((updates + 1))
+        fi
+        continue
+      fi
+      pin="$matched"
+    fi
+
+    checked=$((checked + 1))
+    if (( ${#tags[@]} > 0 )); then
+      latest=$(latest_tag "$pin" 0 "${tags[@]}")
+    else
+      latest=""
+    fi
+    pre_note=""
+    if [[ -z "$latest" && ${#tags[@]} -gt 0 ]]; then
+      latest=$(latest_tag "$pin" 1 "${tags[@]}")
+      if is_prerelease "$latest"; then
+        pre_note=" (pre-release)"
+      fi
+    fi
+
+    if [[ -z "$latest" ]]; then
+      printf "  %-22s %-36s %-12s \e[33mno version tags\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    pin_norm=$(normalize_ver "$pin")
+    latest_norm=$(normalize_ver "$latest")
+    if ver_gt "$latest_norm" "$pin_norm"; then
+      printf "  %-22s %-36s %-12s \e[33m-> %s%s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$latest" "$pre_note"
+      updates=$((updates + 1))
+    elif ver_gt "$pin_norm" "$latest_norm"; then
+      printf "  %-22s %-36s %-12s \e[32mahead of %s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$latest"
+    else
+      printf "  %-22s %-36s %-12s \e[32mup to date\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+    finixos-option nixpkgs.config 2>&1
+  done
+
+  printf "\n"
+  if (( updates > 0 )); then
+    printf "\e[33m%d update(s) found.\e[0m\n" "$updates"
+  else
+    printf "\e[32mNo updates found.\e[0m\n"
+  fi
+  if (( errors > 0 )); then
+    printf "\e[31m%d error(s).\e[0m\n" "$errors"
+  fi
+  if (( ${#skipped[@]} > 0 )); then
+    printf "Skipped (not fetchFromGitHub): %s\n" "${skipped[*]}"
+  fi
+  if (( errors > 0 )); then
+    exit 1
+  fi
+
