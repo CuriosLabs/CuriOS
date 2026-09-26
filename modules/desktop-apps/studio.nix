@@ -9,7 +9,8 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Video/Photo applications - Gimp, VLC.";
+        description =
+          "Audio/Video/Photo applications - EasyEffects, Gimp, VLC.";
       };
       audacity.enable = lib.mkOption {
         type = lib.types.bool;
@@ -73,7 +74,8 @@
     programs.obs-studio = {
       enable = lib.mkDefault config.curios.desktop.studio.obs-studio.enable;
     };
-    environment.systemPackages = [ pkgs.gimp3-with-plugins pkgs.vlc ]
+    environment.systemPackages =
+      [ pkgs.easyeffects pkgs.gimp3-with-plugins pkgs.vlc ]
       ++ lib.optionals config.curios.desktop.studio.audacity.enable
       [ pkgs.audacity ]
       ++ lib.optionals config.curios.desktop.studio.darktable.enable
