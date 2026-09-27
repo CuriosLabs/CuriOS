@@ -639,7 +639,7 @@ pkg-check-updates pkg='':
     exit 1
   fi
 
-# Update version and sha256 hash for pkgs/ using fetchFromGitHub. Pass a package default.nix
+# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule.
 pkg-update-hash pkg='' version='':
   #!/usr/bin/env bash
   set -euo pipefail
@@ -691,6 +691,38 @@ pkg-update-hash pkg='' version='':
 
   sed "s/version = \".*/version = \"${version}\";/" -i "$pkg"
   sed "0,/hash = \".*\";/s#hash = \".*\";#hash = \"${HASH}\";#" -i "$pkg"
+
+  if grep -q 'buildGoModule' "$pkg" && grep -q 'vendorHash' "$pkg"; then
+    pkg_abs=$(readlink -f "$pkg")
+    expr=$(mktemp --suffix=.nix)
+    trap 'rm -f "$expr"' EXIT
+    printf '%s\n' \
+      'let' \
+      '  pkgs = import <nixpkgs> {};' \
+      'in' \
+      "  (pkgs.callPackage ${pkg_abs} {}).goModules.overrideAttrs (_: {" \
+      '    outputHash = pkgs.lib.fakeHash;' \
+      '  })' >"$expr"
+    printf "Fetching vendorHash...\n"
+    status=0
+    log=$(LC_ALL=C nix-build --no-out-link "$expr" 2>&1) || status=$?
+    vendor=$(printf '%s\n' "$log" | awk '
+      /go-modules/ { found = 1 }
+      found && /got:/ {
+        if (match($0, /sha256-[A-Za-z0-9+\/=]+/)) {
+          print substr($0, RSTART, RLENGTH)
+          exit
+        }
+      }
+    ')
+    if [[ -z "$vendor" ]]; then
+      printf "\e[31mCould not determine vendorHash.\e[0m\n"
+      printf '%s\n' "$log"
+      exit 1
+    fi
+    printf "vendorHash: %s\n" "$vendor"
+    sed "0,/vendorHash = \".*\";/s#vendorHash = \".*\";#vendorHash = \"${vendor}\";#" -i "$pkg"
+  fi
 
   printf "\e[32mDone.\e[0m\n"
 
