@@ -10,7 +10,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "herdrdev";
     repo = "herdr";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-sEGIN3dLZasaHob3EHscWBCIQHflMQVchYmzgsETDk4=";
+    hash = "sha256-N6+kprfWRyh0AkAiopkGsNXUGGORyPVFHEaDHCpGQs8=";
   };
 
   cargoHash = "sha256-4VThqPwYYEsGvaOKjBeL6XAC5bnNWB6oUMWP/uXc/UQ=";
