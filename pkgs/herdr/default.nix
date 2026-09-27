@@ -2,7 +2,7 @@
 , cctools, xcbuild, versionCheckHook, nix-update-script, }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "herdr";
-  version = "0.8.2";
+  version = "0.9.1";
 
   __structuredAttrs = true;
 
