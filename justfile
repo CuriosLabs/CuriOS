@@ -327,7 +327,7 @@ update-nixos-hardware:
   echo "  - ./modules/platforms/rpi5.nix"
 
 # Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
-check-pkg-updates pkg='':
+pkg-check-updates pkg='':
   #!/usr/bin/env bash
   set -euo pipefail
   export GIT_TERMINAL_PROMPT=0
@@ -638,4 +638,59 @@ check-pkg-updates pkg='':
   if (( errors > 0 )); then
     exit 1
   fi
+
+# Update version and sha256 hash for pkgs/ using fetchFromGitHub. Pass a package default.nix
+pkg-update-hash pkg='' version='':
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  pkg="{{pkg}}"
+  version="{{version}}"
+  if [[ -z "$pkg" || ! -f "$pkg" ]]; then
+    printf "\e[31mPackage file '%s' not found.\e[0m\n" "$pkg"
+    exit 1
+  fi
+  if [[ -z "$version" ]]; then
+    printf "\e[31mVersion is required.\e[0m\n"
+    exit 1
+  fi
+  if ! grep -q 'fetchFromGitHub' "$pkg"; then
+    printf "\e[33m%s does not use fetchFromGitHub.\e[0m\n" "$pkg"
+    exit 1
+  fi
+
+  owner=$(grep -m1 -oP '^\s*owner\s*=\s*"\K[^"]+' "$pkg" || true)
+  repo=$(grep -m1 -oP '^\s*repo\s*=\s*"\K[^"]+' "$pkg" || true)
+  raw_ref=$(grep -m1 -oP '^\s*(tag|rev)\s*=\s*\K[^;]+' "$pkg" || true)
+  raw_ref="${raw_ref#"${raw_ref%%[![:space:]]*}"}"
+  raw_ref="${raw_ref%"${raw_ref##*[![:space:]]}"}"
+  if [[ -z "$owner" || -z "$repo" || -z "$raw_ref" ]]; then
+    printf "\e[31mCould not parse owner/repo/ref from %s.\e[0m\n" "$pkg"
+    exit 1
+  fi
+
+  ref="$raw_ref"
+  if [[ "$ref" == \"*\" && "$ref" == *\" ]]; then
+    ref="${ref:1:${#ref}-2}"
+    token='${finalAttrs.version}'
+    ref="${ref//"$token"/$version}"
+    token='${version}'
+    ref="${ref//"$token"/$version}"
+    ref="${ref#refs/tags/}"
+  elif [[ "$ref" == version || "$ref" == finalAttrs.version ]]; then
+    ref="$version"
+  fi
+  if [[ -z "$ref" || "$ref" == *'${'* ]]; then
+    printf "\e[31mUnresolved ref %s in %s.\e[0m\n" "$raw_ref" "$pkg"
+    exit 1
+  fi
+
+  printf "Fetching %s/%s @ %s...\n" "$owner" "$repo" "$ref"
+  HASH=$(nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url --unpack "https://github.com/${owner}/${repo}/archive/${ref}.tar.gz")")
+  printf "HASH: %s\n" "$HASH"
+
+  sed "s/version = \".*/version = \"${version}\";/" -i "$pkg"
+  sed "0,/hash = \".*\";/s#hash = \".*\";#hash = \"${HASH}\";#" -i "$pkg"
+
+  printf "\e[32mDone.\e[0m\n"
 
