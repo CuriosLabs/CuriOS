@@ -20,7 +20,8 @@ daily multimedia needs:
 ## Professional Studio Suite
 
 For creators and professionals, Curi*OS* offers a "Studio" suite containing
-industry-standard tools for video editing, audio recording, and photography.
+industry-standard tools for video editing, audio recording, photography, and
+graphic design.
 
 ![Studio applications](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop-studio.png?raw=true "Studio applications.")
 
@@ -38,7 +39,12 @@ Applications that you can install:
 - **Audacity**: Easy-to-use, multi-track audio editor and recorder.
 - **DaVinci Resolve**: Free and paid versions. Professional video editing, color
   correction, visual effects, and audio post-production.
-- **Darktable/RawTherapee**: Open-source photography workflow applications and raw developers.
+- **mpv**: Free, open source media player.
+- **Darktable/RawTherapee**: Open-source photography workflow applications and
+  raw developers.
+- **RapidRAW**: Fast, non-destructive, GPU-accelerated RAW image editor.
+- **Inkscape**: Feature-rich vector graphics editor for SVG files.
+- **Krita**: Professional free and open source painting application.
 
 ## Audio Enhancement with EasyEffects
 

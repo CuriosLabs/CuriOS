@@ -64,7 +64,7 @@ sudo curios-update --update
 ```
 
 ---
-**Next**: [Virtualisation](virtualisation.md).
+**Next**: [Gaming applications](gaming.md).
 
 **Previous**: [Office applications](office.md)
 

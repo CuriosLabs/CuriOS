@@ -301,7 +301,6 @@ in {
         pkgs.tmux
 
         # 3rd party apps
-        pkgs.easyeffects
         pkgs.ffmpeg_6-full
         pkgs.gparted
         pkgs.libsecret

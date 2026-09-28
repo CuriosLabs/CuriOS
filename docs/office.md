@@ -101,6 +101,8 @@ sudo curios-update --update
 - **Slack**: web app shortcut.
 - **Microsoft Teams**: web app shortcut.
 - **Zoom**: native Zoom client. Available on amd64 only.
+- **Zulip**: Organised chats for distributed teams. Zulip cloud or self-hosting
+  available on the server side.
 
 Enable them from `curios-manager` under `(curios.desktop.office) conferencing`,
 or from a terminal, for example:
