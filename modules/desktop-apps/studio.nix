@@ -9,7 +9,8 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Video/Photo applications - Gimp, VLC.";
+        description =
+          "Audio/Video/Photo applications - EasyEffects, Gimp, VLC.";
       };
       audacity.enable = lib.mkOption {
         type = lib.types.bool;
@@ -31,6 +32,17 @@
         default = false;
         description = "DaVinci Resolve Studio version (buy online)";
       };
+      inkscape.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Inkscape is a feature-rich vector graphics editor for SVG files.";
+      };
+      krita.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Krita is a professional free and open source painting.";
+      };
       mpv.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -41,6 +53,12 @@
         type = lib.types.bool;
         default = false;
         description = "OBS Studio for video recording and live streaming.";
+      };
+      rapidraw.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description =
+          "Blazingly-fast, non-destructive, and GPU-accelerated RAW image editor.";
       };
       rawtherapee.enable = lib.mkOption {
         type = lib.types.bool;
@@ -56,7 +74,8 @@
     programs.obs-studio = {
       enable = lib.mkDefault config.curios.desktop.studio.obs-studio.enable;
     };
-    environment.systemPackages = [ pkgs.gimp3-with-plugins pkgs.vlc ]
+    environment.systemPackages =
+      [ pkgs.easyeffects pkgs.gimp3-with-plugins pkgs.vlc ]
       ++ lib.optionals config.curios.desktop.studio.audacity.enable
       [ pkgs.audacity ]
       ++ lib.optionals config.curios.desktop.studio.darktable.enable
@@ -66,7 +85,12 @@
       ++ lib.optionals
       (config.curios.desktop.studio.davinci-resolve-studio.enable
         && config.curios.platform.amd64.enable) [ pkgs.davinci-resolve-studio ]
+      ++ lib.optionals config.curios.desktop.studio.inkscape.enable
+      [ pkgs.inkscape-with-extensions ]
+      ++ lib.optionals config.curios.desktop.studio.krita.enable [ pkgs.krita ]
       ++ lib.optionals config.curios.desktop.studio.mpv.enable [ pkgs.mpv ]
+      ++ lib.optionals config.curios.desktop.studio.rapidraw.enable
+      [ pkgs.rapidraw ]
       ++ lib.optionals config.curios.desktop.studio.rawtherapee.enable
       [ pkgs.rawtherapee ];
   };

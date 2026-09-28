@@ -2,7 +2,7 @@
 
 { config, lib, pkgs, ... }:
 
-let electrumApp = import ./crypto-wallet-electrum.nix { inherit pkgs lib; };
+let electrumApp = pkgs.callPackage ../../pkgs/electrum { };
 in {
   # Declare options
   options = {

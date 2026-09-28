@@ -64,7 +64,8 @@ sudo curios-update --update-module curios.virtualisation.docker.rootless true &&
 sudo curios-update --update
 ```
 
-Do not enable Docker and Podman at the same time.
+> [!WARNING]
+> Do **NOT** enable Docker and Podman at the same time.
 
 To build multi-architecture images with buildx:
 
@@ -138,7 +139,29 @@ and more — see [dockur/windows](https://github.com/dockur/windows/)):
 - Docker: `~/.winboat/docker-compose.yml`
 - Podman: `~/.winboat/podman-compose.yml`
 
+## Windows apps: Bottles
+
+[Bottles](https://usebottles.com/) is a friendly interface to run Windows
+software and games on Linux. It builds on Wine and lets you manage isolated
+"bottles" (environments) per application, each with its own prefixes,
+dependencies, and runners.
+
+The easiest way to install Bottles is through the **COSMIC Store** (Flatpak).
+Search for `Bottles` and click Install.
+
+From a terminal, which does the same thing:
+
+```bash
+flatpak install flathub com.usebottles.bottles
+```
+
+You can also browse communities, runners, and extensions directly on the
+[Bottles App Store](https://usebottles.com/appstore).
+
+Bottles is an alternative to the Wine and WinBoat options above: pick the tool
+that fits your workflow best.
+
 ---
-**Previous**: [Office applications](office.md)
+**Previous**: [Gaming applications](gaming.md)
 
 **Back**: [index](index.md).

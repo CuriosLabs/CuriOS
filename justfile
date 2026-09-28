@@ -56,12 +56,83 @@ build: lint update-nixos-hardware
 # Cleaning build and test artifacts.
 clean:
   rm -rf ./result
+  rm -rf ./sbom
+  if [ -f http_cache.sqlite ]; then rm http_cache.sqlite; else printf '\e[33m http_cache.sqlite not found!\e[0m\n'; fi
   nix-store --gc
 
 # Launch the ISO curios-install bash script directly. Do NOT complete it! It will really erase your selected disk!
 install:
   nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/curios-sources/default.nix {}' && nix profile add ./result
   ./curios-install --verbose
+
+# Generate a CycloneDX SBOM for a package name found in the nix store (i.e: opencode-desktop). Saved in ./sbom/.
+sbom pkg:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  if [ -L "/run/current-system/sw/bin/{{pkg}}" ]; then
+    store_path=$(readlink -f "/run/current-system/sw/bin/{{pkg}}")
+  else
+    store_path=$(ls -d /nix/store/*-{{pkg}}-*/ 2>/dev/null | grep -Ev '\.(drv|lock|env)/$' | sort -V | tail -1)
+  fi
+  if [ -z "$store_path" ] || [ ! -e "$store_path" ]; then
+    printf "\e[31m Package '{{pkg}}' not found in the nix store (neither /run/current-system/sw/bin nor /nix/store).\e[0m\n"
+    exit 1
+  fi
+  name=$(basename "$store_path")
+  printf "Generating SBOM for %s...\n" "$store_path"
+  sbomnix \
+    --cdx "./sbom/${name}.cdx.json" \
+    --spdx "./sbom/${name}.spdx.json" \
+    --csv "./sbom/${name}.csv" \
+    "$store_path"
+  printf "\e[32m SBOM written to ./sbom/${name}.cdx.json\e[0m\n"
+
+# Generate an SLSA v1.0 provenance file for a package name found in the nix store (i.e: opencode-desktop). Saved in ./sbom/.
+sbom-provenance pkg:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  if [ -L "/run/current-system/sw/bin/{{pkg}}" ]; then
+    store_path=$(dirname "$(dirname "$(readlink -f "/run/current-system/sw/bin/{{pkg}}")")")
+  else
+    store_path=$(ls -d /nix/store/*-{{pkg}}-*/ 2>/dev/null | grep -Ev '\.(drv|lock|env)/$' | sort -V | tail -1)
+  fi
+  if [ -z "$store_path" ] || [ ! -e "$store_path" ]; then
+    printf "\e[31m Package '{{pkg}}' not found in the nix store (neither /run/current-system/sw/bin nor /nix/store).\e[0m\n"
+    exit 1
+  fi
+  name=$(basename "$store_path")
+  printf "Generating provenance for %s...\n" "$store_path"
+  provenance --out "./sbom/${name}-provenance.json" "$store_path"
+  printf "\e[32m Provenance written to ./sbom/${name}-provenance.json\e[0m\n"
+
+# Generate a CycloneDX SBOM for the whole current NixOS system (/run/current-system). Saved in ./sbom/.
+sbom-system:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  system=$(readlink -f /run/current-system)
+  printf "Generating SBOM for %s...\n" "$system"
+  sbomnix \
+    --cdx "./sbom/current-system.cdx.json" \
+    --spdx "./sbom/current-system.spdx.json" \
+    --csv "./sbom/current-system.csv" \
+    "$system"
+  printf "\e[32m SBOM written to ./sbom/current-system.cdx.json\e[0m\n"
+
+# Generate an inverse dependency graph (PNG + CSV) matching <pattern> in the current NixOS system. Saved in ./sbom/.
+sbom-graph pattern='heif' depth='6':
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p sbom/
+  system=$(readlink -f /run/current-system)
+  printf "Generating inverse dependency graph for '%s'...\n" "{{pattern}}"
+  nixgraph --inverse "{{pattern}}" --depth {{depth}} \
+    --out "./sbom/{{pattern}}-graph.png" "$system"
+  nixgraph --inverse "{{pattern}}" --depth {{depth}} \
+    --out "./sbom/{{pattern}}-graph.csv" "$system"
+  printf "\e[32m Graphs written to ./sbom/{{pattern}}-graph.png and ./sbom/{{pattern}}-graph.csv\e[0m\n"
 
 # Linting Bash scripts and Nix files.
 lint:
@@ -118,8 +189,6 @@ nixos-upgrade: lint
       sudo install -D -m 644 -t /etc/nixos/ ./logo.txt
       #sudo mkdir -p /etc/nixos/modules/
       #sudo cp -r -f --preserve=mode ./modules/ /etc/nixos/
-      #sudo mkdir -p /etc/nixos/pkgs/
-      #sudo cp -r -f --preserve=mode ./pkgs/ /etc/nixos/
 
       sudo install -D -m 644 -t /etc/nixos/modules/ ./modules/*.nix
       sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.nix
@@ -129,13 +198,7 @@ nixos-upgrade: lint
       sudo install -D -m 644 -t /etc/nixos/modules/hardened/ ./modules/hardened/*.nix
       sudo install -D -m 644 -t /etc/nixos/modules/hardware/ ./modules/hardware/*.nix
       sudo install -D -m 644 -t /etc/nixos/modules/platforms/ ./modules/platforms/*.nix
-      sudo install -D -m 644 -t /etc/nixos/pkgs/basecamp-cli/ ./pkgs/basecamp-cli/default.nix
-      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-dotfiles/ ./pkgs/curios-dotfiles/default.nix
-      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager/ ./pkgs/curios-manager/default.nix
-      sudo install -D -m 644 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/default.nix
-      sudo install -D -m 600 -t /etc/nixos/pkgs/curios-manager-applet/ ./pkgs/curios-manager-applet/Cargo.lock
-      sudo install -D -m 644 -t /etc/nixos/pkgs/herdr/ ./pkgs/herdr/default.nix
-      sudo install -D -m 644 -t /etc/nixos/pkgs/snitch/ ./pkgs/snitch/default.nix
+      for pkg in ./pkgs/*; do sudo install -D -m 644 -t "/etc/nixos/${pkg}/" "$pkg"/*; done
 
       NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
       if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
@@ -262,4 +325,404 @@ update-nixos-hardware:
   echo "Updated nixos-hardware to commit ${LATEST_COMMIT} in:"
   echo "  - ./modules/platforms/rpi4.nix"
   echo "  - ./modules/platforms/rpi5.nix"
+
+# Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
+pkg-check-updates pkg='':
+  #!/usr/bin/env bash
+  set -euo pipefail
+  export GIT_TERMINAL_PROMPT=0
+  export LC_ALL=C
+
+  if ! command -v git >/dev/null; then
+    printf "\e[31mgit is required.\e[0m\n"
+    exit 1
+  fi
+
+  pkg="{{pkg}}"
+  updates=0
+  errors=0
+  checked=0
+  skipped=()
+  errfile=$(mktemp)
+  trap 'rm -f "$errfile"' EXIT
+
+  trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    s="${s%"${s##*[![:space:]]}"}"
+    printf '%s' "$s"
+  }
+
+  attr() {
+    local name="$1"
+    local block="$2"
+    local value
+    value=$(printf '%s\n' "$block" | grep -m1 -oP "^\s*${name}\s*=\s*\K[^;]+" || true)
+    trim "$value"
+  }
+
+  unquote() {
+    local s="$1"
+    if [[ "$s" == \"*\" && "$s" == *\" ]]; then
+      s="${s:1:${#s}-2}"
+    fi
+    printf '%s' "$s"
+  }
+
+  resolve_pin() {
+    local expr version="$2"
+    expr=$(trim "$1")
+    if [[ "$expr" == \"*\" && "$expr" == *\" ]]; then
+      expr=$(unquote "$expr")
+      local token='${finalAttrs.version}'
+      expr="${expr//"$token"/$version}"
+      token='${version}'
+      expr="${expr//"$token"/$version}"
+      if [[ "$expr" == *'${'* ]]; then
+        return 1
+      fi
+      expr="${expr#refs/tags/}"
+      printf '%s' "$expr"
+      return 0
+    fi
+    case "$expr" in
+      version|finalAttrs.version)
+        if [[ -z "$version" ]]; then
+          return 1
+        fi
+        printf '%s' "$version"
+        ;;
+      *)
+        return 1
+        ;;
+    esac
+  }
+
+  is_commit() {
+    local pin="$1"
+    if [[ "$pin" =~ ^[0-9a-fA-F]{40}$ ]]; then
+      return 0
+    fi
+    if [[ "$pin" =~ [a-fA-F] && "$pin" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+      return 0
+    fi
+    return 1
+  }
+
+  is_prerelease() {
+    local re='[._-](alpha|beta|rc|pre|preview|dev|nightly|snapshot)([._-]|[0-9]|$)'
+    [[ "$1" =~ $re ]]
+  }
+
+  is_semver() {
+    local re='^[vV]?[0-9]+(\.[0-9]+)+'
+    [[ "$1" =~ $re ]]
+  }
+
+  ver_gt() {
+    if [[ "$1" == "$2" ]]; then
+      return 1
+    fi
+    [[ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -1)" == "$1" ]]
+  }
+
+  normalize_ver() {
+    local v="$1"
+    v="${v#v}"
+    v="${v#V}"
+    printf '%s' "$v"
+  }
+
+  fetch_block() {
+    awk '
+      function count(s, c,    n, i) {
+        n = 0
+        for (i = 1; i <= length(s); i++)
+          if (substr(s, i, 1) == c) n++
+        return n
+      }
+      /fetchFromGitHub[[:space:]]*\{/ && !found { found = 1; depth = 0 }
+      found {
+        print
+        depth += count($0, "{") - count($0, "}")
+        if (depth <= 0) exit
+      }
+    ' "$1"
+  }
+
+  # Pick the highest stable tag. Pre-releases are ignored unless force_pre=1
+  # or the pinned ref is itself a pre-release.
+  latest_tag() {
+    local pin="$1"
+    local force_pre="$2"
+    shift 2
+    local include_pre=0 tag norm best="" best_norm="" pin_has_v=0
+    if [[ "$force_pre" == 1 ]] || is_prerelease "$pin"; then
+      include_pre=1
+    fi
+    if [[ "$pin" == [vV]* ]]; then
+      pin_has_v=1
+    fi
+    for tag in "$@"; do
+      if ! is_semver "$tag"; then
+        continue
+      fi
+      if (( include_pre == 0 )) && is_prerelease "$tag"; then
+        continue
+      fi
+      norm=$(normalize_ver "$tag")
+      if [[ -z "$best" ]] || ver_gt "$norm" "$best_norm"; then
+        best="$tag"
+        best_norm="$norm"
+      elif [[ "$norm" == "$best_norm" ]]; then
+        if (( pin_has_v == 1 )) && [[ "$tag" == [vV]* && "$best" != [vV]* ]]; then
+          best="$tag"
+        elif (( pin_has_v == 0 )) && [[ "$tag" != [vV]* && "$best" == [vV]* ]]; then
+          best="$tag"
+        fi
+      fi
+    done
+    printf '%s' "$best"
+  }
+
+  shopt -s nullglob
+  if [[ -n "$pkg" ]]; then
+    files=("./pkgs/${pkg}/default.nix")
+    if [[ ! -f "${files[0]}" ]]; then
+      printf "\e[31mPackage '%s' not found in pkgs/.\e[0m\n" "$pkg"
+      exit 1
+    fi
+  else
+    files=(./pkgs/*/default.nix)
+  fi
+
+  if [[ -n "$pkg" ]] && ! grep -q 'fetchFromGitHub' "${files[0]}"; then
+    printf "\e[33m%s does not use fetchFromGitHub.\e[0m\n" "$pkg"
+    exit 0
+  fi
+
+  printf "Checking fetchFromGitHub packages in pkgs/...\n"
+  printf "  %-22s %-36s %-12s %s\n" "PACKAGE" "REPOSITORY" "PIN" "STATUS"
+
+  for file in "${files[@]}"; do
+    name=$(basename "$(dirname "$file")")
+    if ! grep -q 'fetchFromGitHub' "$file"; then
+      skipped+=("$name")
+      continue
+    fi
+
+    version=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' "$file" || true)
+    block=$(fetch_block "$file")
+    owner=$(unquote "$(attr owner "$block")")
+    repo=$(unquote "$(attr repo "$block")")
+    raw_ref=$(attr tag "$block")
+    if [[ -z "$raw_ref" ]]; then
+      raw_ref=$(attr rev "$block")
+    fi
+
+    if [[ -z "$owner" || -z "$repo" || -z "$raw_ref" ]]; then
+      printf "  %-22s %-36s \e[31mcould not parse fetchFromGitHub\e[0m\n" "$name" "${owner}/${repo}"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    if ! pin=$(resolve_pin "$raw_ref" "$version"); then
+      printf "  %-22s %-36s \e[31munresolved ref %s\e[0m\n" "$name" "${owner}/${repo}" "$raw_ref"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    url="https://github.com/${owner}/${repo}.git"
+    if ! remote=$(git ls-remote --tags --refs "$url" 2>"$errfile"); then
+      msg="failed to list tags"
+      IFS= read -r errline <"$errfile" || true
+      if [[ -n "${errline:-}" ]]; then
+        msg="$errline"
+      fi
+      printf "  %-22s %-36s %-12s \e[31m%s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$msg"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    tags=()
+    shas=()
+    if [[ -n "$remote" ]]; then
+      while read -r sha tag; do
+        if [[ -z "${tag:-}" ]]; then
+          continue
+        fi
+        tags+=("$tag")
+        shas+=("$sha")
+      done < <(printf '%s\n' "$remote" | awk 'NF >= 2 { sub("refs/tags/", "", $2); print $1, $2 }')
+    fi
+
+    # A commit pin that matches a tag is compared as that tag. Otherwise it is
+    # compared to the default branch tip: ls-remote cannot prove ancestry.
+    if is_commit "$pin"; then
+      matched=""
+      for i in "${!shas[@]}"; do
+        sha="${shas[$i]}"
+        tag="${tags[$i]}"
+        if [[ "$sha" != "$pin" && "$sha" != "$pin"* ]]; then
+          continue
+        fi
+        if ! is_semver "$tag"; then
+          continue
+        fi
+        if [[ -z "$matched" ]] || ver_gt "$(normalize_ver "$tag")" "$(normalize_ver "$matched")"; then
+          matched="$tag"
+        fi
+      done
+      if [[ -z "$matched" ]]; then
+        if ! head_sha=$(git ls-remote "$url" HEAD 2>"$errfile" | awk '{print $1}'); then
+          printf "  %-22s %-36s %-12s \e[31mfailed to query HEAD\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+          errors=$((errors + 1))
+          continue
+        fi
+        checked=$((checked + 1))
+        if [[ -n "$head_sha" && ( "$head_sha" == "$pin" || "$head_sha" == "$pin"* ) ]]; then
+          printf "  %-22s %-36s %-12s \e[32mup to date\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+        else
+          printf "  %-22s %-36s %-12s \e[33mtip %s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "${head_sha:0:12}"
+          updates=$((updates + 1))
+        fi
+        continue
+      fi
+      pin="$matched"
+    fi
+
+    checked=$((checked + 1))
+    if (( ${#tags[@]} > 0 )); then
+      latest=$(latest_tag "$pin" 0 "${tags[@]}")
+    else
+      latest=""
+    fi
+    pre_note=""
+    if [[ -z "$latest" && ${#tags[@]} -gt 0 ]]; then
+      latest=$(latest_tag "$pin" 1 "${tags[@]}")
+      if is_prerelease "$latest"; then
+        pre_note=" (pre-release)"
+      fi
+    fi
+
+    if [[ -z "$latest" ]]; then
+      printf "  %-22s %-36s %-12s \e[33mno version tags\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    pin_norm=$(normalize_ver "$pin")
+    latest_norm=$(normalize_ver "$latest")
+    if ver_gt "$latest_norm" "$pin_norm"; then
+      printf "  %-22s %-36s %-12s \e[33m-> %s%s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$latest" "$pre_note"
+      updates=$((updates + 1))
+    elif ver_gt "$pin_norm" "$latest_norm"; then
+      printf "  %-22s %-36s %-12s \e[32mahead of %s\e[0m\n" "$name" "${owner}/${repo}" "$pin" "$latest"
+    else
+      printf "  %-22s %-36s %-12s \e[32mup to date\e[0m\n" "$name" "${owner}/${repo}" "$pin"
+    fi
+  done
+
+  printf "\n"
+  if (( updates > 0 )); then
+    printf "\e[33m%d update(s) found.\e[0m\n" "$updates"
+  else
+    printf "\e[32mNo updates found.\e[0m\n"
+  fi
+  if (( errors > 0 )); then
+    printf "\e[31m%d error(s).\e[0m\n" "$errors"
+  fi
+  if (( ${#skipped[@]} > 0 )); then
+    printf "Skipped (not fetchFromGitHub): %s\n" "${skipped[*]}"
+  fi
+  if (( errors > 0 )); then
+    exit 1
+  fi
+
+# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule.
+pkg-update-hash pkg='' version='':
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  pkg="{{pkg}}"
+  version="{{version}}"
+  if [[ -z "$pkg" || ! -f "$pkg" ]]; then
+    printf "\e[31mPackage file '%s' not found.\e[0m\n" "$pkg"
+    exit 1
+  fi
+  if [[ -z "$version" ]]; then
+    printf "\e[31mVersion is required.\e[0m\n"
+    exit 1
+  fi
+  if ! grep -q 'fetchFromGitHub' "$pkg"; then
+    printf "\e[33m%s does not use fetchFromGitHub.\e[0m\n" "$pkg"
+    exit 1
+  fi
+
+  owner=$(grep -m1 -oP '^\s*owner\s*=\s*"\K[^"]+' "$pkg" || true)
+  repo=$(grep -m1 -oP '^\s*repo\s*=\s*"\K[^"]+' "$pkg" || true)
+  raw_ref=$(grep -m1 -oP '^\s*(tag|rev)\s*=\s*\K[^;]+' "$pkg" || true)
+  raw_ref="${raw_ref#"${raw_ref%%[![:space:]]*}"}"
+  raw_ref="${raw_ref%"${raw_ref##*[![:space:]]}"}"
+  if [[ -z "$owner" || -z "$repo" || -z "$raw_ref" ]]; then
+    printf "\e[31mCould not parse owner/repo/ref from %s.\e[0m\n" "$pkg"
+    exit 1
+  fi
+
+  ref="$raw_ref"
+  if [[ "$ref" == \"*\" && "$ref" == *\" ]]; then
+    ref="${ref:1:${#ref}-2}"
+    token='${finalAttrs.version}'
+    ref="${ref//"$token"/$version}"
+    token='${version}'
+    ref="${ref//"$token"/$version}"
+    ref="${ref#refs/tags/}"
+  elif [[ "$ref" == version || "$ref" == finalAttrs.version ]]; then
+    ref="$version"
+  fi
+  if [[ -z "$ref" || "$ref" == *'${'* ]]; then
+    printf "\e[31mUnresolved ref %s in %s.\e[0m\n" "$raw_ref" "$pkg"
+    exit 1
+  fi
+
+  printf "Fetching %s/%s @ %s...\n" "$owner" "$repo" "$ref"
+  HASH=$(nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url --unpack "https://github.com/${owner}/${repo}/archive/${ref}.tar.gz")")
+  printf "HASH: %s\n" "$HASH"
+
+  sed "s/version = \".*/version = \"${version}\";/" -i "$pkg"
+  sed "0,/hash = \".*\";/s#hash = \".*\";#hash = \"${HASH}\";#" -i "$pkg"
+
+  if grep -q 'buildGoModule' "$pkg" && grep -q 'vendorHash' "$pkg"; then
+    pkg_abs=$(readlink -f "$pkg")
+    expr=$(mktemp --suffix=.nix)
+    trap 'rm -f "$expr"' EXIT
+    printf '%s\n' \
+      'let' \
+      '  pkgs = import <nixpkgs> {};' \
+      'in' \
+      "  (pkgs.callPackage ${pkg_abs} {}).goModules.overrideAttrs (_: {" \
+      '    outputHash = pkgs.lib.fakeHash;' \
+      '  })' >"$expr"
+    printf "Fetching vendorHash...\n"
+    status=0
+    log=$(LC_ALL=C nix-build --no-out-link "$expr" 2>&1) || status=$?
+    vendor=$(printf '%s\n' "$log" | awk '
+      /go-modules/ { found = 1 }
+      found && /got:/ {
+        if (match($0, /sha256-[A-Za-z0-9+\/=]+/)) {
+          print substr($0, RSTART, RLENGTH)
+          exit
+        }
+      }
+    ')
+    if [[ -z "$vendor" ]]; then
+      printf "\e[31mCould not determine vendorHash.\e[0m\n"
+      printf '%s\n' "$log"
+      exit 1
+    fi
+    printf "vendorHash: %s\n" "$vendor"
+    sed "0,/vendorHash = \".*\";/s#vendorHash = \".*\";#vendorHash = \"${vendor}\";#" -i "$pkg"
+  fi
+
+  printf "\e[32mDone.\e[0m\n"
 

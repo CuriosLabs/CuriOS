@@ -21,7 +21,7 @@
         rootless = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Run Docker daemon as a non-root user.";
+          description = "Recommended - run Docker daemon as a non-root user.";
         };
       };
       podman.enable = lib.mkOption {

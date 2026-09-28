@@ -6,6 +6,7 @@
     ./basics.nix
     ./crypto.nix
     ./devops.nix
+    ./engineering.nix
     ./gaming.nix
     ./office.nix
     ./studio.nix

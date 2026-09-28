@@ -23,8 +23,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         darktable.enable = true;
         davinci-resolve.enable = true;
         davinci-resolve-studio.enable = true;
+        inkscape.enable = true;
+        krita.enable = true;
         mpv.enable = true;
         obs-studio.enable = true;
+        rapidraw.enable = true;
         rawtherapee.enable = true;
       };
     };
@@ -44,8 +47,11 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("davinci-resolve-studio")
         check_which("darktable")
         check_which("gimp")
+        check_which("inkscape")
+        check_which("krita")
         check_which("mpv")
         check_which("obs")
+        check_which("rapidraw")
         check_which("rawtherapee")
         check_which("vlc")
   '';

@@ -2,18 +2,20 @@
 # See: https://electrum.org/#download
 # See: https://wiki.nixos.org/wiki/Appimage
 
-{ pkgs, lib }:
+{ lib, fetchurl, gnupg, appimageTools, makeDesktopItem }:
 let
   pname = "electrum";
-  version = "4.8.1";
+  version = "4.8.2";
 
-  src = pkgs.fetchurl {
+  # Calculate the hash with:
+  # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://download.electrum.org/4.8.2/electrum-4.8.2-x86_64.AppImage)"
+  src = fetchurl {
     url =
       "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
-    hash = "sha256-v5fZz11Cn6v+cMOXXg5BN73vubuqgOfQ9HgygbPrd+Y=";
+    hash = "sha256-YxDr0LeWUZbsw+t+G/6tJgzckDOohHIEVhuXYuYqh8A=";
 
     # Verify Appimage signature
-    nativeBuildInputs = [ pkgs.gnupg ];
+    nativeBuildInputs = [ gnupg ];
     downloadToTemp = true;
 
     postFetch = ''
@@ -39,26 +41,28 @@ let
     '';
   };
 
-  appSignature = pkgs.fetchurl {
+  # Calculate the hash with:
+  # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://download.electrum.org/4.8.2/electrum-4.8.2-x86_64.AppImage.asc)"
+  appSignature = fetchurl {
     url =
       "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "sha256-jzQHu/luaKoLCyRUvdvdlSeL/D2Sj9EZutCF3i2JItI=";
+    hash = "sha256-XNVj9Kprp+0IdIYWxxEXnFnJDjMNzpiscq8ePAt8+xc=";
   };
 
-  authorPubKey = pkgs.fetchurl {
+  authorPubKey = fetchurl {
     url =
       "https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/ThomasV.asc";
     hash = "sha256-37ApVZlI+2EevxQIKXVKVpktt1Ls3UbWq4dfio2ORdo=";
   };
 
-  #authorPubKey2 = pkgs.fetchurl {
+  #authorPubKey2 = fetchurl {
   #  url = "https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/sombernight_releasekey.asc";
   #  hash = "";
   #};
 
-  appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
+  appimageContents = appimageTools.extract { inherit pname version src; };
 
-  desktopItem = pkgs.makeDesktopItem {
+  desktopItem = makeDesktopItem {
     name = "org.electrum";
     exec = "/run/current-system/sw/bin/electrum";
     desktopName = "Electrum Bitcoin Wallet";
@@ -68,8 +72,8 @@ let
     type = "Application";
     mimeTypes = [ "x-scheme-handler/bitcoin" "x-scheme-handler/lightning" ];
   };
-in pkgs.appimageTools.wrapType2 {
-  inherit pname version pkgs src;
+in appimageTools.wrapType2 {
+  inherit pname version src;
 
   #extraInstallCommands = ''
   #  mkdir -p $out/share/applications
@@ -92,6 +96,7 @@ in pkgs.appimageTools.wrapType2 {
     homepage = "https://electrum.org/";
     downloadPage = "https://electrum.org/#download";
     license = lib.licenses.mit;
+    mainProgram = "electrum";
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     platforms = [ "x86_64-linux" ];
   };

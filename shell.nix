@@ -16,5 +16,6 @@ pkgs.mkShell {
     just
     git
     gh
+    sbomnix
   ];
 }

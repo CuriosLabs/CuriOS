@@ -17,7 +17,8 @@
       }
     },
     "cosmic": {
-      "enable": true
+      "enable": true,
+      "orca": false
     },
     "desktop": {
       "ai": {
@@ -156,6 +157,30 @@
           }
         }
       },
+      "engineering": {
+        "blender": {
+          "enable": false
+        },
+        "enable": true,
+        "f3d": {
+          "enable": false
+        },
+        "freecad": {
+          "enable": false
+        },
+        "kicad": {
+          "enable": false
+        },
+        "librecad": {
+          "enable": false
+        },
+        "opencad-studio": {
+          "enable": false
+        },
+        "orca-slicer": {
+          "enable": false
+        }
+      },
       "gaming": {
         "enable": false,
         "heroic": {
@@ -197,6 +222,9 @@
             "enable": false
           },
           "zoom": {
+            "enable": false
+          },
+          "zulip": {
             "enable": false
           }
         },
@@ -271,10 +299,19 @@
         "davinci-resolve-studio": {
           "enable": false
         },
+        "inkscape": {
+          "enable": false
+        },
+        "krita": {
+          "enable": false
+        },
         "mpv": {
           "enable": false
         },
         "obs-studio": {
+          "enable": false
+        },
+        "rapidraw": {
           "enable": false
         },
         "rawtherapee": {
