@@ -1,5 +1,5 @@
-{ lib, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installAgentSkills
-, installShellFiles, cctools, xcbuild, versionCheckHook, nix-update-script, }:
+{ lib, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installShellFiles
+, cctools, xcbuild, versionCheckHook, nix-update-script, }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "herdr";
   version = "0.9.1";
@@ -22,7 +22,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-Cy0DdSvce+fhOFIfxHMQGF2b2j16UkS27UpGbfC42XI=";
   };
 
-  nativeBuildInputs = [ zig_0_16 installAgentSkills installShellFiles ]
+  nativeBuildInputs = [ zig_0_16 installShellFiles ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [ cctools xcbuild ];
 
   # Upstream binary tests are renamed, added, or changed between releases and
