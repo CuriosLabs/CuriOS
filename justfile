@@ -283,6 +283,7 @@ publish: lint
     gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes \
       --notes "$(printf '## Download\n\n- ISO: {{r2_public_url}}/%s\n- SHA256: {{r2_public_url}}/%s.sha256\n' "${isoFilename}" "${isoFilename}")"
   fi
+  printf "\e[32mDone...\e[0m\n"
 
 # Run all integrations tests sequentially
 test-all:
