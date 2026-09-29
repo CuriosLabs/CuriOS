@@ -167,8 +167,10 @@ in {
 
     environment.systemPackages =
       lib.optionals config.curios.system.ansible.enable [ pkgs.ansible ]
-      ++ lib.optionals config.curios.system.core.dotfiles [ curios-dotfiles ]
-      ++ lib.optionals config.curios.system.core.manager-applet
+      ++ lib.optionals
+      (config.curios.system.core.dotfiles && config.curios.cosmic.enable)
+      [ curios-dotfiles ] ++ lib.optionals
+      (config.curios.system.core.manager-applet && config.curios.cosmic.enable)
       [ curios-manager-applet ]
       ++ lib.optionals config.curios.system.languages.go.enable [
         pkgs.go
