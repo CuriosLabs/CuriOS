@@ -17,6 +17,12 @@ in {
         default = "https://github.com/CuriosLabs/CuriOS.git";
         description = "CuriOS Git respository URL.";
       };
+      revision = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = "";
+        description =
+          "The Git revision from which this CuriOS configuration was built.";
+      };
     };
   };
 
