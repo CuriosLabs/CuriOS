@@ -16,6 +16,12 @@
         }
       }
     },
+    "core": {
+      "source": {
+        "branch": "master",
+        "url": "https://github.com/CuriosLabs/CuriOS.git"
+      }
+    },
     "cosmic": {
       "enable": true,
       "orca": false

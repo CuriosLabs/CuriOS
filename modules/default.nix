@@ -6,7 +6,7 @@
     ./backup.nix
     ./boot-efi.nix
     ./cosmic.nix
-    ./curios-pkgs.nix
+    ./curios.nix
     ./desktop-apps/default.nix
     ./fonts.nix
     ./hardened/default.nix
