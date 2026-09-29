@@ -4,15 +4,32 @@
   # Declare options
   options = {
     curios.services = {
+      avahi.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable Avahi mDNS/DNS-SD (network printer discovery, .local hostnames).";
+      };
       ai.enable = lib.mkOption {
         type = lib.types.nullOr lib.types.bool;
         default = null;
         description = "DEPRECATED";
       };
+      earlyoom.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
+      };
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
         description = "REQUIRED CuriOS services - pipewire, fwupd...";
+      };
+      flakes.update.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Nix flakes upgrade service for user.";
       };
       flatpak.enable = lib.mkOption {
         type = lib.types.bool;
@@ -20,16 +37,15 @@
         description =
           "Flatpak apps repositories (Flathub and Cosmic) and services.";
       };
+      npm.update.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "NPM update packages service for user.";
+      };
       ollama.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
         description = "Ollama(local AI) and open-webui services.";
-      };
-      avahi.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description =
-          "Enable Avahi mDNS/DNS-SD (network printer discovery, .local hostnames).";
       };
       printing.enable = lib.mkOption {
         type = lib.types.bool;
@@ -40,12 +56,6 @@
         type = lib.types.bool;
         default = false;
         description = "Enable SSH daemon service.";
-      };
-      earlyoom.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description =
-          "Enable earlyoom (Out of Memory) daemon to prevent system freeze.";
       };
       n8n.enable = lib.mkOption {
         type = lib.types.nullOr lib.types.bool;
@@ -236,28 +246,76 @@
       # systemctl --user list-units --type=service
       # systemctl --user list-timers
       # systemctl --user status flatpak-update.timer
+      # systemctl --user status flatpak-update.service
       user = {
-        services.flatpak-update = {
-          enable = lib.mkDefault config.curios.services.flatpak.enable;
-          description = "Flatpak user update";
-          #path = [ pkgs.flatpak ];
-          serviceConfig = {
-            Type = "oneshot";
-            ExecStart =
-              "/run/current-system/sw/bin/flatpak update --noninteractive --assumeyes";
+        services = {
+          flakes-upgrade = {
+            enable = lib.mkDefault config.curios.services.flakes.update.enable;
+            description = "Nix flakes user upgrade";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart =
+                "/run/current-system/sw/bin/nix profile upgrade --all";
+            };
+            wantedBy = [ ];
           };
-          wantedBy = [ ];
+          flatpak-update = {
+            enable = lib.mkDefault config.curios.services.flatpak.enable;
+            description = "Flatpak user update";
+            #path = [ pkgs.flatpak ];
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart =
+                "/run/current-system/sw/bin/flatpak update --noninteractive --assumeyes";
+            };
+            wantedBy = [ ];
+          };
+          npm-update = {
+            enable = lib.mkDefault (config.curios.services.npm.update.enable
+              && config.curios.system.languages.javascript.enable);
+            description = "NPM user update";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "/run/current-system/sw/bin/npm update -g";
+            };
+            wantedBy = [ ];
+          };
         };
-        timers.flatpak-update = {
-          enable = lib.mkDefault config.curios.services.flatpak.enable;
-          description = "Flatpak user update";
-          timerConfig = {
-            OnStartupSec = "30s";
-            OnUnitInactiveSec = "24h";
-            OnUnitActiveSec = "24h";
-            RandomizedDelaySec = "2m";
+        timers = {
+          flakes-upgrade = {
+            enable = lib.mkDefault config.curios.services.flakes.update.enable;
+            description = "Nix flakes user update";
+            timerConfig = {
+              OnStartupSec = "2m";
+              OnUnitInactiveSec = "24h";
+              OnUnitActiveSec = "24h";
+              RandomizedDelaySec = "10m";
+            };
+            wantedBy = [ "timers.target" ];
           };
-          wantedBy = [ "timers.target" ];
+          flatpak-update = {
+            enable = lib.mkDefault config.curios.services.flatpak.enable;
+            description = "Flatpak user update";
+            timerConfig = {
+              OnStartupSec = "60s";
+              OnUnitInactiveSec = "24h";
+              OnUnitActiveSec = "24h";
+              RandomizedDelaySec = "5m";
+            };
+            wantedBy = [ "timers.target" ];
+          };
+          npm-update = {
+            enable = lib.mkDefault (config.curios.services.npm.update.enable
+              && config.curios.system.languages.javascript.enable);
+            description = "NPM user update";
+            timerConfig = {
+              OnStartupSec = "2m";
+              OnUnitInactiveSec = "24h";
+              OnUnitActiveSec = "24h";
+              RandomizedDelaySec = "10m";
+            };
+            wantedBy = [ "timers.target" ];
+          };
         };
       };
     };

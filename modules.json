@@ -541,8 +541,18 @@
         "enable": true
       },
       "enable": true,
+      "flakes": {
+        "update": {
+          "enable": true
+        }
+      },
       "flatpak": {
         "enable": true
+      },
+      "npm": {
+        "update": {
+          "enable": true
+        }
       },
       "ollama": {
         "enable": false
