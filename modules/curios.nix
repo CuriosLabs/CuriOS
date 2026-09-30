@@ -9,7 +9,7 @@ in {
     curios.core.source = {
       branch = lib.mkOption {
         type = lib.types.str;
-        default = "master";
+        default = "stable";
         description = "CuriOS Git respository branch to use.";
       };
       url = lib.mkOption {
