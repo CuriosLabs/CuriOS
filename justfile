@@ -640,7 +640,7 @@ pkg-check-updates pkg='':
     exit 1
   fi
 
-# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule.
+# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule and cargoHash for rustPlatform.
 pkg-update-hash pkg='' version='':
   #!/usr/bin/env bash
   set -euo pipefail
@@ -723,6 +723,39 @@ pkg-update-hash pkg='' version='':
     fi
     printf "vendorHash: %s\n" "$vendor"
     sed "0,/vendorHash = \".*\";/s#vendorHash = \".*\";#vendorHash = \"${vendor}\";#" -i "$pkg"
+    rm -f "$expr"
+  fi
+
+  if grep -qE 'buildRustPackage|rustPlatform' "$pkg" && grep -q 'cargoHash' "$pkg"; then
+    pkg_abs=$(readlink -f "$pkg")
+    expr=$(mktemp --suffix=.nix)
+    trap 'rm -f "$expr"' EXIT
+    printf '%s\n' \
+      'let' \
+      '  pkgs = import <nixpkgs> {};' \
+      'in' \
+      "  (pkgs.callPackage ${pkg_abs} {}).cargoDeps.vendorStaging.overrideAttrs (_: {" \
+      '    outputHash = pkgs.lib.fakeHash;' \
+      '  })' >"$expr"
+    printf "Fetching cargoHash...\n"
+    status=0
+    log=$(LC_ALL=C nix-build --no-out-link "$expr" 2>&1) || status=$?
+    cargo=$(printf '%s\n' "$log" | awk '
+      /vendor-staging/ { found = 1 }
+      found && /got:/ {
+        if (match($0, /sha256-[A-Za-z0-9+\/=]+/)) {
+          print substr($0, RSTART, RLENGTH)
+          exit
+        }
+      }
+    ')
+    if [[ -z "$cargo" ]]; then
+      printf "\e[31mCould not determine cargoHash.\e[0m\n"
+      printf '%s\n' "$log"
+      exit 1
+    fi
+    printf "cargoHash: %s\n" "$cargo"
+    sed "0,/cargoHash = \".*\";/s#cargoHash = \".*\";#cargoHash = \"${cargo}\";#" -i "$pkg"
   fi
 
   printf "\e[32mDone.\e[0m\n"
