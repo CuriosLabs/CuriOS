@@ -19,6 +19,7 @@
     "core": {
       "source": {
         "branch": "master",
+        "revision": "",
         "url": "https://github.com/CuriosLabs/CuriOS.git"
       }
     },
