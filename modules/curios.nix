@@ -27,6 +27,15 @@ in {
   };
 
   # Declare configuration
-  config = { environment.systemPackages = [ curios-manager snitch ]; };
+  config = {
+    environment.systemPackages = [ curios-manager snitch ];
+
+    # CuriOS Git repository allowed signing keys
+    etc = {
+      "/curios/allowed_signers".text = ''
+        david@curioslabs.dev namespaces="git" sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIMCcTnhyf/ug309CiILdhbalLyvbGa4k67x/K/ZokmARAAAAGXNzaDpjdXJpb3Mtc2lnbmluZy0yMDI2MDk=
+      '';
+    };
+  };
 }
 
