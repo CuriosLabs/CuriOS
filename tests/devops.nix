@@ -17,6 +17,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       system.stateVersion = "26.05";
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.config.permittedInsecurePackages = [ "electron-41.10.7" ];
       time.timeZone = "UTC";
 
       curios.desktop.devops = {
