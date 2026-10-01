@@ -144,7 +144,7 @@ in {
     };
 
     system.autoUpgrade = {
-      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
+      enable = false;
       dates = "03:40";
       randomizedDelaySec = "3min";
       # Reboot on new kernel, initrd or kernel module.

@@ -242,7 +242,7 @@
           /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
         '';
       };
-      # Flatpak user auto update
+      # Flatpak, flakes and npm user auto update
       # systemctl --user list-units --type=service
       # systemctl --user list-timers
       # systemctl --user status flatpak-update.timer
