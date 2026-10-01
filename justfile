@@ -153,11 +153,11 @@ nixos-upgrade: lint
     printf "\e[31m Not a Nixos system.\e[0m\n"
     exit 1
   fi
-  if ! command -v rsync >/dev/null; then
-    printf "\e[31mrsync command not found! \e[0m\n"
+  if ! command -v curios-update >/dev/null; then
+    printf "\e[31m curios-update command not found! \e[0m\n"
     exit 1
   fi
-  printf "\e[31m CAUTION! This will modify your system.\e[0m\n"
+  printf "\e[31mCAUTION! This will update your system to branch: {{branch}}.\e[0m\n"
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
@@ -176,61 +176,9 @@ nixos-upgrade: lint
       sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
       sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
 
-      printf "\e[32mCopying files...\e[0m\n"
-      if [ ! -f /etc/nixos/settings.nix ]; then
-        sudo install -D -m 644 -t /etc/nixos/ ./settings.nix
-        printf "Default settings.nix file installed! Edit /etc/nixos/settings.nix to match your username."
-      fi
-      # Mirror the repo. Excluded files are neither updated nor deleted.
-      rsync -a --delete \
-        --exclude '.git/' \
-        --exclude '.gitignore' \
-        --exclude 'img/' \
-        --exclude 'iso/' \
-        --exclude 'tests/' \
-        --exclude 'AGENTS.md' \
-        --exclude 'curios-install' \
-        --exclude 'hardware-configuration.nix' \
-        --exclude 'justfile' \
-        --exclude 'settings.nix' \
-        --exclude 'modules.json' \
-        --exclude 'modules.json.*.bak' \
-        --exclude 'shell-rpi.nix' \
-        --exclude 'shell.nix' \
-        ./ /etc/nixos/
-      find /etc/nixos/ -type f -exec chmod 644 {} +
-      find /etc/nixos/ -type d -exec chmod 755 {} +
+      sudo curios-update --update-module curios.core.source.branch "{{branch}}"
+      sudo curios-update --upgrade
 
-      NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
-      if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
-        printf "\e[32m Nix channel is already up-to-date.\e[0m\n"
-      else
-        printf "Updating Nix channel..."
-        sudo nix-channel --add "$NIX_CHANNEL_URL" nixos
-        sudo nix-channel --update
-      fi
-      if command -v curios-update >/dev/null; then
-        if curios-update --help 2>&1 | grep -q -- "--export"; then
-          sudo curios-update --export
-        else
-          printf "\e[31m curios-update --export is NOT supported!\e[0m\n"
-        fi
-      fi
-
-      printf "\e[32mUpgrading system...\e[0m\n"
-      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto --show-trace 2>&1 | tee /tmp/nixos-upgrade.log
-      git_rev_latest=$(git -C ./ rev-parse HEAD)
-      sudo curios-update --update-module "curios.core.source.revision" "${git_rev_latest}"
-      printf "\e[32mLaunching store garbage collect...\e[0m\n"
-      sudo nix-collect-garbage --delete-older-than 15d --cores 0 --max-jobs auto --quiet
-      if command -v aa-status >/dev/null; then
-        if systemctl is-active --quiet apparmor.service; then
-          printf "\e[32m Clearing AppArmor cache...\e[0m\n"
-          sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {}
-          sudo truncate -s 0 /var/log/audit/audit.log
-          sudo systemctl restart apparmor
-        fi
-      fi
       printf "\e[32mDone.\e[0m\n"
       ;;
     [Nn]*) echo "No selected"; exit;;
@@ -269,6 +217,9 @@ publish: lint
     printf "\e[32m Creating GitHub release...\e[0m\n"
     gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes \
       --notes "$(printf '## Download\n\n- ISO: {{r2_public_url}}/%s\n- SHA256: {{r2_public_url}}/%s.sha256\n' "${isoFilename}" "${isoFilename}")"
+
+    sleep 5
+    gh pr create --title "Release ${releaseNumber}" --body "" --base master --assignee "@me"
   fi
   printf "\e[32mDone...\e[0m\n"
 
