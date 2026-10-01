@@ -153,10 +153,9 @@ nixos-upgrade: lint
     printf "\e[31m Not a Nixos system.\e[0m\n"
     exit 1
   fi
-  DOTFILES_VERSION="0.0"
-  CURRENT_KEYBOARD="us"
-  if command -v curios-dotfiles >/dev/null; then
-    DOTFILES_VERSION=$(curios-dotfiles --version)
+  if ! command -v rsync >/dev/null; then
+    printf "\e[31mrsync command not found! \e[0m\n"
+    exit 1
   fi
   printf "\e[31m CAUTION! This will modify your system.\e[0m\n"
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
@@ -177,28 +176,30 @@ nixos-upgrade: lint
       sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
       sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
 
-      printf "\e[32m Launching Nix garbage collector...\e[0m\n"
-      sudo nix-store --gc
-
-      printf "\e[32m Installing Curios...\e[0m\n"
-      sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
+      printf "\e[32mCopying files...\e[0m\n"
       if [ ! -f /etc/nixos/settings.nix ]; then
         sudo install -D -m 644 -t /etc/nixos/ ./settings.nix
         printf "Default settings.nix file installed! Edit /etc/nixos/settings.nix to match your username."
       fi
-      sudo install -D -m 644 -t /etc/nixos/ ./logo.txt
-      #sudo mkdir -p /etc/nixos/modules/
-      #sudo cp -r -f --preserve=mode ./modules/ /etc/nixos/
-
-      sudo install -D -m 644 -t /etc/nixos/modules/ ./modules/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.png
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.svg
-      sudo install -D -m 644 -t /etc/nixos/modules/filesystems/ ./modules/filesystems/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/hardened/ ./modules/hardened/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/hardware/ ./modules/hardware/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/platforms/ ./modules/platforms/*.nix
-      for pkg in ./pkgs/*; do sudo install -D -m 644 -t "/etc/nixos/${pkg}/" "$pkg"/*; done
+      # Mirror the repo. Excluded files are neither updated nor deleted.
+      rsync -a --delete \
+        --exclude '.git/' \
+        --exclude '.gitignore' \
+        --exclude 'img/' \
+        --exclude 'iso/' \
+        --exclude 'tests/' \
+        --exclude 'AGENTS.md' \
+        --exclude 'curios-install' \
+        --exclude 'hardware-configuration.nix' \
+        --exclude 'justfile' \
+        --exclude 'settings.nix' \
+        --exclude 'modules.json' \
+        --exclude 'modules.json.*.bak' \
+        --exclude 'shell-rpi.nix' \
+        --exclude 'shell.nix' \
+        ./ /etc/nixos/
+      find /etc/nixos/ -type f -exec chmod 644 {} +
+      find /etc/nixos/ -type d -exec chmod 755 {} +
 
       NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
       if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
@@ -216,26 +217,12 @@ nixos-upgrade: lint
         fi
       fi
 
-      source /etc/os-release
-      if [ "$VARIANT_ID" == "25.11.4" ]; then
-        sudo sed -i 's/desktop\.apps/desktop/g' /etc/nixos/settings.nix
-        sudo sed -i 's/desktop\.cosmic/cosmic/g' /etc/nixos/settings.nix
-        #sudo curios-update --export
-        #sudo sed -i '15,259d' /etc/nixos/settings.nix
-      fi
-
+      printf "\e[32mUpgrading system...\e[0m\n"
       sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto --show-trace 2>&1 | tee /tmp/nixos-upgrade.log
-      CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
-      if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
-        HOME_DIR="/home/*/"
-        printf "\e[32m Updating CuriOS dotfiles...\e[0m\n"
-        for DIR in $HOME_DIR; do
-          if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
-            OWNER=$(stat -c '%U' "$DIR")
-            sudo -u "$OWNER" curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
-          fi
-        done
-      fi
+      git_rev_latest=$(git -C ./ rev-parse HEAD)
+      sudo curios-update --update-module "curios.core.source.revision" "${git_rev_latest}"
+      printf "\e[32mLaunching store garbage collect...\e[0m\n"
+      sudo nix-collect-garbage --delete-older-than 15d --cores 0 --max-jobs auto --quiet
       if command -v aa-status >/dev/null; then
         if systemctl is-active --quiet apparmor.service; then
           printf "\e[32m Clearing AppArmor cache...\e[0m\n"
@@ -244,7 +231,7 @@ nixos-upgrade: lint
           sudo systemctl restart apparmor
         fi
       fi
-      printf "\e[32m Done.\e[0m\n"
+      printf "\e[32mDone.\e[0m\n"
       ;;
     [Nn]*) echo "No selected"; exit;;
     [Cc]*) echo "Cancel selected"; exit;;
