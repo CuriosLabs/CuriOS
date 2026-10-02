@@ -17,8 +17,13 @@
       }
     },
     "core": {
+      "dotfiles": {
+        "branch": "main",
+        "revision": "",
+        "url": "https://github.com/CuriosLabs/curios-themes.git"
+      },
       "source": {
-        "branch": "master",
+        "branch": "stable",
         "revision": "",
         "url": "https://github.com/CuriosLabs/CuriOS.git"
       }

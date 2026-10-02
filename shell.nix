@@ -16,7 +16,6 @@ pkgs.mkShell {
     just
     git
     gh
-    rsync
     sbomnix
   ];
 }

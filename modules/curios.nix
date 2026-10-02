@@ -6,22 +6,41 @@ let
 in {
   # Declare options
   options = {
-    curios.core.source = {
-      branch = lib.mkOption {
-        type = lib.types.str;
-        default = "stable";
-        description = "CuriOS Git respository branch to use.";
+    curios.core = {
+      dotfiles = {
+        branch = lib.mkOption {
+          type = lib.types.str;
+          default = "main";
+          description = "Dotfiles Git respository branch to use.";
+        };
+        url = lib.mkOption {
+          type = lib.types.str;
+          default = "https://github.com/CuriosLabs/curios-themes.git";
+          description = "Dotfiles Git respository URL.";
+        };
+        revision = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "";
+          description = "The Git revision from which this dotfiles was built.";
+        };
       };
-      url = lib.mkOption {
-        type = lib.types.str;
-        default = "https://github.com/CuriosLabs/CuriOS.git";
-        description = "CuriOS Git respository URL.";
-      };
-      revision = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = "";
-        description =
-          "The Git revision from which this CuriOS configuration was built.";
+      source = {
+        branch = lib.mkOption {
+          type = lib.types.str;
+          default = "stable";
+          description = "CuriOS Git respository branch to use.";
+        };
+        url = lib.mkOption {
+          type = lib.types.str;
+          default = "https://github.com/CuriosLabs/CuriOS.git";
+          description = "CuriOS Git respository URL.";
+        };
+        revision = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "";
+          description =
+            "The Git revision from which this CuriOS configuration was built.";
+        };
       };
     };
   };
