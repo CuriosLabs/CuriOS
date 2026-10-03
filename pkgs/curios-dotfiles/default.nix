@@ -1,38 +1,37 @@
 # CuriOS dotfiles packages.
 # Set COSMIC, ZSH and various configuration files.
 
-{ lib, stdenvNoCC, fetchFromGitHub }:
+{ lib, pkgs, stdenvNoCC, fetchFromGitHub, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-dotfiles";
-  version = "0.36.2";
+  version = "0.40.1";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-dotfiles";
     rev = version;
-    hash = "sha256-/KpScpAw9kKBPmamVtHAyxyuD1DH0ShZJ1OgXk75+Gw=";
+    hash = "sha256-/PnLNM32h0zVMnL1kxeOOUBrmf9XQLda4jc7S3eIAoY=";
   };
 
-  dontPatch = true;
+  buildInputs = [ pkgs.git pkgs.gnused pkgs.jq ];
+  nativeBuildInputs = [ makeWrapper ];
   dontConfigure = true;
   dontBuild = true;
+  postPatch = ''
+    patchShebangs .
+  '';
   installPhase = ''
     runHook preInstall
 
     mkdir -p $out/bin/
-    mkdir -p $out/share/
-    mkdir -p $out/share/backgrounds/curios/
-    mkdir -p $out/share/themes/curios/
 
     install -D -m 555 -t $out/bin/ curios-dotfiles
-    cp -r .config/ $out/share/
-    cp -r .agents/ $out/share/
-    cp -r .pi/ $out/share/
-    cp -r .zsh/ $out/share/
-    install -D -m 644 -t $out/share/ .npmrc
-    install -D -m 644 -t $out/share/ .zshrc
-    install -D -m 444 -t $out/share/backgrounds/curios/ wallpapers/*.jpg
-    install -D -m 444 -t $out/share/themes/curios/ themes/*.ron
+    wrapProgram $out/bin/curios-dotfiles --prefix PATH : ${
+      lib.makeBinPath buildInputs
+    }
+    wrapProgram $out/bin/curios-dotfiles --prefix PATH : ${
+      lib.makeBinPath buildInputs
+    }
 
     runHook postInstall
   '';
@@ -41,6 +40,7 @@ stdenvNoCC.mkDerivation rec {
     description = "COSMIC Desktop Environment configuration files for CuriOS";
     homepage = "https://github.com/CuriosLabs/curios-dotfiles";
     license = lib.licenses.gpl3Only;
+    mainProgram = "curios-dotfiles";
     platforms = lib.platforms.linux;
   };
 }
