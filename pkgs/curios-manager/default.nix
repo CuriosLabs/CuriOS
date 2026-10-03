@@ -4,13 +4,13 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.50.2";
+  version = "0.51.0";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-X+shOz3SmlfkmpTvkpSktbc1XYykd65virlbDtF+p8w=";
+    hash = "sha256-7fe3F8Bw2gCw8EuZzZW3hFgKk9VMgID1NY6atE85LyI=";
   };
 
   buildInputs = [
@@ -78,6 +78,7 @@ stdenvNoCC.mkDerivation rec {
     description = "CuriOS manager";
     homepage = "https://github.com/CuriosLabs/curios-manager";
     license = lib.licenses.gpl3Only;
+    mainProgram = "curios-manager";
     platforms = lib.platforms.linux;
   };
 }
