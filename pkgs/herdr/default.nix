@@ -1,6 +1,16 @@
-{ lib, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installShellFiles
+{ lib, pkgs, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installShellFiles
 , cctools, xcbuild, versionCheckHook, nix-update-script, }:
-rustPlatform.buildRustPackage (finalAttrs: {
+let
+  desktopItem = pkgs.makeDesktopItem {
+    name = "dev.herdr.herdrdev";
+    exec = "xdg-terminal-exec herdr";
+    desktopName = "Herdr";
+    icon = "herdr";
+    categories = [ "Development" ];
+    terminal = false;
+    type = "Application";
+  };
+in rustPlatform.buildRustPackage (finalAttrs: {
   pname = "herdr";
   version = "0.9.3";
 
@@ -39,13 +49,16 @@ rustPlatform.buildRustPackage (finalAttrs: {
     chmod -R u+w "$ZIG_GLOBAL_CACHE_DIR/p"
   '';
 
-  postInstall =
-    lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
-      installShellCompletion --cmd herdr \
-        --bash <("$out/bin/herdr" completion bash) \
-        --fish <("$out/bin/herdr" completion fish) \
-        --zsh <("$out/bin/herdr" completion zsh)
-    '';
+  postInstall = ''
+    mkdir -p $out/share
+    cp -r ${desktopItem}/share/applications $out/share
+    install -Dm644 assets/logo.svg $out/share/icons/hicolor/scalable/apps/herdr.svg
+  '' + lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    installShellCompletion --cmd herdr \
+      --bash <("$out/bin/herdr" completion bash) \
+      --fish <("$out/bin/herdr" completion fish) \
+      --zsh <("$out/bin/herdr" completion zsh)
+  '';
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   doInstallCheck = true;
