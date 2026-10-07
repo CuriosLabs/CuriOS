@@ -12,7 +12,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint update-nixos-hardware
+build: lint update-nixos-hardware checks
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -140,6 +140,35 @@ lint:
   for file in `fd --type f ".nix" .`; do statix check $file; done
   @echo 'Linting Bash files...'
   shellcheck --color=always -f tty -x ./curios-install && echo "shellcheck: SUCCESS"
+
+# Check for known dependencies.
+checks: pkg-check-updates
+  #!/usr/bin/env bash
+  set -euo pipefail
+  failed=0
+  printf "Checking electron version...\n"
+  exists=$(nix eval --impure --expr 'builtins.hasAttr "electron_45" (import <nixpkgs> {})')
+  if [[ "$exists" == "true" ]] && ! grep -q 'electron_45' ./modules/hardened/apparmor-profiles.nix; then
+    printf "\e[31melectron_45 exists in nixpkgs but is missing from modules/hardened/apparmor-profiles.nix. Update the AppArmor profile.\e[0m\n"
+    failed=1
+  fi
+  printf "Checking OpenCADStudio version...\n"
+  latest=$(git ls-remote --tags --refs https://github.com/HakanSeven12/OpenCADStudio.git | tail -n1 | cut -d'/' -f3)
+  current=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' ./pkgs/opencadstudio/default.nix)
+  if [[ "$latest" != "$current" ]]; then
+    printf "\e[31mOpenCADStudio %s is available but pkgs/opencadstudio/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
+    failed=1
+  fi
+  printf "Checking Electrum version...\n"
+  latest=$(git ls-remote --tags --refs https://github.com/spesmilo/electrum.git | cut -d'/' -f3 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+  current=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' ./pkgs/electrum/default.nix)
+  if [[ "$latest" != "$current" ]]; then
+    printf "\e[31mElectrum %s is available but pkgs/electrum/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
+    failed=1
+  fi
+  printf "\e[33mRemember to manually check:\e[0m https://lmstudio.ai/download \n"
+  printf "\e[33mAlso remember to launch:\e[0m 'just test-unit pkgs-all'\n"
+  exit "$failed"
 
 # List all curios options and their current default values for this project.
 list-options:
