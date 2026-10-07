@@ -4,13 +4,13 @@
 { lib, pkgs, stdenvNoCC, fetchFromGitHub, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-dotfiles";
-  version = "0.42.0";
+  version = "0.43.0";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-dotfiles";
     rev = version;
-    hash = "sha256-bnZTsvKRidrAuMeZ0lq7ahj2ZSs3fsAp3/k9cesWX4Q=";
+    hash = "sha256-f/PNodCnqjD2P9hQG0R81kwcFd4y7L9PLnaMzJaKmNY=";
   };
 
   buildInputs = [ pkgs.git pkgs.gnused pkgs.jq ];
