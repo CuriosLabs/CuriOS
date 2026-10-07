@@ -47,7 +47,7 @@ AMD64_INSTALL=1
 RPI4_INSTALL=0
 RPI5_INSTALL=0
 NIXOS_CONFIG_DIR="/mnt/etc/nixos"
-DO_DOTFILES_INSTALL=1
+DO_DOTFILES_INSTALL=0
 VERBOSE=0
 REPORT_PLAN=0
 # Pre configured timezone based on user language - adjust to choose_lang() list order.
@@ -837,15 +837,16 @@ dotfiles_install() {
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
   echo -e "${BLUE}Custom dotfiles installation...${NC}"
-  local SKEL_DIR="/mnt/etc/skel/"
+  #local SKEL_DIR="/mnt/etc/skel/"
   local HOME_DIR="/mnt/home/*/"
   local BRAVE_THEMES_FILE="/mnt/etc/brave/policies/managed/themes.json"
   mkdir -p "$(dirname "$BRAVE_THEMES_FILE")"
   touch "$BRAVE_THEMES_FILE"
-  mkdir -p "$SKEL_DIR"
-  curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$SKEL_DIR"
+  #mkdir -p "$SKEL_DIR"
+  #curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$SKEL_DIR"
   for DIR in $HOME_DIR; do
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
+      curios-dotfiles --upgrade "$DIR"
       curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
       chown -R 1000:1000 "$DIR"
     fi
