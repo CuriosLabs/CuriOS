@@ -4,25 +4,28 @@
 { lib, stdenvNoCC, fetchFromGitHub, pkgs, makeWrapper }:
 stdenvNoCC.mkDerivation rec {
   pname = "curios-manager";
-  version = "0.52.3";
+  version = "0.52.4";
 
   src = fetchFromGitHub {
     owner = "CuriosLabs";
     repo = "curios-manager";
     rev = version;
-    hash = "sha256-k7epY3NFWI3Uilg26vZP93ebdAH/eEbz5rTVHsCPzHM=";
+    hash = "sha256-aZh3fCx+P66YZR+EHsErcDJx6ChZO4QcGOFZuiKK63w=";
   };
 
   buildInputs = [
     pkgs.btop
     pkgs.coreutils
+    pkgs.cryptsetup
     pkgs.duf
+    pkgs.efitools
     pkgs.fastfetch
     pkgs.fd
     pkgs.fwupd
     pkgs.git
     pkgs.gdu
     pkgs.gum
+    pkgs.hostname
     pkgs.jq
     pkgs.libnotify
     pkgs.libsecret
@@ -30,12 +33,17 @@ stdenvNoCC.mkDerivation rec {
     pkgs.nix-search-cli
     pkgs.nixos-option
     #pkgs.nvtopPackages.full
+    pkgs.openssh
     pkgs.pamtester
     pkgs.restic
     pkgs.rsync
+    pkgs.sbctl
     pkgs.smartmontools
+    pkgs.snitch
     pkgs.terminaltexteffects
     pkgs.util-linux
+    pkgs.xdg-utils
+    pkgs.yubikey-manager
   ];
   nativeBuildInputs = [ makeWrapper ];
   dontConfigure = true;
