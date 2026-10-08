@@ -252,6 +252,7 @@
           fresh-install = {
             enable = lib.mkDefault config.curios.system.core.dotfiles;
             description = "CuriOS fresh install";
+            path = [ pkgs.nix ];
             serviceConfig = {
               Type = "oneshot";
               ExecStart =
