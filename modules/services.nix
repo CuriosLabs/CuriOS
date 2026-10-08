@@ -258,7 +258,7 @@
           description = "CuriOS system upgrade";
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
-          path = [ pkgs.nix ];
+          path = [ pkgs.nix config.system.build.nixos-rebuild ];
           serviceConfig = {
             Type = "oneshot";
             ExecStart = "/run/current-system/sw/bin/curios-update --upgrade";
