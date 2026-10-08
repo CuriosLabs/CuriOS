@@ -57,8 +57,8 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
-      system.upgrade = lib.mkOption {
-        enable = {
+      system.upgrade = {
+        enable = lib.mkOption {
           type = lib.types.bool;
           default = true;
           description = "CuriOS system auto upgrade service.";
