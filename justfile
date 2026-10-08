@@ -240,7 +240,7 @@ publish: lint
     fi
 
     git push --set-upstream origin "{{branch}}"
-    printf "\e[32m Uploading ISO to Cloudflare R2...\e[0m\n"
+    printf "\e[32mUploading ISO to Cloudflare R2...\e[0m\n"
     aws s3 cp "$isoFilePath" "s3://{{r2_bucket}}/${isoFilename}"
     aws s3 cp "${isoFilePath}.sha256" "s3://{{r2_bucket}}/${isoFilename}.sha256"
     printf "\e[32m Creating GitHub release...\e[0m\n"
@@ -249,6 +249,9 @@ publish: lint
 
     sleep 5
     gh pr create --title "Release ${releaseNumber}" --body "" --base master --assignee "@me"
+    printf "\e[32mMerging into stable branch...\e[0m\n"
+    git checkout stable
+    git merge "{{branch}}" -m "Release ${releaseNumber}"
   fi
   printf "\e[32mDone...\e[0m\n"
 
