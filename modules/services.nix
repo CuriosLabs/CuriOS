@@ -249,6 +249,15 @@
       # systemctl --user status flatpak-update.service
       user = {
         services = {
+          fresh-install = {
+            description = "CuriOS fresh install";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart =
+                "/run/current-system/sw/bin/curios-update --fresh-install %h";
+            };
+            wantedBy = [ "default.target" ];
+          };
           flakes-upgrade = {
             enable = lib.mkDefault config.curios.services.flakes.update.enable;
             description = "Nix flakes user upgrade";
