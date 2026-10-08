@@ -51,7 +51,6 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/pkgs/lm-studio/ pkgs/lm-studio/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/lm-studio-bionic/ pkgs/lm-studio-bionic/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/opencadstudio/ pkgs/opencadstudio/default.nix
-    install -D -m 644 -t $out/share/curios/pkgs/snitch/ pkgs/snitch/default.nix
 
     runHook postInstall
   '';
