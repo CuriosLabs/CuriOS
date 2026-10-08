@@ -57,6 +57,13 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
+      system.upgrade = {
+        enable = {
+          type = lib.types.bool;
+          default = true;
+          description = "CuriOS system auto upgrade service.";
+        };
+      };
       n8n.enable = lib.mkOption {
         type = lib.types.nullOr lib.types.bool;
         default = null;
@@ -247,6 +254,7 @@
         # systemctl status curios-upgrade.timer
         # systemctl list-timers curios-upgrade.timer
         curios-upgrade = {
+          enable = lib.mkDefault config.curios.services.system.upgrade.enable;
           description = "CuriOS system upgrade";
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
@@ -261,6 +269,7 @@
       # Realtime timer with Persistent= so it is not reset by reboots
       timers = {
         curios-upgrade = {
+          enable = lib.mkDefault config.curios.services.system.upgrade.enable;
           description = "CuriOS system upgrade (daily)";
           timerConfig = {
             OnCalendar = "*-*-* 03:40:00";

@@ -568,6 +568,11 @@
       },
       "sshd": {
         "enable": false
+      },
+      "system": {
+        "upgrade": {
+          "enable": true
+        }
       }
     },
     "shell": {
@@ -614,7 +619,7 @@
       },
       "pkgs": {
         "autoupgrade": {
-          "enable": true
+          "enable": false
         },
         "gc": {
           "enable": true

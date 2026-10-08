@@ -49,8 +49,8 @@ in {
       pkgs = {
         autoupgrade.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
-          description = "Enable automated packages update and cleanup.";
+          default = false;
+          description = "Enable NixOS automated packages update.";
         };
         gc.enable = lib.mkOption {
           type = lib.types.bool;
@@ -144,7 +144,8 @@ in {
     };
 
     system.autoUpgrade = {
-      enable = false;
+      enable = lib.mkDefault (config.curios.system.pkgs.autoupgrade.enable
+        && !config.curios.services.system.upgrade.enable);
       dates = "03:40";
       randomizedDelaySec = "3min";
       # Reboot on new kernel, initrd or kernel module.
