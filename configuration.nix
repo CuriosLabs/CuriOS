@@ -101,42 +101,46 @@ in {
     pinentryPackage = pkgs.pinentry-curses;
   };
 
-  # Allow unfree packages, could be overridden by some modules.
-  nixpkgs.config.allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
-    true
-  else if config.curios.desktop.ai.cursor.enable then
-    true
-  else if config.curios.desktop.office.enable then
-    true
-  else if config.curios.desktop.chat.teamspeak.enable then
-    true
-  else if config.curios.desktop.gaming.enable then
-    true
-  else if config.curios.desktop.studio.enable then
-    true
-  else if config.curios.desktop.devops.editor.go.enable then
-    true
-  else if config.curios.desktop.devops.editor.rust.enable then
-    true
-  else if config.curios.others.p7zip.enable then
-    true
-  else
-    false;
-
   # IMPORTANT: Define nixpkgs allowInsecurePredicate ONLY here!
   # Setting it ignores permittedInsecurePackages.
   # opencode-desktop / winboat pin EOL Electron on NixOS 26.05.
   # Must live here: nixpkgs.config inside a module lib.mkIf is ignored by pkgs.
   # Check actual value on your system with: `nixos-option nixpkgs.config 2>&1`
   # TODO: remove when those packages pin electron>=42
-  nixpkgs.config.allowInsecurePredicate = pkg:
-    let
-      name = pkg.name or "${pkg.pname or ""}-${pkg.version or ""}";
-      prefixes = lib.optionals (config.curios.desktop.devops.enable
-        && config.curios.desktop.devops.editor.opencode.enable)
-        [ "electron-41." ] ++ lib.optionals (config.curios.virtualisation.enable
-          && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
-    in lib.any (prefix: lib.hasPrefix prefix name) prefixes;
+  nixpkgs.config = {
+    # Allow unfree packages, could be overridden by some modules.
+    allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
+      true
+    else if config.curios.desktop.ai.cursor.enable then
+      true
+    else if config.curios.desktop.office.enable then
+      true
+    else if config.curios.desktop.chat.teamspeak.enable then
+      true
+    else if config.curios.desktop.gaming.enable then
+      true
+    else if config.curios.desktop.studio.enable then
+      true
+    else if config.curios.desktop.devops.editor.go.enable then
+      true
+    else if config.curios.desktop.devops.editor.rust.enable then
+      true
+    else if config.curios.others.p7zip.enable then
+      true
+    else
+      false;
+    # Insecure pkgs
+    allowInsecurePredicate = pkg:
+      let
+        name = pkg.name or "${pkg.pname or ""}-${pkg.version or ""}";
+        prefixes = lib.optionals (config.curios.desktop.devops.enable
+          && config.curios.desktop.devops.editor.opencode.enable)
+          [ "electron-41." ] ++ lib.optionals
+          (config.curios.virtualisation.enable
+            && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
+      in lib.any (prefix: lib.hasPrefix prefix name) prefixes;
+    permittedInsecurePackages = [ "electron-41.10.7" ];
+  };
 
   system = {
     # Automatic OS updates and cleanup

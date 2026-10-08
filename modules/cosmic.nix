@@ -7,7 +7,7 @@
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "REQUIRED - Enable the COSMIC desktop environment.";
+        description = "Enable the COSMIC desktop environment.";
       };
       orca = lib.mkOption {
         type = lib.types.bool;

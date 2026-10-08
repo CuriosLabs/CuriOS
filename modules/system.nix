@@ -49,8 +49,8 @@ in {
       pkgs = {
         autoupgrade.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
-          description = "Enable automated packages update and cleanup.";
+          default = false;
+          description = "Enable NixOS automated packages update.";
         };
         gc.enable = lib.mkOption {
           type = lib.types.bool;
@@ -144,7 +144,8 @@ in {
     };
 
     system.autoUpgrade = {
-      enable = lib.mkDefault config.curios.system.pkgs.autoupgrade.enable;
+      enable = lib.mkDefault (config.curios.system.pkgs.autoupgrade.enable
+        && !config.curios.services.system.upgrade.enable);
       dates = "03:40";
       randomizedDelaySec = "3min";
       # Reboot on new kernel, initrd or kernel module.
@@ -167,8 +168,10 @@ in {
 
     environment.systemPackages =
       lib.optionals config.curios.system.ansible.enable [ pkgs.ansible ]
-      ++ lib.optionals config.curios.system.core.dotfiles [ curios-dotfiles ]
-      ++ lib.optionals config.curios.system.core.manager-applet
+      ++ lib.optionals
+      (config.curios.system.core.dotfiles && config.curios.cosmic.enable)
+      [ curios-dotfiles ] ++ lib.optionals
+      (config.curios.system.core.manager-applet && config.curios.cosmic.enable)
       [ curios-manager-applet ]
       ++ lib.optionals config.curios.system.languages.go.enable [
         pkgs.go

@@ -832,21 +832,23 @@ format_disk() {
   #pvremove "$LVM_MAPPED_DEVICE"
 }
 
-#------------- CuriOS dotfiles install, see: https://github.com/CuriosLabs/curios-dotfiles
+#------------- users dotfiles install for curios-dotfiles on first boot.
 dotfiles_install() {
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}================================${NC}"
-  echo -e "${BLUE}Custom dotfiles installation...${NC}"
+  echo -e "${BLUE}Preparing users dotfiles...${NC}"
   local SKEL_DIR="/mnt/etc/skel/"
   local HOME_DIR="/mnt/home/*/"
   local BRAVE_THEMES_FILE="/mnt/etc/brave/policies/managed/themes.json"
   mkdir -p "$(dirname "$BRAVE_THEMES_FILE")"
   touch "$BRAVE_THEMES_FILE"
-  mkdir -p "$SKEL_DIR"
-  curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$SKEL_DIR"
+  mkdir -p "${SKEL_DIR}/.curios"
+  touch "${SKEL_DIR}/.curios/freshinstall"
   for DIR in $HOME_DIR; do
     if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
-      curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" "$DIR"
+      mkdir -p "${DIR}/.curios"
+      touch "${DIR}/.curios/freshinstall"
+      curios-dotfiles --lang "$SELECTED_LOCALE_CONSOLE" --upgrade "$DIR"
       chown -R 1000:1000 "$DIR"
     fi
   done

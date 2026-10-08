@@ -16,6 +16,18 @@
         }
       }
     },
+    "core": {
+      "dotfiles": {
+        "branch": "main",
+        "revision": "",
+        "url": "https://github.com/CuriosLabs/curios-themes.git"
+      },
+      "source": {
+        "branch": "stable",
+        "revision": "",
+        "url": "https://github.com/CuriosLabs/CuriOS.git"
+      }
+    },
     "cosmic": {
       "enable": true,
       "orca": false
@@ -535,8 +547,18 @@
         "enable": true
       },
       "enable": true,
+      "flakes": {
+        "update": {
+          "enable": true
+        }
+      },
       "flatpak": {
         "enable": true
+      },
+      "npm": {
+        "update": {
+          "enable": true
+        }
       },
       "ollama": {
         "enable": false
@@ -546,6 +568,11 @@
       },
       "sshd": {
         "enable": false
+      },
+      "system": {
+        "upgrade": {
+          "enable": true
+        }
       }
     },
     "shell": {
@@ -592,7 +619,7 @@
       },
       "pkgs": {
         "autoupgrade": {
-          "enable": true
+          "enable": false
         },
         "gc": {
           "enable": true

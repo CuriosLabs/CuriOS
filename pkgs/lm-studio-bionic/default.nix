@@ -5,14 +5,14 @@
 { lib, fetchurl, makeDesktopItem, appimageTools }:
 let
   pname = "lm-studio-bionic";
-  version = "1.1.6-3";
+  version = "1.1.7-7";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://bionic-installers.lmstudio.ai/linux/x64/1.1.1-5/Bionic-1.1.1-5-x64.AppImage)"
   src = fetchurl {
     url =
       "https://bionic-installers.lmstudio.ai/linux/x64/${version}/Bionic-${version}-x64.AppImage";
-    hash = "sha256-QM3Nxtv3m2867TXKWs1q0gUYeuCEywJ0WwQCvU7neZg=";
+    hash = "sha256-0qLX0stoxDUqhL5tmbJDXxT4DVAPIkxyARPnqLCu/l8=";
   };
 
   appimageContents = appimageTools.extract { inherit pname version src; };

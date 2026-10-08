@@ -1,8 +1,18 @@
-{ lib, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installAgentSkills
-, installShellFiles, cctools, xcbuild, versionCheckHook, nix-update-script, }:
-rustPlatform.buildRustPackage (finalAttrs: {
+{ lib, pkgs, stdenv, rustPlatform, fetchFromGitHub, zig_0_16, installShellFiles
+, cctools, xcbuild, versionCheckHook, nix-update-script, }:
+let
+  desktopItem = pkgs.makeDesktopItem {
+    name = "dev.herdr.herdrdev";
+    exec = "xdg-terminal-exec herdr";
+    desktopName = "Herdr";
+    icon = "herdr";
+    categories = [ "Development" ];
+    terminal = false;
+    type = "Application";
+  };
+in rustPlatform.buildRustPackage (finalAttrs: {
   pname = "herdr";
-  version = "0.9.1";
+  version = "0.9.3";
 
   __structuredAttrs = true;
 
@@ -10,10 +20,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "herdrdev";
     repo = "herdr";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-N6+kprfWRyh0AkAiopkGsNXUGGORyPVFHEaDHCpGQs8=";
+    hash = "sha256-uu452Xe23pSvFk7w7fKPjiaqY5QenUIljao2SFAxpc0=";
   };
 
-  cargoHash = "sha256-1VAmsDE3zeU0wMVQKleQcd/zq8/k/oor8tasrsRQfeY=";
+  cargoHash = "sha256-+gTWtEheyuI59yf2PqRbcbcFIW+/cYb7zZ2mPv2VN0Y=";
 
   zigDeps = zig_0_16.fetchDeps {
     inherit (finalAttrs) pname version;
@@ -22,7 +32,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-Cy0DdSvce+fhOFIfxHMQGF2b2j16UkS27UpGbfC42XI=";
   };
 
-  nativeBuildInputs = [ zig_0_16 installAgentSkills installShellFiles ]
+  nativeBuildInputs = [ zig_0_16 installShellFiles ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [ cctools xcbuild ];
 
   # Upstream binary tests are renamed, added, or changed between releases and
@@ -39,13 +49,16 @@ rustPlatform.buildRustPackage (finalAttrs: {
     chmod -R u+w "$ZIG_GLOBAL_CACHE_DIR/p"
   '';
 
-  postInstall =
-    lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
-      installShellCompletion --cmd herdr \
-        --bash <("$out/bin/herdr" completion bash) \
-        --fish <("$out/bin/herdr" completion fish) \
-        --zsh <("$out/bin/herdr" completion zsh)
-    '';
+  postInstall = ''
+    mkdir -p $out/share
+    cp -r ${desktopItem}/share/applications $out/share
+    install -Dm644 assets/logo.svg $out/share/icons/hicolor/scalable/apps/herdr.svg
+  '' + lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    installShellCompletion --cmd herdr \
+      --bash <("$out/bin/herdr" completion bash) \
+      --fish <("$out/bin/herdr" completion fish) \
+      --zsh <("$out/bin/herdr" completion zsh)
+  '';
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   doInstallCheck = true;

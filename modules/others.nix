@@ -25,11 +25,8 @@
   # Declare configuration
   config = lib.mkIf config.curios.others.enable {
     environment.systemPackages = with pkgs;
-      [
-        drm_info
-        htop
-        v4l-utils
-      ] ++ lib.optionals config.curios.others.openssl.enable [ openssl ]
+      [ drm_info htop v4l-utils ]
+      ++ lib.optionals config.curios.others.openssl.enable [ openssl ]
       ++ lib.optionals config.curios.others.p7zip.enable [ p7zip ];
   };
 }

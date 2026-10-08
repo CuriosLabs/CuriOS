@@ -31,7 +31,7 @@ See [OpenCode Zen](https://opencode.ai/docs/zen) for models available on the pai
 plan or how to bring your own keys from Anthropic or OpenAI.
 See below for how to configure `opencode.json` for local AI from LM Studio or Ollama.
 
-![OpenCode desktop application](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.8/img/OpenCode-desktop.png?raw=true "OpenCode desktop.")
+![OpenCode desktop application](https://github.com/CuriosLabs/CuriOS/blob/master/img/OpenCode-desktop.png?raw=true "OpenCode desktop.")
 
 ### LM Studio Bionic
 

@@ -1,13 +1,13 @@
-# tests/curios-pkgs.nix
-# This test verifies the installation and configuration of custom CuriOS packages.
+# tests/curios.nix
+# This test verifies the installation and configuration of custom CuriOS core.
 # See: https://nlewo.github.io/nixos-manual-sphinx/development/writing-nixos-tests.xml.html
 # See: https://wiki.nixos.org/wiki/NixOS_VM_tests
 
 import <nixpkgs/nixos/tests/make-test-python.nix> {
-  name = "curios-pkgs-test";
+  name = "curios-core-test";
 
   nodes.machine = { config, pkgs, ... }: {
-    imports = [ ../modules/cosmic.nix ../modules/curios-pkgs.nix ];
+    imports = [ ../modules/cosmic.nix ../modules/curios.nix ];
     config = {
       system.stateVersion = "26.05";
       curios.cosmic.enable = true;
@@ -32,10 +32,5 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("curios-manager")
         check_which("curios-update")
         check_which("snitch")
-
-    with subtest("check-systemd-user-units"):
-        # Check if the systemd user unit files exist
-        machine.succeed("test -f /etc/systemd/user/curios-updater.timer")
-        machine.succeed("test -f /etc/systemd/user/curios-updater.service")
   '';
 }
