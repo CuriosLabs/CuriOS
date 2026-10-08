@@ -57,7 +57,7 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
-      system.upgrade = {
+      system.upgrade = lib.mkOption {
         enable = {
           type = lib.types.bool;
           default = true;
