@@ -1,8 +1,6 @@
 # CuriOS core configuration, packages and options
 { lib, pkgs, ... }:
-let
-  curios-manager = pkgs.callPackage ../pkgs/curios-manager { };
-  snitch = pkgs.callPackage ../pkgs/snitch { };
+let curios-manager = pkgs.callPackage ../pkgs/curios-manager { };
 in {
   # Declare options
   options = {
@@ -48,7 +46,7 @@ in {
   # Declare configuration
   config = {
     environment = {
-      systemPackages = [ curios-manager snitch ];
+      systemPackages = [ curios-manager pkgs.snitch ];
 
       # CuriOS Git repository allowed signing keys
       etc."curios/allowed_signers".text = ''

@@ -57,6 +57,13 @@
         default = false;
         description = "Enable SSH daemon service.";
       };
+      system.upgrade = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "CuriOS system auto upgrade service.";
+        };
+      };
       n8n.enable = lib.mkOption {
         type = lib.types.nullOr lib.types.bool;
         default = null;
@@ -227,20 +234,52 @@
       oomd.enable = lib.mkDefault true;
       # Systemd settings for NixOS channel 25.11+
       settings.Manager = { DefaultTimeoutStopSec = "10s"; };
-      # Flatpak system, add repo
-      services.flatpak-repo = {
-        enable = lib.mkDefault config.curios.services.flatpak.enable;
-        description = "Flatpak add default repos";
-        after = [ "network-online.target" ];
-        requires = [ "network-online.target" ];
-        wantedBy = [ "multi-user.target" ];
-        path = [ pkgs.flatpak ];
-        script = if config.curios.cosmic.enable then ''
-          /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
-        '' else ''
-          /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-        '';
+      services = {
+        # Flatpak system, add repo
+        flatpak-repo = {
+          enable = lib.mkDefault config.curios.services.flatpak.enable;
+          description = "Flatpak add default repos";
+          after = [ "network-online.target" ];
+          requires = [ "network-online.target" ];
+          wantedBy = [ "multi-user.target" ];
+          path = [ pkgs.flatpak ];
+          script = if config.curios.cosmic.enable then ''
+            /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+            /run/current-system/sw/bin/flatpak remote-add --if-not-exists cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
+          '' else ''
+            /run/current-system/sw/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          '';
+        };
+        # CuriOS system upgrade (root), runs once a day
+        # systemctl status curios-upgrade.timer
+        # systemctl list-timers curios-upgrade.timer
+        curios-upgrade = {
+          enable = lib.mkDefault config.curios.services.system.upgrade.enable;
+          description = "CuriOS system upgrade";
+          after = [ "network-online.target" ];
+          wants = [ "network-online.target" ];
+          path = [ pkgs.nix config.system.build.nixos-rebuild ];
+          environment.NIX_PATH =
+            lib.concatStringsSep ":" config.nix.nixPath;
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "/run/current-system/sw/bin/curios-update --upgrade";
+          };
+          wantedBy = [ ];
+        };
+      };
+      # Realtime timer with Persistent= so it is not reset by reboots
+      timers = {
+        curios-upgrade = {
+          enable = lib.mkDefault config.curios.services.system.upgrade.enable;
+          description = "CuriOS system upgrade (daily)";
+          timerConfig = {
+            OnCalendar = "*-*-* 03:40:00";
+            Persistent = true;
+            RandomizedDelaySec = "5m";
+          };
+          wantedBy = [ "timers.target" ];
+        };
       };
       # Flatpak, flakes and npm user auto update
       # systemctl --user list-units --type=service
@@ -297,9 +336,8 @@
             enable = lib.mkDefault config.curios.services.flakes.update.enable;
             description = "Nix flakes user update";
             timerConfig = {
-              OnStartupSec = "2m";
-              OnUnitInactiveSec = "24h";
-              OnUnitActiveSec = "24h";
+              OnCalendar = "Mon,Wed,Fri *-*-* 04:00:00";
+              Persistent = true;
               RandomizedDelaySec = "10m";
             };
             wantedBy = [ "timers.target" ];
@@ -308,9 +346,8 @@
             enable = lib.mkDefault config.curios.services.flatpak.enable;
             description = "Flatpak user update";
             timerConfig = {
-              OnStartupSec = "60s";
-              OnUnitInactiveSec = "24h";
-              OnUnitActiveSec = "24h";
+              OnCalendar = "*-*-* 04:20:00";
+              Persistent = true;
               RandomizedDelaySec = "5m";
             };
             wantedBy = [ "timers.target" ];
@@ -320,9 +357,8 @@
               && config.curios.system.languages.javascript.enable);
             description = "NPM user update";
             timerConfig = {
-              OnStartupSec = "2m";
-              OnUnitInactiveSec = "24h";
-              OnUnitActiveSec = "24h";
+              OnCalendar = "*-*-* 04:40:00";
+              Persistent = true;
               RandomizedDelaySec = "10m";
             };
             wantedBy = [ "timers.target" ];

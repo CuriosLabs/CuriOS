@@ -83,6 +83,5 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("lms")
         check_which("lm-studio-bionic")
         check_which("opencadstudio")
-        check_which("snitch")
   '';
 }
