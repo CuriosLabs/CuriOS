@@ -259,6 +259,8 @@
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
           path = [ pkgs.nix config.system.build.nixos-rebuild ];
+          environment.NIX_PATH =
+            lib.concatStringsSep ":" config.nix.nixPath;
           serviceConfig = {
             Type = "oneshot";
             ExecStart = "/run/current-system/sw/bin/curios-update --upgrade";
