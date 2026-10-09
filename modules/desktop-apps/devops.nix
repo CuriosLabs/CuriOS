@@ -138,7 +138,7 @@ in {
       tui = {
         herdr.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description =
             "Herdr - multiplexer for your AI agents in the terminal.";
         };
