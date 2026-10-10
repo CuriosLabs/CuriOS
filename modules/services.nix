@@ -291,6 +291,8 @@
           fresh-install = {
             enable = lib.mkDefault config.curios.system.core.dotfiles;
             description = "CuriOS fresh install";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
             path = [ pkgs.nix ];
             serviceConfig = {
               Type = "oneshot";
@@ -302,6 +304,8 @@
           flakes-upgrade = {
             enable = lib.mkDefault config.curios.services.flakes.update.enable;
             description = "Nix flakes user upgrade";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
             serviceConfig = {
               Type = "oneshot";
               ExecStart =
@@ -312,6 +316,8 @@
           flatpak-update = {
             enable = lib.mkDefault config.curios.services.flatpak.enable;
             description = "Flatpak user update";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
             #path = [ pkgs.flatpak ];
             serviceConfig = {
               Type = "oneshot";
@@ -324,6 +330,8 @@
             enable = lib.mkDefault (config.curios.services.npm.update.enable
               && config.curios.system.languages.javascript.enable);
             description = "NPM user update";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
             serviceConfig = {
               Type = "oneshot";
               ExecStart = "/run/current-system/sw/bin/npm update -g";
