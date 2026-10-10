@@ -8,7 +8,7 @@
 { lib, stdenvNoCC }:
 stdenvNoCC.mkDerivation {
   pname = "curios-sources";
-  version = "26.05.9";
+  version = "26.05.10";
 
   src = lib.fileset.toSource {
     root = ../../.;
@@ -46,8 +46,10 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/default.nix
     install -D -m 600 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/Cargo.lock
-    install -D -m 644 -t $out/share/curios/pkgs/herdr/ pkgs/herdr/default.nix
-    install -D -m 644 -t $out/share/curios/pkgs/snitch/ pkgs/snitch/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/electrum/ pkgs/electrum/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/lm-studio/ pkgs/lm-studio/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/lm-studio-bionic/ pkgs/lm-studio-bionic/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/opencadstudio/ pkgs/opencadstudio/default.nix
 
     runHook postInstall
   '';

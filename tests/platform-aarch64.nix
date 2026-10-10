@@ -19,7 +19,7 @@ let
         ../modules/backup.nix
         ../modules/boot-efi.nix
         ../modules/cosmic.nix
-        ../modules/curios-pkgs.nix
+        ../modules/curios.nix
         ../modules/fonts.nix
         ../modules/hardware/default.nix
         ../modules/networking.nix

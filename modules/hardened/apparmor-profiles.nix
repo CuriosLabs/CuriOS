@@ -741,6 +741,9 @@ in {
         ${pkgs.electron_43}/bin/electron                                       rix,
         ${pkgs.electron_43.unwrapped}/libexec/electron/electron                mrix,
         ${pkgs.electron_43.unwrapped}/libexec/electron/chrome_crashpad_handler rix,
+        ${pkgs.electron_44}/bin/electron                                       rix,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/electron                mrix,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/chrome_crashpad_handler rix,
 
 
         # Electron libraries and resources
@@ -765,6 +768,13 @@ in {
         ${pkgs.electron_43.unwrapped}/libexec/electron/locales/**              r,
         ${pkgs.electron_43.unwrapped}/libexec/electron/resources/**            r,
         ${pkgs.electron_43.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/*.so*                   mr,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/*.pak                   r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/*.dat                   r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/*.bin                   r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/locales/**              r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/resources/**            r,
+        ${pkgs.electron_44.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
 
 
         # PipeWire
@@ -926,7 +936,7 @@ in {
             ${pkgs.signal-desktop}/bin/signal-desktop                          rix,
 
             # Chromium sandbox (separate profile with elevated capabilities)
-            ${pkgs.electron_43}/libexec/electron/chrome-sandbox                rPx -> signal-desktop-chrome-sandbox,
+            ${pkgs.electron_44}/libexec/electron/chrome-sandbox                rPx -> signal-desktop-chrome-sandbox,
 
             # Signal Desktop app resources
             ${pkgs.signal-desktop}/share/signal-desktop/**                     r,
@@ -955,7 +965,7 @@ in {
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile signal-desktop-chrome-sandbox ${pkgs.electron_43}/libexec/electron/chrome-sandbox {
+          profile signal-desktop-chrome-sandbox ${pkgs.electron_44}/libexec/electron/chrome-sandbox {
             include <abstractions/base>
             include <abstractions/curios/gconv>
 
@@ -968,8 +978,8 @@ in {
             capability sys_chroot,
             capability dac_override,
 
-            ${pkgs.electron_43}/libexec/electron/chrome-sandbox                mr,
-            ${pkgs.electron_43}/libexec/electron/electron                      rPx -> signal-desktop,
+            ${pkgs.electron_44}/libexec/electron/chrome-sandbox                mr,
+            ${pkgs.electron_44}/libexec/electron/electron                      rPx -> signal-desktop,
 
             @{PROC}                                                            r,
             @{PROC}/@{pids}/                                                   r,

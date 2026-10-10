@@ -12,7 +12,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint update-nixos-hardware
+build: lint update-nixos-hardware update-pkg-unstable checks
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -141,6 +141,35 @@ lint:
   @echo 'Linting Bash files...'
   shellcheck --color=always -f tty -x ./curios-install && echo "shellcheck: SUCCESS"
 
+# Check for known dependencies.
+checks: pkg-check-updates
+  #!/usr/bin/env bash
+  set -euo pipefail
+  failed=0
+  printf "Checking electron version...\n"
+  exists=$(nix eval --impure --expr 'builtins.hasAttr "electron_45" (import <nixpkgs> {})')
+  if [[ "$exists" == "true" ]] && ! grep -q 'electron_45' ./modules/hardened/apparmor-profiles.nix; then
+    printf "\e[31melectron_45 exists in nixpkgs but is missing from modules/hardened/apparmor-profiles.nix. Update the AppArmor profile.\e[0m\n"
+    failed=1
+  fi
+  printf "Checking OpenCADStudio version...\n"
+  latest=$(git ls-remote --tags --refs https://github.com/HakanSeven12/OpenCADStudio.git | tail -n1 | cut -d'/' -f3)
+  current=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' ./pkgs/opencadstudio/default.nix)
+  if [[ "$latest" != "$current" ]]; then
+    printf "\e[31mOpenCADStudio %s is available but pkgs/opencadstudio/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
+    failed=1
+  fi
+  printf "Checking Electrum version...\n"
+  latest=$(git ls-remote --tags --refs https://github.com/spesmilo/electrum.git | cut -d'/' -f3 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+  current=$(grep -m1 -oP '^\s*version\s*=\s*"\K[^"]+' ./pkgs/electrum/default.nix)
+  if [[ "$latest" != "$current" ]]; then
+    printf "\e[31mElectrum %s is available but pkgs/electrum/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
+    failed=1
+  fi
+  printf "\e[33mRemember to manually check:\e[0m https://lmstudio.ai/download \n"
+  printf "\e[33mAlso remember to launch:\e[0m 'just test-unit pkgs-all'\n"
+  exit "$failed"
+
 # List all curios options and their current default values for this project.
 list-options:
   nixos-option -I nixos-config=./modules/default.nix -r curios
@@ -153,12 +182,11 @@ nixos-upgrade: lint
     printf "\e[31m Not a Nixos system.\e[0m\n"
     exit 1
   fi
-  DOTFILES_VERSION="0.0"
-  CURRENT_KEYBOARD="us"
-  if command -v curios-dotfiles >/dev/null; then
-    DOTFILES_VERSION=$(curios-dotfiles --version)
+  if ! command -v curios-update >/dev/null; then
+    printf "\e[31m curios-update command not found! \e[0m\n"
+    exit 1
   fi
-  printf "\e[31m CAUTION! This will modify your system.\e[0m\n"
+  printf "\e[31mCAUTION! This will update your system to branch: {{branch}}.\e[0m\n"
   read -p "Proceed with installation? (Y)es / (N)o / (C)ancel: " yn
   case $yn in
     [Yy]*)
@@ -177,74 +205,10 @@ nixos-upgrade: lint
       sed "s/nixos\.variant_id = \".*/nixos.variant_id = \"${releaseNumber}\";/g" -i ./configuration.nix
       sed "s/version = \".*/version = \"${releaseNumber}\";/g" -i ./pkgs/curios-sources/default.nix
 
-      printf "\e[32m Launching Nix garbage collector...\e[0m\n"
-      sudo nix-store --gc
+      sudo curios-update --update-module curios.core.source.branch "{{branch}}"
+      sudo curios-update --upgrade
 
-      printf "\e[32m Installing Curios...\e[0m\n"
-      sudo install -D -m 644 -t /etc/nixos/ ./configuration.nix
-      if [ ! -f /etc/nixos/settings.nix ]; then
-        sudo install -D -m 644 -t /etc/nixos/ ./settings.nix
-        printf "Default settings.nix file installed! Edit /etc/nixos/settings.nix to match your username."
-      fi
-      sudo install -D -m 644 -t /etc/nixos/ ./logo.txt
-      #sudo mkdir -p /etc/nixos/modules/
-      #sudo cp -r -f --preserve=mode ./modules/ /etc/nixos/
-
-      sudo install -D -m 644 -t /etc/nixos/modules/ ./modules/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.png
-      sudo install -D -m 644 -t /etc/nixos/modules/desktop-apps/ ./modules/desktop-apps/*.svg
-      sudo install -D -m 644 -t /etc/nixos/modules/filesystems/ ./modules/filesystems/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/hardened/ ./modules/hardened/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/hardware/ ./modules/hardware/*.nix
-      sudo install -D -m 644 -t /etc/nixos/modules/platforms/ ./modules/platforms/*.nix
-      for pkg in ./pkgs/*; do sudo install -D -m 644 -t "/etc/nixos/${pkg}/" "$pkg"/*; done
-
-      NIX_CHANNEL_URL=$(grep -oP -m 1 'channel\s*=\s*"\K[^"]+' /etc/nixos/configuration.nix)
-      if sudo nix-channel --list | grep -q "$NIX_CHANNEL_URL"; then
-        printf "\e[32m Nix channel is already up-to-date.\e[0m\n"
-      else
-        printf "Updating Nix channel..."
-        sudo nix-channel --add "$NIX_CHANNEL_URL" nixos
-        sudo nix-channel --update
-      fi
-      if command -v curios-update >/dev/null; then
-        if curios-update --help 2>&1 | grep -q -- "--export"; then
-          sudo curios-update --export
-        else
-          printf "\e[31m curios-update --export is NOT supported!\e[0m\n"
-        fi
-      fi
-
-      source /etc/os-release
-      if [ "$VARIANT_ID" == "25.11.4" ]; then
-        sudo sed -i 's/desktop\.apps/desktop/g' /etc/nixos/settings.nix
-        sudo sed -i 's/desktop\.cosmic/cosmic/g' /etc/nixos/settings.nix
-        #sudo curios-update --export
-        #sudo sed -i '15,259d' /etc/nixos/settings.nix
-      fi
-
-      sudo nixos-rebuild switch --upgrade --cores 0 --max-jobs auto --show-trace 2>&1 | tee /tmp/nixos-upgrade.log
-      CURRENT_KEYBOARD=$(nixos-option curios.system.keyboard | sed -n '/^Value:/{n;p;}' | tr -d '" ')
-      if [[ $(curios-dotfiles --version) != "$DOTFILES_VERSION" ]]; then
-        HOME_DIR="/home/*/"
-        printf "\e[32m Updating CuriOS dotfiles...\e[0m\n"
-        for DIR in $HOME_DIR; do
-          if [[ -d "$DIR" && "$DIR" != */lost+found/ ]]; then
-            OWNER=$(stat -c '%U' "$DIR")
-            sudo -u "$OWNER" curios-dotfiles --lang "$CURRENT_KEYBOARD" "$DIR"
-          fi
-        done
-      fi
-      if command -v aa-status >/dev/null; then
-        if systemctl is-active --quiet apparmor.service; then
-          printf "\e[32m Clearing AppArmor cache...\e[0m\n"
-          sudo fd -d 1 . /var/cache/apparmor/ -E logprof -x rm -rf {}
-          sudo truncate -s 0 /var/log/audit/audit.log
-          sudo systemctl restart apparmor
-        fi
-      fi
-      printf "\e[32m Done.\e[0m\n"
+      printf "\e[32mDone.\e[0m\n"
       ;;
     [Nn]*) echo "No selected"; exit;;
     [Cc]*) echo "Cancel selected"; exit;;
@@ -276,13 +240,20 @@ publish: lint
     fi
 
     git push --set-upstream origin "{{branch}}"
-    printf "\e[32m Uploading ISO to Cloudflare R2...\e[0m\n"
+    printf "\e[32mUploading ISO to Cloudflare R2...\e[0m\n"
     aws s3 cp "$isoFilePath" "s3://{{r2_bucket}}/${isoFilename}"
     aws s3 cp "${isoFilePath}.sha256" "s3://{{r2_bucket}}/${isoFilename}.sha256"
     printf "\e[32m Creating GitHub release...\e[0m\n"
     gh release create "$releaseNumber" --target "{{branch}}" --title "$releaseNumber" --prerelease --generate-notes \
       --notes "$(printf '## Download\n\n- ISO: {{r2_public_url}}/%s\n- SHA256: {{r2_public_url}}/%s.sha256\n' "${isoFilename}" "${isoFilename}")"
+
+    sleep 5
+    gh pr create --title "Release ${releaseNumber}" --body "" --base master --assignee "@me"
+    printf "\e[32mMerging into stable branch...\e[0m\n"
+    git checkout stable
+    git merge "{{branch}}" -m "Release ${releaseNumber}"
   fi
+  printf "\e[32mDone...\e[0m\n"
 
 # Run all integrations tests sequentially
 test-all:
@@ -325,6 +296,30 @@ update-nixos-hardware:
   echo "Updated nixos-hardware to commit ${LATEST_COMMIT} in:"
   echo "  - ./modules/platforms/rpi4.nix"
   echo "  - ./modules/platforms/rpi5.nix"
+
+# Update the pinned nixpkgs-unstable commit in the devops module.
+update-pkg-unstable:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Fetching latest nixpkgs-unstable revision..."
+  LATEST_COMMIT=$(curl -fsSL https://channels.nixos.org/nixos-unstable/git-revision)
+  if [ -z "$LATEST_COMMIT" ]; then
+    echo "Failed to fetch latest revision."
+    exit 1
+  fi
+  CURRENT_COMMIT=$(grep -oP 'archive/\K[0-9a-f]+' ./modules/desktop-apps/devops.nix | head -1)
+  if [ "$CURRENT_COMMIT" = "$LATEST_COMMIT" ]; then
+    echo "nixpkgs-unstable is already up to date ($CURRENT_COMMIT)."
+    exit 0
+  fi
+  echo "Latest commit: $LATEST_COMMIT"
+  echo "Fetching SHA256..."
+  SHA256=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixpkgs/archive/${LATEST_COMMIT}.tar.gz")
+  echo "SHA256: $SHA256"
+  sed -i "s|archive/[0-9a-f]*.tar.gz|archive/${LATEST_COMMIT}.tar.gz|g" ./modules/desktop-apps/devops.nix
+  sed -i "s|sha256 = \".*\";|sha256 = \"${SHA256}\";|g" ./modules/desktop-apps/devops.nix
+  echo "Updated nixpkgs-unstable to commit ${LATEST_COMMIT} in:"
+  echo "  - ./modules/desktop-apps/devops.nix"
 
 # Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
 pkg-check-updates pkg='':
@@ -639,7 +634,7 @@ pkg-check-updates pkg='':
     exit 1
   fi
 
-# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule.
+# Update version and source hash for a fetchFromGitHub package. Refreshes vendorHash for buildGoModule and cargoHash for rustPlatform.
 pkg-update-hash pkg='' version='':
   #!/usr/bin/env bash
   set -euo pipefail
@@ -722,6 +717,39 @@ pkg-update-hash pkg='' version='':
     fi
     printf "vendorHash: %s\n" "$vendor"
     sed "0,/vendorHash = \".*\";/s#vendorHash = \".*\";#vendorHash = \"${vendor}\";#" -i "$pkg"
+    rm -f "$expr"
+  fi
+
+  if grep -qE 'buildRustPackage|rustPlatform' "$pkg" && grep -q 'cargoHash' "$pkg"; then
+    pkg_abs=$(readlink -f "$pkg")
+    expr=$(mktemp --suffix=.nix)
+    trap 'rm -f "$expr"' EXIT
+    printf '%s\n' \
+      'let' \
+      '  pkgs = import <nixpkgs> {};' \
+      'in' \
+      "  (pkgs.callPackage ${pkg_abs} {}).cargoDeps.vendorStaging.overrideAttrs (_: {" \
+      '    outputHash = pkgs.lib.fakeHash;' \
+      '  })' >"$expr"
+    printf "Fetching cargoHash...\n"
+    status=0
+    log=$(LC_ALL=C nix-build --no-out-link "$expr" 2>&1) || status=$?
+    cargo=$(printf '%s\n' "$log" | awk '
+      /vendor-staging/ { found = 1 }
+      found && /got:/ {
+        if (match($0, /sha256-[A-Za-z0-9+\/=]+/)) {
+          print substr($0, RSTART, RLENGTH)
+          exit
+        }
+      }
+    ')
+    if [[ -z "$cargo" ]]; then
+      printf "\e[31mCould not determine cargoHash.\e[0m\n"
+      printf '%s\n' "$log"
+      exit 1
+    fi
+    printf "cargoHash: %s\n" "$cargo"
+    sed "0,/cargoHash = \".*\";/s#cargoHash = \".*\";#cargoHash = \"${cargo}\";#" -i "$pkg"
   fi
 
   printf "\e[32mDone.\e[0m\n"

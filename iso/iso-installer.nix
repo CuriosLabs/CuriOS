@@ -4,13 +4,18 @@
 # https://nixos.org/manual/nixos/stable/index.html#sec-building-image
 # https://nixos.org/manual/nixpkgs/stable/#chap-stdenv
 
-{ pkgs, modulesPath, ... }:
+{ lib, pkgs, modulesPath, ... }:
 let
   curios-sources = pkgs.callPackage ../pkgs/curios-sources { };
   curios-dotfiles = pkgs.callPackage ../pkgs/curios-dotfiles { };
   seedSystem = (import "${pkgs.path}/nixos" {
     configuration = ./iso-seed.nix;
   }).config.system.build.toplevel;
+  # Keep in sync with modules/curios.nix. The live ISO has no installed
+  # configuration; curios-dotfiles needs them.
+  dotfilesUrl = "https://github.com/CuriosLabs/curios-themes.git";
+  dotfilesBranch = "main";
+  dotfilesRevision = "";
 in {
   imports = [
     #"${modulesPath}/installer/cd-dvd/installation-cd-minimal-new-kernel.nix"
@@ -57,5 +62,25 @@ in {
     sleep 5
     sudo curios-install
   '';
+
+  # Appended to the live ISO stub at /etc/nixos/configuration.nix.
+  # That file is { config, pkgs, ... }, so pkgs.lib, not lib.
+  installer.cloneConfigExtra = ''
+    options.curios.core.dotfiles.url = pkgs.lib.mkOption {
+      type = pkgs.lib.types.str;
+      default = ${lib.strings.escapeNixString dotfilesUrl};
+    };
+    options.curios.core.dotfiles.branch = pkgs.lib.mkOption {
+      type = pkgs.lib.types.str;
+      default = ${lib.strings.escapeNixString dotfilesBranch};
+    };
+    options.curios.core.dotfiles.revision = pkgs.lib.mkOption {
+      type = pkgs.lib.types.nullOr pkgs.lib.types.str;
+      default = ${lib.strings.escapeNixString dotfilesRevision};
+    };
+  '';
+
+  nix.settings."nix-path" =
+    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos:nixos-config=/etc/nixos/configuration.nix:/nix/var/nix/profiles/per-user/root/channels";
 }
 
