@@ -42,6 +42,7 @@ your mouse, **use Super key combinations for everything!**
 the whole system from a modern sleek Terminal User Interface.
 * ⌨️ Alacritty terminal with ZSH and a lot of good modern commands.
 [Curi*OS* dotfiles](https://github.com/CuriosLabs/curios-dotfiles) is pre-installed.
+* 🎨 Multiple desktop themes available: One Dark, Catppuccin, Tokyo Night, Nord, Gruvbox and more.
 * ⚡️ Neovim + LazyVim plugin with starter configuration.
 * 🦁 Brave as the default browser - block ads, better privacy.
 * ✨AI tools: [OpenCode](https://opencode.ai/) TUI and desktop versions installed by default.

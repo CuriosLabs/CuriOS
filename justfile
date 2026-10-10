@@ -12,7 +12,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint update-nixos-hardware checks
+build: lint update-nixos-hardware update-pkg-unstable checks
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -304,6 +304,30 @@ update-nixos-hardware:
   echo "Updated nixos-hardware to commit ${LATEST_COMMIT} in:"
   echo "  - ./modules/platforms/rpi4.nix"
   echo "  - ./modules/platforms/rpi5.nix"
+
+# Update the pinned nixpkgs-unstable commit in the devops module.
+update-pkg-unstable:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Fetching latest nixpkgs-unstable revision..."
+  LATEST_COMMIT=$(curl -fsSL https://channels.nixos.org/nixos-unstable/git-revision)
+  if [ -z "$LATEST_COMMIT" ]; then
+    echo "Failed to fetch latest revision."
+    exit 1
+  fi
+  CURRENT_COMMIT=$(grep -oP 'archive/\K[0-9a-f]+' ./modules/desktop-apps/devops.nix | head -1)
+  if [ "$CURRENT_COMMIT" = "$LATEST_COMMIT" ]; then
+    echo "nixpkgs-unstable is already up to date ($CURRENT_COMMIT)."
+    exit 0
+  fi
+  echo "Latest commit: $LATEST_COMMIT"
+  echo "Fetching SHA256..."
+  SHA256=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixpkgs/archive/${LATEST_COMMIT}.tar.gz")
+  echo "SHA256: $SHA256"
+  sed -i "s|archive/[0-9a-f]*.tar.gz|archive/${LATEST_COMMIT}.tar.gz|g" ./modules/desktop-apps/devops.nix
+  sed -i "s|sha256 = \".*\";|sha256 = \"${SHA256}\";|g" ./modules/desktop-apps/devops.nix
+  echo "Updated nixpkgs-unstable to commit ${LATEST_COMMIT} in:"
+  echo "  - ./modules/desktop-apps/devops.nix"
 
 # Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
 pkg-check-updates pkg='':

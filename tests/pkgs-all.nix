@@ -11,7 +11,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [
       ../modules/desktop-apps/basics.nix
       ../modules/desktop-apps/crypto.nix
-      ../modules/desktop-apps/devops.nix
       ../modules/desktop-apps/engineering.nix
       ../modules/desktop-apps/office.nix
       ../modules/platforms/default.nix
@@ -37,10 +36,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           crypto = {
             enable = true;
             btc.enable = true;
-          };
-          devops = {
-            enable = true;
-            tui.herdr.enable = true;
           };
           engineering = {
             enable = true;
@@ -78,7 +73,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("curios-manager-applet")
         check_which("curios-update")
         check_which("electrum")
-        check_which("herdr")
         check_which("lm-studio")
         check_which("lms")
         check_which("lm-studio-bionic")

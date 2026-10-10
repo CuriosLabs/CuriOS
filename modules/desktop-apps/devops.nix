@@ -2,7 +2,18 @@
 
 { config, lib, pkgs, ... }:
 
-let herdrPkg = pkgs.callPackage ../../pkgs/herdr { };
+let
+  # opencode / opencode-desktop / herdr come from nixpkgs-unstable.
+  # Pinned tarball for reproducibility.
+  nixpkgsUnstable = builtins.fetchTarball {
+    url =
+      "https://github.com/NixOS/nixpkgs/archive/e7439b6b14ad3cc35d05608ebca9bce01a25f5f8.tar.gz";
+    sha256 = "19y4py973w62z4qb7gzn0chjs67ihxy8rbjb7g71iyk8yz7z5k8z";
+  };
+  unstable = import nixpkgsUnstable {
+    config = config.nixpkgs.config;
+    system = pkgs.stdenv.hostPlatform.system;
+  };
 in {
   # Declare options
   options = {
@@ -138,7 +149,7 @@ in {
       tui = {
         herdr.enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = true;
           description =
             "Herdr - multiplexer for your AI agents in the terminal.";
         };
@@ -207,7 +218,7 @@ in {
       ++ lib.optionals config.curios.desktop.devops.editor.java.enable
       [ jetbrains.idea ]
       ++ lib.optionals config.curios.desktop.devops.editor.opencode.enable
-      [ opencode-desktop ]
+      [ unstable.opencode-desktop ]
       ++ lib.optionals config.curios.desktop.devops.editor.python.enable
       [ jetbrains.pycharm ]
       ++ lib.optionals config.curios.desktop.devops.editor.rust.enable
@@ -221,10 +232,12 @@ in {
       ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
-      [ ghostty ] ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable
-      [ herdrPkg ]
-      ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
-        opencode
+      [ ghostty ]
+      ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable [
+        unstable.herdr
+        (import ./desktop-herdr-tui.nix)
+      ] ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
+        unstable.opencode
         (import ./desktop-opencode-tui.nix)
       ];
   };
