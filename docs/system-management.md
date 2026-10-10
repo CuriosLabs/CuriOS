@@ -10,7 +10,7 @@ With it, you can update/upgrade the entire system, add/remove packages (applicat
 update your hardware firmware, check your disk usage, launch the process manager
 (btop), and much more.
 
-![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_main-menu.png?raw=true "CuriOS manager main menu")
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/curios-manager_main-menu2.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -35,10 +35,12 @@ file.
 - **Core Apps** (Enabled by default):
   - Brave browser, Alacritty terminal, Signal, WhatsApp, VLC, Gimp3, EasyEffects.
   - Bitwarden password manager, Yubico authenticator, LocalSend file sharing.
-  - Zed.dev code editor, Neovim+LazyVim terminal IDE, Cursor AI-assisted IDE.
+  - OpenCode desktop and TUI, Zed.dev code editor, Neovim+LazyVim terminal IDE,
+    Cursor AI-assisted IDE.
   - AI web applications: ChatGPT, Claude, Grok, Mistral.
   - Project management: Basecamp.
   - Office: Obsidian, Joplin.
+  - Terminal: Alacritty.
   - CLI: btop, nvtop, gh, fd, fzf, lazygit, ripgrep, snitch, whois, yq,
   shellcheck, statix, zsh.
   - Backup: Restic (see backups menu in `curios-manager`).
@@ -80,6 +82,8 @@ Launcher, RetroArch.
   - OBS Studio, Audacity, DaVinci Resolve (Studio), Darktable.
   - Nmap/Zenmap, Wireshark, Remmina, Cloudflared.
   - Bitcoin: Electrum/Sparrow wallets, Coingecko, Bisq2, mempool web app.
+  - Engineering: FreeCAD, LibreCAD, Open CAD Studio (CAD 2D/3D), KiCad (EDA),
+    OrcaSlicer (3D printing), Blender, f3d (3D creation).
 
 ### Adding more Applications
 
@@ -122,12 +126,125 @@ BIOS and more).
 
 ## System Upgrade
 
-When a new version of Curi*OS* is available, you will see a pop-up appear on your
-desktop:
-![CuriOS updater screenshot](https://github.com/CuriosLabs/CuriOS/blob/master/img/Updater2.png?raw=true "CuriOS updater")
+Curi*OS* should upgrade and update itself every night or a few minutes after your
+first boot of the day; see `systemctl list-timers`.
 
-To start the system upgrade, launch `curios-manager` from a terminal (shortcut:
+To manually start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option from the main menu.
+
+## Themes
+
+Curi*OS* comes with multiple desktop themes that you can easily switch using
+`curios-manager` (shortcut: Super+Return):
+
+1. Launch `curios-manager`
+2. Go to the `Themes` menu
+3. Browse the list of available themes using the arrow keys
+4. Press Enter to apply the selected theme
+
+Themes change the appearance of:
+
+- The COSMIC desktop environment
+- Alacritty and Ghostty terminals
+- LazyVim (Neovim), Herdr, Brave browser, and Zed editor
+- Wallpapers are also changed by the selected theme
+
+![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/Desktop-themes.png?raw=true "CuriOS themes")
+
+Available themes:
+
+- Catppuccin Macchiato
+- COSMIC Dark
+- Everforest Medium
+- Gruvbox Dark
+- Hackers
+- Kanagawa
+- Nord Dark
+- Nord Light
+- One Dark (default)
+- Tokyo Night
+
+Themes are provided by [curios-themes](https://github.com/CuriosLabs/curios-themes).
+To learn how to create a custom theme, see
+[curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles).
+
+Themes can also include "dotfiles" that will be copied to your home directory
+during a `curios-dotfiles --upgrade`. See the
+[curios-dotfiles repository](https://github.com/CuriosLabs/curios-dotfiles) or
+run `curios-dotfiles --help` and `curios-dotfiles --info` for more information.
+
+## Command-line Tools
+
+For advanced usage, Curi*OS* provides two CLI tools alongside the TUI
+`curios-manager`. These are useful for scripting or when you prefer the
+command line.
+
+### `curios-update`
+
+System-level operations: update/upgrade the system, search and install
+packages, manage CuriOS modules, and query NixOS options.
+
+```bash
+# Update all packages and Nix flakes, then garbage-collect
+sudo curios-update --update
+
+# Upgrade to the latest CuriOS version
+sudo curios-update --upgrade
+
+# Search for a CuriOS module by name
+curios-update --search-modules firefox
+
+# Query any NixOS or CuriOS option
+curios-update --nixos-option curios.system.timeZone
+
+# Show all CuriOS module settings (JSON)
+curios-update --show-modules
+
+# Enable/disable a CuriOS module
+sudo curios-update --update-module curios.desktop.browser.firefox.enable true
+
+# Search for a NixOS package
+curios-update --search-pkgs blender
+
+# Install a NixOS package
+sudo curios-update --add-pkg blender
+
+# Export current module configuration to /etc/nixos/modules.json
+sudo curios-update --export
+```
+
+Run `curios-update --help` for the full list of options.
+
+### `curios-dotfiles`
+
+Manage desktop themes, wallpapers, and dotfiles:
+
+```bash
+# List available themes
+curios-dotfiles --list
+
+# Apply a theme to your home directory
+curios-dotfiles --themes "One Dark" /home/user
+
+# Set the COSMIC keyboard layout
+curios-dotfiles --lang fr /home/user
+
+# Upgrade dotfiles and themes from Git
+curios-dotfiles --upgrade /home/user
+
+# Install as skeleton for new users
+sudo curios-dotfiles /etc/skel/
+
+# Show information about the dotfiles repository
+curios-dotfiles --info
+```
+
+Themes and dotfiles are sourced from a Git repository. The default source is
+`https://github.com/CuriosLabs/curios-themes`. Advanced users can use their own
+themes and dotfiles from any valid Git URL by changing the options
+`curios.core.dotfiles.url` and `curios.core.dotfiles.branch`.
+
+Run `curios-dotfiles --help` for the full list of options.
 
 ## NixOS Management
 
@@ -139,18 +256,7 @@ In NixOS, all components of the distribution—including the kernel, installed
 packages, and system configuration files—are built by Nix from pure functions
 called Nix expressions.
 See the [NixOS manual](https://nixos.org/manual/nixos/stable/) to learn more.
-
-The default 'configuration.nix' is set to **AUTO UPDATE** every night at 03:40
-or on your first boot of the day; see `systemctl list-timers`.
-
-Generations older than 15 days are automatically garbage collected. You can also
-manually do the equivalent with:
-
-```bash
-sudo nix-collect-garbage --delete-older-than 15d &&
-sudo nixos-rebuild switch --upgrade &&
-nixos-rebuild list-generations
-```
+NixOS generations older than 15 days are automatically garbage collected.
 
 Most advanced users can manually edit the Curi*OS* system settings file
 `/etc/nixos/settings.nix` from the `Settings (manual edit)` menu in order to add
