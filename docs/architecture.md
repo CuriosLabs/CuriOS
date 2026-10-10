@@ -202,6 +202,20 @@ This separation means:
 - You can experiment freely; rollback is always possible.
 - The system remains reproducible—your configuration is code.
 
+### Backup and Recovery
+
+Since only `modules.json`, `settings.nix`, and `hardware-configuration.nix`
+survive upgrades, it is recommended to back up `modules.json` and
+`settings.nix` to an external location. After a fresh reinstallation, you can
+restore these two files to recover your exact machine configuration—installed
+applications, module settings, and custom NixOS options.
+
+Your personal data in `$HOME` is not part of the system configuration. It is
+backed up separately by `curios-manager` (see
+[Backup your computer](backups.md)), which uses `restic` to create encrypted
+snapshots of your home directory to a local USB drive or an S3-compatible
+cloud storage.
+
 ## Package Management Hierarchy
 
 When installing software, Curi*OS* follows this priority:
