@@ -24,7 +24,7 @@ CuriOS uses Nix to provide a reproducible development environment. You can enter
 this environment using the provided `shell.nix` file:
 
 ```bash
-nix-shell shell.nix
+nix-shell shell.nix --run "just"
 ```
 
 This shell includes all the necessary tools for building, linting, and testing
@@ -43,6 +43,16 @@ We use [just](https://github.com/casey/just) to automate common development task
 `just test-unit office`).
 - `just clean`: Remove build artifacts and perform Nix garbage collection.
 
+## Coding Style and Conventions
+
+- **Modularity**: New features should extend existing modules or be created as
+  new, logically named modules.
+- **Descriptive Naming**: Files and modules follow consistent and descriptive
+  naming patterns.
+- **Variable Naming**: Configuration options start with `config.curios`.
+- **Code Style**: Use 2 spaces for indentation in Nix files.
+- **Nix Formatting**: `nixfmt` is used for consistent Nix code formatting.
+
 ## AI Assistant Users
 
 If you are using an AI assistant (such as Opencode, Claude Code, or others)
@@ -52,5 +62,6 @@ tailored for AI agents to ensure that their contributions align with our
 architectural standards and coding conventions.
 
 ---
+**Previous**: [Architecture of CuriOS](architecture.md)
 
 **Back**: [index](index.md)

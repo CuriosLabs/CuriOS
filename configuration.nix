@@ -133,11 +133,8 @@ in {
     allowInsecurePredicate = pkg:
       let
         name = pkg.name or "${pkg.pname or ""}-${pkg.version or ""}";
-        prefixes = lib.optionals (config.curios.desktop.devops.enable
-          && config.curios.desktop.devops.editor.opencode.enable)
-          [ "electron-41." ] ++ lib.optionals
-          (config.curios.virtualisation.enable
-            && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
+        prefixes = lib.optionals (config.curios.virtualisation.enable
+          && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
       in lib.any (prefix: lib.hasPrefix prefix name) prefixes;
     permittedInsecurePackages = [ "electron-41.10.7" ];
   };
@@ -154,7 +151,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "unstable-20261007.1548";
+    nixos.variant_id = "26.05.10";
   };
 
   nix = {
