@@ -3,10 +3,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  # opencode / opencode-desktop / herdr come from nixpkgs-unstable: the 26.05
-  # channel pins EOL Electron 41 for opencode-desktop (unstable ships Electron
-  # 42) and does not provide herdr at all.
-  # Pinned tarball for reproducibility (same pattern as modules/platforms/rpi4.nix).
+  # opencode / opencode-desktop / herdr come from nixpkgs-unstable.
+  # Pinned tarball for reproducibility.
   nixpkgsUnstable = builtins.fetchTarball {
     url =
       "https://github.com/NixOS/nixpkgs/archive/e7439b6b14ad3cc35d05608ebca9bce01a25f5f8.tar.gz";
@@ -234,11 +232,11 @@ in {
       ++ lib.optionals config.curios.desktop.devops.terminal.alacritty.enable
       [ alacritty ]
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
-      [ ghostty ] ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable [
+      [ ghostty ]
+      ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable [
         unstable.herdr
         (import ./desktop-herdr-tui.nix)
-      ]
-      ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
+      ] ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
         unstable.opencode
         (import ./desktop-opencode-tui.nix)
       ];
