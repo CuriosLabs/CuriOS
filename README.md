@@ -7,9 +7,10 @@ Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the
 [COSMIC](https://system76.com/cosmic) desktop environment. It ships with
 everything a modern advanced user need to be productive as quickly as possible
 on his laptop / desktop.
-Curi*OS* goal is to take advantage of NixOS mechanisms like declarative builds
-and deployments and its unique approach to system configuration and package
-management. Curi*OS* also take advantage of COSMIC power to customize UX and theme.
+[Curi*OS* goal](https://github.com/CuriosLabs/CuriOS/blob/master/docs/architecture.md#what-makes-curios-different)
+is to take advantage of NixOS mechanisms like declarative builds and deployments
+and its unique approach to system configuration and package management.
+Curi*OS* also take advantage of COSMIC power to customize UX and theme.
 
 > [!IMPORTANT]
 > **Disclaimer:** This is a work in progress for a NixOS customized install.
@@ -78,12 +79,22 @@ How-to:
 * [Update/upgrade your system, install programs, and more](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md).
 * [Backup your Computer](https://github.com/CuriosLabs/CuriOS/blob/master/docs/backups.md)
 * [Work with AI tools](https://github.com/CuriosLabs/CuriOS/blob/master/docs/ai-tools.md)
+* [Know more about Curi*OS* architecture](https://github.com/CuriosLabs/CuriOS/blob/master/docs/architecture.md)
 
-### Dot files / Theme
+### Dot files / Themes
 
-[curios-dotfiles](https://github.com/CuriosLabs/curios-dotfiles) come pre-
-installed with my COSMIC theme (WIP) and for a nice Alacritty and ZSH integration.
+Curi*OS* come with pre-installed themes and dotfiles from [curios-themes](https://github.com/CuriosLabs/curios-themes).
+Themes change the appearance of:
+
+* The COSMIC desktop environment
+* Alacritty and Ghostty terminals
+* LazyVim (Neovim), Herdr, Brave browser, and Zed editor
+* Wallpapers are also changed by the selected theme
+
+![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop-themes.png?raw=true "themes")
 ![Curios dotfiles](https://github.com/CuriosLabs/CuriOS/blob/master/img/DesktopTUI2.png?raw=true "Curios dotfiles")
+
+See [themes documentation](https://github.com/CuriosLabs/CuriOS/blob/master/docs/system-management.md#themes) to know more.
 
 ## Contributing
 
