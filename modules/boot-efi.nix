@@ -151,6 +151,8 @@
     environment.systemPackages = [
       # Provide tools with more details on EFI db and KEK - See `efi-readvar -v KEK`
       pkgs.efitools
+      # Manage UEFI boot entries - See `efibootmgr -v`
+      pkgs.efibootmgr
       # Provide secure boot key manager
       pkgs.sbctl
     ];

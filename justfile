@@ -2,7 +2,7 @@
 # variables
 name := 'CuriOS'
 owner := 'CuriosLabs'
-branch := '$(git branch --show-current)'
+branch := `git branch --show-current`
 platform := 'amd64_intel'
 r2_bucket := 'curios-iso'
 r2_public_url := 'https://iso.curioslabs.dev'
