@@ -1,4 +1,8 @@
 # EFI boot options
+# Note: if needed, re-create UEFI boot entry with:
+# sudo efibootmgr --create --disk /dev/nvme0n1 --part 1 --label "CuriOS" --loader '\EFI\limine\BOOTX64.EFI'
+# Find boot loader with:
+# sudo fd -e efi . /boot/
 
 { config, lib, pkgs, ... }: {
   # Declare options
