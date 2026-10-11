@@ -31,7 +31,7 @@
           default = "1920x1080";
           example = "1920x1080";
           description =
-            "Limine bootloader resolution, affects early boot graphics.";
+            "Limine bootloader menu resolution, also affects early boot graphics.";
         };
         secureBoot = {
           enable = lib.mkOption {
@@ -104,6 +104,7 @@
         limine = {
           enable = lib.mkDefault config.curios.bootefi.limine.enable;
           maxGenerations = 5;
+          resolution = lib.mkDefault config.curios.bootefi.limine.resolution;
           #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
           # Secure Boot options
           secureBoot = {
