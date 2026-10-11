@@ -26,6 +26,13 @@
           description =
             "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
         };
+        resolution = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "1920x1080";
+          example = "1920x1080";
+          description =
+            "Limine bootloader resolution, affects early boot graphics.";
+        };
         secureBoot = {
           enable = lib.mkOption {
             type = lib.types.bool;
@@ -112,6 +119,13 @@
             };
             autoGenerateKeys =
               lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+          };
+          style = {
+            interface = {
+              branding = "CuriOS";
+              resolution =
+                lib.mkDefault config.curios.bootefi.limine.resolution;
+            };
           };
         };
         systemd-boot = {
