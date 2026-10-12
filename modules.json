@@ -10,6 +10,7 @@
       },
       "limine": {
         "enable": true,
+        "resolution": "1920x1080",
         "secureBoot": {
           "enable": false,
           "firmware": true
