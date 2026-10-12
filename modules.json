@@ -322,7 +322,11 @@
           "enable": false
         },
         "obs-studio": {
-          "enable": false
+          "enable": false,
+          "plugins": {
+            "v4l2": false,
+            "vkcapture": false
+          }
         },
         "rapidraw": {
           "enable": false
