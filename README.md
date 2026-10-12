@@ -73,6 +73,16 @@ The latest ISO download links are listed on the
 See our [getting started guide](https://github.com/CuriosLabs/CuriOS/blob/master/docs/getting-started.md)
 on how to install Curi*OS*.
 
+> [!IMPORTANT]
+> The ISO image installs the **stable** version of Curi*OS*.
+> After installation, if you want the **unstable** version (tracking the
+> NixOS unstable channel with the latest features), run this command to
+> switch branches and upgrade your system, then **reboot**:
+
+```bash
+sudo curios-update --update-module curios.core.source.branch unstable && sudo curios-update --upgrade
+```
+
 ## Documentation
 
 Visit our [documentation here](https://github.com/CuriosLabs/CuriOS/blob/master/docs/index.md).
