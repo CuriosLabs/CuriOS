@@ -275,6 +275,9 @@
             }
           }
         },
+        "nextcloud": {
+          "enable": false
+        },
         "onlyoffice": {
           "desktopeditors": {
             "enable": false
