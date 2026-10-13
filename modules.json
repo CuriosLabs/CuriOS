@@ -10,6 +10,7 @@
       },
       "limine": {
         "enable": true,
+        "resolution": "1920x1080",
         "secureBoot": {
           "enable": false,
           "firmware": true
@@ -274,6 +275,9 @@
             }
           }
         },
+        "nextcloud": {
+          "enable": false
+        },
         "onlyoffice": {
           "desktopeditors": {
             "enable": false
@@ -321,7 +325,11 @@
           "enable": false
         },
         "obs-studio": {
-          "enable": false
+          "enable": false,
+          "plugins": {
+            "v4l2": false,
+            "vkcapture": false
+          }
         },
         "rapidraw": {
           "enable": false
