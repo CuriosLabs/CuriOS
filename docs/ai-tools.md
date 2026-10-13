@@ -244,6 +244,30 @@ Then, add your provider and model details, for example:
 
 Learn more in the [opencode documentation](https://opencode.ai/docs/).
 
+### AI Agent Skills (from default theme dotfiles)
+
+The default theme installed on Curi*OS* also deploys **dotfiles** that include
+**skills** for AI agents. These skills give AI assistants the ability to
+interact with your system and applications directly.
+
+Two main skills are included:
+
+- **`curios`**: Control your Curi*OS* system. With this skill, an AI agent can
+  list and install packages, manage Curi*OS* options and modules, and switch
+  desktop themes — all using the `curios-update` and `curios-dotfiles` tools.
+- **`brave-tools`**: Control the Brave browser. The agent can navigate pages,
+  fill forms, click buttons, take screenshots, extract data, and automate any
+  browser task.
+
+These skills follow the [AGENTS.md](https://agents.md/) open standard and are
+installed in `~/.agents/skills/`. They work natively with **OpenCode**,
+**Codex** and **Grok**. **Claude Code** uses its own directory: place them in
+`~/.claude/skills/` or create a symlink:
+
+```bash
+mkdir -p ~/.claude && ln -s ~/.agents/skills ~/.claude/skills
+```
+
 ---
 **Next**: [Security and hardware keys](security.md).
 
