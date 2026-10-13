@@ -49,10 +49,25 @@
         description =
           "mpv - A free, open source media player for the command line.";
       };
-      obs-studio.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "OBS Studio for video recording and live streaming.";
+      obs-studio = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "OBS Studio for video recording and live streaming.";
+        };
+        plugins = {
+          v4l2 = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description =
+              "OBS plugin for virtual camera, installs and sets up the v4l2loopback kernel module.";
+          };
+          vkcapture = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "OBS plugin for game capture.";
+          };
+        };
       };
       rapidraw.enable = lib.mkOption {
         type = lib.types.bool;
@@ -73,6 +88,11 @@
     # OBS
     programs.obs-studio = {
       enable = lib.mkDefault config.curios.desktop.studio.obs-studio.enable;
+      enableVirtualCamera =
+        lib.mkDefault config.curios.desktop.studio.obs-studio.plugins.v4l2;
+      plugins =
+        lib.optionals config.curios.desktop.studio.obs-studio.plugins.vkcapture
+        [ pkgs.obs-studio-plugins.obs-vkcapture ];
     };
     environment.systemPackages =
       [ pkgs.easyeffects pkgs.gimp3-with-plugins pkgs.vlc ]

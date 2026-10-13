@@ -1,4 +1,8 @@
 # EFI boot options
+# Note: if needed, re-create UEFI boot entry with:
+# sudo efibootmgr --create --disk /dev/nvme0n1 --part 1 --label "CuriOS" --loader '\EFI\limine\BOOTX64.EFI'
+# Find boot loader with:
+# sudo fd -e efi . /boot/
 
 { config, lib, pkgs, ... }: {
   # Declare options
@@ -21,6 +25,13 @@
           default = true;
           description =
             "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
+        };
+        resolution = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "1920x1080";
+          example = "1920x1080";
+          description =
+            "Limine bootloader menu resolution, also affects early boot graphics.";
         };
         secureBoot = {
           enable = lib.mkOption {
@@ -93,6 +104,7 @@
         limine = {
           enable = lib.mkDefault config.curios.bootefi.limine.enable;
           maxGenerations = 5;
+          resolution = lib.mkDefault config.curios.bootefi.limine.resolution;
           #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
           # Secure Boot options
           secureBoot = {
@@ -108,6 +120,13 @@
             };
             autoGenerateKeys =
               lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
+          };
+          style = {
+            interface = {
+              branding = "CuriOS";
+              resolution =
+                lib.mkDefault config.curios.bootefi.limine.resolution;
+            };
           };
         };
         systemd-boot = {
