@@ -26,6 +26,11 @@ in {
         default = false;
         description = "LibreOffice suite desktop applications.";
       };
+      nextcloud.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Nextcloud desktop client.";
+      };
       onlyoffice.desktopeditors.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -173,7 +178,9 @@ in {
       ++ lib.optionals config.curios.desktop.office.calibre.enable
       [ pkgs.calibre ]
       ++ lib.optionals config.curios.desktop.office.libreoffice.enable
-      [ pkgs.libreoffice ] ++ lib.optionals
+      [ pkgs.libreoffice ]
+      ++ lib.optionals config.curios.desktop.office.nextcloud.enable
+      [ pkgs.nextcloud-client ] ++ lib.optionals
       (config.curios.desktop.office.onlyoffice.desktopeditors.enable
         && config.curios.platform.amd64.enable)
       [ pkgs.onlyoffice-desktopeditors ]
