@@ -80,7 +80,9 @@ on how to install Curi*OS*.
 > switch branches and upgrade your system, then **reboot**:
 
 ```bash
-sudo curios-update --update-module curios.core.source.branch unstable && sudo curios-update --upgrade
+sudo curios-update --update-module curios.core.source.branch unstable && \
+sudo curios-update --update-module curios.core.dotfiles.branch unstable && \
+sudo curios-update --upgrade
 ```
 
 ## Documentation
