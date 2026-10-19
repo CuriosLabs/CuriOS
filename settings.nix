@@ -81,15 +81,6 @@
 
   # Services
   services = {
-    ### pipewire sound settings:
-    pipewire = {
-      extraConfig.pipewire."92-low-latency" = {
-        # Keep increasing the quantum value until you get no sound crackles
-        "default.clock.quantum" = 512;
-        "default.clock.min-quantum" = 256;
-        "default.clock.max-quantum" = 16384;
-      };
-    };
     ### Ollama
     ollama = {
       environmentVariables = {
