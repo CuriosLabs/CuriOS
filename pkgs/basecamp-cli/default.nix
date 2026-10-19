@@ -3,16 +3,16 @@
 
 buildGoModule.override { go = go_1_26; } (finalAttrs: {
   pname = "basecamp";
-  version = "0.13.0";
+  version = "0.13.2";
 
   src = fetchFromGitHub {
     owner = "basecamp";
     repo = "basecamp-cli";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-1+jHfilH+YPyF0uc/jF3EorAlZ/WmrmD+bmwTJm4YLA=";
+    hash = "sha256-w0W7pAnFU7YhhU1a9n5Mo1EFBcwzf+9VN+92OUbTKPA=";
   };
 
-  vendorHash = "sha256-KJ3/Lr2Zdue5yidZKLvETLHmoqUYmupiUn594aImSyE=";
+  vendorHash = "sha256-c4rZUcSMSOew7u562pFyOCToDCEfg/35lORskjK1pCY=";
 
   subPackages = [ "cmd/basecamp" ];
 
