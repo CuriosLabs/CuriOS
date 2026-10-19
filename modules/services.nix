@@ -69,6 +69,23 @@
         default = null;
         description = "DEPRECATED";
       };
+      pipewire = {
+        quantum = lib.mkOption {
+          type = lib.types.int;
+          default = 1024;
+          description = "PipeWire default clock quantum (buffer size in samples).";
+        };
+        quantum-min = lib.mkOption {
+          type = lib.types.int;
+          default = 512;
+          description = "PipeWire minimum clock quantum.";
+        };
+        quantum-max = lib.mkOption {
+          type = lib.types.int;
+          default = 2048;
+          description = "PipeWire maximum clock quantum.";
+        };
+      };
     };
   };
 
@@ -183,25 +200,46 @@
           support32Bit = lib.mkForce false;
         };
         pulse.enable = true;
-        extraConfig.pipewire."92-low-latency" = {
-          "context.properties" = { "default.clock.rate" = 48000; };
+        extraConfig.pipewire."93-low-latency" = {
+          "context.properties" = {
+            "default.clock.rate" = 48000;
+            "default.clock.quantum" = config.curios.services.pipewire.quantum;
+            "default.clock.min-quantum" =
+              config.curios.services.pipewire.quantum-min;
+            "default.clock.max-quantum" =
+              config.curios.services.pipewire.quantum-max;
+            "default.clock.allowed-rates" = [ 44100 48000 96000 ];
+          };
         };
-        extraConfig.pipewire-pulse."92-low-latency" = {
-          "context.properties" = [{
-            name = "libpipewire-module-protocol-pulse";
-            args = { };
-          }];
+        extraConfig.pipewire-pulse."93-low-latency" = {
           "pulse.properties" = {
-            "pulse.min.req" = "256/48000";
-            "pulse.default.req" = "512/48000";
-            "pulse.max.req" = "512/48000";
-            "pulse.min.quantum" = "256/48000";
-            "pulse.max.quantum" = "16384/48000";
+            "pulse.min.req" =
+              "${toString config.curios.services.pipewire.quantum-min}/48000";
+            "pulse.default.req" =
+              "${toString config.curios.services.pipewire.quantum}/48000";
+            "pulse.max.req" =
+              "${toString config.curios.services.pipewire.quantum-max}/48000";
           };
           "stream.properties" = {
-            "node.latency" = "512/48000";
-            "resample.quality" = 1;
+            "node.latency" =
+              "${toString config.curios.services.pipewire.quantum}/48000";
+            "resample.quality" = 4;
           };
+        };
+        wireplumber.extraConfig."93-low-latency" = {
+          "monitor.alsa.rules" = [{
+            matches = [{ "device.name" = "alsa_output.*"; }];
+            actions = {
+              update-props = {
+                "api.alsa.period-size" =
+                  config.curios.services.pipewire.quantum;
+                "api.alsa.headroom" =
+                  config.curios.services.pipewire.quantum;
+                "node.latency" =
+                  "${toString config.curios.services.pipewire.quantum}/48000";
+              };
+            };
+          }];
         };
       };
       # TODO: Custom udev rules for USB drive - trigger mounting upon insertion
@@ -259,8 +297,7 @@
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
           path = [ pkgs.nix config.system.build.nixos-rebuild ];
-          environment.NIX_PATH =
-            lib.concatStringsSep ":" config.nix.nixPath;
+          environment.NIX_PATH = lib.concatStringsSep ":" config.nix.nixPath;
           serviceConfig = {
             Type = "oneshot";
             ExecStart = "/run/current-system/sw/bin/curios-update --upgrade";

@@ -571,6 +571,11 @@
       "ollama": {
         "enable": false
       },
+      "pipewire": {
+        "quantum": 1024,
+        "quantum-min": 512,
+        "quantum-max": 2048
+      },
       "printing": {
         "enable": true
       },
