@@ -5,14 +5,14 @@
 { lib, fetchurl, makeDesktopItem, appimageTools, imagemagick }:
 let
   pname = "opencadstudio";
-  version = "v2026.40.1";
+  version = "v2026.42";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.37/OpenCADStudio-v2026.37-linux-x86_64.AppImage)"
   src = fetchurl {
     url =
       "https://github.com/HakanSeven12/OpenCADStudio/releases/download/${version}/OpenCADStudio-${version}-linux-x86_64.AppImage";
-    hash = "sha256-S49dLf7pMr1VcwjRtMZsqNI/D0/+N8jBq3eYDEXIT5g=";
+    hash = "sha256-PAzEK7cmbtZ6GlvnVI7ZVNOVGkyIZ77ShA6anGhbM3o=";
   };
 
   appimageContents = appimageTools.extract { inherit pname version src; };
