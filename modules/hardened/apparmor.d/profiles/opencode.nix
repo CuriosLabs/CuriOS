@@ -144,10 +144,13 @@ in {
             owner @{HOME}/.local/share/opentui/                                   rwk,
             owner @{HOME}/.local/share/opentui/**                                 rwklm,
 
-            # Agent skills (~/.agents/skills/) — read-only.
+            # Agent skills (~/.agents/skills/) — read + execute.
             # Skills are markdown/prompt files loaded by the agent runtime.
+            # 'rix' (restricted inherit exec) allows running skill scripts
+            # (e.g. brave-tools/scripts/*) while keeping them confined:
+            # they inherit this profile, so secrets-deny still applies.
             owner @{HOME}/.agents/                                                 r,
-            owner @{HOME}/.agents/**                                               r,
+            owner @{HOME}/.agents/**                                               rix,
 
             # Bun runtime (~/.bun/) — package cache and binaries.
             # Bun downloads and caches npm packages here.
