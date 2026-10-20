@@ -92,6 +92,7 @@ in {
             # Language runtimes — opencode may invoke these for project tooling
             # (linting, testing, building). All inherit this profile.
             /nix/store/*-nodejs-*/bin/*                                            rix,
+            /nix/store/*-bun-*/bin/*                                               rix,
             /nix/store/*-python3-*/bin/*                                           rix,
             /nix/store/*-rust-*/bin/*                                              rix,
             /nix/store/*-cargo-*/bin/*                                             rix,
@@ -129,6 +130,32 @@ in {
             owner @{HOME}/.local/share/opencode/                                   rwk,
             owner @{HOME}/.local/share/opencode/**                                 rwk,
 
+            # OpenCode state (XDG_STATE_HOME) — model cache, history, locks.
+            # 'l' (link) and 'm' (mmap) needed for atomic writes and cache files.
+            owner @{HOME}/.local/state/opencode/                                   rwk,
+            owner @{HOME}/.local/state/opencode/**                                 rwklm,
+
+            # Agent skills (~/.agents/skills/) — read-only.
+            # Skills are markdown/prompt files loaded by the agent runtime.
+            owner @{HOME}/.agents/                                                 r,
+            owner @{HOME}/.agents/**                                               r,
+
+            # Bun runtime (~/.bun/) — package cache and binaries.
+            # Bun downloads and caches npm packages here.
+            owner @{HOME}/.bun/                                                    rwk,
+            owner @{HOME}/.bun/**                                                  rwklm,
+
+            # Git user config (not credentials — secrets-deny blocks
+            # .git-credentials and ~/.config/git/**).
+            owner @{HOME}/.gitconfig                                               r,
+
+            # Home directory listing (path resolution, ~ expansion)
+            owner @{HOME}/                                                         r,
+            /home/                                                                 r,
+
+            # .config directory listing (needed by various tools to find configs)
+            owner @{HOME}/.config/                                                 r,
+
             # Project directories — non-hidden top-level dirs only.
             # [^.]* excludes ~/.ssh, ~/.gnupg, ~/.aws, ~/.config, etc.
             # secrets-deny additionally blocks .env, *.pem, id_* keys,
@@ -153,14 +180,18 @@ in {
             @{PROC}/                                                               r,
             @{PROC}/version                                                        r,
             @{PROC}/@{pid}/stat                                                    r,
+            @{PROC}/@{pid}/statm                                                   r,
             @{PROC}/@{pid}/status                                                  r,
             @{PROC}/@{pid}/cmdline                                                 r,
+            @{PROC}/@{pid}/cgroup                                                  r,
             @{PROC}/@{pid}/mountinfo                                               r,
             @{PROC}/sys/kernel/yama/ptrace_scope                                   r,
+            @{PROC}/sys/vm/mmap_min_addr                                           r,
 
-            # Sys — hardware info (CPU, devices)
+            # Sys — hardware info (CPU, devices, memory settings)
             @{sys}/                                                                r,
             @{sys}/devices/system/cpu/**                                           r,
+            @{sys}/kernel/mm/transparent_hugepage/enabled                          r,
 
             # D-Bus — desktop notifications, settings
             owner @{run}/user/@{uid}/bus                                           rw,
