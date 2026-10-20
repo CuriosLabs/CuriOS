@@ -148,8 +148,8 @@ checks: pkg-check-updates
   failed=0
   printf "Checking electron version...\n"
   exists=$(nix eval --impure --expr 'builtins.hasAttr "electron_45" (import <nixpkgs> {})')
-  if [[ "$exists" == "true" ]] && ! grep -q 'electron_45' ./modules/hardened/apparmor-profiles.nix; then
-    printf "\e[31melectron_45 exists in nixpkgs but is missing from modules/hardened/apparmor-profiles.nix. Update the AppArmor profile.\e[0m\n"
+  if [[ "$exists" == "true" ]] && ! grep -rq 'electron_45' ./modules/hardened/apparmor.d/; then
+    printf "\e[31melectron_45 exists in nixpkgs but is missing from modules/hardened/apparmor.d/. Update the AppArmor profile.\e[0m\n"
     failed=1
   fi
   printf "Checking OpenCADStudio version...\n"

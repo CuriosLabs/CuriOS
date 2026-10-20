@@ -1,0 +1,177 @@
+# OpenCode TUI AppArmor profile.
+# Profile: opencode
+#
+# OpenCode is an AI coding agent with arbitrary shell access. The LLM can be
+# prompt-injected to exfiltrate secrets. AppArmor is the only real boundary —
+# opencode's own tool-level path filtering is trivially bypassed (cp to /tmp,
+# symlinks, /proc, alternate paths, etc.).
+#
+# The profile confines opencode AND all child processes it spawns (bash tool,
+# git, language runtimes, etc.) because AppArmor profiles are inherited by
+# exec'd children unless they transition to another profile.
+#
+# secrets-deny blocks SSH keys, cloud credentials, wallets, .env files, .pem
+# files, password managers, and crypto keys even if the agent is compromised
+# via prompt injection or hallucination.
+
+{ config, lib, pkgs, ... }:
+
+let
+  cfg = config.curios.hardened.apparmor-profiles;
+  anssi = config.curios.hardened.anssi.reinforced;
+in {
+  config = lib.mkIf (cfg.enable && anssi.enable && anssi.rule45) {
+    security.apparmor.policies = {
+      "opencode" = {
+        state = cfg.cli.opencode.mode;
+        profile = let
+          modeFlag = if cfg.cli.opencode.mode == "complain" then
+            "flags=(complain, attach_disconnected)"
+          else
+            "flags=(attach_disconnected)";
+        in ''
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          # OpenCode TUI — AI coding agent with shell access.
+          # The profile confines opencode AND all child processes it spawns
+          # (bash tool, git, language runtimes, etc.) because AppArmor profiles
+          # are inherited by exec'd children unless they transition to another
+          # profile. This is the real security boundary that opencode's own
+          # tool-level path filtering cannot provide.
+          #
+          # secrets-deny blocks SSH keys, cloud credentials, wallets, .env files,
+          # .pem files, password managers, and crypto keys even if the agent is
+          # compromised via prompt injection or hallucination.
+          #
+          # Project directories are limited to non-hidden top-level dirs
+          # (~/Projets, ~/Documents, …) — hidden dirs like ~/.ssh, ~/.gnupg,
+          # ~/.aws are unreachable.
+
+          profile opencode /nix/store/*-opencode-*/bin/opencode ${modeFlag} {
+            include <abstractions/base>
+            include <abstractions/consoles>
+            include <abstractions/nameservice>
+            include <abstractions/ssl_certs>
+            include <abstractions/curios/secrets-deny>
+
+            # Nix store: read all, exec binaries, mmap libraries.
+            # On NixOS the store is world-readable by design; granting read
+            # is not a meaningful security boundary (see abstractions/chromium).
+            /nix/store/**                                                          r,
+            /nix/store/*/bin/*                                                     rix,
+            /nix/store/*/lib{,32,64}/**.so*                                        mr,
+            /nix/store/*-opencode-*/bin/opencode                                   mrix,
+
+            # NixOS system binaries (symlinks into the store)
+            /run/current-system/sw/bin/*                                           rix,
+            /run/current-system/sw/share/**                                        r,
+
+            # Shell and coreutils — opencode's bash tool spawns these.
+            # They inherit this profile, so secrets-deny applies to them too.
+            /nix/store/*-bash-interactive-*/bin/{sh,bash}                          rix,
+            /nix/store/*-coreutils-*/bin/*                                         rix,
+            /nix/store/*-findutils-*/bin/*                                         rix,
+            /nix/store/*-gnugrep-*/bin/grep                                        rix,
+            /nix/store/*-gnused-*/bin/sed                                          rix,
+            /nix/store/*-gawk-*/bin/{awk,gawk}                                     rix,
+            /nix/store/*-diffutils-*/bin/*                                         rix,
+            /nix/store/*-gzip-*/bin/*                                              rix,
+            /nix/store/*-gnutar-*/bin/*                                            rix,
+            /nix/store/*-xz-*/bin/*                                                rix,
+            /nix/store/*-bzip2-*/bin/*                                             rix,
+            /nix/store/*-jq-*/bin/*                                                rix,
+            /nix/store/*-yq-*/bin/*                                                rix,
+            /nix/store/*-curl-*/bin/*                                              rix,
+            /nix/store/*-wget-*/bin/*                                              rix,
+
+            # Git — ubiquitous in dev workflows. Note: SSH-based git remotes
+            # will fail because ~/.ssh/ is denied by secrets-deny. Use HTTPS.
+            /nix/store/*-git-*/bin/*                                               rix,
+
+            # Language runtimes — opencode may invoke these for project tooling
+            # (linting, testing, building). All inherit this profile.
+            /nix/store/*-nodejs-*/bin/*                                            rix,
+            /nix/store/*-python3-*/bin/*                                           rix,
+            /nix/store/*-rust-*/bin/*                                              rix,
+            /nix/store/*-cargo-*/bin/*                                             rix,
+            /nix/store/*-go-*/bin/*                                                rix,
+            /nix/store/*-gcc-*/bin/*                                               rix,
+            /nix/store/*-clang-*/bin/*                                             rix,
+            /nix/store/*-gnumake-*/bin/*                                           rix,
+            /nix/store/*-cmake-*/bin/*                                             rix,
+            /nix/store/*-ninja-*/bin/*                                             rix,
+
+            # Deliberately NOT allowed: openssh, gpg, aws, gcloud, kubectl,
+            # docker, gh — these would attempt to read credentials that
+            # secrets-deny blocks, causing confusing failures. If needed,
+            # add them here and accept that their config reads will be denied.
+
+            # Network — LLM API calls, package registries, git over HTTPS.
+            # A compromised agent could exfiltrate project source code via
+            # the LLM API endpoint, but cannot read local secrets to send.
+            network inet stream,
+            network inet6 stream,
+            network inet dgram,
+            network inet6 dgram,
+            network netlink raw,
+
+            # Terminal — TUI needs /dev/pts and /dev/tty
+            /dev/pts/*                                                             rw,
+            /dev/tty                                                               rw,
+            /dev/ptmx                                                              rw,
+
+            # OpenCode config, cache, and data
+            owner @{HOME}/.config/opencode/                                        rwk,
+            owner @{HOME}/.config/opencode/**                                      rwk,
+            owner @{HOME}/.cache/opencode/                                         rwk,
+            owner @{HOME}/.cache/opencode/**                                       rwk,
+            owner @{HOME}/.local/share/opencode/                                   rwk,
+            owner @{HOME}/.local/share/opencode/**                                 rwk,
+
+            # Project directories — non-hidden top-level dirs only.
+            # [^.]* excludes ~/.ssh, ~/.gnupg, ~/.aws, ~/.config, etc.
+            # secrets-deny additionally blocks .env, *.pem, id_* keys,
+            # and *.kdbx anywhere under these directories.
+            owner @{HOME}/[^.]*/                                                   rwk,
+            owner @{HOME}/[^.]*/**                                                 rwklm,
+
+            # Temp files — opencode and child processes write here
+            /tmp/                                                                  r,
+            owner /tmp/                                                            rwk,
+            owner /tmp/**                                                          rwklm,
+
+            # System directories — read-only for enumeration and config
+            /                                                                      r,
+            /etc/                                                                  r,
+            /etc/**                                                                r,
+            /usr/                                                                  r,
+            /var/                                                                  r,
+            /run/                                                                  r,
+
+            # Proc — basic process info (no environ, no other PIDs' memory)
+            @{PROC}/                                                               r,
+            @{PROC}/version                                                        r,
+            @{PROC}/@{pid}/stat                                                    r,
+            @{PROC}/@{pid}/status                                                  r,
+            @{PROC}/@{pid}/cmdline                                                 r,
+            @{PROC}/@{pid}/mountinfo                                               r,
+            @{PROC}/sys/kernel/yama/ptrace_scope                                   r,
+
+            # Sys — hardware info (CPU, devices)
+            @{sys}/                                                                r,
+            @{sys}/devices/system/cpu/**                                           r,
+
+            # D-Bus — desktop notifications, settings
+            owner @{run}/user/@{uid}/bus                                           rw,
+
+            # Silencer
+            deny /etc/opt/                                                         w,
+
+            include if exists <local/opencode>
+          }
+        '';
+      };
+    };
+  };
+}
