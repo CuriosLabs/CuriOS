@@ -87,7 +87,10 @@ in {
 
             # Git — ubiquitous in dev workflows. Note: SSH-based git remotes
             # will fail because ~/.ssh/ is denied by secrets-deny. Use HTTPS.
+            # libexec/ is needed because git execs its internal helpers
+            # (git-remote-https, git-upload-pack, etc.) from libexec/git-core/.
             /nix/store/*-git-*/bin/*                                               rix,
+            /nix/store/*-git-*/libexec/**                                          rix,
 
             # Language runtimes — opencode may invoke these for project tooling
             # (linting, testing, building). All inherit this profile.
@@ -134,6 +137,12 @@ in {
             # 'l' (link) and 'm' (mmap) needed for atomic writes and cache files.
             owner @{HOME}/.local/state/opencode/                                   rwk,
             owner @{HOME}/.local/state/opencode/**                                 rwklm,
+
+            # OpenTUI tree-sitter grammars — WASM files for syntax highlighting.
+            # OpenCode (Bun runtime) loads these for code blocks in the TUI.
+            # 'w' needed because OpenTUI may download/update grammars on first use.
+            owner @{HOME}/.local/share/opentui/                                   rwk,
+            owner @{HOME}/.local/share/opentui/**                                 rwklm,
 
             # Agent skills (~/.agents/skills/) — read-only.
             # Skills are markdown/prompt files loaded by the agent runtime.
@@ -184,14 +193,19 @@ in {
             @{PROC}/@{pid}/status                                                  r,
             @{PROC}/@{pid}/cmdline                                                 r,
             @{PROC}/@{pid}/cgroup                                                  r,
+            @{PROC}/@{pid}/loginuid                                                r,
             @{PROC}/@{pid}/mountinfo                                               r,
             @{PROC}/sys/kernel/yama/ptrace_scope                                   r,
             @{PROC}/sys/vm/mmap_min_addr                                           r,
+            @{PROC}/sys/vm/nr_hugepages                                            r,
 
-            # Sys — hardware info (CPU, devices, memory settings)
+            # Sys — hardware info (CPU, devices, memory settings, cgroup limits)
             @{sys}/                                                                r,
             @{sys}/devices/system/cpu/**                                           r,
             @{sys}/kernel/mm/transparent_hugepage/enabled                          r,
+            # cgroup v2 — resource limits read by runtimes (Node, Bun, nix, etc.)
+            # for CPU/memory monitoring and container awareness.
+            @{sys}/fs/cgroup/**                                                    r,
 
             # D-Bus — desktop notifications, settings
             owner @{run}/user/@{uid}/bus                                           rw,
