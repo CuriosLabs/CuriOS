@@ -35,7 +35,7 @@ in {
             @{lib_dirs}/chrome-management-service   rix,
 
             # Brave-specific temporary files
-            /tmp/.com.brave.Brave.*/**              rw,
+            /tmp/.com.brave.Brave.*/**              rwk,
 
             # Browser policies (Brave/Chromium system-managed policies)
             /etc/brave/policies/                    r,
