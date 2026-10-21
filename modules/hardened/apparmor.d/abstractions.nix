@@ -180,8 +180,10 @@ in {
         # 'rix' (restricted inherit exec) allows running skill scripts
         # (e.g. brave-tools/scripts/*) while keeping them confined:
         # they inherit the calling profile, so secrets-deny still applies.
-        owner @{HOME}/.agents/                                                 r,
-        owner @{HOME}/.agents/**                                               rix,
+        # 'w' needed because skills may run `npm install` in their directory
+        # (e.g. brave-tools/node_modules/).
+        owner @{HOME}/.agents/                                                 rwk,
+        owner @{HOME}/.agents/**                                               rwkrix,
 
         # ── npm cache and logs (~/.npm/) ──────────────────────────────────
         # _cacache/  — package cache (create, delete, hard links for dedup)
@@ -197,13 +199,15 @@ in {
         # Skills like brave-tools launch Brave.
         # - bin/brave (wrapper script): rix — inherits the calling profile.
         #   The wrapper then execs the main binary with rPx -> brave below.
-        # - opt/.../brave (main binary): rPx -> brave — transitions to the
-        #   dedicated brave profile so the browser runs with its own rules.
+        # - opt/.../brave AND .brave-wrapped: rPx -> brave — transitions to
+        #   the dedicated brave profile so the browser runs with its own rules.
+        #   (.brave-wrapped is the renamed binary that the wrapper actually execs.)
         # - opt/.../brave-browser (launcher): rix — inherits, then execs brave.
         # Note: rix (not rPx -> brave-wrapper) avoids conflicting x modifiers
         # with the general /nix/store/*/bin/* rix rule in the calling profile.
         /nix/store/*-brave-*/bin/brave                                         rix,
         /nix/store/*-brave-*/opt/brave.com/brave/brave                        rPx -> brave,
+        /nix/store/*-brave-*/opt/brave.com/brave/.brave-wrapped               rPx -> brave,
         /nix/store/*-brave-*/opt/brave.com/brave/brave-browser                rix,
       '';
 
