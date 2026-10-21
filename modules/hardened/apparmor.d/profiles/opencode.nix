@@ -145,6 +145,12 @@ in {
             owner @{HOME}/.local/state/opencode/                                   rwk,
             owner @{HOME}/.local/state/opencode/**                                 rwklm,
 
+            # XDG state directory (~/.local/state/) — application state, locks,
+            # history. Skills and tools (basecamp, etc.) create lock files here.
+            # secrets-deny still blocks keyrings and other secrets.
+            owner @{HOME}/.local/state/                                            rwk,
+            owner @{HOME}/.local/state/**                                          rwklm,
+
             # OpenTUI tree-sitter grammars — WASM files for syntax highlighting.
             # OpenCode (Bun runtime) loads these for code blocks in the TUI.
             # 'w' needed because OpenTUI may download/update grammars on first use.
