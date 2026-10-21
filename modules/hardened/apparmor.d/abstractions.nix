@@ -164,6 +164,44 @@ in {
         deny @{HOME}/.config/google-chrome/**            r,
       '';
 
+      "abstractions/curios/agents-skills" = ''
+        abi <abi/4.0>,
+        # CuriOS abstraction for AI agent skills (opencode, claude-code, codex, …).
+        # Covers the shared needs of agent skills:
+        #   - ~/.agents/       — skill definitions and executable scripts
+        #   - ~/.npm/          — npm cache, logs, npx-installed tools
+        #   - Brave browser    — skills like brave-tools launch the browser
+        #
+        # secrets-deny must be included by the calling profile to block
+        # ~/.ssh/, ~/.npmrc, .env files, etc.
+
+        # ── Agent skills (~/.agents/skills/) ──────────────────────────────
+        # Skills are markdown/prompt files loaded by the agent runtime.
+        # 'rix' (restricted inherit exec) allows running skill scripts
+        # (e.g. brave-tools/scripts/*) while keeping them confined:
+        # they inherit the calling profile, so secrets-deny still applies.
+        owner @{HOME}/.agents/                                                 r,
+        owner @{HOME}/.agents/**                                               rix,
+
+        # ── npm cache and logs (~/.npm/) ──────────────────────────────────
+        # _cacache/  — package cache (create, delete, hard links for dedup)
+        # _logs/     — debug logs (create new, delete old)
+        # _npx/      — npx-installed tools (execute .js scripts via shebang)
+        # 'rix' on .js: npx executes scripts directly (#!/usr/bin/env node).
+        # Note: secrets-deny blocks ~/.npmrc (auth tokens) separately.
+        owner @{HOME}/.npm/                                                    rwk,
+        owner @{HOME}/.npm/**                                                  rwklm,
+        owner @{HOME}/.npm/**/*.js                                             rix,
+
+        # ── Brave browser (for browser-automation skills) ──────────────────
+        # Skills like brave-tools launch Brave. rPx transitions to the
+        # dedicated brave profiles so the browser runs with its own
+        # AppArmor profile, not the restrictive agent profile.
+        /nix/store/*-brave-*/bin/brave                                         rPx -> brave-wrapper,
+        /nix/store/*-brave-*/opt/brave.com/brave/brave                        rPx -> brave,
+        /nix/store/*-brave-*/opt/brave.com/brave/brave-browser                rix,
+      '';
+
       "abstractions/curios/wayland" = ''
         abi <abi/4.0>,
         # Needed when using QT_QPA_PLATFORM=wayland-egl (MESA dri config)

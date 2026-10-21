@@ -54,6 +54,7 @@ in {
             include <abstractions/nameservice>
             include <abstractions/ssl_certs>
             include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/agents-skills>
 
             # Nix store: read all, exec binaries, mmap libraries.
             # On NixOS the store is world-readable by design; granting read
@@ -112,6 +113,8 @@ in {
             # docker, gh — these would attempt to read credentials that
             # secrets-deny blocks, causing confusing failures. If needed,
             # add them here and accept that their config reads will be denied.
+            #
+            # Skills, npm, and Brave browser rules are in <abstractions/curios/agents-skills>.
 
             # Network — LLM API calls, package registries, git over HTTPS.
             # A compromised agent could exfiltrate project source code via
@@ -148,25 +151,10 @@ in {
             owner @{HOME}/.local/share/opentui/                                   rwk,
             owner @{HOME}/.local/share/opentui/**                                 rwklm,
 
-            # Agent skills (~/.agents/skills/) — read + execute.
-            # Skills are markdown/prompt files loaded by the agent runtime.
-            # 'rix' (restricted inherit exec) allows running skill scripts
-            # (e.g. brave-tools/scripts/*) while keeping them confined:
-            # they inherit this profile, so secrets-deny still applies.
-            owner @{HOME}/.agents/                                                 r,
-            owner @{HOME}/.agents/**                                               rix,
-
             # Bun runtime (~/.bun/) — package cache and binaries.
             # Bun downloads and caches npm packages here.
             owner @{HOME}/.bun/                                                    rwk,
             owner @{HOME}/.bun/**                                                  rwklm,
-
-            # npm cache and logs (~/.npm/) — _cacache/, _logs/, _npx/.
-            # npm needs 'c' (create temp files), 'd' (delete old logs),
-            # 'l' (hard links for cache deduplication).
-            # Note: secrets-deny blocks ~/.npmrc (auth tokens) separately.
-            owner @{HOME}/.npm/                                                    rwk,
-            owner @{HOME}/.npm/**                                                  rwklm,
 
             # Git user config (not credentials — secrets-deny blocks
             # .git-credentials and ~/.config/git/**).
