@@ -161,6 +161,13 @@ in {
             owner @{HOME}/.bun/                                                    rwk,
             owner @{HOME}/.bun/**                                                  rwklm,
 
+            # npm cache and logs (~/.npm/) — _cacache/, _logs/, _npx/.
+            # npm needs 'c' (create temp files), 'd' (delete old logs),
+            # 'l' (hard links for cache deduplication).
+            # Note: secrets-deny blocks ~/.npmrc (auth tokens) separately.
+            owner @{HOME}/.npm/                                                    rwk,
+            owner @{HOME}/.npm/**                                                  rwklm,
+
             # Git user config (not credentials — secrets-deny blocks
             # .git-credentials and ~/.config/git/**).
             owner @{HOME}/.gitconfig                                               r,
