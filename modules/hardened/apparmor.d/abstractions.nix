@@ -197,18 +197,23 @@ in {
 
         # ── Brave browser (for browser-automation skills) ──────────────────
         # Skills like brave-tools launch Brave.
-        # - bin/brave (wrapper script): rix — inherits the calling profile.
-        #   The wrapper then execs the main binary with rPx -> brave below.
-        # - opt/.../brave AND .brave-wrapped: rPx -> brave — transitions to
-        #   the dedicated brave profile so the browser runs with its own rules.
-        #   (.brave-wrapped is the renamed binary that the wrapper actually execs.)
-        # - opt/.../brave-browser (launcher): rix — inherits, then execs brave.
-        # Note: rix (not rPx -> brave-wrapper) avoids conflicting x modifiers
-        # with the general /nix/store/*/bin/* rix rule in the calling profile.
+        # Execution chain:
+        #   bin/brave (wrapper script, rix → inherits calling profile)
+        #     → exec bin/.brave-wrapped
+        #       → symlink to ../opt/brave.com/brave/brave-browser
+        #         → AppArmor resolves symlink, checks brave-browser path
+        #           → rPx -> brave transitions to the brave profile
+        #
+        # Key insight: bin/.brave-wrapped is a SYMLINK to brave-browser.
+        # AppArmor resolves symlinks before checking, so the rule must be on
+        # brave-browser (the resolved path), not on .brave-wrapped.
+        #
+        # Note: bin/brave uses rix (not rPx -> brave-wrapper) to avoid
+        # conflicting x modifiers with the general /nix/store/*/bin/* rix
+        # rule in the calling profile.
         /nix/store/*-brave-*/bin/brave                                         rix,
         /nix/store/*-brave-*/opt/brave.com/brave/brave                        rPx -> brave,
-        /nix/store/*-brave-*/opt/brave.com/brave/.brave-wrapped               rPx -> brave,
-        /nix/store/*-brave-*/opt/brave.com/brave/brave-browser                rix,
+        /nix/store/*-brave-*/opt/brave.com/brave/brave-browser                rPx -> brave,
       '';
 
       "abstractions/curios/wayland" = ''
