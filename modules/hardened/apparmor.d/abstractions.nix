@@ -186,9 +186,19 @@ in {
         # _logs/     — debug logs (create new, delete old)
         # _npx/      — npx-installed tools (execute .js scripts via shebang)
         # 'rix' on .js: npx executes scripts directly (#!/usr/bin/env node).
+        # Note: secrets-deny blocks ~/.npmrc (auth tokens) separately.
         owner @{HOME}/.npm/                                                    rwk,
         owner @{HOME}/.npm/**                                                  rwklm,
         owner @{HOME}/.npm/**/*.js                                             rix,
+
+        # ── Global npm packages (~/.npm-packages/) ─────────────────────────
+        # User-installed global packages (npm install -g --prefix ~/.npm-packages).
+        # bin/ contains symlinks → lib/node_modules/*/dist/bin.js (with shebang).
+        # AppArmor resolves symlinks, so rix must be on the resolved .js path.
+        # 'rix' on .js: shell execs the script, kernel runs /usr/bin/env node.
+        owner @{HOME}/.npm-packages/                                           rwk,
+        owner @{HOME}/.npm-packages/**                                         rwklm,
+        owner @{HOME}/.npm-packages/**/*.js                                    rix,
 
         # ── Brave browser (for browser-automation skills) ──────────────────
         # Skills like brave-tools launch Brave.
