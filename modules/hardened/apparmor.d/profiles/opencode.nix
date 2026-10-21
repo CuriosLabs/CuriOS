@@ -95,6 +95,8 @@ in {
             # Language runtimes — opencode may invoke these for project tooling
             # (linting, testing, building). All inherit this profile.
             /nix/store/*-nodejs-*/bin/*                                            rix,
+            # npm-cli.js lives in lib/node_modules/npm/bin/, not bin/
+            /nix/store/*-nodejs-*/lib/node_modules/npm/bin/*                       rix,
             /nix/store/*-bun-*/bin/*                                               rix,
             /nix/store/*-python3-*/bin/*                                           rix,
             /nix/store/*-rust-*/bin/*                                              rix,
@@ -125,13 +127,15 @@ in {
             /dev/tty                                                               rw,
             /dev/ptmx                                                              rw,
 
-            # OpenCode config, cache, and data
+            # OpenCode config, cache, and data.
+            # 'l' (link) needed for git hardlinks in snapshot/ (atomic pack writes).
+            # 'm' (mmap) needed for cache files and git object access.
             owner @{HOME}/.config/opencode/                                        rwk,
             owner @{HOME}/.config/opencode/**                                      rwk,
             owner @{HOME}/.cache/opencode/                                         rwk,
             owner @{HOME}/.cache/opencode/**                                       rwk,
-            owner @{HOME}/.local/share/opencode/                                   rwk,
-            owner @{HOME}/.local/share/opencode/**                                 rwk,
+            owner @{HOME}/.local/share/opencode/                                   rwkl,
+            owner @{HOME}/.local/share/opencode/**                                 rwklm,
 
             # OpenCode state (XDG_STATE_HOME) — model cache, history, locks.
             # 'l' (link) and 'm' (mmap) needed for atomic writes and cache files.
