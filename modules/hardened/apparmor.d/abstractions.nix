@@ -194,10 +194,15 @@ in {
         owner @{HOME}/.npm/**/*.js                                             rix,
 
         # ── Brave browser (for browser-automation skills) ──────────────────
-        # Skills like brave-tools launch Brave. rPx transitions to the
-        # dedicated brave profiles so the browser runs with its own
-        # AppArmor profile, not the restrictive agent profile.
-        /nix/store/*-brave-*/bin/brave                                         rPx -> brave-wrapper,
+        # Skills like brave-tools launch Brave.
+        # - bin/brave (wrapper script): rix — inherits the calling profile.
+        #   The wrapper then execs the main binary with rPx -> brave below.
+        # - opt/.../brave (main binary): rPx -> brave — transitions to the
+        #   dedicated brave profile so the browser runs with its own rules.
+        # - opt/.../brave-browser (launcher): rix — inherits, then execs brave.
+        # Note: rix (not rPx -> brave-wrapper) avoids conflicting x modifiers
+        # with the general /nix/store/*/bin/* rix rule in the calling profile.
+        /nix/store/*-brave-*/bin/brave                                         rix,
         /nix/store/*-brave-*/opt/brave.com/brave/brave                        rPx -> brave,
         /nix/store/*-brave-*/opt/brave.com/brave/brave-browser                rix,
       '';
