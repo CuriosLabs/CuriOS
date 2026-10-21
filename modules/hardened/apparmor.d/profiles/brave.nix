@@ -34,8 +34,13 @@ in {
             @{lib_dirs}/chrome_crashpad_handler     rix,
             @{lib_dirs}/chrome-management-service   rix,
 
-            # Brave-specific temporary files
-            /tmp/.com.brave.Brave.*/**              rwk,
+            # Brave-specific temporary files.
+            # Three rules needed: the dir itself (no trailing slash),
+            # the dir with trailing slash (for listing), and contents.
+            # Same pattern as chromium-engine's .org.chromium.Chromium.* rules.
+            owner /tmp/.com.brave.Brave.*            rwk,
+            owner /tmp/.com.brave.Brave.*/           rwk,
+            owner /tmp/.com.brave.Brave.*/**         rwk,
 
             # Browser policies (Brave/Chromium system-managed policies)
             /etc/brave/policies/                    r,
