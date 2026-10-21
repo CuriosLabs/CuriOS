@@ -44,9 +44,9 @@ in {
           # .pem files, password managers, and crypto keys even if the agent is
           # compromised via prompt injection or hallucination.
           #
-          # Project directories are limited to non-hidden top-level dirs
-          # (~/Projets, ~/Documents, …) — hidden dirs like ~/.ssh, ~/.gnupg,
-          # ~/.aws are unreachable.
+          # Read access covers all of $HOME (including hidden dirs) so skills can
+          # read arbitrary configs. Write is limited to non-hidden dirs (projects)
+          # plus specific opencode/bun directories.
 
           profile opencode /nix/store/*-opencode-*/bin/opencode ${modeFlag} {
             include <abstractions/base>
@@ -168,10 +168,14 @@ in {
             # .config directory listing (needed by various tools to find configs)
             owner @{HOME}/.config/                                                 r,
 
-            # Project directories — non-hidden top-level dirs only.
-            # [^.]* excludes ~/.ssh, ~/.gnupg, ~/.aws, ~/.config, etc.
-            # secrets-deny additionally blocks .env, *.pem, id_* keys,
-            # and *.kdbx anywhere under these directories.
+            # Home directory — read ALL (including hidden dirs for skills/configs),
+            # write only non-hidden dirs (projects). This lets skills read arbitrary
+            # config files under ~/.config/, ~/.local/, etc. without enumerating
+            # every path. secrets-deny still blocks reading ~/.ssh/, ~/.gnupg/,
+            # .env, *.pem, id_* keys, *.kdbx, cloud credentials, wallets, etc.
+            # Write is restricted to non-hidden dirs to prevent creating backdoors
+            # in ~/.ssh/ or modifying ~/.gnupg/.
+            owner @{HOME}/**                                                       r,
             owner @{HOME}/[^.]*/                                                   rwk,
             owner @{HOME}/[^.]*/**                                                 rwklm,
 
