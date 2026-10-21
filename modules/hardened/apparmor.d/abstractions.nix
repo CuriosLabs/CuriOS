@@ -200,6 +200,13 @@ in {
         owner @{HOME}/.npm-packages/**                                         rwklm,
         owner @{HOME}/.npm-packages/**/*.js                                    rix,
 
+        # ── XDG cache directory (~/.cache/) ───────────────────────────────
+        # Application caches. Skills and tools (basecamp, etc.) write temp
+        # files, cached responses, and completion data here.
+        # 'c' (create) needed for .tmp files, 'd' (delete) for cache cleanup.
+        owner @{HOME}/.cache/                                                  rwk,
+        owner @{HOME}/.cache/**                                                rwklm,
+
         # ── Brave browser (for browser-automation skills) ──────────────────
         # Skills like brave-tools launch Brave.
         # Execution chain:
