@@ -131,7 +131,6 @@ in {
         deny @{HOME}/.kube/**                            r,
         deny @{HOME}/.docker/config.json                 r,
         deny @{HOME}/.netrc                              r,
-        deny @{HOME}/.npmrc                              r,
         deny @{HOME}/.pypirc                             r,
         deny @{HOME}/.git-credentials                    r,
         deny @{HOME}/.config/gh/**                       r,
@@ -171,9 +170,6 @@ in {
         #   - ~/.agents/       — skill definitions and executable scripts
         #   - ~/.npm/          — npm cache, logs, npx-installed tools
         #   - Brave browser    — skills like brave-tools launch the browser
-        #
-        # secrets-deny must be included by the calling profile to block
-        # ~/.ssh/, ~/.npmrc, .env files, etc.
 
         # ── Agent skills (~/.agents/skills/) ──────────────────────────────
         # Skills are markdown/prompt files loaded by the agent runtime.
@@ -190,7 +186,6 @@ in {
         # _logs/     — debug logs (create new, delete old)
         # _npx/      — npx-installed tools (execute .js scripts via shebang)
         # 'rix' on .js: npx executes scripts directly (#!/usr/bin/env node).
-        # Note: secrets-deny blocks ~/.npmrc (auth tokens) separately.
         owner @{HOME}/.npm/                                                    rwk,
         owner @{HOME}/.npm/**                                                  rwklm,
         owner @{HOME}/.npm/**/*.js                                             rix,
