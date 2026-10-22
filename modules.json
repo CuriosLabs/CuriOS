@@ -445,6 +445,11 @@
               "mode": "enforce"
             }
           }
+        },
+        "cli": {
+          "opencode": {
+            "mode": "enforce"
+          }
         }
       },
       "cups": {
