@@ -78,13 +78,8 @@ in {
         mode = mkOption {
           type = modeType;
           default = "enforce";
-          description = ''
-            AppArmor profile mode for OpenCode TUI (AI coding agent).
-            Confines opencode and all child processes (bash tool) to deny
-            access to secrets (SSH keys, cloud credentials, wallets, .env files)
-            via the curios/secrets-deny abstraction. Enable in production
-            environments where the agent may handle sensitive keys.
-          '';
+          description =
+            "AppArmor profile mode for OpenCode TUI (AI coding agent).";
         };
       };
     };
