@@ -40,6 +40,11 @@ in {
           # profile. This is the real security boundary that opencode's own
           # tool-level path filtering cannot provide.
           #
+          # OpenCode v2 architecture: the TUI (opencode) spawns a background
+          # server (.opencode-wrapped serve --service) that manages sessions,
+          # handles LLM API calls, and supervises child processes. Both the
+          # TUI and the server run under this profile.
+          #
           # secrets-deny blocks SSH keys, cloud credentials, wallets, .env files,
           # .pem files, password managers, and crypto keys even if the agent is
           # compromised via prompt injection or hallucination.
@@ -48,7 +53,7 @@ in {
           # read arbitrary configs. Write is limited to non-hidden dirs (projects)
           # plus specific opencode/bun directories.
 
-          profile opencode /nix/store/*-opencode-*/bin/opencode ${modeFlag} {
+          profile opencode /nix/store/*-opencode-*/bin/{opencode,.opencode-wrapped} ${modeFlag} {
             include <abstractions/base>
             include <abstractions/consoles>
             include <abstractions/nameservice>
@@ -242,6 +247,20 @@ in {
 
             # D-Bus — desktop notifications, settings
             owner @{run}/user/@{uid}/bus                                           rw,
+
+            # Signals — OpenCode v2 server/wrapper needs to manage processes.
+            # The server (.opencode-wrapped serve --service) sends SIGTERM/SIGKILL
+            # to clean up child processes. Some children may be unconfined
+            # (e.g., started before confinement or system processes).
+            # Allow sending lifecycle signals to unconfined peers, and full
+            # signal exchange between opencode processes (TUI <-> server).
+            signal (send) set=(term, kill, hup, int, quit) peer=unconfined,
+            signal (receive) peer=unconfined,
+            signal (send, receive) peer=opencode,
+
+            # UNIX domain sockets — TUI <-> server IPC (v2 architecture).
+            # The server listens on a socket in ~/.local/state/opencode/ or /tmp/.
+            unix (create, connect, send, receive) type=stream,
 
             # Silencer
             deny /etc/opt/                                                         w,
