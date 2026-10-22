@@ -109,10 +109,31 @@ in {
             /nix/store/*-cmake-*/bin/*                                             rix,
             /nix/store/*-ninja-*/bin/*                                             rix,
 
+            # Privilege escalation — explicitly denied (defense in depth).
+            # Even if accidentally added to the allowlist above, these are
+            # blocked. Covers sudo, doas (NixOS alternative), pkexec, su,
+            # and setuid wrappers. This prevents an agent from escalating
+            # privileges to bypass secrets-deny via root access.
+            # On NixOS, binaries live in /nix/store and are symlinked from
+            # /run/current-system/sw/bin/ and /run/wrappers/bin/ (setuid).
+            deny /nix/store/*-sudo-*/bin/sudo                     x,
+            deny /nix/store/*-sudo-*/bin/*                        x,
+            deny /nix/store/*-doas-*/bin/doas                     x,
+            deny /nix/store/*-doas-*/bin/*                        x,
+            deny /run/wrappers/bin/sudo                           x,
+            deny /run/wrappers/bin/doas                           x,
+            deny /run/wrappers/bin/pkexec                         x,
+            deny /run/wrappers/bin/su                             x,
+            deny /run/current-system/sw/bin/sudo                  x,
+            deny /run/current-system/sw/bin/doas                  x,
+            deny /run/current-system/sw/bin/pkexec                x,
+            deny /run/current-system/sw/bin/su                    x,
+
             # Deliberately NOT allowed: openssh, gpg, aws, gcloud, kubectl,
             # docker, gh — these would attempt to read credentials that
             # secrets-deny blocks, causing confusing failures. If needed,
             # add them here and accept that their config reads will be denied.
+            # Note: sudo, doas, pkexec, su are explicitly denied above.
             #
             # Skills, npm, and Brave browser rules are in <abstractions/curios/agents-skills>.
 
