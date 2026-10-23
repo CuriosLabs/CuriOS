@@ -40,6 +40,11 @@ in {
           # profile. This is the real security boundary that opencode's own
           # tool-level path filtering cannot provide.
           #
+          # OpenCode v2 architecture: the TUI (opencode) spawns a background
+          # server (.opencode-wrapped serve --service) that manages sessions,
+          # handles LLM API calls, and supervises child processes. Both the
+          # TUI and the server run under this profile.
+          #
           # secrets-deny blocks SSH keys, cloud credentials, wallets, .env files,
           # .pem files, password managers, and crypto keys even if the agent is
           # compromised via prompt injection or hallucination.
@@ -48,12 +53,13 @@ in {
           # read arbitrary configs. Write is limited to non-hidden dirs (projects)
           # plus specific opencode/bun directories.
 
-          profile opencode /nix/store/*-opencode-*/bin/opencode ${modeFlag} {
+          profile opencode /nix/store/*-opencode-*/bin/{opencode,.opencode-wrapped} ${modeFlag} {
             include <abstractions/base>
             include <abstractions/consoles>
             include <abstractions/nameservice>
             include <abstractions/ssl_certs>
             include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/dbus-restrict>
             include <abstractions/curios/agents-skills>
 
             # Nix store: read all, exec binaries, mmap libraries.
@@ -109,10 +115,31 @@ in {
             /nix/store/*-cmake-*/bin/*                                             rix,
             /nix/store/*-ninja-*/bin/*                                             rix,
 
+            # Privilege escalation — explicitly denied (defense in depth).
+            # Even if accidentally added to the allowlist above, these are
+            # blocked. Covers sudo, doas (NixOS alternative), pkexec, su,
+            # and setuid wrappers. This prevents an agent from escalating
+            # privileges to bypass secrets-deny via root access.
+            # On NixOS, binaries live in /nix/store and are symlinked from
+            # /run/current-system/sw/bin/ and /run/wrappers/bin/ (setuid).
+            deny /nix/store/*-sudo-*/bin/sudo                     x,
+            deny /nix/store/*-sudo-*/bin/*                        x,
+            deny /nix/store/*-doas-*/bin/doas                     x,
+            deny /nix/store/*-doas-*/bin/*                        x,
+            deny /run/wrappers/bin/sudo                           x,
+            deny /run/wrappers/bin/doas                           x,
+            deny /run/wrappers/bin/pkexec                         x,
+            deny /run/wrappers/bin/su                             x,
+            deny /run/current-system/sw/bin/sudo                  x,
+            deny /run/current-system/sw/bin/doas                  x,
+            deny /run/current-system/sw/bin/pkexec                x,
+            deny /run/current-system/sw/bin/su                    x,
+
             # Deliberately NOT allowed: openssh, gpg, aws, gcloud, kubectl,
             # docker, gh — these would attempt to read credentials that
             # secrets-deny blocks, causing confusing failures. If needed,
             # add them here and accept that their config reads will be denied.
+            # Note: sudo, doas, pkexec, su are explicitly denied above.
             #
             # Skills, npm, and Brave browser rules are in <abstractions/curios/agents-skills>.
 
@@ -219,8 +246,23 @@ in {
             # for CPU/memory monitoring and container awareness.
             @{sys}/fs/cgroup/**                                                    r,
 
-            # D-Bus — desktop notifications, settings
-            owner @{run}/user/@{uid}/bus                                           rw,
+            # D-Bus — access is restricted by <abstractions/curios/dbus-restrict>.
+            # Benign services (notifications, portals, power) are allowed;
+            # secret/keyring services (org.freedesktop.secrets, kwalletd) are denied.
+
+            # Signals — OpenCode v2 server/wrapper needs to manage processes.
+            # The server (.opencode-wrapped serve --service) sends SIGTERM/SIGKILL
+            # to clean up child processes. Some children may be unconfined
+            # (e.g., started before confinement or system processes).
+            # Allow sending lifecycle signals to unconfined peers, and full
+            # signal exchange between opencode processes (TUI <-> server).
+            signal (send) set=(term, kill, hup, int, quit) peer=unconfined,
+            signal (receive) peer=unconfined,
+            signal (send, receive) peer=opencode,
+
+            # UNIX domain sockets — TUI <-> server IPC (v2 architecture).
+            # The server listens on a socket in ~/.local/state/opencode/ or /tmp/.
+            unix (create, connect, send, receive) type=stream,
 
             # Silencer
             deny /etc/opt/                                                         w,

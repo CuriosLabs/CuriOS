@@ -1,11 +1,13 @@
 # CuriOS AppArmor profiles — NixOS option declarations.
 # Defines curios.hardened.apparmor-profiles.* options.
 
-{ lib, ... }:
+{ config, lib, ... }:
 
 let
   inherit (lib) mkOption types;
   modeType = types.enum [ "complain" "enforce" "disable" ];
+  cfg = config.curios.hardened.apparmor-profiles;
+  anssi = config.curios.hardened.anssi.reinforced;
 in {
   options.curios.hardened.apparmor-profiles = {
     enable = mkOption {
@@ -78,15 +80,16 @@ in {
         mode = mkOption {
           type = modeType;
           default = "enforce";
-          description = ''
-            AppArmor profile mode for OpenCode TUI (AI coding agent).
-            Confines opencode and all child processes (bash tool) to deny
-            access to secrets (SSH keys, cloud credentials, wallets, .env files)
-            via the curios/secrets-deny abstraction. Enable in production
-            environments where the agent may handle sensitive keys.
-          '';
+          description =
+            "AppArmor profile mode for OpenCode TUI (AI coding agent).";
         };
       };
     };
+  };
+
+  # dbus rules are enforced by the bus daemon, not by the kernel on the
+  # session socket. Without this, peer=(name=...) denies are never consulted.
+  config = lib.mkIf (cfg.enable && anssi.enable && anssi.rule45) {
+    services.dbus.apparmor = "enabled";
   };
 }
