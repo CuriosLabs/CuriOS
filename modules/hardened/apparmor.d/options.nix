@@ -1,11 +1,13 @@
 # CuriOS AppArmor profiles — NixOS option declarations.
 # Defines curios.hardened.apparmor-profiles.* options.
 
-{ lib, ... }:
+{ config, lib, ... }:
 
 let
   inherit (lib) mkOption types;
   modeType = types.enum [ "complain" "enforce" "disable" ];
+  cfg = config.curios.hardened.apparmor-profiles;
+  anssi = config.curios.hardened.anssi.reinforced;
 in {
   options.curios.hardened.apparmor-profiles = {
     enable = mkOption {
@@ -83,5 +85,11 @@ in {
         };
       };
     };
+  };
+
+  # dbus rules are enforced by the bus daemon, not by the kernel on the
+  # session socket. Without this, peer=(name=...) denies are never consulted.
+  config = lib.mkIf (cfg.enable && anssi.enable && anssi.rule45) {
+    services.dbus.apparmor = "enabled";
   };
 }
