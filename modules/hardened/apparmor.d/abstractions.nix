@@ -182,58 +182,58 @@ in {
 
         # ── Allowed: benign session bus services ──────────────────────────
         # Desktop notifications
-        dbus (send, receive) bus=session name=org.freedesktop.Notifications,
+        dbus (send receive) bus=session name=org.freedesktop.Notifications,
 
         # XDG portals (file chooser, open URI, settings, etc.)
-        dbus (send, receive) bus=session name=org.freedesktop.portal.*,
+        dbus (send receive) bus=session name=org.freedesktop.portal.*,
 
         # Power management / battery info
-        dbus (send, receive) bus=session name=org.freedesktop.UPower,
-        dbus (send, receive) bus=session name=org.freedesktop.PowerManagement,
+        dbus (send receive) bus=session name=org.freedesktop.UPower,
+        dbus (send receive) bus=session name=org.freedesktop.PowerManagement,
 
         # systemd user instance (service status, timers)
-        dbus (send, receive) bus=session name=org.freedesktop.systemd1,
+        dbus (send receive) bus=session name=org.freedesktop.systemd1,
 
         # login1 (session info, inhibit/shutdown requests)
-        dbus (send, receive) bus=session name=org.freedesktop.login1,
+        dbus (send receive) bus=session name=org.freedesktop.login1,
 
         # NetworkManager (network status, not credentials)
-        dbus (send, receive) bus=session name=org.freedesktop.NetworkManager,
+        dbus (send receive) bus=session name=org.freedesktop.NetworkManager,
 
         # Bluetooth (device discovery, not pairing secrets)
-        dbus (send, receive) bus=session name=org.bluez,
+        dbus (send receive) bus=session name=org.bluez,
 
         # Accessibility (screen readers)
-        dbus (send, receive) bus=session name=org.a11y.*,
+        dbus (send receive) bus=session name=org.a11y.*,
 
         # CUPS printing
-        dbus (send, receive) bus=session name=org.cups.cupsd,
+        dbus (send receive) bus=session name=org.cups.cupsd,
 
         # Avahi / mDNS (local network discovery)
-        dbus (send, receive) bus=session name=org.freedesktop.Avahi,
+        dbus (send receive) bus=session name=org.freedesktop.Avahi,
 
         # ── Denied: secret/keyring services (explicit, defense in depth) ──
         # Even with dbus-session-strict these are blocked by default,
         # but we deny them explicitly for documentation and defense in depth.
 
         # GNOME Keyring / freedesktop secrets service (stores passwords, keys)
-        deny dbus (send, receive) bus=session name=org.freedesktop.secrets,
-        deny dbus (send, receive) bus=session name=org.freedesktop.secrets.*,
+        deny dbus (send receive) bus=session name=org.freedesktop.secrets,
+        deny dbus (send receive) bus=session name=org.freedesktop.secrets.*,
 
         # KDE Wallet (KWallet) — stores passwords, keys
-        deny dbus (send, receive) bus=session name=org.kde.kwalletd,
-        deny dbus (send, receive) bus=session name=org.kde.kwalletd*,
-        deny dbus (send, receive) bus=session name=org.kde.ksecretd,
+        deny dbus (send receive) bus=session name=org.kde.kwalletd,
+        deny dbus (send receive) bus=session name=org.kde.kwalletd*,
+        deny dbus (send receive) bus=session name=org.kde.ksecretd,
 
         # GNOME Keyring (legacy)
-        deny dbus (send, receive) bus=session name=org.gnome.keyring,
-        deny dbus (send, receive) bus=session name=org.gnome.keyring.*,
+        deny dbus (send receive) bus=session name=org.gnome.keyring,
+        deny dbus (send receive) bus=session name=org.gnome.keyring.*,
 
         # Permission store (portal permissions may contain sensitive paths)
-        deny dbus (send, receive) bus=session name=org.freedesktop.impl.portal.PermissionStore,
+        deny dbus (send receive) bus=session name=org.freedesktop.impl.portal.PermissionStore,
 
         # SSH agent (can be used to sign with SSH keys)
-        deny dbus (send, receive) bus=session name=com.github.ssh-agent,
+        deny dbus (send receive) bus=session name=com.github.ssh-agent,
       '';
 
       "abstractions/curios/agents-skills" = ''
