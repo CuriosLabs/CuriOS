@@ -163,6 +163,79 @@ in {
         deny @{HOME}/.config/google-chrome/**            r,
       '';
 
+      "abstractions/curios/dbus-restrict" = ''
+        abi <abi/4.0>,
+        # CuriOS D-Bus restriction abstraction.
+        # Based on <abstractions/dbus-session-strict> (apparmor-profiles) for
+        # secure-by-default D-Bus mediation, with an explicit allowlist of
+        # benign services and an explicit denylist of secret/keyring services.
+        #
+        # Usage: include this abstraction INSTEAD of granting blanket
+        # `owner @{run}/user/@{uid}/bus rw,` access.
+
+        # Base: socket access + org.freedesktop.DBus (Hello, AddMatch, etc.)
+        # If apparmor-profiles is not installed, fall back to socket-only access.
+        include if exists <abstractions/dbus-session-strict>
+
+        # Fallback: ensure socket access even without dbus-session-strict
+        owner @{run}/user/@{uid}/bus                                           rw,
+
+        # ── Allowed: benign session bus services ──────────────────────────
+        # Desktop notifications
+        dbus (send, receive) bus=session name=org.freedesktop.Notifications,
+
+        # XDG portals (file chooser, open URI, settings, etc.)
+        dbus (send, receive) bus=session name=org.freedesktop.portal.*,
+
+        # Power management / battery info
+        dbus (send, receive) bus=session name=org.freedesktop.UPower,
+        dbus (send, receive) bus=session name=org.freedesktop.PowerManagement,
+
+        # systemd user instance (service status, timers)
+        dbus (send, receive) bus=session name=org.freedesktop.systemd1,
+
+        # login1 (session info, inhibit/shutdown requests)
+        dbus (send, receive) bus=session name=org.freedesktop.login1,
+
+        # NetworkManager (network status, not credentials)
+        dbus (send, receive) bus=session name=org.freedesktop.NetworkManager,
+
+        # Bluetooth (device discovery, not pairing secrets)
+        dbus (send, receive) bus=session name=org.bluez,
+
+        # Accessibility (screen readers)
+        dbus (send, receive) bus=session name=org.a11y.*,
+
+        # CUPS printing
+        dbus (send, receive) bus=session name=org.cups.cupsd,
+
+        # Avahi / mDNS (local network discovery)
+        dbus (send, receive) bus=session name=org.freedesktop.Avahi,
+
+        # ── Denied: secret/keyring services (explicit, defense in depth) ──
+        # Even with dbus-session-strict these are blocked by default,
+        # but we deny them explicitly for documentation and defense in depth.
+
+        # GNOME Keyring / freedesktop secrets service (stores passwords, keys)
+        deny dbus (send, receive) bus=session name=org.freedesktop.secrets,
+        deny dbus (send, receive) bus=session name=org.freedesktop.secrets.*,
+
+        # KDE Wallet (KWallet) — stores passwords, keys
+        deny dbus (send, receive) bus=session name=org.kde.kwalletd,
+        deny dbus (send, receive) bus=session name=org.kde.kwalletd*,
+        deny dbus (send, receive) bus=session name=org.kde.ksecretd,
+
+        # GNOME Keyring (legacy)
+        deny dbus (send, receive) bus=session name=org.gnome.keyring,
+        deny dbus (send, receive) bus=session name=org.gnome.keyring.*,
+
+        # Permission store (portal permissions may contain sensitive paths)
+        deny dbus (send, receive) bus=session name=org.freedesktop.impl.portal.PermissionStore,
+
+        # SSH agent (can be used to sign with SSH keys)
+        deny dbus (send, receive) bus=session name=com.github.ssh-agent,
+      '';
+
       "abstractions/curios/agents-skills" = ''
         abi <abi/4.0>,
         # CuriOS abstraction for AI agent skills (opencode, claude-code, codex, …).

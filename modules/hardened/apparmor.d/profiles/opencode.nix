@@ -59,6 +59,7 @@ in {
             include <abstractions/nameservice>
             include <abstractions/ssl_certs>
             include <abstractions/curios/secrets-deny>
+            include <abstractions/curios/dbus-restrict>
             include <abstractions/curios/agents-skills>
 
             # Nix store: read all, exec binaries, mmap libraries.
@@ -245,8 +246,9 @@ in {
             # for CPU/memory monitoring and container awareness.
             @{sys}/fs/cgroup/**                                                    r,
 
-            # D-Bus — desktop notifications, settings
-            owner @{run}/user/@{uid}/bus                                           rw,
+            # D-Bus — access is restricted by <abstractions/curios/dbus-restrict>.
+            # Benign services (notifications, portals, power) are allowed;
+            # secret/keyring services (org.freedesktop.secrets, kwalletd) are denied.
 
             # Signals — OpenCode v2 server/wrapper needs to manage processes.
             # The server (.opencode-wrapped serve --service) sends SIGTERM/SIGKILL
