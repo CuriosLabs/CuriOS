@@ -19,12 +19,12 @@
     },
     "core": {
       "dotfiles": {
-        "branch": "main",
+        "branch": "unstable",
         "revision": "",
         "url": "https://github.com/CuriosLabs/curios-themes.git"
       },
       "source": {
-        "branch": "stable",
+        "branch": "unstable",
         "revision": "",
         "url": "https://github.com/CuriosLabs/CuriOS.git"
       }
