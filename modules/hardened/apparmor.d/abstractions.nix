@@ -172,6 +172,20 @@ in {
         #
         # Usage: include this abstraction INSTEAD of granting blanket
         # `owner @{run}/user/@{uid}/bus rw,` access.
+        #
+        # NOT ENFORCED on NixOS 26.05. dbus rules are consulted by the bus
+        # daemon, not by the kernel on the session socket. The default bus is
+        # dbus-broker, which does not implement AppArmor mediation: with
+        # <apparmor mode="enabled"/> it logs "AppArmor enabled, but not
+        # supported" and allows the message (bus1/dbus-broker#169). The NixOS
+        # dbus-daemon package is not linked to libapparmor either, so
+        # services.dbus.implementation = "dbus" would not mediate today.
+        # options.nix already sets services.dbus.apparmor = "enabled" when
+        # ANSSI R45 is on, so the XML is ready. These peer=() rules will
+        # start applying when NixOS ships a mediating bus (dbus-daemon built
+        # with libapparmor, or dbus-broker with AppArmor support). Until
+        # then, the socket rule below is enough to reach every session
+        # service, including org.freedesktop.secrets.
 
         # Base: socket access + org.freedesktop.DBus (Hello, AddMatch, etc.)
         # If apparmor-profiles is not installed, fall back to socket-only access.
