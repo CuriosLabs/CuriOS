@@ -151,7 +151,7 @@ in {
         deny @{HOME}/**/.env.*                           r,
         deny @{HOME}/**/.envrc                           r,
         deny @{HOME}/**/id_{rsa,ed25519,ecdsa,dsa}       r,
-        deny @{HOME}/**/*.pem                            r,
+        deny @{HOME}/**/*.key                            r,
         deny @{HOME}/**/*.kdbx                           r,
       '';
 
