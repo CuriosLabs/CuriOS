@@ -2,19 +2,29 @@
 # Reinforced level rules - should only be set on system with need of stronger security.
 # See: https://messervices.cyber.gouv.fr/documents-guides/fr_np_linux_configuration-v2.0.pdf
 
-{ config, lib, ... }: {
+{ config, lib, ... }:
+let
+  # Detect CPU vendor to set the correct IOMMU parameter
+  cpuVendor = if config.hardware.cpu.amd.updateMicrocode or false then
+    "amd"
+  else if config.hardware.cpu.intel.updateMicrocode or false then
+    "intel"
+  else
+    "auto"; # Unknown vendor, fallback to both parameters
+in {
   # Declare options
   options = {
     curios.hardened.anssi.reinforced = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
+        description =
+          "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
       };
       rule7 = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "R7 - Activating the IOMMU";
+        description = "R7 - Activating the IOMMU and VFIO modules.";
       };
       rule10 = lib.mkOption {
         type = lib.types.bool;
@@ -24,7 +34,8 @@
       rule39 = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "R39 - /etc/sudoers extra configuration (noexec, requiretty). WILL break a lot of SUDO commands.";
+        description =
+          "R39 - /etc/sudoers extra configuration (noexec, requiretty). WILL break a lot of SUDO commands.";
       };
       rule45 = lib.mkOption {
         type = lib.types.bool;
@@ -36,11 +47,40 @@
 
   config = lib.mkIf config.curios.hardened.anssi.reinforced.enable {
     boot = {
-      kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7 [ "iommu=force" ];
+      # R7 - IOMMU activation with VFIO support for PCI passthrough
+      kernelParams = lib.optionals config.curios.hardened.anssi.reinforced.rule7
+        (if cpuVendor == "amd" then
+          [ "amd_iommu=on" ]
+        else if cpuVendor == "intel" then
+          [ "intel_iommu=on" ]
+        else [
+          "amd_iommu=on"
+          "intel_iommu=on"
+        ] # Fallback: unknown CPU, set both
+        );
 
-      kernel.sysctl = lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
-        "kernel.modules_disabled" = 1;
-      };
+      # Load VFIO modules early (before GPU drivers) for PCI passthrough
+      kernelModules =
+        lib.optionals config.curios.hardened.anssi.reinforced.rule7 [
+          "vfio"
+          "vfio_iommu_type1"
+          "vfio_pci"
+          "vfio_virqfd"
+        ];
+
+      # Also load VFIO in initrd for early binding of GPU drivers
+      initrd.kernelModules =
+        lib.optionals config.curios.hardened.anssi.reinforced.rule7 [
+          "vfio"
+          "vfio_iommu_type1"
+          "vfio_pci"
+          "vfio_virqfd"
+        ];
+
+      kernel.sysctl =
+        lib.optionalAttrs config.curios.hardened.anssi.reinforced.rule10 {
+          "kernel.modules_disabled" = 1;
+        };
     };
 
     security = {
