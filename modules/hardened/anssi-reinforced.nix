@@ -65,7 +65,6 @@ in {
           "vfio"
           "vfio_iommu_type1"
           "vfio_pci"
-          "vfio_virqfd"
         ];
 
       # Also load VFIO in initrd for early binding of GPU drivers
@@ -74,7 +73,6 @@ in {
           "vfio"
           "vfio_iommu_type1"
           "vfio_pci"
-          "vfio_virqfd"
         ];
 
       kernel.sysctl =
