@@ -64,7 +64,6 @@
         lib.mkDefault pkgs.linuxPackages_latest
       else
         lib.mkDefault pkgs.linuxPackages;
-      initrd.systemd.enable = true;
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
         "vm.swappiness" = 10;
@@ -151,7 +150,6 @@
 
       # Enable "Silent boot"
       consoleLogLevel = lib.mkDefault 3;
-      initrd.verbose = false;
       # Hide the OS choice for bootloaders.
       # It's still possible to open the bootloader list by pressing any key
       # It will just not appear on screen unless a key is pressed
