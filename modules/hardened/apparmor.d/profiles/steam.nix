@@ -353,6 +353,8 @@ in {
               include <abstractions/curios/gconv>
               include <abstractions/curios/graphics>
               include <abstractions/curios/wayland>
+              include <abstractions/curios/secrets-deny>
+              include <abstractions/curios/secrets-deny-browsers>
 
               # Signal handling (receive from parent steam process)
               signal receive set=(cont kill term) peer=steam,
@@ -477,6 +479,7 @@ in {
           # steam-unwrapped (bin_steam.sh), which then execs steam.sh.
           profile steam-launch @{exec_path} ${modeFlag} {
             include <abstractions/curios/fhsenv-bwrap>
+            include <abstractions/curios/secrets-deny>
 
             network unix stream,
 
@@ -568,6 +571,7 @@ in {
             include <abstractions/curios/gconv>
             include <abstractions/curios/graphics>
             include <abstractions/curios/wayland>
+            include <abstractions/curios/secrets-deny>
 
             network inet stream,
             network inet6 stream,
@@ -641,6 +645,7 @@ in {
             include <abstractions/curios/gconv>
             include <abstractions/curios/graphics>
             include <abstractions/curios/wayland>
+            include <abstractions/curios/secrets-deny>
 
             signal receive peer=steam,
 

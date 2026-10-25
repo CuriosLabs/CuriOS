@@ -27,6 +27,11 @@ in {
           profile brave ${pkgs.brave}/opt/brave.com/brave/brave ${modeFlag} {
             include <abstractions/chromium>
 
+            # Block other browsers' configs (Firefox, Chromium, Chrome).
+            deny @{HOME}/.mozilla/**                         r,
+            deny @{HOME}/.config/chromium/**                 r,
+            deny @{HOME}/.config/google-chrome/**            r,
+
             # Brave binary exec chain (chrome-sandbox transitions to the
             # brave-sandbox profile; crashpad/management-service inherit)
             @{lib_dirs}/brave                       mrix,
