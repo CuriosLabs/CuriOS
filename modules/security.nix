@@ -136,6 +136,7 @@
 
     environment.systemPackages = [
       pkgs.opensc # Set of librairies for smart cards
+      pkgs.tpm2-tools
       #pkgs.yubico-piv-tool # For using a YubiKey as a PIV smart card.
       pkgs.yubikey-manager # ykman
     ] ++ lib.optionals (config.curios.security.keyringProvider == "keepassxc"
