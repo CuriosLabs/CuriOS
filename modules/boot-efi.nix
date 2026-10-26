@@ -64,6 +64,22 @@
         lib.mkDefault pkgs.linuxPackages_latest
       else
         lib.mkDefault pkgs.linuxPackages;
+      # Kernel lockdown support — required when Secure Boot is enabled.
+      # nixpkgs has SECURITY_LOCKDOWN_LSM=no by default (for reproducible builds),
+      # we enable it here to match enterprise security requirements (EAC v2, ANSSI, etc.).
+      kernelPatches = lib.mkIf config.curios.bootefi.limine.secureBoot.enable [{
+        name = "curios-kernel-lockdown";
+        structuredExtraConfig = with lib.kernel; {
+          SECURITY_LOCKDOWN_LSM = yes;
+          SECURITY_LOCKDOWN_LSM_EARLY = yes;
+        };
+      }];
+      # Enable kernel lockdown in integrity mode when Secure Boot is active.
+      # Secure Boot automatically enables lockdown, but we set it explicitly
+      # for clarity and to ensure it's active even if auto-detection fails.
+      kernelParams = lib.mkIf config.curios.bootefi.limine.secureBoot.enable [
+        "lockdown=integrity"
+      ];
       kernel.sysctl = {
         # Reduce the frequency of swapping data from RAM to swap space.
         "vm.swappiness" = 10;
