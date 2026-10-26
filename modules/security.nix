@@ -150,6 +150,9 @@
       pkgs.tpm2-tools
       #pkgs.yubico-piv-tool # For using a YubiKey as a PIV smart card.
       pkgs.yubikey-manager # ykman
+      # BPF LSM tools for kernel security monitoring and policy enforcement
+      pkgs.bpftools # bpftool - inspect and load BPF programs
+      pkgs.bpftrace # bpftrace - dynamic tracing (can be used with BPF LSM)
     ] ++ lib.optionals (config.curios.security.keyringProvider == "keepassxc"
       && !config.curios.desktop.utility.keepassxc.enable) [ pkgs.keepassxc ];
 
