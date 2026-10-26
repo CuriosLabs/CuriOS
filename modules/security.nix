@@ -109,11 +109,14 @@
     };
 
     boot = {
-      # Disable kexec to prevent kernel replacement attacks (bypass Secure Boot)
+      # Disable kexec service (prevents systemd kexec from starting)
       kexec.enable = lib.mkForce false;
 
-      # Hard block at kernel level: even if kexec is loaded manually, it won't work
-      kernelParams = [ "kexec_load_disabled=1" ];
+      # Hard block at kernel level via sysctl (kernel param kexec_load_disabled=1
+      # does not persist on kernel 7.3, but sysctl forced via systemd-sysctl works)
+      kernel.sysctl = {
+        "kernel.kexec_load_disabled" = lib.mkForce "1";
+      };
     };
 
     services = {
