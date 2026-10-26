@@ -78,9 +78,6 @@
         LOGIN_TIMEOUT = 60;
       };
 
-      lsm = lib.optionals config.curios.bootefi.limine.secureBoot.enable
-        [ "lockdown" ];
-
       pam = {
         u2f = {
           # U2F are sufficient replacements to passwords.
