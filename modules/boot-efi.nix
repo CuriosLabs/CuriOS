@@ -70,6 +70,7 @@
       # NOTE: lib.mkForce is required to override common-config.nix definitions.
       kernelPatches = lib.mkIf config.curios.bootefi.limine.secureBoot.enable [{
         name = "curios-kernel-lockdown";
+        patch = null; # No physical patch, only kernel config overrides
         structuredExtraConfig = with lib.kernel; {
           SECURITY_LOCKDOWN_LSM = lib.mkForce yes;
           SECURITY_LOCKDOWN_LSM_EARLY = lib.mkForce yes;
