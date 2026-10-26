@@ -108,6 +108,14 @@
       sudo.extraConfig = "Defaults pwfeedback";
     };
 
+    boot = {
+      # Disable kexec to prevent kernel replacement attacks (bypass Secure Boot)
+      kexec.enable = lib.mkForce false;
+
+      # Hard block at kernel level: even if kexec is loaded manually, it won't work
+      kernelParams = [ "kexec_load_disabled=1" ];
+    };
+
     services = {
       # Enabling PCSC-lite for Yubikey
       pcscd.enable = true;
