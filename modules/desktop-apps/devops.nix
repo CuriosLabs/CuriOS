@@ -7,8 +7,8 @@ let
   # Pinned tarball for reproducibility.
   nixpkgsUnstable = builtins.fetchTarball {
     url =
-      "https://github.com/NixOS/nixpkgs/archive/02c087f3fe673c9e317f206a627cb6b910336dbe.tar.gz";
-    sha256 = "1l60ar0j7j7jrrg4r7j4kscrih0qn2n0lslffzflhv86lyq650r2";
+      "https://github.com/NixOS/nixpkgs/archive/3ec636362e1816bc2f0888fa0fa2c69f1bc9e504.tar.gz";
+    sha256 = "177diqkiwphjyqpk2n6nisayx840x28ksvq99kkyi2xsn37fp4md";
   };
   unstable = import nixpkgsUnstable {
     config = config.nixpkgs.config;
