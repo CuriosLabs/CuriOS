@@ -67,11 +67,12 @@
       # Kernel lockdown support — required when Secure Boot is enabled.
       # nixpkgs has SECURITY_LOCKDOWN_LSM=no by default (for reproducible builds),
       # we enable it here to match enterprise security requirements (EAC v2, ANSSI, etc.).
+      # NOTE: lib.mkForce is required to override common-config.nix definitions.
       kernelPatches = lib.mkIf config.curios.bootefi.limine.secureBoot.enable [{
         name = "curios-kernel-lockdown";
         structuredExtraConfig = with lib.kernel; {
-          SECURITY_LOCKDOWN_LSM = yes;
-          SECURITY_LOCKDOWN_LSM_EARLY = yes;
+          SECURITY_LOCKDOWN_LSM = lib.mkForce yes;
+          SECURITY_LOCKDOWN_LSM_EARLY = lib.mkForce yes;
         };
       }];
       # Enable kernel lockdown in integrity mode when Secure Boot is active.
