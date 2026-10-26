@@ -38,6 +38,8 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/modules/desktop-apps/ modules/desktop-apps/*.svg
     install -D -m 644 -t $out/share/curios/modules/filesystems/ modules/filesystems/*.nix
     install -D -m 644 -t $out/share/curios/modules/hardened/ modules/hardened/*.nix
+    install -D -m 644 -t $out/share/curios/modules/hardened/apparmor.d/ modules/hardened/apparmor.d/*.nix
+    install -D -m 644 -t $out/share/curios/modules/hardened/apparmor.d/profiles/ modules/hardened/apparmor.d/profiles/*.nix
     install -D -m 644 -t $out/share/curios/modules/hardware/ modules/hardware/*.nix
     install -D -m 644 -t $out/share/curios/modules/platforms/ modules/platforms/*.nix
 
