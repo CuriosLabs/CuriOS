@@ -113,6 +113,10 @@ in {
       true
     else if config.curios.desktop.ai.cursor.enable then
       true
+    else if config.curios.desktop.ai.lmstudio.enable then
+      true
+    else if config.curios.desktop.ai.lmstudio.bionic then
+      true
     else if config.curios.desktop.office.enable then
       true
     else if config.curios.desktop.chat.teamspeak.enable then

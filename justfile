@@ -174,7 +174,6 @@ checks: pkg-check-updates
     printf "\e[31mElectrum %s is available but pkgs/electrum/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
     failed=1
   fi
-  printf "\e[33mRemember to manually check:\e[0m https://lmstudio.ai/download \n"
   printf "\e[33mAlso remember to launch:\e[0m 'just test-unit pkgs-all'\n"
   exit "$failed"
 
