@@ -1033,6 +1033,8 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/desktop-apps/ "$CURIOS_SRC_PATH"/modules/desktop-apps/*.svg
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/filesystems/ "$CURIOS_SRC_PATH"/modules/filesystems/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardened/ "$CURIOS_SRC_PATH"/modules/hardened/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardened/apparmor.d/ "$CURIOS_SRC_PATH"/modules/hardened/apparmor.d/*.nix
+  install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardened/apparmor.d/profiles/ "$CURIOS_SRC_PATH"/modules/hardened/apparmor.d/profiles/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/hardware/ "$CURIOS_SRC_PATH"/modules/hardware/*.nix
   install -D -m 644 -t "$NIXOS_CONFIG_DIR"/modules/platforms/ "$CURIOS_SRC_PATH"/modules/platforms/*.nix
   for pkg in "$CURIOS_SRC_PATH"/pkgs/*; do install -D -m 644 -t "$NIXOS_CONFIG_DIR"/pkgs/"$(basename "$pkg")"/ "$pkg"/*; done

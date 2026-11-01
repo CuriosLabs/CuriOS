@@ -224,13 +224,13 @@ Manage desktop themes, wallpapers, and dotfiles:
 curios-dotfiles --list
 
 # Apply a theme to your home directory
-curios-dotfiles --themes "One Dark" /home/user
+curios-dotfiles --themes "One Dark" "$HOME"
 
 # Set the COSMIC keyboard layout
-curios-dotfiles --lang fr /home/user
+curios-dotfiles --lang fr "$HOME"
 
 # Upgrade dotfiles and themes from Git
-curios-dotfiles --upgrade /home/user
+curios-dotfiles --upgrade "$HOME"
 
 # Install as skeleton for new users
 sudo curios-dotfiles /etc/skel/

@@ -5,14 +5,14 @@
 { lib, fetchurl, gnupg, appimageTools, makeDesktopItem }:
 let
   pname = "electrum";
-  version = "4.8.2";
+  version = "4.8.3";
 
   # Calculate the hash with:
   # nix --extra-experimental-features nix-command hash convert --hash-algo sha256 "$(nix-prefetch-url https://download.electrum.org/4.8.2/electrum-4.8.2-x86_64.AppImage)"
   src = fetchurl {
     url =
       "https://download.electrum.org/${version}/${pname}-${version}-x86_64.AppImage";
-    hash = "sha256-YxDr0LeWUZbsw+t+G/6tJgzckDOohHIEVhuXYuYqh8A=";
+    hash = "sha256-qr47ssmf/KFyoASw/W9K/fGyBAefdpG2XyO8W2Op3gw=";
 
     # Verify Appimage signature
     nativeBuildInputs = [ gnupg ];
@@ -46,7 +46,7 @@ let
   appSignature = fetchurl {
     url =
       "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "sha256-XNVj9Kprp+0IdIYWxxEXnFnJDjMNzpiscq8ePAt8+xc=";
+    hash = "sha256-t/pAulALidOgzrcQH0SXcY8JePPINWAM2xW0I04GccM=";
   };
 
   authorPubKey = fetchurl {

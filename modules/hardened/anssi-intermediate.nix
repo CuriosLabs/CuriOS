@@ -109,9 +109,14 @@
       # Linux Security Modules (LSM) configuration.
       # In NixOS 26.05+, security.lsm defines the initialization order.
       # We ensure 'capability' is first, followed by others.
-      # "landlock", "yama", "bpf" are already enable by NixOS 25.11+
-      lsm = lib.optionals config.curios.hardened.anssi.intermediate.rule11
-        [ "capability" ];
+      # "landlock", "yama", "bpf" are already enabled by NixOS 25.11+.
+      # NOTE: lib.mkBefore ensures 'capability' is placed at the beginning
+      # of the merged LSM list, as required by the kernel (capability LSM
+      # must be initialized first for other LSMs to function correctly).
+      lsm = lib.mkBefore (
+        lib.optionals config.curios.hardened.anssi.intermediate.rule11
+          [ "capability" ]
+      );
 
       sudo = lib.mkIf config.curios.hardened.anssi.intermediate.rule39 {
         extraConfig = ''
