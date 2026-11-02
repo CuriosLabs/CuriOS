@@ -10,7 +10,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/fonts.nix ../modules/cosmic.nix ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       curios.fonts.enable = true;
       # Enable cosmic to include conditional fonts
       curios.cosmic.enable = true;
@@ -34,5 +34,14 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_font_present("Emoji")
         check_font_present("Noto")
         check_font_present("OpenSans")
+        check_font_present("Iosevka")
+
+    with subtest("check-braille-fallback"):
+        # Braille Patterns (btop graphs, gum spinners) must fall back to a
+        # monospace font with Braille glyphs (Iosevka), not a proportional
+        # font like DejaVu Sans which renders them as misaligned dots.
+        machine.succeed("fc-match 'JetBrains Mono:charset=2801' | grep -q 'Iosevka'")
+        # Regular text must still resolve to the primary terminal font.
+        machine.succeed("fc-match 'JetBrains Mono' | grep -q 'JetBrains Mono'")
   '';
 }
