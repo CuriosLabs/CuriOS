@@ -116,6 +116,9 @@
       # does not persist on kernel 7.3, but sysctl forced via systemd-sysctl works)
       kernel.sysctl = {
         "kernel.kexec_load_disabled" = lib.mkForce "1";
+        # For CVE-2026-98432 ONLY if you plan to run servers written in Go
+        # or with MPTCP capability.
+        #"net.mptcp.enabled" = lib.mkForce "0";
       };
     };
 
