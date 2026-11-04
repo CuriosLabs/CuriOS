@@ -46,7 +46,7 @@ let
   appSignature = fetchurl {
     url =
       "https://download.electrum.org/${version}/electrum-${version}-x86_64.AppImage.asc";
-    hash = "sha256-XNVj9Kprp+0IdIYWxxEXnFnJDjMNzpiscq8ePAt8+xc=";
+    hash = "sha256-t/pAulALidOgzrcQH0SXcY8JePPINWAM2xW0I04GccM=";
   };
 
   authorPubKey = fetchurl {

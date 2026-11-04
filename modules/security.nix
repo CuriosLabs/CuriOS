@@ -145,7 +145,12 @@
 
       # Hard block at kernel level via sysctl (kernel param kexec_load_disabled=1
       # does not persist on kernel 7.3, but sysctl forced via systemd-sysctl works)
-      kernel.sysctl = { "kernel.kexec_load_disabled" = lib.mkForce "1"; };
+      kernel.sysctl = {
+        "kernel.kexec_load_disabled" = lib.mkForce "1";
+        # For CVE-2026-98432 ONLY if you plan to run servers written in Go
+        # or with MPTCP capability.
+        #"net.mptcp.enabled" = lib.mkForce "0";
+      };
 
       # TPM2
       initrd.systemd.tpm2 = {
