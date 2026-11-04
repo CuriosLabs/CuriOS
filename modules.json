@@ -24,7 +24,7 @@
         "url": "https://github.com/CuriosLabs/curios-themes.git"
       },
       "source": {
-        "branch": "testing",
+        "branch": "feature/tpm2",
         "revision": "",
         "url": "https://github.com/CuriosLabs/CuriOS.git"
       }

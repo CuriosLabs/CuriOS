@@ -139,6 +139,14 @@
       pcrphases.enable = config.curios.security.tpm2.measuredBoot;
     };
 
+    # Remove UKI condition from pcrphase services when using Limine
+    # (systemd-pcrphase upstream requires ConditionSecurity=measured-uki,
+    #  but Limine does not boot via UKI; keep default condition for systemd-boot)
+    systemd.services = lib.mkIf config.curios.bootefi.limine.enable {
+      systemd-pcrphase.unitConfig.ConditionSecurity = lib.mkForce "";
+      systemd-pcrphase-sysinit.unitConfig.ConditionSecurity = lib.mkForce "";
+    };
+
     boot = {
       # Disable kexec service (prevents systemd kexec from starting)
       kexec.enable = lib.mkForce false;
@@ -157,6 +165,11 @@
         enable = config.curios.security.tpm2.enable;
         pcrphases.enable = config.curios.security.tpm2.measuredBoot;
         #pcrosseparator.enable = config.curios.security.tpm2.measuredBoot;
+      };
+
+      # Remove UKI condition from initrd pcrphase service when using Limine
+      initrd.systemd.services = lib.mkIf config.curios.bootefi.limine.enable {
+        systemd-pcrphase-initrd.unitConfig.ConditionSecurity = lib.mkForce "";
       };
     };
 
