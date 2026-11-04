@@ -778,7 +778,9 @@ in {
         ${pkgs.electron_44}/bin/electron                                       rix,
         ${pkgs.electron_44.unwrapped}/libexec/electron/electron                mrix,
         ${pkgs.electron_44.unwrapped}/libexec/electron/chrome_crashpad_handler rix,
-
+        ${pkgs.electron_45}/bin/electron                                       rix,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/electron                mrix,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/chrome_crashpad_handler rix,
 
         # Electron libraries and resources
         ${pkgs.electron.unwrapped}/libexec/electron/*.so*                      mr,
@@ -802,7 +804,13 @@ in {
         ${pkgs.electron_44.unwrapped}/libexec/electron/locales/**              r,
         ${pkgs.electron_44.unwrapped}/libexec/electron/resources/**            r,
         ${pkgs.electron_44.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
-
+        ${pkgs.electron_45.unwrapped}/libexec/electron/*.so*                   mr,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/*.pak                   r,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/*.dat                   r,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/*.bin                   r,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/locales/**              r,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/resources/**            r,
+        ${pkgs.electron_45.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
 
         # PipeWire
         owner @{run}/user/*/pipewire-*                                         rw,

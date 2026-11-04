@@ -134,13 +134,7 @@ in {
     else
       false;
     # Insecure pkgs
-    allowInsecurePredicate = pkg:
-      let
-        name = pkg.name or "${pkg.pname or ""}-${pkg.version or ""}";
-        prefixes = lib.optionals (config.curios.virtualisation.enable
-          && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
-      in lib.any (prefix: lib.hasPrefix prefix name) prefixes;
-    permittedInsecurePackages = [ "electron-42.11.18" ];
+    #permittedInsecurePackages = [ "electron-42.11.18" ];
   };
 
   system = {
