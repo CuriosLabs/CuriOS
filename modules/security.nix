@@ -58,6 +58,24 @@
             "Enable FIDO2 key support (YubiKey, etc.) for unlocking the LUKS disk volume during boot.";
         };
       };
+
+      tpm2 = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable TPM2 support.";
+        };
+        integrityCheck = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Run post-boot TPM2 integrity check.";
+        };
+        measuredBoot = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "TPM2 measure boot phases in initrd and systemd.";
+        };
+      };
     };
   };
 
@@ -101,11 +119,24 @@
         };
       };
 
+      # TPM2
+      tpm2 = {
+        abrmd.enable = config.curios.security.tpm2.enable;
+        enable = config.curios.security.tpm2.enable;
+        pkcs11.enable = config.curios.security.tpm2.enable;
+        tctiEnvironment.enable = config.curios.security.tpm2.enable;
+      };
+
       rtkit.enable =
         lib.mkDefault true; # realtime scheduling priority for pipewire.
 
       # Show password feedback for sudo command.
       sudo.extraConfig = "Defaults pwfeedback";
+    };
+
+    systemd.tpm2 = {
+      enable = config.curios.security.tpm2.enable;
+      pcrphases.enable = config.curios.security.tpm2.measuredBoot;
     };
 
     boot = {
@@ -114,8 +145,13 @@
 
       # Hard block at kernel level via sysctl (kernel param kexec_load_disabled=1
       # does not persist on kernel 7.3, but sysctl forced via systemd-sysctl works)
-      kernel.sysctl = {
-        "kernel.kexec_load_disabled" = lib.mkForce "1";
+      kernel.sysctl = { "kernel.kexec_load_disabled" = lib.mkForce "1"; };
+
+      # TPM2
+      initrd.systemd.tpm2 = {
+        enable = config.curios.security.tpm2.enable;
+        pcrphases.enable = config.curios.security.tpm2.measuredBoot;
+        #pcrosseparator.enable = config.curios.security.tpm2.measuredBoot;
       };
     };
 
