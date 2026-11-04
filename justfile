@@ -12,7 +12,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint update-nixos-hardware update-pkg-unstable checks
+build: lint update-nixos-hardware checks
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
