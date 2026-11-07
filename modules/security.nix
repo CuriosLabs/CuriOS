@@ -121,7 +121,7 @@
 
       # TPM2
       tpm2 = {
-        abrmd.enable = config.curios.security.tpm2.enable;
+        abrmd.enable = false;
         enable = config.curios.security.tpm2.enable;
         pkcs11.enable = config.curios.security.tpm2.enable;
         tctiEnvironment.enable = config.curios.security.tpm2.enable;
