@@ -44,6 +44,7 @@ stdenvNoCC.mkDerivation {
     install -D -m 644 -t $out/share/curios/modules/platforms/ modules/platforms/*.nix
 
     install -D -m 644 -t $out/share/curios/pkgs/basecamp-cli/ pkgs/basecamp-cli/default.nix
+    install -D -m 644 -t $out/share/curios/pkgs/brave/ pkgs/brave/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-dotfiles/ pkgs/curios-dotfiles/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager/ pkgs/curios-manager/default.nix
     install -D -m 644 -t $out/share/curios/pkgs/curios-manager-applet/ pkgs/curios-manager-applet/default.nix
