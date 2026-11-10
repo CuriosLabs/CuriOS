@@ -67,7 +67,12 @@ in {
           };
           inherit (config.curios.bootefi.lanzaboote) pkiBundle;
           configurationLimit = 4;
-          measuredBoot = { enable = false; };
+          measuredBoot = {
+            enable = true;
+            # PCR 0 = firmware code, 4 = bootloader, 7 = Secure Boot state
+            # PCR 1,2,3 may be flaky on some hardware
+            pcrs = [ 0 4 7 ];
+          };
           # Provide lzbt package from lanzaboote sources (no overlay in v1.2.0)
           package = lanzaboote.packages.lzbt;
         };
