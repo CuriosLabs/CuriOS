@@ -16,8 +16,8 @@
 let
   nixos-hardware = builtins.fetchTarball {
     url =
-      "https://github.com/NixOS/nixos-hardware/archive/04c6b94fa104bc23650983a4513aea196794d321.tar.gz";
-    sha256 = "15qb1v5py90ws0i0n39lr61d2qyiv8d2navxakp84nw83zrkb6zx";
+      "https://github.com/NixOS/nixos-hardware/archive/919c16cf46a7acf9b44b2c2444bc39aa094eaa85.tar.gz";
+    sha256 = "0h3v0kbknalbxyb0kr9vlsbpsw9q737gxw6ir2kwa8jj7804zs4d";
   };
 in { config, pkgs, lib, ... }:
 
