@@ -15,6 +15,12 @@
           "enable": false,
           "firmware": true
         }
+      },
+      "lanzaboote": {
+        "enable": true,
+        "pkiBundle": "/var/lib/sbctl",
+        "includeFirmwareBuiltinKeys": false,
+        "includeMicrosoftKeys": true
       }
     },
     "core": {
