@@ -22,9 +22,9 @@
       limine = {
         enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false; # Lanzaboote is default on feature/tpm2 branch
           description =
-            "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
+            "Enable Limine bootloader / boot manager. If false, Lanzaboote will be used (or systemd-boot if lanzaboote is also disabled).";
         };
         resolution = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
@@ -80,7 +80,7 @@
         efi.canTouchEfiVariables = lib.mkDefault true;
         limine = {
           enable = lib.mkDefault config.curios.bootefi.limine.enable;
-          maxGenerations = 5;
+          maxGenerations = 4;
           resolution = lib.mkDefault config.curios.bootefi.limine.resolution;
           #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
           # Secure Boot options
@@ -107,9 +107,11 @@
           };
         };
         systemd-boot = {
-          enable = !config.curios.bootefi.limine.enable;
+          # systemd-boot is the fallback when neither Limine nor Lanzaboote is enabled
+          enable = !config.curios.bootefi.limine.enable
+            && !config.curios.bootefi.lanzaboote.enable;
           # Limit the number of generations to keep
-          configurationLimit = 5;
+          configurationLimit = 4;
         };
       };
       tmp.cleanOnBoot = true;

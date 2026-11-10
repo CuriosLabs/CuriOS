@@ -9,7 +9,7 @@
         "latest": true
       },
       "limine": {
-        "enable": true,
+        "enable": false,
         "resolution": "1920x1080",
         "secureBoot": {
           "enable": false,
