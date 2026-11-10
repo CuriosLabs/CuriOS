@@ -29,6 +29,22 @@ in {
         description =
           "Path to the PKI bundle for Secure Boot keys (must match sbctl keydir).";
       };
+      includeFirmwareBuiltinKeys = lib.mkOption {
+        type = lib.types.bool;
+        default = false; # OVMF/QEMU has none; enable on real hardware if needed
+        description = ''
+          Enroll firmware built-in keys (dbDefault/KEKDefault/PKDefault) alongside
+          generated keys. Required on some hardware; not available on OVMF/QEMU.
+        '';
+      };
+      includeMicrosoftKeys = lib.mkOption {
+        type = lib.types.bool;
+        default =
+          true; # Required for EAC v2 (Microsoft UEFI CA is the only publicly trusted one)
+        description = ''
+          Enroll Microsoft keys. Required for EAC v2 compatibility and Windows dual-boot.
+        '';
+      };
     };
   };
 
@@ -44,9 +60,10 @@ in {
           autoEnrollKeys = {
             enable = true;
             autoReboot = true; # Reboot to enroll keys in firmware
-            # OVMF/QEMU has no built-in firmware keys; real hardware may have them.
-            includeFirmwareBuiltinKeys = false;
-            includeMicrosoftKeys = true;
+            includeFirmwareBuiltinKeys =
+              config.curios.bootefi.lanzaboote.includeFirmwareBuiltinKeys;
+            includeMicrosoftKeys =
+              config.curios.bootefi.lanzaboote.includeMicrosoftKeys;
           };
           inherit (config.curios.bootefi.lanzaboote) pkiBundle;
           configurationLimit = 4;
