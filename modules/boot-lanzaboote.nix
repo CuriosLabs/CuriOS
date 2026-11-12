@@ -31,31 +31,27 @@ in {
     curios.bootefi.lanzaboote = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = true; # Default on feature/tpm2 branch
+        default = true;
         description =
           "Enable Lanzaboote bootloader (Secure Boot + TPM2 measured boot via UKI).";
       };
       pkiBundle = lib.mkOption {
         type = lib.types.path;
-        default = "/var/lib/sbctl"; # sbctl default key directory
+        default = "/var/lib/sbctl";
         description =
           "Path to the PKI bundle for Secure Boot keys (must match sbctl keydir).";
       };
       includeFirmwareBuiltinKeys = lib.mkOption {
         type = lib.types.bool;
-        default = false; # OVMF/QEMU has none; enable on real hardware if needed
-        description = ''
-          Enroll firmware built-in keys (dbDefault/KEKDefault/PKDefault) alongside
-          generated keys. Required on some hardware; not available on OVMF/QEMU.
-        '';
+        default = false;
+        description =
+          "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
       };
       includeMicrosoftKeys = lib.mkOption {
         type = lib.types.bool;
-        default =
-          true; # Required for EAC v2 (Microsoft UEFI CA is the only publicly trusted one)
-        description = ''
-          Enroll Microsoft keys. Required for EAC v2 compatibility and Windows dual-boot.
-        '';
+        default = true;
+        description =
+          "Enroll Microsoft keys during Secure Boot key enrollment.";
       };
     };
   };
@@ -97,7 +93,6 @@ in {
       };
 
       # fwupd for updating UEFI db with latest Microsoft certificates (real hardware).
-      # On OVMF/QEMU this is a no-op (no real firmware), but useful on bare metal.
       # Usage: sudo fwupdmgr refresh && sudo fwupdmgr update
       environment.systemPackages = [ pkgs.fwupd ];
     };
