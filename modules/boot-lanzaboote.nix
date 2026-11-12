@@ -9,6 +9,7 @@
 # efi-readvar -v db
 # efi-readvar -v dbx
 # tpm2_pcrread
+# tpm2_getekcertificate
 # systemd-analyze pcrs
 # /run/current-system/systemd/lib/systemd/systemd-pcrlock is-supported
 # ls -la /var/lib/systemd/pcrlock.json
