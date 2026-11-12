@@ -265,7 +265,7 @@ publish: lint
 # Run all integrations tests sequentially
 test-all:
   for file in `fd --type f ".nix" ./tests/`; do statix check $file; done
-  for file in `fd --type f ".nix" ./tests/`; do nix-build $file --show-trace --no-out-link; done
+  for file in `fd --type f ".nix" ./tests/`; do NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build $file --show-trace --no-out-link; done
 
 # Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
 test-unit target:
