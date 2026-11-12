@@ -486,10 +486,12 @@ in {
           lib.mkDefault config.curios.desktop.vpn.tailscale.useRoutingFeatures;
       };
       # Mullvad VPN
+      # nixos-unstable split the daemon out of pkgs.mullvad-vpn (GUI-only now),
+      # so don't override `package`: module defaults are pkgs.mullvad (daemon/CLI)
+      # and, with gui.enable, pkgs.mullvad-vpn (GUI).
       mullvad-vpn = {
         enable = lib.mkDefault config.curios.desktop.vpn.mullvad.enable;
-        # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
-        package = pkgs.mullvad-vpn;
+        gui.enable = lib.mkDefault config.curios.desktop.vpn.mullvad.enable;
       };
     };
 
