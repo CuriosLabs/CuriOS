@@ -20,7 +20,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       nixpkgs.config.allowUnfree = true;
       #nixpkgs.config.permittedInsecurePackages = [ "electron-41.10.7" ];
       time.timeZone = "UTC";

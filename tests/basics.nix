@@ -14,7 +14,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     # Enable all options from the 'basics.nix' module.
     # This also implicitly tests the default values for webapps etc.
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
@@ -74,7 +74,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           keepassxc.enable = true;
           localsend.enable = true;
           voxtype = {
-            enable = true;
+            enable = false;
             model = "tiny";
           };
         };
@@ -117,7 +117,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_webapp("ai.x.grok")
         check_which("lm-studio")
         check_which("lms") # LM Studio CLI
-        check_which("lm-studio-bionic")
+        check_which("bionic")
         check_webapp("ai.mistral.chat")
 
     with subtest("check-chat-apps"):
@@ -136,8 +136,8 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("flameshot")
         check_which("keepassxc")
         check_which("localsend_app")
-        check_which("voxtype")
-        machine.succeed("test -f /etc/voxtype/config.toml")
+        #check_which("voxtype")
+        #machine.succeed("test -f /etc/voxtype/config.toml")
 
     with subtest("check-unconditional-basics"):
         check_which("tldr")

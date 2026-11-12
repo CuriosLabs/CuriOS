@@ -270,7 +270,7 @@ test-all:
 # Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
 test-unit target:
   statix check "./tests/{{target}}.nix"
-  nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
+  NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
 
 # Run the aarch64-linux (RPI4) platform compatibility test. Evaluates all modules with all options enabled and reports x86_64-only packages.
 test-aarch64:

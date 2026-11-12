@@ -12,7 +12,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
       [ ../modules/desktop-apps/studio.nix ../modules/platforms/default.nix ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       # DaVinci Resolve is an unfree package
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";

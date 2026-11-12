@@ -33,6 +33,7 @@ let
       ];
 
       # Minimal required NixOS settings
+      system.stateVersion = "26.11";
       boot.loader.grub.device = "nodev";
       fileSystems."/" = {
         device = "/dev/null";
