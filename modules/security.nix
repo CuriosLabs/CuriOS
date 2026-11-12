@@ -134,17 +134,57 @@
       sudo.extraConfig = "Defaults pwfeedback";
     };
 
-    systemd.tpm2 = {
-      enable = config.curios.security.tpm2.enable;
-      pcrphases.enable = config.curios.security.tpm2.measuredBoot;
-    };
+    systemd = {
+      tpm2 = {
+        enable = config.curios.security.tpm2.enable;
+        pcrphases.enable = config.curios.security.tpm2.measuredBoot;
+      };
 
-    # Remove UKI condition from pcrphase services when using Limine
-    # (systemd-pcrphase upstream requires ConditionSecurity=measured-uki,
-    #  but Limine does not boot via UKI; keep default condition for systemd-boot)
-    systemd.services = lib.mkIf config.curios.bootefi.limine.enable {
-      systemd-pcrphase.unitConfig.ConditionSecurity = lib.mkForce "";
-      systemd-pcrphase-sysinit.unitConfig.ConditionSecurity = lib.mkForce "";
+      services = {
+        # TPM2 PCR integrity check: compare stable PCRs (0,4,7) against baseline
+        # and alert the user if they changed (e.g. Secure Boot disabled, bootloader modified)
+        curios-pcr-check = lib.mkIf (config.curios.security.tpm2.enable
+          && config.curios.security.tpm2.integrityCheck) {
+            description = "CuriOS TPM PCR integrity check";
+            after = [ "multi-user.target" "systemd-pcrphase.service" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
+            path = with pkgs; [ tpm2-tools coreutils libnotify systemd sudo ];
+            script = ''
+              BASELINE=/var/lib/curios/pcr-baseline
+              mkdir -p /var/lib/curios
+
+              # Stable PCRs: 0 (firmware), 4 (bootloader), 7 (Secure Boot state)
+              CURRENT=$(tpm2_pcrread sha256:0,4,7 | grep -E "^\s+[047]:" | awk '{print $1, $3}')
+
+              if [ ! -f "$BASELINE" ]; then
+                echo "$CURRENT" > "$BASELINE"
+                logger -t curios-pcr "Baseline created"
+                exit 0
+              fi
+
+              if ! diff <(cat "$BASELINE") <(echo "$CURRENT") >/dev/null; then
+                logger -t curios-pcr "ALERT: PCR mismatch! Baseline: $(cat $BASELINE) Current: $CURRENT"
+                # Notify all logged-in users via desktop notification
+                for session in $(loginctl list-sessions --no-legend 2>/dev/null | awk '{print $1}'); do
+                  user=$(loginctl show-session "$session" -p Name --value 2>/dev/null)
+                  uid=$(id -u "$user" 2>/dev/null)
+                  if [ -n "$user" ] && [ -n "$uid" ]; then
+                    sudo -u "$user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+                      notify-send --urgency=critical --icon=dialog-warning \
+                      "⚠️ CuriOS Security Alert" \
+                      "TPM measurements changed since last boot (PCR 0/4/7). System may be compromised. Check: journalctl -t curios-pcr"
+                  fi
+                done
+              else
+                logger -t curios-pcr "PCR check OK"
+              fi
+            '';
+          };
+      };
     };
 
     boot = {
@@ -207,6 +247,7 @@
       # BPF LSM tools for kernel security monitoring and policy enforcement
       pkgs.bpftools # bpftool - inspect and load BPF programs
       pkgs.bpftrace # bpftrace - dynamic tracing (can be used with BPF LSM)
+      pkgs.libnotify # notify-send for PCR integrity alerts
     ] ++ lib.optionals (config.curios.security.keyringProvider == "keepassxc"
       && !config.curios.desktop.utility.keepassxc.enable) [ pkgs.keepassxc ];
 
