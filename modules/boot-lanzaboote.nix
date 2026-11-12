@@ -1,6 +1,17 @@
 # Lanzaboote bootloader: Secure Boot + TPM2 measured boot via UKI (systemd-stub)
 # Replaces Limine on the feature/tpm2 branch.
 # Source: https://github.com/nix-community/lanzaboote
+# Useful commands:
+# sbctl status
+# sudo bootctl status
+# efi-readvar -v PK
+# efi-readvar -v KEK
+# efi-readvar -v db
+# efi-readvar -v dbx
+# tpm2_pcrread
+# systemd-analyze pcrs
+# /run/current-system/systemd/lib/systemd/systemd-pcrlock is-supported
+# ls -la /var/lib/systemd/pcrlock.json
 
 { config, lib, pkgs, ... }:
 
