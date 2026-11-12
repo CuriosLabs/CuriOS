@@ -261,46 +261,36 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.basics.enable {
-    nixpkgs.overlays =
-      # Brave was dropped from nixpkgs on 2026-11-06 (no committer among its
-      # maintainers). Provide pkgs.brave from the community flake, see
-      # pkgs/brave/default.nix, so every module referencing pkgs.brave
-      # (AppArmor profiles, systemPackages, ...) keeps working.
-      [
-        (final: prev: {
-          brave = prev.callPackage ../../pkgs/brave { };
-        })
-      ]
-      # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
-      # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
-      # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs
-      # Chromium: patchelf RPATH onto ANGLE + replace bundled vulkan-loader.
-      ++ lib.optionals config.curios.desktop.browser.brave.enable [
-        (final: prev: {
-          brave = prev.brave.overrideAttrs (old: {
-            postFixup = (old.postFixup or "") + ''
-              braveLib=$out/opt/brave.com/brave
-              glRpath=${lib.makeLibraryPath [ final.libGL final.vulkan-loader ]}
-              for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
-                if [ -f "$f" ]; then
-                  oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)
-                  if [ -n "$oldRpath" ]; then
-                    patchelf --set-rpath "$glRpath:$oldRpath" "$f"
-                  else
-                    patchelf --set-rpath "$glRpath" "$f"
-                  fi
+    # Brave ANGLE libs ship without RUNPATH. GPU sandbox drops LD_LIBRARY_PATH,
+    # so ANGLE cannot dlopen libEGL.so.1 / libvulkan.so.1 → WebGL disabled with
+    # "GPU access is disabled due to frequent crashes". Same fix as nixpkgs
+    # Chromium: patchelf RPATH onto ANGLE + replace bundled vulkan-loader.
+    nixpkgs.overlays = lib.mkIf config.curios.desktop.browser.brave.enable [
+      (final: prev: {
+        brave = prev.brave.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            braveLib=$out/opt/brave.com/brave
+            glRpath=${lib.makeLibraryPath [ final.libGL final.vulkan-loader ]}
+            for f in "$braveLib/brave" "$braveLib/libEGL.so" "$braveLib/libGLESv2.so"; do
+              if [ -f "$f" ]; then
+                oldRpath=$(patchelf --print-rpath "$f" 2>/dev/null || true)
+                if [ -n "$oldRpath" ]; then
+                  patchelf --set-rpath "$glRpath:$oldRpath" "$f"
+                else
+                  patchelf --set-rpath "$glRpath" "$f"
                 fi
-              done
-              if [ -e "$braveLib/libvulkan.so.1" ]; then
-                rm -f "$braveLib/libvulkan.so.1"
-                ln -s ${
-                  lib.getLib final.vulkan-loader
-                }/lib/libvulkan.so.1 "$braveLib/libvulkan.so.1"
               fi
-            '';
-          });
-        })
-      ];
+            done
+            if [ -e "$braveLib/libvulkan.so.1" ]; then
+              rm -f "$braveLib/libvulkan.so.1"
+              ln -s ${
+                lib.getLib final.vulkan-loader
+              }/lib/libvulkan.so.1 "$braveLib/libvulkan.so.1"
+            fi
+          '';
+        });
+      })
+    ];
 
     environment = {
       systemPackages = [
