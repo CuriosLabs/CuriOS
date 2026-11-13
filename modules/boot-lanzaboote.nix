@@ -3,6 +3,7 @@
 # Source: https://github.com/nix-community/lanzaboote
 # Useful commands:
 # sbctl status
+# sudo sbctl verify
 # sudo bootctl status
 # efi-readvar -v PK
 # efi-readvar -v KEK
