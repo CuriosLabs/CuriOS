@@ -14,6 +14,7 @@
 # systemd-analyze pcrs
 # /run/current-system/systemd/lib/systemd/systemd-pcrlock is-supported
 # ls -la /var/lib/systemd/pcrlock.json
+# sudo tpm2_eventlog /sys/kernel/security/tpm0/binary_bios_measurements | grep -A3 -i "PCR 0\|PCR 7\|dbx\|SecureBoot"
 
 { config, lib, pkgs, ... }:
 
