@@ -338,6 +338,22 @@
             };
             wantedBy = [ "default.target" ];
           };
+          # TPM2 PCR alert: notify the logged-in user if the boot-time check
+          # (curios-pcr-check.service -> curios-update --pcr-check) found a
+          # PCR 0/7 mismatch. The session D-Bus bus only exists after login,
+          # so the desktop notification is deferred to this user unit.
+          curios-pcr-alert = {
+            enable = lib.mkDefault (config.curios.security.tpm2.enable
+              && config.curios.security.tpm2.integrityCheck);
+            description = "CuriOS TPM2 PCR alert notification";
+            after = [ "graphical-session.target" ];
+            wants = [ "graphical-session.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "/run/current-system/sw/bin/curios-pcr-notify";
+            };
+            wantedBy = [ "graphical-session.target" ];
+          };
           flakes-upgrade = {
             enable = lib.mkDefault config.curios.services.flakes.update.enable;
             description = "Nix flakes user upgrade";

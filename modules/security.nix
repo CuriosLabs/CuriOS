@@ -141,7 +141,7 @@
       };
 
       services = {
-        # TPM2 PCR integrity check: compare stable PCRs (0,4,7) against baseline
+        # TPM2 PCR integrity check: compare stable PCRs (0,7) against baseline
         # and alert the user if they changed (e.g. Secure Boot disabled, bootloader modified)
         # The check itself is implemented in `curios-update --pcr-check`.
         curios-pcr-check = lib.mkIf (config.curios.security.tpm2.enable
@@ -152,7 +152,8 @@
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
-              ExecStart = "/run/current-system/sw/bin/curios-update --pcr-check";
+              ExecStart =
+                "/run/current-system/sw/bin/curios-update --pcr-check";
             };
           };
       };
