@@ -16,7 +16,10 @@ buildGoModule.override { go = go_1_26; } (finalAttrs: {
 
   subPackages = [ "cmd/basecamp" ];
 
-  ldflags = [ "-s" "-w" "-X internal/version.Version=${finalAttrs.version}" ];
+  ldflags = [
+    "-s" "-w"
+    "-X github.com/basecamp/basecamp-cli/internal/version.Version=${finalAttrs.version}"
+  ];
 
   nativeBuildInputs = [ installShellFiles makeBinaryWrapper ];
 
