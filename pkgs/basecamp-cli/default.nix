@@ -3,20 +3,23 @@
 
 buildGoModule.override { go = go_1_26; } (finalAttrs: {
   pname = "basecamp";
-  version = "0.22.1";
+  version = "0.30.0";
 
   src = fetchFromGitHub {
     owner = "basecamp";
     repo = "basecamp-cli";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-E1GUJi7R2xr8AMg3MF5FrQQlFBLrtHryQXL7vyu+Yg4=";
+    hash = "sha256-g8neApoDbLsaF+uH77ExAaBy5829BL0aPMfsyim+Qh4=";
   };
 
-  vendorHash = "sha256-ImYhmwudmDdOrpVBPIoAeHhhhreguyuH2D3zom3umR0=";
+  vendorHash = "sha256-7OOmoZp90XyeXz6As8zVsaaslPWIeNDplenzbOEuE3A=";
 
   subPackages = [ "cmd/basecamp" ];
 
-  ldflags = [ "-s" "-w" "-X internal/version.Version=${finalAttrs.version}" ];
+  ldflags = [
+    "-s" "-w"
+    "-X github.com/basecamp/basecamp-cli/internal/version.Version=${finalAttrs.version}"
+  ];
 
   nativeBuildInputs = [ installShellFiles makeBinaryWrapper ];
 
