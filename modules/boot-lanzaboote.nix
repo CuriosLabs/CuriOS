@@ -1,5 +1,4 @@
 # Lanzaboote bootloader: Secure Boot + TPM2 measured boot via UKI (systemd-stub)
-# Replaces Limine on the feature/tpm2 branch.
 # Source: https://github.com/nix-community/lanzaboote
 # Useful commands:
 # sbctl status
@@ -33,7 +32,7 @@ in {
     curios.bootefi.lanzaboote = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = true;
+        default = false;
         description =
           "Enable Lanzaboote bootloader (Secure Boot + TPM2 measured boot via UKI).";
       };

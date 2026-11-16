@@ -62,17 +62,17 @@
       tpm2 = {
         enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "Enable TPM2 support.";
         };
         integrityCheck = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "Run post-boot TPM2 integrity check.";
         };
         measuredBoot = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = "TPM2 measure boot phases in initrd and systemd.";
         };
       };
@@ -177,11 +177,6 @@
         enable = config.curios.security.tpm2.enable;
         pcrphases.enable = config.curios.security.tpm2.measuredBoot;
         #pcrosseparator.enable = config.curios.security.tpm2.measuredBoot;
-      };
-
-      # Remove UKI condition from initrd pcrphase service when using Limine
-      initrd.systemd.services = lib.mkIf config.curios.bootefi.limine.enable {
-        systemd-pcrphase-initrd.unitConfig.ConditionSecurity = lib.mkForce "";
       };
     };
 
