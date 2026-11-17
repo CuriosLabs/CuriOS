@@ -176,7 +176,7 @@ computer. It protects against malicious programs that try to modify the boot
 process and quietly take control before the operating system loads.
 
 On Curi*OS*, Secure Boot is supported through the **Lanzaboote** bootloader,
-which is the default bootloader since Curi*OS* 26.05.5.
+which is the default bootloader since Curi*OS* 26.05.11.
 
 ### Lanzaboote and TPM2 measured boot
 
