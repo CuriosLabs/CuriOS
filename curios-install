@@ -43,6 +43,7 @@ DISK_LUKS_KEY=""
 GPU_VENDOR_DETECTED=""
 GPU_INSTALL=0
 CONFIRM_INSTALL=0
+OPTION_SECURE_BOOT=false
 AMD64_INSTALL=1
 RPI4_INSTALL=0
 RPI5_INSTALL=0
@@ -709,6 +710,22 @@ hardware_detection_gpu() {
       fi
     fi
   fi
+  secure_boot_tpm2
+}
+
+#------------- Secure Boot with TPM2 detection
+secure_boot_tpm2() {
+  local TPM2_STATUS
+  TPM2_STATUS=$(systemd-analyze has-tpm2 2>/dev/null | head -n 1)
+  if [ "$TPM2_STATUS" = "yes" ]; then
+    if gum confirm "A TPM2 chip was detected. Would you like to enable Secure Boot with TPM2?"; then
+      OPTION_SECURE_BOOT=true
+    else
+      OPTION_SECURE_BOOT=false
+    fi
+  else
+    OPTION_SECURE_BOOT=false
+  fi
   confirm_install
 }
 
@@ -741,6 +758,7 @@ if [ $VERBOSE -eq 1 ]; then
   echo "disk LUKS key: $DISK_LUKS_KEY"
   echo "GPU hardware vendor: $GPU_VENDOR_DETECTED"
   echo "install GPU driver: $GPU_INSTALL"
+  echo "secure boot with TPM2: $OPTION_SECURE_BOOT"
   echo "x86_64 install: $AMD64_INSTALL"
   echo "RPI4 install: $RPI4_INSTALL"
   echo "RPI5 install: $RPI5_INSTALL"
@@ -1118,6 +1136,10 @@ if [ $CONFIRM_INSTALL -eq 1 ]; then
     --argjson gpuNvidia "$OPTION_GPU_NVIDIA" \
     --argjson kernelLatest "$OPTION_KERNEL_LATEST" \
     '.curios.hardware.amdGpu.enable = $gpuAmd | .curios.hardware.intelGpu.enable = $gpuIntel | .curios.hardware.nvidiaGpu.enable = $gpuNvidia | .curios.bootefi.kernel.latest = $kernelLatest' \
+    "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
+  # Secure Boot with TPM2 settings:
+  jq --argjson secureBoot "$OPTION_SECURE_BOOT" \
+    '.curios.bootefi.lanzaboote.enable = $secureBoot | .curios.security.tpm2.enable = $secureBoot | .curios.security.tpm2.integrityCheck = $secureBoot | .curios.security.tpm2.measuredBoot = $secureBoot' \
     "$NIXOS_CONFIG_DIR"/modules.json >/tmp/modules.json && mv /tmp/modules.json "$NIXOS_CONFIG_DIR"/modules.json
 
   # Set platform-specific module import
