@@ -5,6 +5,7 @@
   imports = [
     ./backup.nix
     ./boot-efi.nix
+    ./boot-lanzaboote.nix
     ./cosmic.nix
     ./curios.nix
     ./desktop-apps/default.nix

@@ -41,6 +41,7 @@
           || config.curios.hardware.nvidiaGpu.enable) [ "render" ]
         ++ lib.optionals config.curios.hardware.various.i2c.enable [ "i2c" ]
         ++ lib.optionals config.curios.networking.enable [ "networkmanager" ]
+        ++ lib.optionals config.curios.security.tpm2.enable [ "tss" ]
         ++ lib.optionals config.curios.virtualisation.enable [
           "libvirtd"
           "qemu-libvirtd"
