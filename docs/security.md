@@ -238,6 +238,29 @@ The Curi*OS* Manager provides a guided, step-by-step setup:
 > Always keep your LUKS recovery passphrase in a safe place. Secure Boot protects
 > the boot process, but disk encryption is still your last line of defense.
 
+### Removing leftover Limine files after an upgrade
+
+Older Curi*OS* versions used the **Limine** bootloader. Removing it from the
+NixOS configuration is not enough: the ESP and the UEFI NVRAM keep their old
+state across rebuilds, so the firmware may still boot Limine. To fully switch
+to systemd-boot (or Lanzaboote), clean up manually:
+
+```bash
+# 1. Install systemd-boot on the ESP (creates /boot/EFI/systemd/ and
+#    the fallback /boot/EFI/BOOT/BOOTX64.EFI)
+sudo bootctl install
+
+# 2. Delete the Limine UEFI boot entry (find its number with efibootmgr -v)
+sudo efibootmgr --bootnum XXXX --delete-bootnum
+
+# 3. Remove Limine files from the ESP (binary + config/assets)
+sudo rm -rf /boot/EFI/limine /boot/limine
+
+# 4. Verify
+sudo bootctl status   # must report systemd-boot, not Limine
+sudo efibootmgr -v    # no Limine entry should remain
+```
+
 ## AppArmor
 
 AppArmor is a Mandatory Access Control (MAC) system. When it is enabled, selected
