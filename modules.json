@@ -584,6 +584,9 @@
       "printing": {
         "enable": true
       },
+      "resolved": {
+        "enable": true
+      },
       "sshd": {
         "enable": false
       },
