@@ -515,7 +515,8 @@
       }
     },
     "networking": {
-      "enable": true
+      "enable": true,
+      "useGlobalDns": true
     },
     "others": {
       "enable": true,

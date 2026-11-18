@@ -3,10 +3,18 @@
 { config, lib, ... }: {
   # Declare options
   options = {
-    curios.networking.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "REQUIRED CuriOS networking options.";
+    curios.networking = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "REQUIRED CuriOS networking options.";
+      };
+      useGlobalDns = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Ignore DNS servers received via DHCP on NetworkManager-managed interfaces.";
+      };
     };
   };
 
@@ -16,7 +24,17 @@
       # Enables wireless support via wpa_supplicant OR
       wireless.enable = lib.mkDefault false;
       # via networkmanager: easiest to use and most distros use this by default.
-      networkmanager.enable = lib.mkDefault true;
+      networkmanager = {
+        enable = lib.mkDefault true;
+        # Ignore DNS from DHCP so that systemd-resolved global config
+        # (DoT + DNSSEC + custom nameservers) is used on all NM interfaces.
+        settings = lib.mkIf config.curios.networking.useGlobalDns {
+          connection = {
+            "ipv4.ignore-auto-dns" = true;
+            "ipv6.ignore-auto-dns" = true;
+          };
+        };
+      };
     };
   };
 }
