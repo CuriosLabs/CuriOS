@@ -305,6 +305,28 @@ sudo grep 'apparmor="DENIED"' /var/log/audit/audit.log
 > Enabling AppArmor does not replace disk encryption, Secure Boot, or YubiKey
 > authentication. It only confines the applications listed above.
 
+## Encrypted DNS (DoT & DNSSEC)
+
+By default, Curi*OS* uses **systemd-resolved** with **DNS over TLS (DoT)** and
+**DNSSEC** to protect your DNS queries from eavesdropping and tampering.
+
+- **DNS over TLS** is set to `opportunistic`: queries are encrypted (port 853)
+  whenever the DNS server supports it, and fall back to plain DNS otherwise.
+- **DNSSEC** is set to `allow-downgrade`: responses are validated when the
+  domain is signed, and accepted as-is otherwise.
+- The default DNS servers (Cloudflare, DNS4EU, Quad9 — see `settings.nix`)
+  all support DoT and block malware by default.
+
+You can check the active configuration with:
+
+```bash
+resolvectl status
+resolvectl query example.com   # look for "encrypted transport: yes"
+```
+
+To use different DNS servers, edit `networking.nameservers` in `settings.nix`
+and run `sudo nixos-rebuild switch`.
+
 ## Configuration via Curi*OS* Manager
 
 All security settings, as well as the enrollment process itself, are managed
