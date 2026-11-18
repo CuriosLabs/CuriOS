@@ -409,11 +409,11 @@
           "rule39": true
         },
         "reinforced": {
-          "enable": false,
+          "enable": true,
           "rule7": false,
           "rule10": false,
           "rule39": false,
-          "rule45": false
+          "rule45": true
         }
       },
       "apparmor-profiles": {
