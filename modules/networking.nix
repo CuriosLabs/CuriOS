@@ -32,9 +32,7 @@
         # interfaces. /etc/resolv.conf is managed by NixOS (stub-resolv.conf).
         # VPN interfaces (Tailscale, Proton...) set their own DNS directly via
         # D-Bus to resolved and are not affected.
-        # mkForce: override the "systemd-resolved" default set by NixOS
-        # when services.resolved.enable = true (see nixos/modules/system/boot/resolved.nix)
-        dns = lib.mkIf config.curios.networking.useGlobalDns (lib.mkForce "none");
+        dns = lib.mkIf config.curios.networking.useGlobalDns "none";
       };
     };
   };
