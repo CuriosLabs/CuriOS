@@ -26,14 +26,13 @@
       # via networkmanager: easiest to use and most distros use this by default.
       networkmanager = {
         enable = lib.mkDefault true;
-        # Ignore DNS from DHCP so that systemd-resolved global config
-        # (DoT + DNSSEC + custom nameservers) is used on all NM interfaces.
-        settings = lib.mkIf config.curios.networking.useGlobalDns {
-          connection = {
-            "ipv4.ignore-auto-dns" = true;
-            "ipv6.ignore-auto-dns" = true;
-          };
-        };
+        # Do not let NetworkManager manage DNS at all: DHCP DNS servers are not
+        # pushed to systemd-resolved, so the global config (DoT + DNSSEC +
+        # custom nameservers from networking.nameservers) is used on all NM
+        # interfaces. /etc/resolv.conf is managed by NixOS (stub-resolv.conf).
+        # VPN interfaces (Tailscale, Proton...) set their own DNS directly via
+        # D-Bus to resolved and are not affected.
+        dns = lib.mkIf config.curios.networking.useGlobalDns "none";
       };
     };
   };
