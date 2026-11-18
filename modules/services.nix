@@ -52,6 +52,12 @@
         default = true;
         description = "Enable CUPS printing services.";
       };
+      resolved.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description =
+          "Enable systemd-resolved with DNS over TLS (DoT) and DNSSEC for encrypted DNS queries.";
+      };
       sshd.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -189,6 +195,16 @@
         enable = lib.mkDefault config.curios.services.avahi.enable;
         nssmdns4 = lib.mkDefault true;
         openFirewall = lib.mkDefault true;
+      };
+      # systemd-resolved: DNS resolver with DNS over TLS (DoT) and DNSSEC.
+      # DNS servers are inherited from networking.nameservers (Quad9 + Cloudflare),
+      # both support DoT on port 853.
+      resolved = {
+        enable = lib.mkDefault config.curios.services.resolved.enable;
+        settings.Resolve = {
+          DNSOverTLS = "opportunistic"; # Use DoT when server supports it, fallback to plain DNS
+          DNSSEC = "allow-downgrade"; # Validate DNSSEC when available, fallback otherwise
+        };
       };
       # Enabling Flatpak
       flatpak.enable = lib.mkDefault config.curios.services.flatpak.enable;
