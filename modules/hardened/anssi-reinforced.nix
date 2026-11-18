@@ -17,7 +17,7 @@ in {
     curios.hardened.anssi.reinforced = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description =
           "Reinforced hardening rules for a system with need of stronger security - MAY break things.";
       };
@@ -39,7 +39,7 @@ in {
       };
       rule45 = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "R45 - Activating AppArmor.";
       };
     };

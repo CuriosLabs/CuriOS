@@ -63,8 +63,16 @@
   ### Change general settings here:
   # networking
   networking = {
-    # Quad9 and cloudflare DNS servers.
-    nameservers = [ "9.9.9.9" "1.1.1.1" "2620:fe::fe" "2620:fe::9" ];
+    # Cloudflare, DNS4EU and Quad9 DNS servers.
+    nameservers = [
+      "1.1.1.2"
+      "86.54.11.1"
+      "9.9.9.9"
+      "2606:4700:4700::1112"
+      "2a13:1001::86:54:11:1"
+      "2620:fe::fe"
+      "2620:fe::9"
+    ];
     # Use DHCP to get an IP address:
     useDHCP = lib.mkDefault true;
     # Open ports in the firewall.
