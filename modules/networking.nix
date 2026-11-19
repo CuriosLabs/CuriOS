@@ -36,10 +36,12 @@
         dispatcherScripts = lib.mkIf config.curios.networking.useGlobalDns [{
           source = pkgs.writeScript "ignore-dhcp-dns.sh" ''
             #!${pkgs.runtimeShell}
-            if [ "$2" = "up" ]; then
-              case "$CONNECTION_TYPE" in
-                802-11-wireless|802-3-ethernet)
-                  ${pkgs.networkmanager}/bin/nmcli connection modify "$CONNECTION" \
+            # Dispatcher variables: $1=iface, $2=action, $CONNECTION_ID, $DEVICE_IFACE
+            if [ "$2" = "up" ] && [ -n "$CONNECTION_ID" ]; then
+              devtype=$(${pkgs.networkmanager}/bin/nmcli -t -f GENERAL.TYPE device show "$DEVICE_IFACE" 2>/dev/null | cut -d: -f2)
+              case "$devtype" in
+                wifi|ethernet)
+                  ${pkgs.networkmanager}/bin/nmcli connection modify "$CONNECTION_ID" \
                     ipv4.ignore-auto-dns yes \
                     ipv6.ignore-auto-dns yes 2>/dev/null || true
                   ;;
