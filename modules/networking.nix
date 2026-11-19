@@ -38,7 +38,7 @@
             #!${pkgs.runtimeShell}
             # Dispatcher variables: $1=iface, $2=action, $CONNECTION_ID, $DEVICE_IFACE
             if [ "$2" = "up" ] && [ -n "$CONNECTION_ID" ]; then
-              devtype=$(${pkgs.networkmanager}/bin/nmcli -t -f GENERAL.TYPE device show "$DEVICE_IFACE" 2>/dev/null)
+              devtype=$(${pkgs.networkmanager}/bin/nmcli -t -f GENERAL.TYPE device show "$DEVICE_IFACE" 2>/dev/null | cut -d: -f2)
               case "$devtype" in
                 wifi|ethernet)
                   ${pkgs.networkmanager}/bin/nmcli connection modify "$CONNECTION_ID" \
