@@ -11,7 +11,7 @@
     rpi4.enable = lib.mkOption {
       type = lib.types.nullOr lib.types.bool;
       default = null;
-      description = "DEPRECTAED";
+      description = "DEPRECATED";
     };
     rpi5.enable = lib.mkOption {
       type = lib.types.nullOr lib.types.bool;
