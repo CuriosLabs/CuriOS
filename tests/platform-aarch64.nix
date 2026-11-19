@@ -157,10 +157,7 @@ let
             mpv.enable = true;
           };
         };
-        platform = {
-          amd64.enable = false;
-          rpi4.enable = true;
-        };
+        platform = { amd64.enable = false; };
         system = {
           enable = true;
           ansible.enable = true;
@@ -200,7 +197,7 @@ let
 
   # Create a report
   reportText = ''
-    Platform Compatibility Test for aarch64-linux (RPI4)
+    Platform Compatibility Test for aarch64-linux
     ======================================================
 
     ${
@@ -210,7 +207,7 @@ let
 
     ${if builtins.length unavailablePkgs > 0 then ''
       ERROR: These packages need platform guards (e.g., && config.curios.platform.amd64.enable)
-             in their respective modules to prevent installation on RPI4.
+             in their respective modules to prevent installation on aarch64-linux.
     '' else ''
       SUCCESS: All packages are available on aarch64-linux.
     ''}

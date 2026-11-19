@@ -9,14 +9,14 @@
       description = "REQUIRED config on x86_64 AMD/Intel CPUs platforms.";
     };
     rpi4.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "REQUIRED config on Raspberry PI 4 platform ONLY.";
+      type = lib.types.nullOr lib.types.bool;
+      default = null;
+      description = "DEPRECTAED";
     };
     rpi5.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "REQUIRED config on Raspberry PI 5 platform ONLY.";
+      type = lib.types.nullOr lib.types.bool;
+      default = null;
+      description = "DEPRECATED";
     };
   };
 }

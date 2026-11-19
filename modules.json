@@ -534,10 +534,10 @@
         "enable": true
       },
       "rpi4": {
-        "enable": false
+        "enable": null
       },
       "rpi5": {
-        "enable": false
+        "enable": null
       }
     },
     "security": {

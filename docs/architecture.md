@@ -143,7 +143,7 @@ Modules are stored in `/etc/nixos/modules.json` and can be managed via:
   platform-specific settings.
 - **Hardened** (`modules/hardened/`): Security hardening profiles.
 - **Platforms** (`modules/platforms/`): Architecture-specific configurations
-  (amd64, rpi4).
+  (amd64).
 
 ## File and Directory Structure
 
