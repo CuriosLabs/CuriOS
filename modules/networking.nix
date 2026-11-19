@@ -1,6 +1,6 @@
 # Networking settings
 
-{ config, lib, ... }: {
+{ config, lib, pkgs, ... }: {
   # Declare options
   options = {
     curios.networking = {
@@ -26,14 +26,28 @@
       # via networkmanager: easiest to use and most distros use this by default.
       networkmanager = {
         enable = lib.mkDefault true;
-        # Ignore DNS from DHCP so that systemd-resolved global config
-        # (DoT + DNSSEC + custom nameservers) is used on all NM interfaces.
-        settings = lib.mkIf config.curios.networking.useGlobalDns {
-          connection = {
-            "ipv4.ignore-auto-dns" = true;
-            "ipv6.ignore-auto-dns" = true;
-          };
-        };
+        # Force ignore-auto-dns on Wi-Fi/Ethernet connections when they come up.
+        # Note: ipv4.ignore-auto-dns is NOT a valid [connection] default in
+        # NetworkManager.conf (see man 5 NetworkManager.conf), and profiles created
+        # by desktop applets (COSMIC) do not inherit global defaults anyway.
+        # The dispatcher script sets it directly on the profile via nmcli.
+        # Only 802-11-wireless and 802-3-ethernet are affected; Docker, libvirt,
+        # Tailscale, VPN interfaces are not managed by NetworkManager.
+        dispatcherScripts = lib.mkIf config.curios.networking.useGlobalDns [{
+          source = pkgs.writeScript "ignore-dhcp-dns.sh" ''
+            #!${pkgs.runtimeShell}
+            if [ "$2" = "up" ]; then
+              case "$CONNECTION_TYPE" in
+                802-11-wireless|802-3-ethernet)
+                  ${pkgs.networkmanager}/bin/nmcli connection modify "$CONNECTION" \
+                    ipv4.ignore-auto-dns yes \
+                    ipv6.ignore-auto-dns yes 2>/dev/null || true
+                  ;;
+              esac
+            fi
+          '';
+          type = "basic";
+        }];
       };
     };
   };
