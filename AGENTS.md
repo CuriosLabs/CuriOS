@@ -57,7 +57,7 @@ the system configuration.
   LUKS encryption. Contains both `-v2` (newer) and legacy versions.
   - `hardened/`: Modules for applying security hardening to the system.
   - `hardware/`: Hardware-specific configurations, such as GPU drivers (AMD, NVIDIA).
-  - `platforms/`: Platform-specific configurations, like for `amd64` and `rpi4`.
+  - `platforms/`: Platform-specific configurations, like for `amd64`.
 - `pkgs/`: Contains custom packages built for CuriOS, with each package
 having its own `default.nix` file (e.g., `pkgs/curios-manager/default.nix`).
 - `tests/`: Contains NixOS integration tests that run in QEMU virtual machines.
