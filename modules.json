@@ -8,13 +8,11 @@
       "kernel": {
         "latest": true
       },
-      "limine": {
-        "enable": true,
-        "resolution": "1920x1080",
-        "secureBoot": {
-          "enable": false,
-          "firmware": true
-        }
+      "lanzaboote": {
+        "enable": false,
+        "pkiBundle": "/var/lib/sbctl",
+        "includeFirmwareBuiltinKeys": false,
+        "includeMicrosoftKeys": true
       }
     },
     "core": {
@@ -551,6 +549,11 @@
       "keyringProvider": "gnome-keyring",
       "luksFido2": {
         "enable": false
+      },
+      "tpm2": {
+        "enable": false,
+        "integrityCheck": false,
+        "measuredBoot": false
       }
     },
     "services": {

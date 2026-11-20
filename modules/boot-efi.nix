@@ -21,37 +21,32 @@
       };
       limine = {
         enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description =
-            "Enable Limine bootloader / boot manager. If false, systemd-boot will be used.";
+          type = lib.types.nullOr lib.types.bool;
+          default = null;
+          description = "DEPRECATED";
         };
         resolution = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
-          default = "1920x1080";
+          default = null;
           example = "1920x1080";
-          description =
-            "Limine bootloader menu resolution, also affects early boot graphics.";
+          description = "DEPRECATED";
         };
         secureBoot = {
           enable = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description =
-              "Enable Secure Boot with Limine. See curios-manager -> security menu";
+            type = lib.types.nullOr lib.types.bool;
+            default = null;
+            description = "DEPRECATED";
           };
           firmware = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description =
-              "Enroll firmware built-in keys alongside Microsoft keys during Secure Boot key enrollment.";
+            type = lib.types.nullOr lib.types.bool;
+            default = null;
+            description = "DEPRECATED";
           };
         };
         wallpaper = lib.mkOption {
-          type = lib.types.path;
-          default =
-            pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
-          description = "Wallpaper for the Limine boot menu.";
+          type = lib.types.nullOr lib.types.path;
+          default = null;
+          description = "DEPRECATED";
         };
       };
     };
@@ -78,38 +73,11 @@
       #
       loader = {
         efi.canTouchEfiVariables = lib.mkDefault true;
-        limine = {
-          enable = lib.mkDefault config.curios.bootefi.limine.enable;
-          maxGenerations = 5;
-          resolution = lib.mkDefault config.curios.bootefi.limine.resolution;
-          #style.wallpapers = [ config.curios.bootefi.limine.wallpaper ];
-          # Secure Boot options
-          secureBoot = {
-            enable =
-              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
-            inherit (pkgs) sbctl;
-            autoEnrollKeys = {
-              enable =
-                lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
-              extraArgs = [ "--microsoft" ] ++ lib.optionals
-                config.curios.bootefi.limine.secureBoot.firmware
-                [ "--firmware-builtin" ];
-            };
-            autoGenerateKeys =
-              lib.mkDefault config.curios.bootefi.limine.secureBoot.enable;
-          };
-          style = {
-            interface = {
-              branding = "CuriOS";
-              resolution =
-                lib.mkDefault config.curios.bootefi.limine.resolution;
-            };
-          };
-        };
         systemd-boot = {
-          enable = !config.curios.bootefi.limine.enable;
+          # systemd-boot is the fallback when Lanzaboote is not enabled
+          enable = !config.curios.bootefi.lanzaboote.enable;
           # Limit the number of generations to keep
-          configurationLimit = 5;
+          configurationLimit = 4;
         };
       };
       tmp.cleanOnBoot = true;
