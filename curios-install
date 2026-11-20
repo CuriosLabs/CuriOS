@@ -684,13 +684,40 @@ hardware_detection_gpu() {
 
 #------------- Secure Boot with TPM2 detection
 secure_boot_tpm2() {
+  local SB_STATUS
   local TPM2_STATUS
+  SB_STATUS=$(bootctl status 2>/dev/null | grep -i "^   Secure Boot:" | sed 's/.*Secure Boot: //' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || true)
   TPM2_STATUS=$(systemd-analyze has-tpm2 2>/dev/null | head -n 1)
   if [ "$TPM2_STATUS" = "yes" ]; then
-    if gum confirm "A TPM2 chip was detected. Would you like to enable Secure Boot with TPM2?"; then
-      OPTION_SECURE_BOOT=true
+    if [[ "$SB_STATUS" == *"setup"* ]]; then
+      if gum confirm "A TPM2 chip was detected. Would you like to enable Secure Boot with TPM2?"; then
+        OPTION_SECURE_BOOT=true
+      else
+        OPTION_SECURE_BOOT=false
+      fi
     else
-      OPTION_SECURE_BOOT=false
+      echo -e "${YELLOW}UEFI Secure Boot is NOT in Setup mode!${NC}"
+      echo ""
+      echo -e "To enable Secure Boot, you need to enter Setup Mode in your UEFI firmware."
+      echo -e "This usually involves:"
+      echo -e "  1. Rebooting the computer"
+      echo -e "  2. In the boot menu, select ${BLUE}Reboot Into Firmware Interface${NC}"
+      echo -e "  3. In the UEFI firmware, find the Secure Boot settings"
+      echo -e "  4. Select ${BLUE}Reset to Setup Mode${NC} ${YELLOW}OR${NC} ${BLUE}Windows UEFI mode${NC} ${YELLOW}AND${NC} clear all keys"
+      echo -e "  5. Save and exit, rebooting back to CuriOS installer."
+      echo ""
+      echo -e "${YELLOW}Important:${NC} Do not select 'Clear All Secure Boot Keys' on ThinkPad devices."
+      echo -e "Use 'Reset to Setup Mode' instead."
+      echo ""
+      echo -e "Once back in CuriOS installer, this script will complete the enrollment."
+      echo ""
+
+      if gum confirm --default=false "Reboot now to enter Firmware Setup or enable it later with curios-manager?"; then
+        systemctl reboot --firmware-setup
+      else
+        echo -e "${YELLOW}You can enable Secure Boot later with curios-manager.${NC}"
+        OPTION_SECURE_BOOT=false
+      fi
     fi
   else
     OPTION_SECURE_BOOT=false
