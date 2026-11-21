@@ -275,7 +275,7 @@ test-unit target:
 # Run the aarch64-linux platform compatibility test. Evaluates all modules with all options enabled and reports x86_64-only packages.
 test-aarch64:
   statix check "./tests/platform-aarch64.nix"
-  nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
+  NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
 
 # Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
 pkg-check-updates pkg='':
