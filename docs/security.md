@@ -242,24 +242,29 @@ The Curi*OS* Manager provides a guided, step-by-step setup:
 
 Older Curi*OS* versions used the **Limine** bootloader. Removing it from the
 NixOS configuration is not enough: the ESP and the UEFI NVRAM keep their old
-state across rebuilds, so the firmware may still boot Limine. To fully switch
-to systemd-boot (or Lanzaboote), clean up manually:
+state across rebuilds, so the firmware may still boot Limine.
+
+The **Curi*OS* Manager** performs this cleanup for you. Launch it with
+**Super + Return**, then go to **󰌾 Security → 🔓 Disable Secure Boot and TPM2
+checks**. The manager will:
+
+1. Delete the Limine UEFI boot entry from the NVRAM (`efibootmgr --delete-bootnum`)
+2. Remove the Limine files from the ESP (`/boot/EFI/limine` and `/boot/limine`)
+3. Install systemd-boot on the ESP (`bootctl install`)
+4. Clear the old `curios.bootefi.limine.*` options and apply the new configuration
+
+Afterwards, verify that the firmware now boots systemd-boot:
 
 ```bash
-# 1. Install systemd-boot on the ESP (creates /boot/EFI/systemd/ and
-#    the fallback /boot/EFI/BOOT/BOOTX64.EFI)
-sudo bootctl install
-
-# 2. Delete the Limine UEFI boot entry (find its number with efibootmgr -v)
-sudo efibootmgr --bootnum XXXX --delete-bootnum
-
-# 3. Remove Limine files from the ESP (binary + config/assets)
-sudo rm -rf /boot/EFI/limine /boot/limine
-
-# 4. Verify
 sudo bootctl status   # must report systemd-boot, not Limine
 sudo efibootmgr -v    # no Limine entry should remain
 ```
+
+> [!NOTE]
+> The **🔓 Disable Secure Boot and TPM2 checks** entry also disables Secure
+> Boot and the TPM2 checks — that is its primary purpose. If Secure Boot is
+> currently enabled on your machine, do not use this entry just to clean up
+> leftover Limine files.
 
 ## AppArmor
 
