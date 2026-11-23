@@ -100,6 +100,11 @@ in {
           default = null;
           description = "DEPRECATED";
         };
+        homebank.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Free, easy, personal accounting for everyone.";
+        };
       };
       ms = {
         office365 = {
@@ -201,6 +206,8 @@ in {
       [ (import ./webapp-hubspot.nix { inherit config pkgs lib; }) ]
       ++ lib.optionals config.curios.desktop.office.erp.odoo.enable
       [ (import ./webapp-odoo.nix { inherit config pkgs lib; }) ]
+      ++ lib.optionals config.curios.desktop.office.finance.homebank.enable
+      [ pkgs.homebank ]
       ++ lib.optionals config.curios.desktop.office.ms.office365.excel.enable
       [ (import ./webapp-ms-excel.nix { inherit pkgs lib; }) ] ++ lib.optionals
       config.curios.desktop.office.ms.office365.powerpoint.enable
