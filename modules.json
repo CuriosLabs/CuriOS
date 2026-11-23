@@ -256,7 +256,11 @@
             "enable": false
           }
         },
-        "finance": {},
+        "finance": {
+          "homebank": {
+            "enable": true
+          }
+        },
         "libreoffice": {
           "enable": false
         },
