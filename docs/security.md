@@ -269,9 +269,9 @@ sudo efibootmgr -v    # no Limine entry should remain
 ## AppArmor
 
 AppArmor is a Mandatory Access Control (MAC) system. When it is enabled, selected
-desktop applications run inside a **profile** that lists what they are allowed to
-do — which files they may read or write, which devices they may open, and which
-other programs they may start.
+applications (desktop apps and CLI tools) run inside a **profile** that lists what
+they are allowed to do — which files they may read or write, which devices they may
+open, and which other programs they may start.
 
 This limits the damage if an application is compromised. A confined browser, for
 example, cannot freely read your SSH keys or password-manager files even if a
@@ -291,7 +291,7 @@ The manager turns on three related options, then applies a system update:
    program executions, and kills processes that have a profile but are running
    unconfined (`curios.hardened.anssi.reinforced.rule45`).
 3. **Curi*OS* AppArmor profiles** — ships the confinement rules for supported
-   desktop apps (`curios.hardened.apparmor-profiles.enable`).
+   desktop apps and CLI tools (`curios.hardened.apparmor-profiles.enable`).
 
 After the update, the manager shows whether AppArmor is active and how many
 profiles are in **enforce** or **complain** mode.
@@ -306,9 +306,18 @@ profiles are in **enforce** or **complain** mode.
 | Evince         | enforce      | Document viewer, previewer, daemon, and thumbnailer |
 | OnlyOffice     | enforce      | Desktop editors                                     |
 | Steam          | complain     | Steam client, Proton, and native games              |
+| OpenCode       | enforce      | AI coding agent (TUI, server, and child processes)  |
 
 Only these applications are confined. Everything else on the system keeps its
 normal permissions.
+
+The **OpenCode** profile is stricter than a browser's because an AI agent can be
+prompt-injected to exfiltrate secrets. The profile blocks access to SSH keys, cloud
+credentials, wallets, `.env` files, `.pem` keys, and password managers
+(`secrets-deny`), explicitly denies privilege-escalation binaries (`sudo`, `doas`,
+`pkexec`, `su`), and applies to **every child process** the agent spawns (shell,
+git, language runtimes, build tools) since AppArmor profiles are inherited across
+`exec`.
 
 ### Profile modes
 
@@ -341,6 +350,7 @@ Replace the option path with the application you need:
 | Evince | `curios.hardened.apparmor-profiles.desktop.office.evince.mode` |
 | OnlyOffice | `curios.hardened.apparmor-profiles.desktop.office.onlyoffice.mode` |
 | Steam | `curios.hardened.apparmor-profiles.desktop.gaming.steam.mode` |
+| OpenCode | `curios.hardened.apparmor-profiles.cli.opencode.mode` |
 
 To inspect denials:
 

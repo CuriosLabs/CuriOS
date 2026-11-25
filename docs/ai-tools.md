@@ -188,6 +188,12 @@ pre-installed on Curi*OS*. You can install them with the `npm install -g` comman
   Installed by default. Run it with `opencode`. Use the `/connect` command to
   bring your OpenCode Zen, Anthropic or OpenAI API key.
 
+  > [!NOTE]
+  > When AppArmor is enabled, OpenCode runs inside a confinement profile that
+  > blocks access to your secrets (SSH keys, cloud credentials, wallets, `.env`
+  > files) and denies privilege escalation, for the agent and all the child
+  > processes it spawns. See [AppArmor](security.md#apparmor).
+
 ![OpenCode TUI](https://github.com/CuriosLabs/CuriOS/blob/testing/img/OpenCode.png?raw=true "OpenCode")
 
 You can connect it to your LM Studio server by editing its configuration file.
