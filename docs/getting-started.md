@@ -24,15 +24,15 @@ This guide will help you get started with installing and using Curi*OS*.
 
 If you intend to use Curi*OS* alongside Windows, it is strongly recommended to
 install each operating system on a **separate disk (SSD/NVMe)**. Dual-booting on
-a single disk is not recommended and can lead to bootloader complications.
+a single disk is not recommended and **WILL** lead to bootloader complications.
 
 To switch between operating systems, you should use your motherboard's UEFI boot
 menu at startup. This is typically accessed by pressing a shortcut key like **F8**,
 **F11**, or **F12** (or sometimes **F2**) depending on your manufacturer.
 
 During the Curi*OS* installation, the installer will list all detected disks and
-ask you to choose the target for the installation. Ensure you select the empty or
-dedicated disk and not the one containing your Windows installation.
+ask you to choose the target for the installation. **Ensure** you select the empty
+or dedicated disk and **NOT** the one containing your Windows installation.
 
 ## Installation
 
@@ -46,13 +46,13 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    download it from `https://iso.curioslabs.dev/`.
 
    ```bash
-   wget https://iso.curioslabs.dev/CuriOS_26.05.10_amd64_intel.iso
+   wget https://iso.curioslabs.dev/CuriOS_26.11_amd64_intel.iso
    ```
 
    Download and check ISO signature:
 
    ```bash
-   wget https://iso.curioslabs.dev/CuriOS_26.05.10_amd64_intel.iso.sha256
+   wget https://iso.curioslabs.dev/CuriOS_26.11_amd64_intel.iso.sha256
    sha256sum --check CuriOS_*.iso.sha256
    ```
 
@@ -60,7 +60,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
    OR on Linux you can try with `caligula`:
 
    ```bash
-   caligula burn -s $(cat ./CuriOS_26.05.10_amd64_intel.iso.sha256)
+   caligula burn -s $(cat ./CuriOS_26.11_amd64_intel.iso.sha256)
    ```
 
    OR with `dd`:
@@ -74,7 +74,7 @@ The primary method for installing Curi*OS* is by using a bootable ISO image.
 
    ```bash
    # And then to copy the ISO to the USB, `/dev/sda` in below case, adjust accordingly.
-   sudo dd if=CuriOS_26.05.10_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
+   sudo dd if=CuriOS_26.11_amd64_intel.iso of=/dev/sda bs=10MB oflag=dsync status=progress
    ```
 
 3. **Boot from USB**: Boot your machine from the USB drive. You will probably

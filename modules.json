@@ -22,7 +22,7 @@
         "url": "https://github.com/CuriosLabs/curios-themes.git"
       },
       "source": {
-        "branch": "unstable",
+        "branch": "release/26.11",
         "revision": "",
         "url": "https://github.com/CuriosLabs/CuriOS.git"
       }

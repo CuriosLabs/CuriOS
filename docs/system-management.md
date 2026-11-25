@@ -10,7 +10,7 @@ With it, you can update/upgrade the entire system, add/remove packages (applicat
 update your hardware firmware, check your disk usage, launch the process manager
 (btop), and much more.
 
-![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/curios-manager_main-menu2.png?raw=true "CuriOS manager main menu")
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_main-menu2.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -149,7 +149,7 @@ Themes change the appearance of:
 - LazyVim (Neovim), Herdr, Brave browser, and Zed editor
 - Wallpapers are also changed by the selected theme
 
-![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/Desktop-themes.png?raw=true "CuriOS themes")
+![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop-themes.png?raw=true "CuriOS themes")
 
 Available themes:
 

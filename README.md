@@ -1,13 +1,7 @@
 # Curi*OS*
 
-[![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS 26.11](https://img.shields.io/badge/NixOS-26.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
-
-> [!WARNING]
-> This branch tracks the **NixOS unstable channel**, which operates as a rolling
-> release. It provides the latest features and packages but may be less stable
-> than fixed releases. Use it for testing or if you require the most recent
-> software updates.
 
 Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the
 [COSMIC](https://system76.com/cosmic) desktop environment. It ships with
@@ -58,7 +52,7 @@ Python3, Rust and more...
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
 * ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
-* 🔗 Enable Secure Boot.
+* 🔗 Enable Secure Boot with TPM2 (measured boot).
 * 🛡️AppArmor Mandatory Access Control profiles - WIP.
 * 🔑 Register a YubiKey for user login and `sudo` operations.
 * 🗛  bunch of nerd fonts...
@@ -123,7 +117,8 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current version is based on a Nixos unstable build.
+The current release is [26.11](https://github.com/CuriosLabs/CuriOS/releases/tag/26.11)
+based on a NixOS 26.11 build.
 
 ## License
 

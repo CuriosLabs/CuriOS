@@ -176,12 +176,12 @@ computer. It protects against malicious programs that try to modify the boot
 process and quietly take control before the operating system loads.
 
 On Curi*OS*, Secure Boot is supported through the **Lanzaboote** bootloader,
-which is the default bootloader since Curi*OS* 26.05.11.
+which is the default bootloader since Curi*OS* 26.11.
 
 ### Lanzaboote and TPM2 measured boot
 
-During installation, if your hardware has a **TPM2** chip (auto-detected with
-`systemd-analyze has-tpm2`), the installer offers to enable **Lanzaboote**.
+During installation, if your hardware has a **TPM2** chip (auto-detected), the installer
+offers to enable **Lanzaboote**.
 On hardware without TPM2, or if you skipped this step, you can enable it later
 from the **Curi*OS* Manager** (**Super + Return**) under
 **🔐 Security → 🔗 Enable Secure Boot with TPM2**.
@@ -298,14 +298,14 @@ profiles are in **enforce** or **complain** mode.
 
 ### Confined applications
 
-| Application | Default mode | What the profile covers |
-| --- | --- | --- |
-| Brave | enforce | Browser, sandbox, and launcher |
-| Discord | enforce | Desktop client and sandbox |
-| Signal Desktop | enforce | Desktop client and sandbox |
-| Evince | enforce | Document viewer, previewer, daemon, and thumbnailer |
-| OnlyOffice | enforce | Desktop editors |
-| Steam | complain | Steam client, Proton, and native games |
+| Application    | Default mode | What the profile covers                             |
+| -------------- | ------------ | --------------------------------------------------- |
+| Brave          | enforce      | Browser, sandbox, and launcher                      |
+| Discord        | enforce      | Desktop client and sandbox                          |
+| Signal Desktop | enforce      | Desktop client and sandbox                          |
+| Evince         | enforce      | Document viewer, previewer, daemon, and thumbnailer |
+| OnlyOffice     | enforce      | Desktop editors                                     |
+| Steam          | complain     | Steam client, Proton, and native games              |
 
 Only these applications are confined. Everything else on the system keeps its
 normal permissions.
