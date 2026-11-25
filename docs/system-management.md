@@ -132,6 +132,29 @@ first boot of the day; see `systemctl list-timers`.
 To manually start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option from the main menu.
 
+### Switching to the unstable branch
+
+The ISO image installs the **stable** version of Curi*OS*.
+After installation, if you want the **unstable** version (tracking the
+NixOS unstable channel with the latest features), run this command to
+switch branches and upgrade your system, then **reboot**:
+
+```bash
+sudo curios-update --update-module curios.core.source.branch unstable && \
+sudo curios-update --update-module curios.core.dotfiles.branch unstable && \
+sudo curios-update --upgrade
+```
+
+To go back to the stable release, then **reboot**:
+
+```bash
+sudo curios-update --update-module curios.core.source.branch stable && \
+sudo curios-update --update-module curios.core.dotfiles.branch main && \
+sudo curios-update --upgrade
+```
+
+See [available branches](architecture.md#update--upgrade-workflow) for details.
+
 ## Themes
 
 Curi*OS* comes with multiple desktop themes that you can easily switch using
