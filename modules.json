@@ -17,7 +17,7 @@
     },
     "core": {
       "dotfiles": {
-        "branch": "unstable",
+        "branch": "testing",
         "revision": "",
         "url": "https://github.com/CuriosLabs/curios-themes.git"
       },
