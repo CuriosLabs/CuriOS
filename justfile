@@ -264,6 +264,8 @@ publish: lint
 
 # Run all integrations tests sequentially
 test-all:
+  #!/usr/bin/env bash
+  set -euo pipefail
   for file in `fd --type f ".nix" ./tests/`; do statix check $file; done
   if [[ "{{branch}}" == unstable ]]; then
     for file in `fd --type f ".nix" ./tests/`; do NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build $file --show-trace --no-out-link; done
@@ -273,6 +275,8 @@ test-all:
 
 # Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
 test-unit target:
+  #!/usr/bin/env bash
+  set -euo pipefail
   statix check "./tests/{{target}}.nix"
   if [[ "{{branch}}" == unstable ]]; then
     NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
@@ -282,6 +286,8 @@ test-unit target:
 
 # Run the aarch64-linux platform compatibility test. Evaluates all modules with all options enabled and reports x86_64-only packages.
 test-aarch64:
+  #!/usr/bin/env bash
+  set -euo pipefail
   statix check "./tests/platform-aarch64.nix"
   if [[ "{{branch}}" == unstable ]]; then
     NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
