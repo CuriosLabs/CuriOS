@@ -812,7 +812,6 @@ in {
         ${pkgs.electron_45.unwrapped}/libexec/electron/resources/**            r,
         ${pkgs.electron_45.unwrapped}/libexec/electron/vk_swiftshader_icd.json r,
 
-
         # PipeWire
         owner @{run}/user/*/pipewire-*                                         rw,
       '';

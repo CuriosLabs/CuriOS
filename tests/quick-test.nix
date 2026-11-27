@@ -7,7 +7,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/desktop-apps/devops.nix ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       # Allow unfree packages for JetBrains IDEs etc.
       nixpkgs.config.allowUnfree = true;
       #nixpkgs.config.permittedInsecurePackages = [ "electron-41.10.7" ];

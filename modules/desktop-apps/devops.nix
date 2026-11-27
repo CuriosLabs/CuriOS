@@ -2,19 +2,7 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  # opencode / opencode-desktop / herdr come from nixpkgs-unstable.
-  # Pinned tarball for reproducibility.
-  nixpkgsUnstable = builtins.fetchTarball {
-    url =
-      "https://github.com/NixOS/nixpkgs/archive/04906337b6d53e8bb0eaf0470ae9f070a4d4eb55.tar.gz";
-    sha256 = "1ixmpdkxv55py03w9gj4qn4p90jn494a5zzx3j90c703gaa3dhcl";
-  };
-  unstable = import nixpkgsUnstable {
-    config = config.nixpkgs.config;
-    system = pkgs.stdenv.hostPlatform.system;
-  };
-in {
+{
   # Declare options
   options = {
     curios.desktop.devops = {
@@ -218,7 +206,7 @@ in {
       ++ lib.optionals config.curios.desktop.devops.editor.java.enable
       [ jetbrains.idea ]
       ++ lib.optionals config.curios.desktop.devops.editor.opencode.enable
-      [ unstable.opencode-desktop ]
+      [ opencode-desktop ]
       ++ lib.optionals config.curios.desktop.devops.editor.python.enable
       [ jetbrains.pycharm ]
       ++ lib.optionals config.curios.desktop.devops.editor.rust.enable
@@ -234,10 +222,10 @@ in {
       ++ lib.optionals config.curios.desktop.devops.terminal.ghostty.enable
       [ ghostty ]
       ++ lib.optionals config.curios.desktop.devops.tui.herdr.enable [
-        unstable.herdr
+        herdr
         (import ./desktop-herdr-tui.nix)
       ] ++ lib.optionals config.curios.desktop.devops.tui.opencode.enable [
-        unstable.opencode
+        opencode
         (import ./desktop-opencode-tui.nix)
       ];
   };

@@ -175,15 +175,40 @@ Secure Boot ensures that only trusted, properly signed software can start your
 computer. It protects against malicious programs that try to modify the boot
 process and quietly take control before the operating system loads.
 
-On Curi*OS*, Secure Boot is supported through the **Limine** bootloader,
-which is the default bootloader since Curi*OS* 26.05.5.
+On Curi*OS*, Secure Boot is supported through the **Lanzaboote** bootloader,
+which is the default bootloader since Curi*OS* 26.11.
+
+### Lanzaboote and TPM2 measured boot
+
+During installation, if your hardware has a **TPM2** chip (auto-detected), the installer
+offers to enable **Lanzaboote**.
+On hardware without TPM2, or if you skipped this step, you can enable it later
+from the **Curi*OS* Manager** (**Super + Return**) under
+**🔐 Security → 🔗 Enable Secure Boot with TPM2**.
+
+Once enabled, Lanzaboote takes care of the whole boot chain:
+
+- **Secure Boot keys are generated and enrolled automatically** — Lanzaboote
+  creates a PKI bundle (`/var/lib/sbctl`) and enrolls the keys into your UEFI
+  firmware on first boot. Microsoft keys are included by default so dual-boot
+  with Windows keeps working.
+- **The UKI is measured into the TPM2** — Lanzaboote builds a signed Unified
+  Kernel Image (UKI) and measures it, along with the bootloader and boot
+  phases, into PCRs **0** (firmware code), **4** (bootloader) and **7**
+  (Secure Boot state). After each system update, the new UKI is automatically
+  measured into the PCRs on the next boot.
+- **PCRs are verified at every boot** — a post-boot integrity check
+  (`curios-pcr-check.service`, running `curios-update --pcr-check`) compares
+  the stable PCRs (0 and 7) against a baseline stored in
+  `/var/lib/curios/pcr-baseline` and alerts you if the firmware or Secure Boot
+  state changed unexpectedly (e.g. firmware update, Secure Boot disabled).
 
 The Curi*OS* Manager provides a guided, step-by-step setup:
 
 1. **System check** — the manager verifies your system is ready.
 2. **Bootloader check** — if you are upgrading from a previous version of
    Curi*OS* that used a different bootloader, the manager will offer to switch
-   to Limine, which is required for Secure Boot.
+   to Lanzaboote, which is required for Secure Boot.
 3. **Firmware check** — the manager scans your computer's firmware and will
    warn you if a firmware update is needed before Secure Boot can work.
 4. **Key creation** — the manager generates the necessary security keys
@@ -201,8 +226,8 @@ The Curi*OS* Manager provides a guided, step-by-step setup:
 > [!WARNING]
 > Enabling Secure Boot is an **advanced operation**. Make sure you are
 > comfortable with your computer's firmware settings and know how to boot into
-> UEFI mode if needed. In the Limine boot menu, you can press **S** to enter the
-> firmware settings directly.
+> UEFI mode if needed. In the Lanzaboote (systemd-boot) boot menu, select
+> **Reboot Into Firmware Interface** to enter the firmware settings directly.
 
 > [!WARNING]
 > If you run other operating systems alongside Curi*OS* (dual-boot), Secure Boot
@@ -213,12 +238,40 @@ The Curi*OS* Manager provides a guided, step-by-step setup:
 > Always keep your LUKS recovery passphrase in a safe place. Secure Boot protects
 > the boot process, but disk encryption is still your last line of defense.
 
+### Removing leftover Limine files after an upgrade
+
+Older Curi*OS* versions used the **Limine** bootloader. Removing it from the
+NixOS configuration is not enough: the ESP and the UEFI NVRAM keep their old
+state across rebuilds, so the firmware may still boot Limine.
+
+The **Curi*OS* Manager** performs this cleanup for you. Launch it with
+**Super + Return**, then go to **󰌾 Security → 🔓 Disable Secure Boot and TPM2
+checks**. The manager will:
+
+1. Delete the Limine UEFI boot entry from the NVRAM (`efibootmgr --delete-bootnum`)
+2. Remove the Limine files from the ESP (`/boot/EFI/limine` and `/boot/limine`)
+3. Install systemd-boot on the ESP (`bootctl install`)
+4. Clear the old `curios.bootefi.limine.*` options and apply the new configuration
+
+Afterwards, verify that the firmware now boots systemd-boot:
+
+```bash
+sudo bootctl status   # must report systemd-boot, not Limine
+sudo efibootmgr -v    # no Limine entry should remain
+```
+
+> [!NOTE]
+> The **🔓 Disable Secure Boot and TPM2 checks** entry also disables Secure
+> Boot and the TPM2 checks — that is its primary purpose. If Secure Boot is
+> currently enabled on your machine, do not use this entry just to clean up
+> leftover Limine files.
+
 ## AppArmor
 
 AppArmor is a Mandatory Access Control (MAC) system. When it is enabled, selected
-desktop applications run inside a **profile** that lists what they are allowed to
-do — which files they may read or write, which devices they may open, and which
-other programs they may start.
+applications (desktop apps and CLI tools) run inside a **profile** that lists what
+they are allowed to do — which files they may read or write, which devices they may
+open, and which other programs they may start.
 
 This limits the damage if an application is compromised. A confined browser, for
 example, cannot freely read your SSH keys or password-manager files even if a
@@ -238,24 +291,33 @@ The manager turns on three related options, then applies a system update:
    program executions, and kills processes that have a profile but are running
    unconfined (`curios.hardened.anssi.reinforced.rule45`).
 3. **Curi*OS* AppArmor profiles** — ships the confinement rules for supported
-   desktop apps (`curios.hardened.apparmor-profiles.enable`).
+   desktop apps and CLI tools (`curios.hardened.apparmor-profiles.enable`).
 
 After the update, the manager shows whether AppArmor is active and how many
 profiles are in **enforce** or **complain** mode.
 
 ### Confined applications
 
-| Application | Default mode | What the profile covers |
-| --- | --- | --- |
-| Brave | enforce | Browser, sandbox, and launcher |
-| Discord | enforce | Desktop client and sandbox |
-| Signal Desktop | enforce | Desktop client and sandbox |
-| Evince | enforce | Document viewer, previewer, daemon, and thumbnailer |
-| OnlyOffice | enforce | Desktop editors |
-| Steam | complain | Steam client, Proton, and native games |
+| Application    | Default mode | What the profile covers                             |
+| -------------- | ------------ | --------------------------------------------------- |
+| Brave          | enforce      | Browser, sandbox, and launcher                      |
+| Discord        | enforce      | Desktop client and sandbox                          |
+| Signal Desktop | enforce      | Desktop client and sandbox                          |
+| Evince         | enforce      | Document viewer, previewer, daemon, and thumbnailer |
+| OnlyOffice     | enforce      | Desktop editors                                     |
+| Steam          | complain     | Steam client, Proton, and native games              |
+| OpenCode       | enforce      | AI coding agent (TUI, server, and child processes)  |
 
 Only these applications are confined. Everything else on the system keeps its
 normal permissions.
+
+The **OpenCode** profile is stricter than a browser's because an AI agent can be
+prompt-injected to exfiltrate secrets. The profile blocks access to SSH keys, cloud
+credentials, wallets, `.env` files, `.pem` keys, and password managers
+(`secrets-deny`), explicitly denies privilege-escalation binaries (`sudo`, `doas`,
+`pkexec`, `su`), and applies to **every child process** the agent spawns (shell,
+git, language runtimes, build tools) since AppArmor profiles are inherited across
+`exec`.
 
 ### Profile modes
 
@@ -288,6 +350,7 @@ Replace the option path with the application you need:
 | Evince | `curios.hardened.apparmor-profiles.desktop.office.evince.mode` |
 | OnlyOffice | `curios.hardened.apparmor-profiles.desktop.office.onlyoffice.mode` |
 | Steam | `curios.hardened.apparmor-profiles.desktop.gaming.steam.mode` |
+| OpenCode | `curios.hardened.apparmor-profiles.cli.opencode.mode` |
 
 To inspect denials:
 
@@ -368,8 +431,8 @@ From this menu you can:
   The local file is just a handle. If you lose the YubiKey, you cannot use that
   SSH key anymore.
 - Before enabling Secure Boot, make sure you understand how to access your
-  firmware settings. The Limine boot menu offers a quick shortcut (**S**) to
-  enter the firmware setup.
+  firmware settings. In the Lanzaboote (systemd-boot) boot menu, select the
+  **Reboot Into Firmware Interface** entry to enter the firmware setup.
 - If you dual-boot, research how Secure Boot affects your other operating
   systems before enabling it.
 

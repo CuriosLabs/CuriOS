@@ -103,7 +103,6 @@ in {
 
   # IMPORTANT: Define nixpkgs allowInsecurePredicate ONLY here!
   # Setting it ignores permittedInsecurePackages.
-  # opencode-desktop / winboat pin EOL Electron on NixOS 26.05.
   # Must live here: nixpkgs.config inside a module lib.mkIf is ignored by pkgs.
   # Check actual value on your system with: `nixos-option nixpkgs.config 2>&1`
   # TODO: remove when those packages pin electron>=42
@@ -112,6 +111,10 @@ in {
     allowUnfree = if config.curios.hardware.nvidiaGpu.enable then
       true
     else if config.curios.desktop.ai.cursor.enable then
+      true
+    else if config.curios.desktop.ai.lmstudio.enable then
+      true
+    else if config.curios.desktop.ai.lmstudio.bionic then
       true
     else if config.curios.desktop.office.enable then
       true
@@ -130,20 +133,14 @@ in {
     else
       false;
     # Insecure pkgs
-    allowInsecurePredicate = pkg:
-      let
-        name = pkg.name or "${pkg.pname or ""}-${pkg.version or ""}";
-        prefixes = lib.optionals (config.curios.virtualisation.enable
-          && config.curios.virtualisation.winboat.enable) [ "electron-40." ];
-      in lib.any (prefix: lib.hasPrefix prefix name) prefixes;
-    permittedInsecurePackages = [ "electron-42.11.18" ];
+    #permittedInsecurePackages = [ "electron-42.11.18" ];
   };
 
   system = {
     # Automatic OS updates and cleanup
     autoUpgrade = {
       # The URI of the NixOS channel to use for automatic upgrades.
-      channel = "https://channels.nixos.org/nixos-26.05";
+      channel = "https://channels.nixos.org/nixos-26.11";
     };
     # Copy the NixOS configuration file and link it from the resulting system
     # (/run/current-system/configuration.nix). This is useful in case you
@@ -151,7 +148,7 @@ in {
     copySystemConfiguration = true;
     # CuriOS variant version
     nixos.variantName = "CuriOS";
-    nixos.variant_id = "26.05.10";
+    nixos.variant_id = "26.11";
   };
 
   nix = {

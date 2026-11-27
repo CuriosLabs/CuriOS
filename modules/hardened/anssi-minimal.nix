@@ -23,10 +23,6 @@
   config = lib.mkIf config.curios.hardened.anssi.minimal.enable {
     # EFI boot loader settings.
     boot.loader = {
-      limine = {
-        enableEditor =
-          if config.curios.hardened.anssi.minimal.rule5 then false else true;
-      };
       systemd-boot = {
         editor =
           if config.curios.hardened.anssi.minimal.rule5 then false else true;

@@ -1,14 +1,7 @@
 # Office suite desktop applications.
 
 { config, lib, pkgs, ... }:
-let
-  basecamp-cli = pkgs.callPackage ../../pkgs/basecamp-cli { };
-  # nixpkgs 26.05 builds obsidian against Electron 43, whose renderer crashes
-  # at startup (webFrame defineProperty error) leaving a black window.
-  # Rebuild it against Electron 44 which renders correctly.
-  # See https://github.com/NixOS/nixpkgs/issues/581876
-  # TODO: drop the override once nixpkgs ships obsidian on electron >= 44.
-  obsidian = pkgs.obsidian.override { electron = pkgs.electron_44; };
+let basecamp-cli = pkgs.callPackage ../../pkgs/basecamp-cli { };
 in {
   # Declare options
   options = {
@@ -186,7 +179,7 @@ in {
 
   # Declare configuration
   config = lib.mkIf config.curios.desktop.office.enable {
-    environment.systemPackages = [ obsidian pkgs.joplin-desktop ]
+    environment.systemPackages = [ pkgs.obsidian pkgs.joplin-desktop ]
       ++ lib.optionals config.curios.desktop.office.calibre.enable
       [ pkgs.calibre ]
       ++ lib.optionals config.curios.desktop.office.libreoffice.enable

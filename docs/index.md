@@ -46,7 +46,7 @@ your system with Nix modules.
   Desktop shortcuts for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
   [Voxtype](https://voxtype.io/) (Shortcut: Super + V) for local Speech to Text.
 - 🐧 Uses the latest stable Linux kernel by default.
-- 🔗 Enable Secure Boot.
+- 🔗 Enable Secure Boot with TPM2 (measured boot).
 - 🛡️AppArmor Mandatory Access Control profiles - WIP.
 - 🔑 Register a YubiKey for user login and `sudo` operations.
 - 🗛  A bunch of nerd fonts...

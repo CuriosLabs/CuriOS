@@ -10,7 +10,7 @@ With it, you can update/upgrade the entire system, add/remove packages (applicat
 update your hardware firmware, check your disk usage, launch the process manager
 (btop), and much more.
 
-![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/curios-manager_main-menu2.png?raw=true "CuriOS manager main menu")
+![curios-manager main menu](https://github.com/CuriosLabs/CuriOS/blob/master/img/curios-manager_main-menu2.png?raw=true "CuriOS manager main menu")
 
 Use arrow keys to move the cursor up and down, Enter to select, and Esc to abort.
 
@@ -132,6 +132,29 @@ first boot of the day; see `systemctl list-timers`.
 To manually start the system upgrade, launch `curios-manager` from a terminal (shortcut:
 Super+Return) and choose the `👆Upgrade` option from the main menu.
 
+### Switching to the unstable branch
+
+The ISO image installs the **stable** version of Curi*OS*.
+After installation, if you want the **unstable** version (tracking the
+NixOS unstable channel with the latest features), run this command to
+switch branches and upgrade your system, then **reboot**:
+
+```bash
+sudo curios-update --update-module curios.core.source.branch unstable && \
+sudo curios-update --update-module curios.core.dotfiles.branch unstable && \
+sudo curios-update --upgrade
+```
+
+To go back to the stable release, then **reboot**:
+
+```bash
+sudo curios-update --update-module curios.core.source.branch stable && \
+sudo curios-update --update-module curios.core.dotfiles.branch main && \
+sudo curios-update --upgrade
+```
+
+See [available branches](architecture.md#update--upgrade-workflow) for details.
+
 ## Themes
 
 Curi*OS* comes with multiple desktop themes that you can easily switch using
@@ -149,7 +172,7 @@ Themes change the appearance of:
 - LazyVim (Neovim), Herdr, Brave browser, and Zed editor
 - Wallpapers are also changed by the selected theme
 
-![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/release/26.05.10/img/Desktop-themes.png?raw=true "CuriOS themes")
+![CuriOS themes](https://github.com/CuriosLabs/CuriOS/blob/master/img/Desktop-themes.png?raw=true "CuriOS themes")
 
 Available themes:
 

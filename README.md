@@ -1,6 +1,6 @@
 # Curi*OS*
 
-[![NixOS 26.05](https://img.shields.io/badge/NixOS-26.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS 26.11](https://img.shields.io/badge/NixOS-26.11-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 [![X Follow](https://img.shields.io/twitter/follow/CuriosLabs?style=social)](https://x.com/CuriosLabs)
 
 Curi*OS* is a Linux distribution based on [NixOS](https://nixos.org/) and the
@@ -52,7 +52,7 @@ Python3, Rust and more...
 * 🔁 NixOS packages **auto-update** every night or at first boot of the day.
 * ⬆️ Curi*OS* updater. Automatically check this GitHub repo for a new system version.
 * 🐧 Use of the latest stable Linux kernel by default.
-* 🔗 Enable Secure Boot.
+* 🔗 Enable Secure Boot with TPM2 (measured boot).
 * 🛡️AppArmor Mandatory Access Control profiles - WIP.
 * 🔑 Register a YubiKey for user login and `sudo` operations.
 * 🗛  bunch of nerd fonts...
@@ -105,8 +105,8 @@ See [Contributing instructions here](https://github.com/CuriosLabs/CuriOS/tree/m
 
 ## Version
 
-The current release is [26.05.10](https://github.com/CuriosLabs/CuriOS/releases/tag/26.05.10)
-based on a Nixos 26.05 build.
+The current release is [26.11](https://github.com/CuriosLabs/CuriOS/releases/tag/26.11)
+based on a NixOS 26.11 build.
 
 ## License
 

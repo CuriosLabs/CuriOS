@@ -12,7 +12,7 @@ default:
   @just --list
 
 # Build an iso image of the current git branch.
-build: lint update-pkg-unstable checks
+build: lint checks
   #!/usr/bin/env bash
   set -euxo pipefail
   releaseNumber=""
@@ -45,7 +45,15 @@ build: lint update-pkg-unstable checks
     fi
   fi
   printf "Launch nix-build...\n"
-  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-installer.nix
+  # On the unstable branch, add/update the "nixos-unstable" channel and force
+  # building against it regardless of the host's <nixpkgs> channel.
+  NIXPKGS_ARG=""
+  if [[ "{{branch}}" == unstable ]]; then
+    sudo nix-channel --add https://channels.nixos.org/nixos-unstable nixos-unstable
+    sudo nix-channel --update
+    NIXPKGS_ARG="-I nixpkgs=channel:nixos-unstable"
+  fi
+  nix-build '<nixpkgs/nixos>' --show-trace --cores 0 --max-jobs auto -A config.system.build.isoImage -I nixos-config=./iso/iso-installer.nix $NIXPKGS_ARG
   # Save and rename ISO file
   cp ./result/iso/nixos-minimal-*.iso "${isoFilePath}"
   cd ./iso/
@@ -166,7 +174,6 @@ checks: pkg-check-updates
     printf "\e[31mElectrum %s is available but pkgs/electrum/default.nix is at %s. Update the package.\e[0m\n" "$latest" "$current"
     failed=1
   fi
-  printf "\e[33mRemember to manually check:\e[0m https://lmstudio.ai/download \n"
   printf "\e[33mAlso remember to launch:\e[0m 'just test-unit pkgs-all'\n"
   exit "$failed"
 
@@ -258,41 +265,29 @@ publish: lint
 # Run all integrations tests sequentially
 test-all:
   for file in `fd --type f ".nix" ./tests/`; do statix check $file; done
-  for file in `fd --type f ".nix" ./tests/`; do NIX_PATH="nixpkgs=channel:nixos-26.05" nix-build $file --show-trace --no-out-link; done
+  if [[ "{{branch}}" == unstable ]]; then
+    for file in `fd --type f ".nix" ./tests/`; do NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build $file --show-trace --no-out-link; done
+  else
+    for file in `fd --type f ".nix" ./tests/`; nix-build $file --show-trace --no-out-link; done
+  fi
 
 # Run a single integration test, the target name must match the nix filename in ./tests/ (i.e basics).
 test-unit target:
   statix check "./tests/{{target}}.nix"
-  NIX_PATH="nixpkgs=channel:nixos-26.05" nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
+  if [[ "{{branch}}" == unstable ]]; then
+    NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
+  else
+    nix-build "./tests/{{target}}.nix" --show-trace --no-out-link
+  fi
 
 # Run the aarch64-linux platform compatibility test. Evaluates all modules with all options enabled and reports x86_64-only packages.
 test-aarch64:
   statix check "./tests/platform-aarch64.nix"
-  nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
-
-# Update the pinned nixpkgs-unstable commit in the devops module.
-update-pkg-unstable:
-  #!/usr/bin/env bash
-  set -euo pipefail
-  echo "Fetching latest nixpkgs-unstable revision..."
-  LATEST_COMMIT=$(curl -fsSL https://channels.nixos.org/nixos-unstable/git-revision)
-  if [ -z "$LATEST_COMMIT" ]; then
-    echo "Failed to fetch latest revision."
-    exit 1
+  if [[ "{{branch}}" == unstable ]]; then
+    NIX_PATH="nixpkgs=channel:nixos-unstable" nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
+  else
+    nix-build "./tests/platform-aarch64.nix" --show-trace --no-out-link
   fi
-  CURRENT_COMMIT=$(grep -oP 'archive/\K[0-9a-f]+' ./modules/desktop-apps/devops.nix | head -1)
-  if [ "$CURRENT_COMMIT" = "$LATEST_COMMIT" ]; then
-    echo "nixpkgs-unstable is already up to date ($CURRENT_COMMIT)."
-    exit 0
-  fi
-  echo "Latest commit: $LATEST_COMMIT"
-  echo "Fetching SHA256..."
-  SHA256=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixpkgs/archive/${LATEST_COMMIT}.tar.gz")
-  echo "SHA256: $SHA256"
-  sed -i "s|archive/[0-9a-f]*.tar.gz|archive/${LATEST_COMMIT}.tar.gz|g" ./modules/desktop-apps/devops.nix
-  sed -i "s|sha256 = \".*\";|sha256 = \"${SHA256}\";|g" ./modules/desktop-apps/devops.nix
-  echo "Updated nixpkgs-unstable to commit ${LATEST_COMMIT} in:"
-  echo "  - ./modules/desktop-apps/devops.nix"
 
 # Report newer git tags or commits for pkgs/ using fetchFromGitHub. Pass a package directory name to check only that one.
 pkg-check-updates pkg='':

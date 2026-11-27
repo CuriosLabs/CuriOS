@@ -3,8 +3,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  lmstudioApp = pkgs.callPackage ../../pkgs/lm-studio { };
-  lmstudioBionicApp = pkgs.callPackage ../../pkgs/lm-studio-bionic { };
   curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
   voxtypeHasGpu =
     (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
@@ -328,9 +326,9 @@ in {
         ++ lib.optionals config.curios.desktop.ai.grok.enable
         [ (import ./webapp-grok.nix) ] ++ lib.optionals
         (config.curios.desktop.ai.lmstudio.enable
-          && config.curios.platform.amd64.enable) [ lmstudioApp ]
+          && config.curios.platform.amd64.enable) [ pkgs.lmstudio ]
         ++ lib.optionals (config.curios.desktop.ai.lmstudio.bionic
-          && config.curios.platform.amd64.enable) [ lmstudioBionicApp ]
+          && config.curios.platform.amd64.enable) [ pkgs.lmstudio-bionic ]
         ++ lib.optionals config.curios.desktop.ai.mistral.enable
         [ (import ./webapp-mistral.nix) ]
         ++ lib.optionals config.curios.desktop.browser.brave.enable
@@ -488,10 +486,12 @@ in {
           lib.mkDefault config.curios.desktop.vpn.tailscale.useRoutingFeatures;
       };
       # Mullvad VPN
+      # nixos-unstable split the daemon out of pkgs.mullvad-vpn (GUI-only now),
+      # so don't override `package`: module defaults are pkgs.mullvad (daemon/CLI)
+      # and, with gui.enable, pkgs.mullvad-vpn (GUI).
       mullvad-vpn = {
         enable = lib.mkDefault config.curios.desktop.vpn.mullvad.enable;
-        # pkgs.mullvad-vpn for CLI and GUI - pkgs.mullvad for only CLI
-        package = pkgs.mullvad-vpn;
+        gui.enable = lib.mkDefault config.curios.desktop.vpn.mullvad.enable;
       };
     };
 

@@ -10,7 +10,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     imports = [ ../modules/virtualisation.nix ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       curios.virtualisation = {
         enable = true;
         docker.enable = false; # Disable Docker to avoid conflicts

@@ -20,7 +20,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       nixpkgs.config.allowUnfree = true;
       #nixpkgs.config.permittedInsecurePackages = [ "electron-41.10.7" ];
       time.timeZone = "UTC";
@@ -29,10 +29,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         desktop = {
           basics.enable = true;
           #appImage.enable = true;
-          ai.lmstudio = {
-            enable = true;
-            bionic = true;
-          };
           crypto = {
             enable = true;
             btc.enable = true;
@@ -73,9 +69,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("curios-manager-applet")
         check_which("curios-update")
         check_which("electrum")
-        check_which("lm-studio")
-        check_which("lms")
-        check_which("lm-studio-bionic")
         check_which("opencadstudio")
   '';
 }

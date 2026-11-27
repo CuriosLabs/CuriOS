@@ -12,7 +12,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
     ];
 
     config = {
-      system.stateVersion = "26.05";
+      system.stateVersion = "26.11";
       nixpkgs.config.allowUnfree = true;
       time.timeZone = "UTC";
 
