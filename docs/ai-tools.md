@@ -86,21 +86,16 @@ LM Studio can also power the AI features in other programs on your computer. It
 does this by running an AI engine in the background that other apps can connect
 to. Learn more in the [LM Studio documentation](https://lmstudio.ai/docs/app).
 
-### Voxtype - local AI for Speech-to-Text
+### Hex - local AI for Speech-to-Text
 
-Curi*OS* comes pre-installed with [Voxtype](https://voxtype.io/), a local Voice-to-Text
-app. The Voxtype service and default base model are set during the user's first login.
-Press Super+V to toggle it, speak, and toggle it again to start transcription where
-your cursor is.
+Curi*OS* comes pre-installed with [Hex](https://anoma.ly/hex/), a local voice
+dictation app. Simply launch **Hex** from its icon in the **Utilities** category
+of the applications menu. On first launch, Hex downloads a speech model
+compatible with your system language.
 
-By default it runs on the "base" model because it is the best balance for most
-users. If you need more accuracy and have a GPU with enough VRAM, you can try the
-"medium" or "large-v3" models with the commands (from a terminal):
-
-```bash
-sudo curios-update --update-module curios.desktop.utility.voxtype.model medium && \
-sudo curios-update --update && systemctl --user restart voxtype
-```
+In the **General** tab, check the **Open at login** option so Hex starts with
+your session. Then use the **Super+V** shortcut to toggle dictation mode:
+press it, speak, and press it again to transcribe where your cursor is.
 
 ### Web Application Shortcuts
 

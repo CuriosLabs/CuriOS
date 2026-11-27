@@ -73,10 +73,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
           flameshot.enable = true;
           keepassxc.enable = true;
           localsend.enable = true;
-          voxtype = {
-            enable = false;
-            model = "tiny";
-          };
+          hex.enable = true;
         };
       };
     };
@@ -136,8 +133,7 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("flameshot")
         check_which("keepassxc")
         check_which("localsend_app")
-        #check_which("voxtype")
-        #machine.succeed("test -f /etc/voxtype/config.toml")
+        check_which("hex")
 
     with subtest("check-unconditional-basics"):
         check_which("tldr")

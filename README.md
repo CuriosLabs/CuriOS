@@ -50,7 +50,7 @@ the whole system from a modern sleek Terminal User Interface.
 [LM Studio](https://lmstudio.ai/) to run local AI on your GPU (Ollama is also available).
 [Cursor](https://cursor.com/features) and [Zed](https://zed.dev/) for an AI-assisted IDE.
 Desktop shortcut for AI chat web applications (ChatGPT, Claude, Grok and Mistral).
-[Voxtype](https://voxtype.io/) (Shortcut: Super + V) for local Speech to Text.
+[Hex](https://anoma.ly/hex/) (Shortcut: Super + V) for local Speech to Text.
 * 📂 [Modular configuration files](https://github.com/CuriosLabs/CuriOS/tree/master/modules)
 for apps like Steam, Discord, OBS, Ollama AI, docker, QEMU + virt-manager,
 Python3, Rust and more...

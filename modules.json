@@ -347,20 +347,14 @@
         "flameshot": {
           "enable": false
         },
+        "hex": {
+          "enable": true
+        },
         "keepassxc": {
           "enable": false
         },
         "localsend": {
           "enable": true
-        },
-        "voxtype": {
-          "audiofeedback": {
-            "enable": true,
-            "volume": 0.3
-          },
-          "enable": true,
-          "model": "base",
-          "notifications": true
         }
       },
       "vpn": {
