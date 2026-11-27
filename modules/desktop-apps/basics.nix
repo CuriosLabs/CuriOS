@@ -2,23 +2,7 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
-  voxtypeHasGpu =
-    (lib.attrByPath [ "curios" "hardware" "nvidiaGpu" "enable" ] false config)
-    || (lib.attrByPath [ "curios" "hardware" "amdGpu" "enable" ] false config);
-  voxtypePkg = if voxtypeHasGpu then pkgs.voxtype-vulkan else pkgs.voxtype;
-  voxtypeSetupScript = pkgs.writeShellApplication {
-    name = "voxtype-setup";
-    runtimeInputs = [ pkgs.curl voxtypePkg ];
-    text = ''
-      mkdir -p "$HOME/.config/voxtype"
-      rm -f "$HOME/.config/voxtype/config.toml"
-      cp /etc/voxtype/config.toml "$HOME/.config/voxtype/config.toml"
-      chmod u+w "$HOME/.config/voxtype/config.toml"
-      /run/current-system/sw/bin/voxtype setup --download
-    '';
-  };
+let curiosDocsWebapp = import ./webapp-curios-docs.nix { inherit pkgs lib; };
 in {
   # Declare options
   options = {
@@ -210,6 +194,11 @@ in {
           default = false;
           description = "Flameshot screenshot tool.";
         };
+        hex.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Hex - Local voice dictation app.";
+        };
         keepassxc.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -221,36 +210,35 @@ in {
           description =
             "LocalSend - Cross-platform file sharing on your local network.";
         };
+        # DEPRECATED: replaced by `hex` (pkgs.anomaly-hex). Options kept so
+        # existing modules.json files keep evaluating; they no longer do anything.
         voxtype = {
           enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description =
-              "Voxtype local voice-to-text (Vulkan when AMD/NVIDIA GPU is enabled).";
+            type = lib.types.nullOr lib.types.bool;
+            default = null;
+            description = "DEPRECATED";
           };
           audiofeedback = {
             enable = lib.mkOption {
-              type = lib.types.bool;
-              default = true;
-              description =
-                "Voxtype audio feedback when recording starts and stops.";
+              type = lib.types.nullOr lib.types.bool;
+              default = null;
+              description = "DEPRECATED";
             };
             volume = lib.mkOption {
               type = lib.types.numbers.between 0.0 1.0;
               default = 0.3;
-              description = "Voxtype audio feedback volume (0.0 to 1.0).";
+              description = "DEPRECATED";
             };
           };
           model = lib.mkOption {
             type = lib.types.enum [ "tiny" "base" "medium" "large-v3" ];
             default = "base";
-            description = "Whisper model (multilingual).";
+            description = "DEPRECATED";
           };
           notifications = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description =
-              "Voxtype notification when recording starts and stops.";
+            type = lib.types.nullOr lib.types.bool;
+            default = null;
+            description = "DEPRECATED";
           };
         };
       };
@@ -361,8 +349,8 @@ in {
         [ pkgs.keepassxc ]
         ++ lib.optionals config.curios.desktop.utility.flameshot.enable
         [ pkgs.flameshot ]
-        ++ lib.optionals config.curios.desktop.utility.voxtype.enable
-        [ voxtypePkg ];
+        ++ lib.optionals config.curios.desktop.utility.hex.enable
+        [ pkgs.anomaly-hex ];
 
       # Brave group policy examples
       # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
@@ -403,56 +391,6 @@ in {
               {
                 "RemoteDebuggingAllowed": true
               }
-            '';
-          };
-        "voxtype/config.toml" =
-          lib.mkIf config.curios.desktop.utility.voxtype.enable {
-            text = ''
-              state_file = "auto"
-
-              [hotkey]
-              enabled = false
-              mode = "toggle"
-
-              [audio]
-              device = "default"
-              sample_rate = 16000
-              max_duration_secs = 60
-
-              [audio.feedback]
-              enabled = ${
-                lib.boolToString
-                config.curios.desktop.utility.voxtype.audiofeedback.enable
-              }
-              theme = "default"
-              volume = ${
-                lib.toString
-                config.curios.desktop.utility.voxtype.audiofeedback.volume
-              }
-
-              [whisper]
-              model = "${config.curios.desktop.utility.voxtype.model}"
-              language = "auto"
-              translate = false
-              on_demand_loading = false
-              # context_window_optimization = true
-
-              [output]
-              mode = "type"
-              fallback_to_clipboard = true
-              type_delay_ms = 0
-              pre_type_delay_ms = 100
-
-              [output.notification]
-              on_recording_start = ${
-                lib.boolToString
-                config.curios.desktop.utility.voxtype.notifications
-              }
-              on_recording_stop = ${
-                lib.boolToString
-                config.curios.desktop.utility.voxtype.notifications
-              }
-              on_transcription = false
             '';
           };
       };
@@ -513,23 +451,6 @@ in {
             TimeoutStopSec = 10;
           };
         };
-        services.voxtype =
-          lib.mkIf config.curios.desktop.utility.voxtype.enable {
-            description = "Voxtype voice-to-text daemon";
-            wantedBy = [ "graphical-session.target" ];
-            wants = [ "graphical-session.target" ];
-            after = [ "graphical-session.target" ];
-            path = [ pkgs.curl ];
-            serviceConfig = {
-              Type = "simple";
-              ExecStartPre = "${voxtypeSetupScript}/bin/voxtype-setup";
-              ExecStart = "${voxtypePkg}/bin/voxtype daemon";
-              Restart = "on-failure";
-              RestartSec = 5;
-              TimeoutStartSec = 600;
-              TimeoutStopSec = 10;
-            };
-          };
       };
     };
 
