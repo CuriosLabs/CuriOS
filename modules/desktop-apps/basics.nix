@@ -349,8 +349,17 @@ in {
         [ pkgs.keepassxc ]
         ++ lib.optionals config.curios.desktop.utility.flameshot.enable
         [ pkgs.flameshot ]
-        ++ lib.optionals config.curios.desktop.utility.hex.enable
-        [ pkgs.anomaly-hex ];
+        ++ lib.optionals config.curios.desktop.utility.hex.enable [
+          pkgs.anomaly-hex
+          # Hex's own XDG autostart entry (launch at login) execs the *unwrapped*
+          # binary (.hex-wrapped), so the nixpkgs wrapper's PATH is not applied
+          # at login. Ship wtype system-wide so Hex always finds it on PATH and
+          # uses the virtual-keyboard paste path instead of the RemoteDesktop
+          # portal (keyboard-permission popup on COSMIC; its single-use restore
+          # token also broke paste after reboot). wl-clipboard/curl/ffmpeg are
+          # already system-wide.
+          pkgs.wtype
+        ];
 
       # Brave group policy examples
       # See: https://support.brave.app/hc/en-us/articles/360039248271-Group-Policy
