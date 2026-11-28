@@ -24,6 +24,17 @@
       # Enables wireless support via wpa_supplicant OR
       wireless.enable = lib.mkDefault false;
       # via networkmanager: easiest to use and most distros use this by default.
+      # Define DNS IPv4 and IPv6 here instead of /etc/nixos/settings.nix
+      # Cloudflare, DNS4EU and Quad9 DNS servers.
+      #nameservers = [
+      #  "1.1.1.2"
+      #  "86.54.11.1"
+      #  "9.9.9.9"
+      #  "2606:4700:4700::1112"
+      #  "2a13:1001::86:54:11:1"
+      #  "2620:fe::fe"
+      #  "2620:fe::9"
+      #];
       networkmanager = {
         enable = lib.mkDefault true;
         # Force ignore-auto-dns on Wi-Fi/Ethernet connections when they come up.
@@ -33,6 +44,7 @@
         # The dispatcher script sets it directly on the profile via nmcli.
         # Only wifi and ethernet devices are affected; Docker, libvirt,
         # Tailscale, VPN interfaces are not managed by NetworkManager.
+        # DNS IPv4 and IPv6 are defined in /etc/nixos/settings.nix
         dispatcherScripts = lib.mkIf config.curios.networking.useGlobalDns [{
           source = pkgs.writeScript "ignore-dhcp-dns.sh" ''
             #!${pkgs.runtimeShell}
