@@ -14,7 +14,7 @@ let
   # Keep in sync with modules/curios.nix. The live ISO has no installed
   # configuration; curios-dotfiles needs them.
   dotfilesUrl = "https://github.com/CuriosLabs/curios-themes.git";
-  dotfilesBranch = "main";
+  dotfilesBranch = "testing";
   dotfilesRevision = "";
 in {
   imports = [

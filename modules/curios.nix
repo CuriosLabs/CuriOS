@@ -8,7 +8,7 @@ in {
       dotfiles = {
         branch = lib.mkOption {
           type = lib.types.str;
-          default = "unstable";
+          default = "testing";
           description = "Dotfiles Git respository branch to use.";
         };
         url = lib.mkOption {
@@ -25,7 +25,7 @@ in {
       source = {
         branch = lib.mkOption {
           type = lib.types.str;
-          default = "unstable";
+          default = "release/26.11";
           description = "CuriOS Git respository branch to use.";
         };
         url = lib.mkOption {
