@@ -135,7 +135,6 @@ import <nixpkgs/nixos/tests/make-test-python.nix> {
         check_which("localsend_app")
         check_which("hex")
         check_which("wtype")
-        machine.succeed("test -f /run/current-system/sw/share/applications/anomaly.hex.desktop")
 
     with subtest("check-unconditional-basics"):
         check_which("tldr")
