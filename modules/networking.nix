@@ -31,7 +31,7 @@
         # NetworkManager.conf (see man 5 NetworkManager.conf), and profiles created
         # by desktop applets (COSMIC) do not inherit global defaults anyway.
         # The dispatcher script sets it directly on the profile via nmcli.
-        # Only 802-11-wireless and 802-3-ethernet are affected; Docker, libvirt,
+        # Only wifi and ethernet devices are affected; Docker, libvirt,
         # Tailscale, VPN interfaces are not managed by NetworkManager.
         dispatcherScripts = lib.mkIf config.curios.networking.useGlobalDns [{
           source = pkgs.writeScript "ignore-dhcp-dns.sh" ''
