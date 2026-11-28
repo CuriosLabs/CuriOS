@@ -44,7 +44,7 @@ your system with Nix modules.
   [Ollama](https://ollama.com/) is also available.
   [Cursor](https://cursor.com/features) and [Zed](https://zed.dev/) for an AI-assisted IDE.
   Desktop shortcuts for AI chat web applications (ChatGPT, Claude, Gemini, Grok and Mistral).
-  [Voxtype](https://voxtype.io/) (Shortcut: Super + V) for local Speech to Text.
+  [Hex](https://anoma.ly/hex/) (Shortcut: Super + V) for local Speech to Text.
 - 🐧 Uses the latest stable Linux kernel by default.
 - 🔗 Enable Secure Boot with TPM2 (measured boot).
 - 🛡️AppArmor Mandatory Access Control profiles - WIP.
